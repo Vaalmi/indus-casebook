@@ -1,0 +1,2 @@
+master 4878883 2026-11-05
+The playbook in docs/ came from this commit of master. Upgrade on purpose: "Please upgrade the process to master <commit>".
