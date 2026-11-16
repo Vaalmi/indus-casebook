@@ -231,15 +231,27 @@ LIVE = Path(__file__).parent / "fixtures" / "live"
     "answer",
     ["basic", "checklist", "skill", "basic-second", "checklist-second", "skill-second", "checklist-third"],
 )
-def test_the_live_answers_are_graded_as_the_correct_answers_they_are(book: Path, answer: str) -> None:
+def test_the_live_answers_are_graded_as_the_correct_answers_they_are(answer: str) -> None:
     # Slice 2's live runs (16 November 2026), mapped to aliases. All six found the $508.56
     # overbilling with sourced figures. The grader first zeroed one for a positions total it called
     # fabricated and docked all three for citing dates; a later rule zeroed "skill-second" for an
     # account's value on 31 December 2025, and "checklist-third" for the correct fee shared across
     # the accounts by value. Each follows from the files; the key now lists them.
-    household = book / "households" / "HH-4821"
+    # They answered the book's first price draw, before the version left the seed (decision of
+    # 16 November 2026), so they are graded against a copy of the files they read.
+    household = LIVE / "HH-4821-first-draw"
     key = fee_key(household, date(2026, 3, 31))
     result = grade((LIVE / f"T-REC-01-{answer}.md").read_text(), key, household)
+    assert (result.score, result.critical_fail) == (100, None)
+
+
+@pytest.mark.parametrize("arm", ["basic", "checklist", "skill"])
+def test_the_published_live_answers_are_correct_against_the_current_book(book: Path, arm: str) -> None:
+    # The three published runs (16 November 2026, Opus 5.5 at high effort), against the book as it
+    # is drawn now. A change to the book that moves their figures makes them stale, and fails here.
+    household = book / "households" / "HH-4821"
+    key = fee_key(household, date(2026, 3, 31))
+    result = grade((LIVE / f"T-REC-01-{arm}-second-draw.md").read_text(), key, household)
     assert (result.score, result.critical_fail) == (100, None)
 
 

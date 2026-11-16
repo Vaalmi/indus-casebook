@@ -24,7 +24,16 @@ def run_environment() -> dict[str, str]:
 def arguments(prompt: str, arm: str, config: SharedConfig) -> list[str]:
     """The full command line. The prompt is one argument; nothing from a fixture enters it."""
     args = [*cli_command(), "-p", prompt, *config.flags]
-    args += ["--model", config.model, "--tools", ",".join(config.tools), "--max-turns", str(config.max_turns)]
+    args += [
+        "--model",
+        config.model,
+        "--effort",
+        config.effort,
+        "--tools",
+        ",".join(config.tools),
+        "--max-turns",
+        str(config.max_turns),
+    ]
     instruction = INSTRUCTIONS[arm]
     if instruction is not None:
         args += ["--plugin-dir", str(instruction)]

@@ -20,6 +20,8 @@ ENVIRONMENT_KEYS = ("HOME", "LANG", "LOGNAME", "PATH", "TMPDIR", "USER")
 @dataclass(frozen=True)
 class SharedConfig:
     model: str = "claude-opus-5-5"
+    # The owner's choice (16 November 2026). The CLI does not echo it, so the record's arguments are the evidence.
+    effort: str = "high"
     # The task's file tools, plus Skill: the route a user's installed skill or checklist loads by.
     # Every arm has it; only the basic arm has nothing of ours to load with it.
     tools: tuple[str, ...] = ("Read", "Glob", "Grep", "Skill")

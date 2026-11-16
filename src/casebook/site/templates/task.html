@@ -22,7 +22,7 @@
       {% if not arm.record %}
       <p>Not run yet.</p>
       {% else %}
-      <p class="run-name" data-run-name>{{ arm.tool }} · model {{ arm.models or "not reported" }} · {{ arm.date }}</p>
+      <p class="run-name" data-run-name>{{ arm.tool }} · model {{ arm.models or "not reported" }}{% if arm.effort %} at {{ arm.effort }} effort{% endif %} · {{ arm.date }}</p>
       {% if arm.record.state == "failed" %}
       <p class="failed" data-outcome="failed">Run failed, not scored: {{ arm.record.failure_reason }}</p>
       {% else %}

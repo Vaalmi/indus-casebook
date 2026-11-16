@@ -54,7 +54,8 @@ def test_the_task_page_shows_each_arm_with_the_failure_marked_and_the_run_named(
     assert "Run failed, not scored: CLI error" in checklist.inner_text()
     assert skill.locator("[data-outcome]").get_attribute("data-outcome") == "passed"
     assert re.fullmatch(
-        r"Claude Code 0\.0\.0 · model claude-opus-5-5 · \d{4}-\d\d-\d\d", skill.locator("[data-run-name]").inner_text()
+        r"Claude Code 0\.0\.0 · model claude-opus-5-5 at high effort · \d{4}-\d\d-\d\d",
+        skill.locator("[data-run-name]").inner_text(),
     )
     skill.locator("summary").click()
     assert "Larkspur Total Market Fund was billed on its own." in skill.inner_text()

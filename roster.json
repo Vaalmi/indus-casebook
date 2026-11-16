@@ -3,9 +3,9 @@
   "models": {
     "claude": { "name": "Claude Opus 5.5", "cli": "claude", "id": "claude-opus-5-5", "effort": "xhigh" },
     "claude_high": { "name": "Claude Opus 5.5", "cli": "claude", "id": "claude-opus-5-5", "effort": "high" },
-    "sol": { "name": "GPT-6.1 Sol", "cli": "codex", "id": "gpt-6.1-sol", "effort": "high" },
+    "sol": { "name": "GPT-6.1 Sol", "cli": "codex", "id": "gpt-6.1-sol", "effort": "xhigh" },
     "astra": { "name": "GPT-6 Astra", "cli": "codex", "id": "gpt-6-astra", "effort": "xhigh" },
-    "argon": { "name": "Gemini 4 Argon", "cli": "agy", "id": "gemini-4-argon-high", "effort": "high" }
+    "carbon": { "name": "Gemini 4 Carbon", "cli": "agy", "id": "gemini-4-carbon-high", "effort": "high" }
   },
   "roles": {
     "builder": "claude",

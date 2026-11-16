@@ -1,0 +1,120 @@
+{
+  "agreements": [
+    {
+      "account_ids": [
+        "SYN-48210001",
+        "SYN-48210002"
+      ],
+      "agreement_id": "AGR-4821-1",
+      "kind": "advisory",
+      "known_as_of": "2016-04-12",
+      "party_ids": [
+        "P-4821-1",
+        "P-4821-2"
+      ],
+      "signed": "2016-04-12",
+      "summary": "Advisory agreement for the joint account and Henrik's IRA on the standard fee schedule.",
+      "valuation_date": "2016-04-12"
+    },
+    {
+      "account_ids": [
+        "SYN-48210003"
+      ],
+      "agreement_id": "AGR-4821-2",
+      "kind": "advisory",
+      "known_as_of": "2021-09-14",
+      "party_ids": [
+        "P-4821-3"
+      ],
+      "signed": "2021-09-14",
+      "summary": "Advisory agreement for Ngozi's individual account on the standard fee schedule.",
+      "valuation_date": "2021-09-14"
+    },
+    {
+      "account_ids": [
+        "SYN-48210001",
+        "SYN-48210002",
+        "SYN-48210003"
+      ],
+      "agreement_id": "AGR-4821-3",
+      "kind": "householding",
+      "known_as_of": "2024-11-18",
+      "party_ids": [
+        "P-4821-1",
+        "P-4821-2",
+        "P-4821-3"
+      ],
+      "signed": "2024-11-18",
+      "summary": "Householding letter: the joint account, Henrik's IRA and Ngozi's individual account are billed together as one group from the next billing cycle.",
+      "valuation_date": "2024-11-18"
+    }
+  ],
+  "contacts": [
+    {
+      "email": "adaeze.okaforlind@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Adaeze Okafor-Lind",
+      "person_id": "P-4821-1",
+      "phone": "555-0142",
+      "relationship": "primary",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "email": "henrik.lind@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Henrik Lind",
+      "person_id": "P-4821-2",
+      "phone": "555-0143",
+      "relationship": "spouse",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "email": "ngozi.lind@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Ngozi Lind",
+      "person_id": "P-4821-3",
+      "phone": "555-0144",
+      "relationship": "daughter",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-4821",
+  "notes": [
+    {
+      "author": "template",
+      "date": "2016-04-12",
+      "known_as_of": "2016-04-12",
+      "note_id": "N-4821-01",
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-4821-1 with Adaeze Okafor-Lind and Henrik Lind, covering accounts SYN-48210001, SYN-48210002. Advisory agreement for the joint account and Henrik's IRA on the standard fee schedule.",
+      "valuation_date": "2016-04-12"
+    },
+    {
+      "author": "template",
+      "date": "2021-09-14",
+      "known_as_of": "2021-09-14",
+      "note_id": "N-4821-02",
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-4821-2 with Ngozi Lind, covering accounts SYN-48210003. Advisory agreement for Ngozi's individual account on the standard fee schedule.",
+      "valuation_date": "2021-09-14"
+    },
+    {
+      "author": "template",
+      "date": "2024-11-18",
+      "known_as_of": "2024-11-18",
+      "note_id": "N-4821-03",
+      "template": "agreement_signed",
+      "text": "Signed the householding agreement AGR-4821-3 with Adaeze Okafor-Lind, Henrik Lind and Ngozi Lind, covering accounts SYN-48210001, SYN-48210002, SYN-48210003. Householding letter: the joint account, Henrik's IRA and Ngozi's individual account are billed together as one group from the next billing cycle.",
+      "valuation_date": "2024-11-18"
+    },
+    {
+      "author": "template",
+      "date": "2025-10-14",
+      "known_as_of": "2025-10-14",
+      "note_id": "N-4821-04",
+      "template": "annual_review",
+      "text": "Annual review with Adaeze Okafor-Lind and Henrik Lind. Went through accounts SYN-48210001, SYN-48210002, SYN-48210003, the fee schedule and the IPS targets. No changes requested.",
+      "valuation_date": "2025-10-14"
+    }
+  ]
+}

@@ -198,7 +198,12 @@ def test_an_account_with_no_value_on_the_quarter_end_cannot_be_settled(tmp_path:
 def test_the_trap_household_was_overbilled_by_the_registry_figure(book: Path) -> None:
     key = fee_key(book / household_dir("HH-4821"), QUARTER_END)
     assert key.finding == "fee_error"
-    assert key.amount_misbilled == Decimal("508.56")
+    # Worked by hand from the seed-2026 files, 31 March 2026. The joint account and Henrik's IRA
+    # hold 892,625.50 + 434,343.77 = 1,326,969.27; Ngozi's account 580,497.60. Billed apart:
+    # (10,000 + 0.8% x 326,969.27) / 4 = 3,153.94 and 1% x 580,497.60 / 4 = 1,451.24, so 4,605.18.
+    # As one group under AGR-4821-3: (10,000 + 0.8% x 907,466.87) / 4 = 4,314.93. Overbilled 290.25.
+    assert (key.debited_fee, key.correct_fee) == (Decimal("4605.18"), Decimal("4314.93"))
+    assert key.amount_misbilled == Decimal("290.25")
 
 
 def test_the_twin_household_was_billed_correctly(book: Path) -> None:

@@ -89,7 +89,7 @@ def _sealed_household(script: HouseholdScript) -> dict[str, Any]:
 
 def generate_book(seed: int, scripts_dir: Path, real_tickers: bool = False) -> dict[str, bytes]:
     master = load_master()
-    market = build_market(master, seed, BOOK_VERSION)
+    market = build_market(master, seed)
     scripts = load_scripts(scripts_dir)
     if not scripts:
         raise BuildError(f"no household scripts under {scripts_dir}")

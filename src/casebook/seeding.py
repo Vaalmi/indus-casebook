@@ -1,4 +1,8 @@
-"""Every random stream derives from the seed, the version and a named subject; nothing reads the clock."""
+"""Every random stream derives from the seed and a named subject; nothing reads the clock.
+
+The version is left out, so a release changes only what its errata entry names (the owner's
+decision of 16 November 2026).
+"""
 
 import hashlib
 import random

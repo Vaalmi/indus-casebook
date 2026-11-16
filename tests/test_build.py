@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+import casebook.build
 from casebook.build import BuildError, build_book, refuse_real_identifiers
 from casebook.model.files import (
     MANIFEST,
@@ -50,6 +51,19 @@ def test_another_seed_builds_other_prices(book: Path, tmp_path: Path) -> None:
     other = tmp_path / "other"
     build_book(SEED + 1, other, SCRIPTS)
     assert (other / PRICES_CSV).read_bytes() != (book / PRICES_CSV).read_bytes()
+
+
+def test_a_new_version_redraws_no_price(book: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    # docs/decisions/2026-11-16-version-in-the-price-seed.md: a release changes only what it corrects.
+    monkeypatch.setattr(casebook.build, "BOOK_VERSION", "0.0.2")
+    later = tmp_path / "later"
+    build_book(SEED, later, SCRIPTS)
+    assert json.loads((later / METADATA).read_text())["version"] == "0.0.2"
+    assert (later / PRICES_CSV).read_bytes() == (book / PRICES_CSV).read_bytes()
+    for household in HOUSEHOLDS:
+        for name in ("custodian/positions.csv", "portfolio/billing.json"):
+            where = f"households/{household}/{name}"
+            assert (later / where).read_bytes() == (book / where).read_bytes(), where
 
 
 def test_the_manifest_hashes_every_file(book: Path) -> None:

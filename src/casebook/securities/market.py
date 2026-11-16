@@ -49,19 +49,21 @@ def _pay_date(year: int, month: int) -> date:
     return day
 
 
-def build_market(master: tuple[Security, ...], seed: int, version: str) -> Market:
+def build_market(master: tuple[Security, ...], seed: int) -> Market:
+    """Prices and dividends from the seed and the security alone: a new version re-draws nothing
+    (the owner's decision of 16 November 2026, docs/decisions/2026-11-16-version-in-the-price-seed.md)."""
     prices: dict[tuple[str, date], Decimal] = {}
     dividends: list[DividendRate] = []
     days = weekdays(PRIOR_YEAR_END, SCENARIO_DATE)
     for security in master:
-        rng = derive_rng("prices", seed, version, security.internal_id)
+        rng = derive_rng("prices", seed, security.internal_id)
         price = Decimal(rng.randint(2000, 40000)) / 100
         for index, day in enumerate(days):
             if index:
                 change = Decimal(rng.randint(-90, 94))
                 price = max(cents(price * (10000 + change) / 10000), CENT * 100)
             prices[(security.internal_id, day)] = price
-        rng = derive_rng("dividends", seed, version, security.internal_id)
+        rng = derive_rng("dividends", seed, security.internal_id)
         quarterly_bps = rng.randint(0, 60)
         if quarterly_bps < 10:
             continue

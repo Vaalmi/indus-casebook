@@ -57,7 +57,7 @@ def test_the_registry_figures_follow_from_the_source_files(book: Path) -> None:
 
 def test_a_planted_item_that_does_not_hold_fails_the_build() -> None:
     trap = load_scripts(SCRIPTS)[0]
-    market = build_market(load_master(), SEED, "0.0.1")
+    market = build_market(load_master(), SEED)
     one_group = (BillingGroup("BG-4821-1", "FS-STD", ACCOUNTS),)
     joined = dataclasses.replace(trap, household=dataclasses.replace(trap.household, billing_groups=one_group))
     with pytest.raises(PlantError, match="already bill as one group"):
@@ -66,7 +66,7 @@ def test_a_planted_item_that_does_not_hold_fails_the_build() -> None:
 
 def test_a_near_miss_with_a_householding_agreement_fails_the_build() -> None:
     twin = load_scripts(SCRIPTS)[1]
-    market = build_market(load_master(), SEED, "0.0.1")
+    market = build_market(load_master(), SEED)
     letter = Agreement("AGR-7350-9", "householding", (), (), twin.household.configured, "joins all accounts")
     changed = dataclasses.replace(
         twin, household=dataclasses.replace(twin.household, agreements=(*twin.household.agreements, letter))

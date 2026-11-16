@@ -36,6 +36,10 @@ class ArmView:
         return ", ".join((self.record or {}).get("models_reported") or [])
 
     @property
+    def effort(self) -> str:
+        return str(((self.record or {}).get("settings") or {}).get("effort") or "")
+
+    @property
     def date(self) -> str:
         return str((self.record or {}).get("started_utc", ""))[:10]
 

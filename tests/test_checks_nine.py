@@ -80,6 +80,17 @@ def test_a_closing_lot_whose_basis_did_not_roll_forward_fails(book_copy: Path) -
 # Wash sales
 
 
+def csv_cell(path: Path, match: dict[str, str], column: str) -> str:
+    """One cell of the built book, read before a test edits it, so no test holds a drawn figure."""
+    with path.open(newline="") as handle:
+        return next(r for r in csv.DictReader(handle) if all(r[k] == v for k, v in match.items()))[column]
+
+
+def sale_id(book: Path) -> str:
+    """The transaction ID of the joint account's 2025-09-08 sale (IDs follow the drawn dividends)."""
+    return csv_cell(household(book) / "custodian" / "realized_lots.csv", {"lot_id": "L-48210001-04"}, "transaction_id")
+
+
 def plant_wash_sale(book: Path, buyer: str, day: str) -> None:
     """Turn the joint account's 2025-09-08 sale into a loss (proceeds 100.00) and add a purchase on `day`."""
     root = household(book)
@@ -108,7 +119,7 @@ def test_a_loss_sale_with_a_repurchase_in_the_spouses_ira_fails_the_wash_sale_ch
 def test_a_registered_wash_sale_passes(book_copy: Path) -> None:
     plant_wash_sale(book_copy, "SYN-48210002", "2025-09-20")
     sources = ["custodian/realized_lots.csv", "custodian/transactions.csv"]
-    add_registry_entry(book_copy, "wash_sale", sources, ["T-4821-0031", "T-4821-9999"])
+    add_registry_entry(book_copy, "wash_sale", sources, [sale_id(book_copy), "T-4821-9999"])
     assert problems(book_copy, "wash sales") == ()
 
 
@@ -276,13 +287,14 @@ def test_shares_kept_from_a_purchase_partly_sold_at_a_loss_are_a_wash_sale(book_
     path = root / "custodian" / "transactions.csv"
     path.write_text(path.read_text() + buy)
     realized = root / "custodian" / "realized_lots.csv"
+    sale = sale_id(book_copy)
     for column, value in (
         ("lot_id", "L-E-4821-9998"),
         ("units", "50"),
         ("cost_basis", "10750.00"),
         ("proceeds", "10500.00"),
     ):
-        edit_csv_cell(realized, {"transaction_id": "T-4821-0031"}, column, value)
+        edit_csv_cell(realized, {"transaction_id": sale}, column, value)
     found = problems(book_copy, "wash sales")
     assert len(found) == 1 and "buys it in SYN-48210001 on 2025-09-01" in found[0]
 
@@ -303,7 +315,7 @@ def test_a_registered_wash_sale_does_not_excuse_another(book_copy: Path) -> None
     # S2: one wash-sale entry excused every wash sale in the household.
     plant_wash_sale(book_copy, "SYN-48210002", "2025-09-20")
     sources = ["custodian/realized_lots.csv", "custodian/transactions.csv"]
-    add_registry_entry(book_copy, "wash_sale", sources, ["T-4821-0031", "T-4821-0001"])
+    add_registry_entry(book_copy, "wash_sale", sources, [sale_id(book_copy), "T-4821-0001"])
     assert len(problems(book_copy, "wash sales")) == 1
 
 
@@ -326,11 +338,12 @@ def test_statement_holdings_that_differ_from_the_custodian_fail(book_copy: Path)
     # S6: only the statement's total was compared.
     path = household(book_copy) / "custodian" / "positions.csv"
     match = {"account_id": "SYN-48210002", "security_id": "SEC-0003", "valuation_date": "2026-03-31"}
+    units = csv_cell(path, match, "units")
     edit_csv_cell(path, match, "units", "1")
     found = problems(book_copy, "sources agree")
     assert any(
         p.startswith("documents/statement-SYN-48210002-2026Q1.pdf and custodian/positions.csv disagree")
-        and "SYN-48210002 SEC-0003 on 2026-03-31: the statement shows 1374 units" in p
+        and f"SYN-48210002 SEC-0003 on 2026-03-31: the statement shows {units} units" in p
         for p in found
     )
 
@@ -371,21 +384,25 @@ def test_a_statement_price_that_differs_from_the_custodian_fails(book_copy: Path
     # A-S6 held, B-S5: the statement's printed price was read and thrown away.
     path = household(book_copy) / "custodian" / "positions.csv"
     match = {"account_id": "SYN-48210002", "security_id": "SEC-0003", "valuation_date": "2026-03-31"}
+    units, price = csv_cell(path, match, "units"), csv_cell(path, match, "price")
     edit_csv_cell(path, match, "price", "1.00")
     found = problems(book_copy, "sources agree")
     assert any(
-        "SYN-48210002 SEC-0003 on 2026-03-31: the statement shows 1374 units at" in p and "at 1.00" in p for p in found
+        f"SYN-48210002 SEC-0003 on 2026-03-31: the statement shows {units} units at {price}" in p and "at 1.00" in p
+        for p in found
     )
 
 
 def test_statement_cash_that_differs_from_the_custodian_fails(book_copy: Path) -> None:
     # A-S6 held: the statement's cash line was not compared.
     path = household(book_copy) / "custodian" / "cash.csv"
-    edit_csv_cell(path, {"account_id": "SYN-48210002", "valuation_date": "2026-03-31"}, "settled_cash", "1.00")
+    match = {"account_id": "SYN-48210002", "valuation_date": "2026-03-31"}
+    cash = Decimal(csv_cell(path, match, "settled_cash")) + Decimal(csv_cell(path, match, "unsettled_cash"))
+    edit_csv_cell(path, match, "settled_cash", "1.00")
     found = problems(book_copy, "sources agree")
     assert any(
         p.startswith("documents/statement-SYN-48210002-2026Q1.pdf and custodian/cash.csv disagree")
-        and "SYN-48210002 cash on 2026-03-31: the statement shows 6815.97, the custodian 1.00" in p
+        and f"SYN-48210002 cash on 2026-03-31: the statement shows {cash}, the custodian 1.00" in p
         for p in found
     )
 

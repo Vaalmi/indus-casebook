@@ -13,4 +13,4 @@
 
 **If you don't decide.** The book stays at version 0.0.1 for the whole build, so nothing is re-drawn. The `v0.0.2` rollback test waits; you can still push `v0.0.1` and check the site.
 
-**Decision.** <The owner's answer, with the date.>
+**Decision.** Option 2, the owner, 16 November 2026. The version left the price and dividend seeds the same day. Changing the seed's inputs re-drew the book once: the trap's overbilling for the quarter to 31 March 2026 is now $290.25, worked by hand in `tests/test_key_fee_reconciliation.py`. The three T-REC-01 live runs were rerun against it, and the seven earlier live answers are graded against a copy of the files they read (`tests/fixtures/live/HH-4821-first-draw/`).

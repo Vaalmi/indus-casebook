@@ -106,6 +106,9 @@ def test_every_arm_gets_the_same_arguments_environment_and_config_but_the_instru
     assert len({json.dumps(c["env"]) for c in seen}) == 1
     assert len({r["hashes"]["config"] for r in records}) == 1
     assert [c["argv"].count("--plugin-dir") for c in seen] == [0, 1, 1]
+    # The owner's model and effort reach the CLI on every arm.
+    assert all(c["argv"][c["argv"].index("--model") + 1] == "claude-opus-5-5" for c in seen)
+    assert all(c["argv"][c["argv"].index("--effort") + 1] == "high" for c in seen)
     assert all(r["state"] == "completed" for r in records)
 
 

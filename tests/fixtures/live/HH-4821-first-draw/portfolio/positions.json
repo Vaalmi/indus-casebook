@@ -1,0 +1,135 @@
+{
+  "cash": [
+    {
+      "account_id": "SYN-48210001",
+      "basis": "trade date",
+      "cash": "48968.48",
+      "known_as_of": "2026-04-15",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-48210002",
+      "basis": "trade date",
+      "cash": "5535.83",
+      "known_as_of": "2026-04-15",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-48210003",
+      "basis": "trade date",
+      "cash": "8912.14",
+      "known_as_of": "2026-04-15",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "positions": [
+    {
+      "account_id": "SYN-48210001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "443964.84",
+      "price": "466.84",
+      "price_label": "synthetic",
+      "security": "Larkspur Total Market Fund",
+      "security_id": "SEC-0001",
+      "units": "951",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-48210001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "155931.84",
+      "price": "448.08",
+      "price_label": "synthetic",
+      "security": "Larkspur World ex-US Fund",
+      "security_id": "SEC-0002",
+      "units": "348",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-48210001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "280657.77",
+      "price": "187.23",
+      "price_label": "synthetic",
+      "security": "Larkspur Core Bond Fund",
+      "security_id": "SEC-0003",
+      "units": "1499",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-48210001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "106067.58",
+      "price": "211.29",
+      "price_label": "synthetic",
+      "security": "Orrin Software Group",
+      "security_id": "SEC-0004",
+      "units": "502",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-48210002",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "295976.56",
+      "price": "466.84",
+      "price_label": "synthetic",
+      "security": "Larkspur Total Market Fund",
+      "security_id": "SEC-0001",
+      "units": "634",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-48210002",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "257254.02",
+      "price": "187.23",
+      "price_label": "synthetic",
+      "security": "Larkspur Core Bond Fund",
+      "security_id": "SEC-0003",
+      "units": "1374",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-48210003",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "360400.48",
+      "price": "466.84",
+      "price_label": "synthetic",
+      "security": "Larkspur Total Market Fund",
+      "security_id": "SEC-0001",
+      "units": "772",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-48210003",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "198838.26",
+      "price": "187.23",
+      "price_label": "synthetic",
+      "security": "Larkspur Core Bond Fund",
+      "security_id": "SEC-0003",
+      "units": "1062",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-48210003",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "157584.54",
+      "price": "471.81",
+      "price_label": "synthetic",
+      "security": "Halvern Health Holdings",
+      "security_id": "SEC-0005",
+      "units": "334",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}
