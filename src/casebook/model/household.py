@@ -14,6 +14,16 @@ class Person:
     email: str
     phone: str
     tax_id: str
+    died: date | None = None
+
+
+@dataclass(frozen=True)
+class Decedent:
+    """Whose IRA an inherited IRA was: the facts the ten-year rule turns on."""
+
+    name: str
+    born: date
+    died: date
 
 
 @dataclass(frozen=True)
@@ -22,6 +32,37 @@ class Account:
     account_type: str
     registration: str
     opened: date
+    inherited_from: Decedent | None = None
+
+
+@dataclass(frozen=True)
+class CrmActivity:
+    """A dated record in the CRM other than a note: a form received, a call logged, a letter sent."""
+
+    activity_id: str
+    day: date
+    kind: str
+    summary: str
+    # What the record states, where another source states it too and the check compares them:
+    # a release's shares and price, a charity's receipt of an amount, a death and its date.
+    refers_to: date | None = None
+    account_id: str | None = None
+    security_id: str | None = None
+    person_id: str | None = None
+    units: Decimal | None = None
+    price: Decimal | None = None
+    amount: Decimal | None = None
+
+
+@dataclass(frozen=True)
+class Income:
+    """Income outside the book's accounts, for the tax-unit facts: wages, for now."""
+
+    person_id: str
+    kind: str
+    payer: str
+    amount: Decimal
+    year: int
 
 
 @dataclass(frozen=True)
@@ -145,6 +186,8 @@ class Household:
     disclosures: tuple[Disclosure, ...]
     agreements: tuple[Agreement, ...]
     beneficiaries: tuple[Beneficiary, ...]
+    income: tuple[Income, ...]
+    crm_activities: tuple[CrmActivity, ...]
     fee_schedule: FeeSchedule
     allocation: tuple[AllocationTarget, ...]
     asset_classes: dict[str, str]

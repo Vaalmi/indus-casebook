@@ -91,6 +91,10 @@ ACCOUNTS_COLUMNS = (
     "registration",
     "owners",
     "opened",
+    # An inherited IRA's decedent, whose dates the ten-year rule turns on; blank for other accounts.
+    "decedent",
+    "decedent_born",
+    "decedent_died",
     "valuation_date",
     "known_as_of",
 )
@@ -160,6 +164,16 @@ BENEFICIARIES_COLUMNS = (
     "known_as_of",
 )
 DESIGNATIONS = ("primary", "contingent")
+# CRM activities that state a fact another source states too, and the fields each must give so
+# "sources agree" can compare them with the custodian.
+RSU_RELEASE = "rsu_release_confirmation"
+CHARITY_ACKNOWLEDGMENT = "charity_acknowledgment"
+DEATH_NOTIFICATION = "death_notification"
+COMPARED_ACTIVITIES: dict[str, tuple[str, ...]] = {
+    RSU_RELEASE: ("refers_to", "account_id", "security_id", "units", "price"),
+    CHARITY_ACKNOWLEDGMENT: ("refers_to", "account_id", "amount"),
+    DEATH_NOTIFICATION: ("refers_to", "person_id"),
+}
 
 
 class FileFormatError(ValueError):

@@ -1,5 +1,7 @@
 """The static site, rendered from a built, checked book: a page per household, a page per task run, an index."""
 
+import csv
+import io
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -12,7 +14,6 @@ from casebook.model.files import (
     ACCOUNTS_CSV,
     CRM_JSON,
     DOCUMENTS_INDEX,
-    FEE,
     METADATA,
     PORTFOLIO_BILLING,
     PORTFOLIO_HOUSEHOLD,
@@ -37,6 +38,22 @@ from casebook.notice import NOTICE, NOTICE_HEADLINE
 from casebook.site.tasks import task_views
 
 STATIC_DIR = Path(__file__).parent / "static"
+# The kinds of event that carry each archetype's item: what the events layer shows first.
+KEY_EVENTS: dict[int, tuple[str, ...]] = {
+    1: ("contribution", "roth_conversion"),
+    2: ("sell",),
+    3: ("rsu_vest", "sell"),
+    4: ("sell", "roth_conversion"),
+    5: ("rmd",),
+    6: ("qcd", "rmd"),
+    7: ("rmd",),
+    8: ("death",),
+    9: ("buy", "sell"),
+    10: ("fee",),
+}
+# Where a twin's observations come from, with no registry entry to name its sources.
+TWIN_SOURCES = ("custodian/transactions.csv", "crm/crm.json")
+_DATES = ("valuation_date", "known_as_of")
 
 
 def data_root(version: str) -> str:
@@ -67,13 +84,11 @@ class HouseholdView:
     events: list[dict[str, Any]]
     planted: RegistryEntry | None
 
-    @property
-    def fees(self) -> list[dict[str, str]]:
-        return [t for t in self.transactions if t["type"] == FEE]
+    observations: list[tuple[str, list[str]]]
 
     @property
-    def fee_events(self) -> list[dict[str, Any]]:
-        return [e for e in self.events if e["type"] == "fee"]
+    def key_events(self) -> list[dict[str, Any]]:
+        return [e for e in self.events if e["type"] in KEY_EVENTS[self.archetype]]
 
     @property
     def names(self) -> dict[str, str]:
@@ -105,6 +120,8 @@ def load_household(
         if c.valuation_date == SCENARIO_DATE
     ]
     planted = [e for e in entries if e.household_id == household_id]
+    events = read_json(book, event_log_path(household_id))["events"]
+    key = [e for e in events if e["type"] in KEY_EVENTS[int(sealed["archetype"])]]
     return HouseholdView(
         household_id=household_id,
         name=read_json(root, PORTFOLIO_HOUSEHOLD)["name"],
@@ -124,9 +141,52 @@ def load_household(
         ips=read_json(root, PORTFOLIO_IPS),
         crm=read_json(root, CRM_JSON),
         documents=read_json(root, DOCUMENTS_INDEX)["documents"],
-        events=read_json(book, event_log_path(household_id))["events"],
+        events=events,
         planted=planted[0] if planted else None,
+        observations=_observations(root, planted[0] if planted else None, key),
     )
+
+
+def _record_text(record: dict[str, Any]) -> str:
+    """One source record as a line: its values, without the dates every record carries."""
+    shown: list[str] = []
+    for name, value in record.items():
+        if name in _DATES or value in ("", None, []):
+            continue
+        shown.append(f"{name} {', '.join(map(str, value)) if isinstance(value, list) else value}")
+    return "; ".join(shown)
+
+
+def _mentions(record: dict[str, Any], ids: set[str]) -> bool:
+    values = [v for value in record.values() for v in (value if isinstance(value, list) else [value])]
+    return any(str(v) in ids for v in values)
+
+
+def _observations(root: Path, planted: RegistryEntry | None, key: list[dict[str, Any]]) -> list[tuple[str, list[str]]]:
+    """What each source records about the item: the records in its source files that name the
+    item's records, or, for a twin, the records of its archetype's key events."""
+    transactions = {"T" + str(e["event_id"]).removeprefix("E") for e in key}
+    ids = set(planted.references) if planted else set()
+    ids |= transactions | {str(e["account_id"]) for e in key}
+    found: list[tuple[str, list[str]]] = []
+    for source in planted.sources if planted else TWIN_SOURCES:
+        path = root / source
+        if path.suffix == ".csv":
+            rows = read_csv(root, source, next(csv.reader(io.StringIO(path.read_text(encoding="utf-8")))))
+            if source == TRANSACTIONS_CSV:
+                rows = [r for r in rows if r["transaction_id"] in transactions or r["transaction_id"] in ids]
+            else:
+                rows = [r for r in rows if _mentions(r, ids)]
+            records = [_record_text(r) for r in rows]
+        elif path.suffix == ".json":
+            data = read_json(root, source)
+            listed = [item for value in data.values() if isinstance(value, list) for item in value]
+            records = [_record_text(item) for item in listed if isinstance(item, dict) and _mentions(item, ids)]
+        else:
+            continue
+        if records:
+            found.append((source, records))
+    return found
 
 
 def environment() -> Environment:

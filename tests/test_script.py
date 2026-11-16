@@ -8,7 +8,7 @@ import pytest
 from casebook.generate.script import ScriptError, load_scripts, parse_script
 from casebook.model.events import UnsupportedEventError
 
-from .conftest import SCRIPTS
+from .conftest import FEATURED, SCRIPTS
 
 TRAP = SCRIPTS / "archetype-10" / "HH-4821.toml"
 
@@ -18,9 +18,13 @@ def raw() -> dict[str, Any]:
         return tomllib.load(handle)
 
 
-def test_the_scripted_pair_loads() -> None:
+def test_the_scripted_pairs_load() -> None:
     scripts = load_scripts(SCRIPTS)
-    assert [(s.household.household_id, s.role) for s in scripts] == [("HH-4821", "trap"), ("HH-7350", "twin")]
+    assert sorted(s.household.household_id for s in scripts) == list(FEATURED)
+    assert [(s.household.household_id, s.role) for s in load_scripts(SCRIPTS / "archetype-10")] == [
+        ("HH-4821", "trap"),
+        ("HH-7350", "twin"),
+    ]
 
 
 def test_a_scripted_event_outside_the_whitelist_is_rejected_by_name() -> None:

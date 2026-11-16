@@ -78,6 +78,7 @@ forbidden_modules = [
   "casebook.publish",
   "casebook.published_text",
   "casebook.replay",
+  "casebook.rules",
   "casebook.runner",
   "casebook.securities",
   "casebook.seeding",

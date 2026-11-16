@@ -30,6 +30,7 @@ def add_registry_entry(book: Path, item_type: str, sources: list[str], refs: lis
             "justified_conclusion": "Planted for the test.",
             "figures": [],
             "table": {"columns": [], "rows": []},
+            "known_as_of": "2026-04-15",
             "references": refs,
         }
     )

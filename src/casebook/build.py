@@ -13,9 +13,10 @@ from typing import Any
 
 from casebook import BOOK_VERSION
 from casebook.checks.agreement import check_sources_agree
+from casebook.generate.notes import NotesError, check_notes, load_notes, notes_path
 from casebook.generate.script import HouseholdScript, load_scripts
 from casebook.generate.simulate import simulate
-from casebook.model.archetypes import ARCHETYPES
+from casebook.model.archetypes import ARCHETYPES, HELD_OUT_ARCHETYPES, frozen
 from casebook.model.dates import OPENING_DATE, SCENARIO_DATE
 from casebook.model.events import event_to_dict
 from casebook.model.files import (
@@ -40,17 +41,18 @@ from casebook.model.ledger import LedgerError, load_ledger
 from casebook.model.money import fmt
 from casebook.model.registry import RegistryEntry
 from casebook.notice import NOTICE
-from casebook.plant import plant
+from casebook.plant import PlantContext, plant
 from casebook.published_text import text_of
-from casebook.replay import replay
+from casebook.replay import ReplayResult, Snapshot, replay
 from casebook.securities.market import Market, build_market
-from casebook.securities.master import Security, load_master
+from casebook.securities.master import Security, by_id, load_master
 from casebook.securities.scan import default_scan
 from casebook.sources import emit_household
 from casebook.sources.context import SNAPSHOT_DAYS
 
 DATA_LICENCE = "CC-BY-4.0"
-ID_LEDGER = Path(__file__).resolve().parents[2] / "book" / "id_ledger.json"
+REPO = Path(__file__).resolve().parents[2]
+ID_LEDGER = REPO / "book" / "id_ledger.json"
 
 
 class BuildError(RuntimeError):
@@ -99,14 +101,42 @@ def _sealed_household(script: HouseholdScript) -> dict[str, Any]:
     }
 
 
+def refuse_held_out(scripts: list[HouseholdScript], held_out: bool) -> None:
+    """A held-out featured pair stays out of every public build until the freeze."""
+    found = sorted(s.household.household_id for s in scripts if s.household.archetype in HELD_OUT_ARCHETYPES)
+    if found and not held_out and not frozen():
+        raise BuildError(
+            f"{', '.join(found)}: the featured pairs for archetypes 7 and 8 are held out until the freeze; "
+            "keep their scripts in $CASEBOOK_PRIVATE and build them with --held-out"
+        )
+
+
+def name_real_tickers(files: dict[str, bytes], master: tuple[Security, ...]) -> dict[str, bytes]:
+    """A real-ticker build differs from the default only in identifiers: script text that names a
+    security by its alias (a CRM record, an employer on a wages line) names it by its ticker too.
+    PDFs are drawn with the ticker already."""
+    aliases = sorted(master, key=lambda s: len(s.alias), reverse=True)
+
+    def named(text: str) -> str:
+        for security in aliases:
+            text = text.replace(security.alias, security.real_ticker)
+        return text
+
+    return {
+        name: named(data.decode("utf-8")).encode("utf-8") if name.endswith((".csv", ".json")) else data
+        for name, data in files.items()
+    }
+
+
 def generate_book(
-    seed: int, scripts_dir: Path, real_tickers: bool = False, ledger: Path = ID_LEDGER
+    seed: int, scripts_dir: Path, real_tickers: bool = False, ledger: Path = ID_LEDGER, held_out: bool = False
 ) -> dict[str, bytes]:
     master = load_master()
     market = build_market(master, seed)
     scripts = load_scripts(scripts_dir)
     if not scripts:
         raise BuildError(f"no household scripts under {scripts_dir}")
+    refuse_held_out(scripts, held_out)
     try:
         published = load_ledger(ledger)
         for script in scripts:
@@ -119,13 +149,37 @@ def generate_book(
     for script in scripts:
         simulation = simulate(script, market)
         replayed = replay(simulation.events, SNAPSHOT_DAYS)
-        entries += plant(script, simulation.quarters)
-        files.update(emit_household(script, simulation.events, replayed, market, master, real_tickers))
+        planting = plant(
+            PlantContext(script, simulation.events, replayed, simulation.quarters, market, by_id(master), real_tickers)
+        )
+        entries += planting.entries
+        # The custodian's files, its statements and the portfolio system it feeds show the events
+        # as the custodian recorded them; the sealed log keeps what happened.
+        recorded, recorded_ledger = simulation.events, replayed
+        if planting.custodian_events is not None:
+            recorded, recorded_ledger = planting.custodian_events, replay(planting.custodian_events, SNAPSHOT_DAYS)
+            refuse_moved_units_or_cash(script.household.household_id, replayed, recorded_ledger)
+        notes = None
+        path = notes_path(scripts_dir / script.source)
+        if path.is_file():
+            try:
+                notes = load_notes(path, scripts_dir)
+            except NotesError as error:
+                raise BuildError(str(error)) from error
+            problems = check_notes(notes, script.household, simulation.events, planting.entries)
+            if problems:
+                raise BuildError("; ".join(problems))
+        files.update(emit_household(script, recorded, recorded_ledger, market, master, real_tickers, notes))
         log = {
             "household_id": script.household.household_id,
             "opening_date": OPENING_DATE.isoformat(),
             "scenario_date": SCENARIO_DATE.isoformat(),
             "events": [event_to_dict(e) for e in simulation.events],
+            # Income outside the accounts, for the tax-unit facts (W-2s arrive with slice 7).
+            "income": [
+                {"person_id": i.person_id, "kind": i.kind, "payer": i.payer, "amount": fmt(i.amount), "year": i.year}
+                for i in script.household.income
+            ],
         }
         files[event_log_path(script.household.household_id)] = json_text(log).encode()
     files[REGISTRY] = json_text({"entries": [e.to_dict() for e in sorted(entries, key=lambda e: e.item_id)]}).encode()
@@ -143,6 +197,8 @@ def generate_book(
             "securities": REAL_TICKERS if real_tickers else ALIASES,
         }
     ).encode()
+    if real_tickers:
+        files = name_real_tickers(files, master)
     files[MANIFEST] = json_text(
         {
             "version": BOOK_VERSION,
@@ -155,6 +211,24 @@ def generate_book(
         }
     ).encode()
     return files
+
+
+def _held(snapshot: Snapshot) -> tuple[object, ...]:
+    accounts = sorted(snapshot.settled_cash)
+    return tuple((a, snapshot.holdings(a), snapshot.settled_cash[a], snapshot.unsettled_cash.get(a)) for a in accounts)
+
+
+def refuse_moved_units_or_cash(household_id: str, actual: ReplayResult, recorded: ReplayResult) -> None:
+    """A planted item may change what the custodian says about a holding, never the holding."""
+    pairs = [(actual.opening, recorded.opening)] + [
+        (actual.snapshots[d], recorded.snapshots[d]) for d in actual.snapshots
+    ]
+    for real, kept in pairs:
+        if _held(real) != _held(kept):
+            raise BuildError(
+                f"{household_id}: the custodian's record of events moves units or cash by {real.day}, "
+                "which a planted item may not do"
+            )
 
 
 def refuse_real_identifiers(files: dict[str, bytes]) -> None:
@@ -181,10 +255,19 @@ def refuse_unregistered_differences(out: Path, households: tuple[str, ...]) -> N
 
 
 def build_book(
-    seed: int, out: Path, scripts_dir: Path, real_tickers: bool = False, ledger: Path = ID_LEDGER
+    seed: int,
+    out: Path,
+    scripts_dir: Path,
+    real_tickers: bool = False,
+    ledger: Path = ID_LEDGER,
+    held_out: bool = False,
 ) -> BuildResult:
-    """Build the book. Real-ticker mode is for runs only: its output goes to out/real/, never published."""
-    files = generate_book(seed, scripts_dir, real_tickers, ledger)
+    """Build the book. Real-ticker mode is for runs only: its output goes to out/real/, never published.
+    A held-out build (the featured pairs kept back until the freeze) is written outside the repo only."""
+    resolved = out.resolve()
+    if held_out and (resolved == REPO or REPO in resolved.parents):
+        raise BuildError(f"a held-out build is written outside the public repo, not to {out}")
+    files = generate_book(seed, scripts_dir, real_tickers, ledger, held_out)
     if not real_tickers:
         refuse_real_identifiers(files)
     refuse_valid_looking_identifiers(files)

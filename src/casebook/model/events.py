@@ -223,6 +223,16 @@ WHITELISTED = tuple(name for name in EVENT_TYPES if name != "opening")
 _TYPE_NAMES = {cls: name for name, cls in EVENT_TYPES.items()}
 
 
+def transaction_id(event_id: str) -> str:
+    """The custodian's transaction ID for an event: the same number, a T for the E."""
+    return "T" + event_id.removeprefix("E")
+
+
+def lot_id(event_id: str) -> str:
+    """The lot a purchase or a vesting opens (the ledger's naming)."""
+    return f"L-{event_id}"
+
+
 def event_type(event: Event) -> str:
     return _TYPE_NAMES[type(event)]
 

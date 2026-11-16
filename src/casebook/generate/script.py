@@ -7,19 +7,23 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
+from casebook.generate.notes import NOTES_SUFFIX
 from casebook.model.dates import parse_date
 from casebook.model.events import UnsupportedEventError
-from casebook.model.files import DESIGNATIONS
+from casebook.model.files import COMPARED_ACTIVITIES, DESIGNATIONS
 from casebook.model.household import (
     Account,
     Agreement,
     AllocationTarget,
     Beneficiary,
     BillingGroup,
+    CrmActivity,
+    Decedent,
     Disclosure,
     FeeSchedule,
     FeeTier,
     Household,
+    Income,
     IraBasis,
     LossCarryforward,
     Ownership,
@@ -30,7 +34,35 @@ from casebook.model.household import (
 )
 from casebook.model.money import parse_decimal
 
-SCRIPTED_ACTIVITY = ("buy", "sell", "contribution", "withdrawal")
+# What a script may make happen. Dividends and fees follow from holdings and the schedule; the
+# one stock split is a market event no featured household needs yet.
+SCRIPTED_ACTIVITY = (
+    "buy",
+    "sell",
+    "contribution",
+    "withdrawal",
+    "rmd",
+    "qcd",
+    "roth_conversion",
+    "transfer",
+    "rsu_vest",
+    "death",
+)
+ACCOUNT_TYPES = ("joint_taxable", "individual_taxable", "traditional_ira", "roth_ira", "401k", "inherited_ira")
+INCOME_KINDS = ("wages",)
+# The fields each kind of activity needs, beyond its date and account.
+ACTIVITY_FIELDS: dict[str, tuple[str, ...]] = {
+    "buy": ("security_id", "units"),
+    "sell": ("security_id", "units"),
+    "contribution": ("amount",),
+    "withdrawal": ("amount",),
+    "rmd": ("amount", "tax_year", "withheld"),
+    "qcd": ("amount", "charity"),
+    "roth_conversion": ("amount", "to_account_id"),
+    "transfer": ("to_account_id",),
+    "rsu_vest": ("security_id", "units"),
+    "death": ("person_id", "share"),
+}
 ROLES = ("trap", "twin")
 TWIN_KINDS = ("clean", "near_miss", "unresolved")
 
@@ -61,16 +93,23 @@ class Activity:
     kind: str
     day: date
     account_id: str
-    security_id: str | None
-    units: Decimal | None
-    amount: Decimal | None
+    security_id: str | None = None
+    units: Decimal | None = None
+    amount: Decimal | None = None
+    to_account_id: str | None = None
+    tax_year: int | None = None
+    withheld: Decimal | None = None
+    charity: str | None = None
+    person_id: str | None = None
+    share: Decimal | None = None
 
 
 @dataclass(frozen=True)
 class PlantedSpec:
     item_id: str
     item_type: str
-    agreement_id: str
+    # Whatever else the planter reads: the agreement for a missed breakpoint, the sale for a wash sale.
+    details: dict[str, str]
 
 
 @dataclass(frozen=True)
@@ -128,11 +167,20 @@ def _parse(raw: dict[str, Any], source: str) -> HouseholdScript:
                 str(p["email"]),
                 str(p["phone"]),
                 str(p["tax_id"]),
+                _date(p, "died") if "died" in p else None,
             )
             for p in raw["members"]
         ),
         accounts=tuple(
-            Account(str(a["account_id"]), str(a["account_type"]), str(a["registration"]), _date(a, "opened"))
+            Account(
+                str(a["account_id"]),
+                str(a["account_type"]),
+                str(a["registration"]),
+                _date(a, "opened"),
+                Decedent(str(a["decedent"]["name"]), _date(a["decedent"], "born"), _date(a["decedent"], "died"))
+                if "decedent" in a
+                else None,
+            )
             for a in accounts_raw
         ),
         ownership=tuple(Ownership(str(a["account_id"]), _ids(a, "owners")) for a in accounts_raw),
@@ -166,6 +214,26 @@ def _parse(raw: dict[str, Any], source: str) -> HouseholdScript:
                 _date(b, "designated"),
             )
             for b in raw.get("beneficiaries", [])
+        ),
+        income=tuple(
+            Income(str(i["person_id"]), str(i["kind"]), str(i["payer"]), _dec(i, "amount"), int(i["year"]))
+            for i in raw.get("income", [])
+        ),
+        crm_activities=tuple(
+            CrmActivity(
+                str(c["activity_id"]),
+                _date(c, "date"),
+                str(c["kind"]),
+                str(c["summary"]),
+                refers_to=_date(c, "refers_to") if "refers_to" in c else None,
+                account_id=str(c["account_id"]) if "account_id" in c else None,
+                security_id=str(c["security_id"]) if "security_id" in c else None,
+                person_id=str(c["person_id"]) if "person_id" in c else None,
+                units=_dec(c, "units") if "units" in c else None,
+                price=_dec(c, "price") if "price" in c else None,
+                amount=_dec(c, "amount") if "amount" in c else None,
+            )
+            for c in raw.get("crm_activities", [])
         ),
         fee_schedule=FeeSchedule(
             schedule_id=str(raw["fee_schedule"]["schedule_id"]),
@@ -224,6 +292,12 @@ def _parse(raw: dict[str, Any], source: str) -> HouseholdScript:
                 security_id=str(item["security_id"]) if "security_id" in item else None,
                 units=_dec(item, "units") if "units" in item else None,
                 amount=_dec(item, "amount") if "amount" in item else None,
+                to_account_id=str(item["to_account_id"]) if "to_account_id" in item else None,
+                tax_year=int(item["tax_year"]) if "tax_year" in item else None,
+                withheld=_dec(item, "withheld") if "withheld" in item else None,
+                charity=str(item["charity"]) if "charity" in item else None,
+                person_id=str(item["person_id"]) if "person_id" in item else None,
+                share=_dec(item, "share") if "share" in item else None,
             )
         )
     role = str(raw["role"])
@@ -236,7 +310,11 @@ def _parse(raw: dict[str, Any], source: str) -> HouseholdScript:
         role=role,
         accounts=accounts,
         activity=tuple(activity),
-        planted=PlantedSpec(str(planted["item_id"]), str(planted["type"]), str(planted["agreement_id"]))
+        planted=PlantedSpec(
+            str(planted["item_id"]),
+            str(planted["type"]),
+            {str(k): str(v) for k, v in planted.items() if k not in ("item_id", "type")},
+        )
         if planted
         else None,
         twin=TwinSpec(str(twin["kind"]), str(twin["explanation"])) if twin else None,
@@ -256,6 +334,23 @@ def _validate(script: HouseholdScript) -> None:
     if script.twin is not None and script.twin.kind not in TWIN_KINDS:
         raise ScriptError(script.source, f"twin kind {script.twin.kind!r} is not one of {TWIN_KINDS}")
     account_ids = [a.account_id for a in hh.accounts]
+    for account in hh.accounts:
+        if account.account_type not in ACCOUNT_TYPES:
+            raise ScriptError(script.source, f"account type {account.account_type!r} is not one of {ACCOUNT_TYPES}")
+        if (account.account_type == "inherited_ira") != (account.inherited_from is not None):
+            raise ScriptError(
+                script.source, f"{account.account_id}: an inherited IRA, and only one, names its decedent"
+            )
+    for activity in hh.crm_activities:
+        stated = COMPARED_ACTIVITIES.get(activity.kind, ())
+        missing = [f for f in stated if getattr(activity, f) is None]
+        if missing:
+            raise ScriptError(
+                script.source, f"CRM activity {activity.activity_id} ({activity.kind}) needs {', '.join(missing)}"
+            )
+    for income in hh.income:
+        if income.kind not in INCOME_KINDS or income.person_id not in {p.person_id for p in hh.members}:
+            raise ScriptError(script.source, f"income {income.kind} names {income.person_id}, not a household member")
     grouped = sorted(a for g in hh.billing_groups for a in g.account_ids)
     if grouped != sorted(account_ids):
         raise ScriptError(script.source, "every account belongs to exactly one billing group")
@@ -279,12 +374,24 @@ def _validate(script: HouseholdScript) -> None:
     for act in script.activity:
         if act.account_id not in account_ids:
             raise ScriptError(script.source, f"activity on {act.day} names unknown account {act.account_id}")
-        needs_units = act.kind in ("buy", "sell")
-        if needs_units != (act.units is not None and act.security_id is not None) or needs_units == (
-            act.amount is not None
-        ):
+        if act.to_account_id is not None and act.to_account_id not in account_ids:
+            raise ScriptError(script.source, f"{act.kind} on {act.day} names unknown account {act.to_account_id}")
+        missing = [f for f in ACTIVITY_FIELDS[act.kind] if getattr(act, f) is None]
+        if missing:
+            raise ScriptError(script.source, f"{act.kind} on {act.day} needs {', '.join(missing)}")
+        if act.kind in ("buy", "sell", "rsu_vest") and act.amount is not None:
             raise ScriptError(
                 script.source, f"{act.kind} on {act.day}: buys and sells give units, cash flows give an amount"
+            )
+        if act.kind in ("contribution", "withdrawal") and act.units is not None:
+            raise ScriptError(
+                script.source, f"{act.kind} on {act.day}: buys and sells give units, cash flows give an amount"
+            )
+        if act.kind == "transfer" and (act.amount is None) == (act.units is None or act.security_id is None):
+            raise ScriptError(script.source, f"transfer on {act.day} moves either units of a security or an amount")
+        if act.kind == "death" and (act.person_id not in people or hh.person(act.person_id).died != act.day):
+            raise ScriptError(
+                script.source, f"death on {act.day} names {act.person_id}, who is not a member who died that day"
             )
 
 
@@ -294,7 +401,8 @@ def load_script(path: Path, root: Path) -> HouseholdScript:
 
 
 def load_scripts(directory: Path) -> list[HouseholdScript]:
-    scripts = [load_script(p, directory) for p in sorted(directory.rglob("*.toml"))]
+    paths = sorted(p for p in directory.rglob("*.toml") if not p.name.endswith(NOTES_SUFFIX))
+    scripts = sorted((load_script(p, directory) for p in paths), key=lambda s: s.household.household_id)
     ids = [s.household.household_id for s in scripts]
     if len(set(ids)) != len(ids):
         raise ScriptError(directory.as_posix(), "two scripts share a household ID")

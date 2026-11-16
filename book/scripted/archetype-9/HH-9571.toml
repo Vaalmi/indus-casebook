@@ -1,0 +1,187 @@
+# Archetype 9, pair 1, twin: a near miss. Elena and Graham run the same harvest: they sell
+# the mid-cap fund at a loss out of their joint account in November and buy an
+# equal-weight fund in its place. Elena's IRA buys the mid-cap fund back too, but on the
+# 31st day after the sale, outside the wash-sale window, so the whole loss is allowed.
+household_id = "HH-9571"
+name = "Castellanos-Reid household"
+archetype = 9
+pair = 1
+role = "twin"
+configured = 2012-05-07
+
+[[members]]
+person_id = "P-9571-1"
+name = "Elena Castellanos"
+born = 1969-03-27
+relationship = "primary"
+email = "elena.castellanos@mail.example"
+phone = "555-0176"
+tax_id = "000-95-7101"
+
+[[members]]
+person_id = "P-9571-2"
+name = "Graham Reid"
+born = 1967-10-11
+relationship = "spouse"
+email = "graham.reid@mail.example"
+phone = "555-0177"
+tax_id = "000-95-7102"
+
+[[accounts]]
+account_id = "SYN-95710001"
+account_type = "joint_taxable"
+registration = "Joint tenants with right of survivorship"
+opened = 2012-05-07
+owners = ["P-9571-1", "P-9571-2"]
+cash = "55000.00"
+holdings = [
+  { lot_id = "L-95710001-01", security_id = "SEC-0025", value = "230000", acquired = 2023-08-14, basis_pct = "114" },
+  { lot_id = "L-95710001-02", security_id = "SEC-0001", value = "410000", acquired = 2014-02-10, basis_pct = "55" },
+  { lot_id = "L-95710001-03", security_id = "SEC-0003", value = "190000", acquired = 2020-05-04, basis_pct = "103" },
+  { lot_id = "L-95710001-04", security_id = "SEC-0006", value = "110000", acquired = 2021-09-13, basis_pct = "95" },
+]
+
+[[accounts]]
+account_id = "SYN-95710002"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Elena Castellanos"
+opened = 2005-04-11
+owners = ["P-9571-1"]
+cash = "145000.00"
+holdings = [
+  { lot_id = "L-95710002-01", security_id = "SEC-0014", value = "170000", acquired = 2015-06-01, basis_pct = "100" },
+  { lot_id = "L-95710002-02", security_id = "SEC-0013", value = "125000", acquired = 2016-11-07, basis_pct = "100" },
+]
+
+[[accounts]]
+account_id = "SYN-95710003"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Graham Reid"
+opened = 2003-07-14
+owners = ["P-9571-2"]
+cash = "7000.00"
+holdings = [
+  { lot_id = "L-95710003-01", security_id = "SEC-0019", value = "240000", acquired = 2012-09-04, basis_pct = "100" },
+  { lot_id = "L-95710003-02", security_id = "SEC-0003", value = "85000", acquired = 2018-03-05, basis_pct = "100" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-9571-1"
+filing_status = "married_filing_jointly"
+person_ids = ["P-9571-1", "P-9571-2"]
+
+[[billing_groups]]
+billing_group_id = "BG-9571-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-95710001", "SYN-95710002", "SYN-95710003"]
+
+[[disclosures]]
+person_id = "P-9571-1"
+account_ids = ["SYN-95710001", "SYN-95710002", "SYN-95710003"]
+
+[[disclosures]]
+person_id = "P-9571-2"
+account_ids = ["SYN-95710001", "SYN-95710002", "SYN-95710003"]
+
+[[agreements]]
+agreement_id = "AGR-9571-1"
+kind = "advisory"
+party_ids = ["P-9571-1", "P-9571-2"]
+account_ids = ["SYN-95710001", "SYN-95710002", "SYN-95710003"]
+signed = 2012-05-07
+summary = "Advisory agreement for the joint account and both IRAs, billed together as one group on the standard fee schedule."
+
+[[beneficiaries]]
+account_id = "SYN-95710002"
+designation = "primary"
+name = "Graham Reid"
+relationship = "spouse"
+share = "100"
+person_id = "P-9571-2"
+designated = 2005-04-11
+
+[[beneficiaries]]
+account_id = "SYN-95710002"
+designation = "contingent"
+name = "Isla Castellanos-Reid"
+relationship = "daughter"
+share = "100"
+designated = 2005-04-11
+
+[[beneficiaries]]
+account_id = "SYN-95710003"
+designation = "primary"
+name = "Elena Castellanos"
+relationship = "spouse"
+share = "100"
+person_id = "P-9571-1"
+designated = 2003-07-14
+
+[[beneficiaries]]
+account_id = "SYN-95710003"
+designation = "contingent"
+name = "Isla Castellanos-Reid"
+relationship = "daughter"
+share = "100"
+designated = 2003-07-14
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.55", band = "0.05" },
+  { asset_class = "International equity", target = "0.08", band = "0.04" },
+  { asset_class = "Fixed income", target = "0.30", band = "0.05" },
+]
+restrictions = []
+concentration_limit = "0.25"
+asset_classes = { "SEC-0001" = "US equity", "SEC-0003" = "Fixed income", "SEC-0006" = "International equity", "SEC-0013" = "US equity", "SEC-0014" = "Fixed income", "SEC-0019" = "US equity", "SEC-0025" = "US equity", "SEC-0027" = "US equity" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-9571-1", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [
+  { person_id = "P-9571-1", basis = "0.00" },
+  { person_id = "P-9571-2", basis = "0.00" },
+]
+
+[[activity]]
+type = "withdrawal"
+date = 2025-07-14
+account_id = "SYN-95710001"
+amount = "10000.00"
+
+[[activity]]
+type = "sell"
+date = 2025-11-03
+account_id = "SYN-95710001"
+security_id = "SEC-0025"
+units = "812"
+
+[[activity]]
+type = "buy"
+date = 2025-11-03
+account_id = "SYN-95710001"
+security_id = "SEC-0027"
+units = "4200"
+
+[[activity]]
+type = "buy"
+date = 2025-12-04
+account_id = "SYN-95710002"
+security_id = "SEC-0025"
+units = "500"
+
+[twin]
+kind = "near_miss"
+explanation = "A near miss. Like HH-9234, the couple sell a fund at a loss in their joint account and one spouse's IRA buys the same fund back. Here the IRA buys it on the 31st day after the sale, outside the 30 days after it that IRC § 1091 counts, so it is not a wash sale and the whole loss is allowed."

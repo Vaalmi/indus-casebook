@@ -43,6 +43,9 @@ def _accounts(context: EmitContext) -> str:
             "registration": a.registration,
             "owners": "; ".join(hh.person(p).name for p in hh.owners(a.account_id)),
             "opened": a.opened.isoformat(),
+            "decedent": a.inherited_from.name if a.inherited_from else "",
+            "decedent_born": a.inherited_from.born.isoformat() if a.inherited_from else "",
+            "decedent_died": a.inherited_from.died.isoformat() if a.inherited_from else "",
             "valuation_date": SCENARIO_DATE.isoformat(),
             "known_as_of": SCENARIO_DATE.isoformat(),
         }

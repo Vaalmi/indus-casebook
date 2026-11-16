@@ -182,3 +182,33 @@ def test_a_real_ticker_inside_an_embedded_pdf_is_a_leak_and_mapping_omits_it(tmp
     mapped = map_to_aliases(line)
     assert mapped["tool_use_result"]["file"]["base64"] == OMITTED
     assert mapped["message"]["content"][0]["source"]["data"] == OMITTED
+
+
+def test_a_word_price_in_a_records_free_text_is_not_a_price(book_copy: Path, tmp_path: Path) -> None:
+    # Slice 5: a beneficiary named Achterberg-Price tripped the text test. CSV and JSON prices are
+    # fields, checked row by row; a page that shows prices is still read as text.
+    path = book_copy / "households" / "HH-4821" / "crm" / "crm.json"
+    path.write_text(
+        path.read_text().replace("Annual review with", "Asked about the price of the bond fund. Annual review with", 1)
+    )
+    build_site(book_copy, tmp_path / "site", README)
+
+
+def test_a_page_showing_prices_without_the_label_still_fails(tmp_path: Path) -> None:
+    (tmp_path / "page.html").write_text("<p>Price 101.25</p>")
+    assert synthetic_problems(tmp_path) == ["page.html: shows prices without the word 'synthetic'"]
+
+
+@pytest.mark.parametrize(
+    "prose",
+    [
+        "800 units released at $216.06 a share.",  # reviewers A and B, slice 5 round 1
+        "Bought at $40.10 per unit.",
+        "The fund was priced at $97.20 that day.",
+    ],
+)
+def test_a_price_written_in_a_records_prose_needs_the_label(book_copy: Path, tmp_path: Path, prose: str) -> None:
+    path = book_copy / "households" / "HH-4821" / "crm" / "crm.json"
+    path.write_text(path.read_text().replace("Annual review with", f"{prose} Annual review with", 1))
+    with pytest.raises(SiteBuildError, match=r"crm/crm\.json: shows prices without the word 'synthetic'"):
+        build_site(book_copy, tmp_path / "site", README)

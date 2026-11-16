@@ -13,6 +13,7 @@ from collections import Counter, defaultdict
 from datetime import date
 from decimal import Decimal
 from pathlib import Path
+from typing import Any
 
 from pypdf import PdfReader
 
@@ -24,12 +25,18 @@ from casebook.model.files import (
     BENEFICIARIES_COLUMNS,
     BENEFICIARIES_CSV,
     CASH_CSV,
+    CHARITY_ACKNOWLEDGMENT,
+    COMPARED_ACTIVITIES,
     CRM_JSON,
     DOCUMENTS_INDEX,
     PORTFOLIO_HOUSEHOLD,
     PORTFOLIO_POSITIONS,
     POSITIONS_CSV,
+    QCD,
+    RSU_RELEASE,
+    RSU_VEST,
     STATEMENT_TOTAL,
+    STEP_UP,
     TRANSACTIONS_CSV,
     read_cash,
     read_csv,
@@ -121,8 +128,15 @@ def check_sources_agree(root: Path) -> list[str]:
     for account_id in sorted(set(owners) - set(accounts)):
         differ(ACCOUNTS_CSV, PORTFOLIO_HOUSEHOLD, f"{account_id} is in the portfolio system only", account_id)
 
-    members = {str(m["person_id"]): (str(m["name"]), str(m["relationship"])) for m in household["household_membership"]}
-    contacts = {str(c["person_id"]): (str(c["name"]), str(c["relationship"])) for c in crm["contacts"]}
+    # A death is a fact both sources hold; it compares with the name and relationship.
+    members = {
+        str(m["person_id"]): (str(m["name"]), str(m["relationship"]), *([f"died {m['died']}"] if "died" in m else []))
+        for m in household["household_membership"]
+    }
+    contacts = {
+        str(c["person_id"]): (str(c["name"]), str(c["relationship"]), *([f"died {c['died']}"] if "died" in c else []))
+        for c in crm["contacts"]
+    }
     for person in sorted(set(members) | set(contacts)):
         if members.get(person) != contacts.get(person):
             shown = [", ".join(x[person]) if person in x else "no record" for x in (contacts, members)]
@@ -133,6 +147,9 @@ def check_sources_agree(root: Path) -> list[str]:
             known = members[person][0] if person in members else "no household member"
             what = f"{row['account_id']}'s {row['designation']} beneficiary {person} is {row['name']} and {known}"
             differ(BENEFICIARIES_CSV, PORTFOLIO_HOUSEHOLD, what, row["account_id"])
+
+    for found in _crm_against_custodian(root, crm, household):
+        differ(*found)
 
     for document in read_json(root, DOCUMENTS_INDEX)["documents"]:
         if document["kind"] != "quarterly_statement":
@@ -200,6 +217,63 @@ def check_sources_agree(root: Path) -> list[str]:
                 account,
             )
     return problems
+
+
+def _crm_against_custodian(
+    root: Path, crm: dict[str, Any], household: dict[str, Any]
+) -> list[tuple[str, str, str, str]]:
+    """The CRM activities that state what the custodian also records: a release's shares and
+    price, a charity's receipt, a death. Each difference as (first file, second file, what, record)."""
+    transactions = read_transactions(root)
+    died = {str(m["person_id"]): m.get("died") for m in household["household_membership"]}
+    found: list[tuple[str, str, str, str]] = []
+    for activity in crm.get("activities", []):
+        ref, kind = str(activity["activity_id"]), activity["kind"]
+        if kind not in COMPARED_ACTIVITIES:
+            continue
+        day = date.fromisoformat(str(activity["refers_to"]))
+        if kind == RSU_RELEASE:
+            units, price = parse_decimal(str(activity["units"])), parse_decimal(str(activity["price"]))
+            vests = [
+                t
+                for t in transactions
+                if t.type == RSU_VEST
+                and (t.account_id, t.security_id, t.trade_date, t.units)
+                == (activity["account_id"], activity["security_id"], day, units)
+            ]
+            if not vests or vests[0].price != price:
+                held = "no such vesting" if not vests else "no basis" if vests[0].price is None else f"{vests[0].price}"
+                what = f"{ref} releases {units} units on {day} at {price}; the custodian's vesting shows {held}"
+                found.append((CRM_JSON, TRANSACTIONS_CSV, what, ref))
+        elif kind == CHARITY_ACKNOWLEDGMENT:
+            amount = parse_decimal(str(activity["amount"]))
+            paid = [
+                t
+                for t in transactions
+                if (t.account_id, t.trade_date, t.amount) == (activity["account_id"], day, -amount)
+            ]
+            if not paid or paid[0].type != QCD:
+                coded = paid[0].type if paid else "no such payment"
+                what = (
+                    f"{ref}: a charity received {amount} from {activity['account_id']} on {day}; "
+                    f"the custodian shows {coded}"
+                )
+                found.append((CRM_JSON, TRANSACTIONS_CSV, what, ref))
+        else:
+            person = str(activity["person_id"])
+            if died.get(person) != day.isoformat():
+                what = f"{ref}: {person} died on {day}; the portfolio system shows {died.get(person) or 'no death'}"
+                found.append((CRM_JSON, PORTFOLIO_HOUSEHOLD, what, ref))
+            for owned in household["legal_ownership"]:
+                owners = [str(o) for o in owned["owner_ids"]]
+                stepped = any(
+                    t.type == STEP_UP and t.account_id == owned["account_id"] and t.trade_date == day
+                    for t in transactions
+                )
+                if person in owners and len(owners) > 1 and not stepped:
+                    what = f"{ref}: {person} died on {day}; the custodian booked no step-up on {owned['account_id']}"
+                    found.append((CRM_JSON, TRANSACTIONS_CSV, what, ref))
+    return found
 
 
 def _position(position: tuple[Decimal, ...] | None) -> str:

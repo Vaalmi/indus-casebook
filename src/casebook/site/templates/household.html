@@ -62,10 +62,12 @@
     <article class="source" data-source-set="crm">
       <h3>CRM</h3>
       <h4>Contacts</h4>
-      <ul>{% for c in household.crm.contacts %}<li>{{ c.name }} ({{ c.relationship }}), {{ c.email }}, {{ c.phone }}</li>{% endfor %}</ul>
+      <ul>{% for c in household.crm.contacts %}<li>{{ c.name }} ({{ c.relationship }}{% if c.get("died") %}, died {{ c.died }}{% endif %}), {{ c.email }}, {{ c.phone }}</li>{% endfor %}</ul>
       <h4>Agreements</h4>
       <ul>{% for a in household.crm.agreements %}<li>{{ a.agreement_id }}, {{ a.kind }}, signed {{ a.signed }} by {{ people(a.party_ids) }}: {{ a.summary }}</li>{% endfor %}</ul>
-      <h4>Notes</h4>
+      {% if household.crm.activities %}<h4>Activities</h4>
+      <ul class="notes">{% for a in household.crm.activities %}<li><span class="date">{{ a.date }}</span> {{ a.summary }}</li>{% endfor %}</ul>
+      {% endif %}<h4>Notes</h4>
       <ul class="notes">{% for n in household.crm.notes %}<li><span class="date">{{ n.date }}</span> {{ n.text }}</li>{% endfor %}</ul>
       {{ files("crm") }}
     </article>
@@ -96,11 +98,13 @@
     <article class="layer" data-truth-layer="events">
       <h3>1. Events</h3>
       <p>What happened, from the event log. The AI under test never sees it.</p>
-      <h4>Advisory fees debited</h4>
+      <h4>The events behind it</h4>
+      <div class="scroll">
       <table>
-        <thead><tr><th>Date</th><th>Account</th><th>Billing group</th><th>Quarter to</th><th class="num">Amount</th></tr></thead>
-        <tbody>{% for e in household.fee_events %}<tr><td>{{ e.date }}</td><td>{{ e.account_id }}</td><td>{{ e.billing_group_id }}</td><td>{{ e.period_end }}</td><td class="num">{{ e.amount|money }}</td></tr>{% endfor %}</tbody>
+        <thead><tr><th>Date</th><th>Event</th><th>Account</th><th>Security</th><th class="num">Units</th><th class="num">Amount</th></tr></thead>
+        <tbody>{% for e in household.key_events %}<tr><td>{{ e.date }}</td><td>{{ e.type|replace("_", " ") }}</td><td>{{ e.account_id }}{% if e.get("to_account_id") %} to {{ e.to_account_id }}{% endif %}</td><td>{{ e.get("security_id", "") }}</td><td class="num">{{ e.get("units", "") }}</td><td class="num">{% if e.get("amount") %}{{ e.amount|money }}{% endif %}</td></tr>{% endfor %}</tbody>
       </table>
+      </div>
       <details>
         <summary>All {{ household.events|length }} events</summary>
         <table>
@@ -113,16 +117,11 @@
 
     <article class="layer" data-truth-layer="observations">
       <h3>2. Source observations</h3>
-      <p>What each source records about billing.</p>
-      <h4>CRM: agreements</h4>
-      <ul>{% for a in household.crm.agreements %}<li>{{ a.agreement_id }} ({{ a.kind }}, signed {{ a.signed }}): {{ a.account_ids|join(", ") }}</li>{% endfor %}</ul>
-      <h4>Portfolio system: billing groups</h4>
-      <ul>{% for g in household.portfolio.billing_groups %}<li>{{ g.billing_group_id }}: {{ g.account_ids|join(", ") }}, last changed {{ g.last_changed }}</li>{% endfor %}</ul>
-      <h4>Custodian: fee debits</h4>
-      <table>
-        <thead><tr><th>Date</th><th>Account</th><th class="num">Amount</th></tr></thead>
-        <tbody>{% for t in household.fees %}<tr><td>{{ t.trade_date }}</td><td>{{ t.account_id }}</td><td class="num">{{ t.amount|money }}</td></tr>{% endfor %}</tbody>
-      </table>
+      <p>What each source records about it, in the files the AI under test reads.</p>
+      {% for source, records in household.observations %}
+      <h4>{{ source }}</h4>
+      <ul class="records">{% for r in records %}<li>{{ r }}</li>{% endfor %}</ul>
+      {% endfor %}
     </article>
 
     <article class="layer" data-truth-layer="conclusion">

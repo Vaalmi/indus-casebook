@@ -1,0 +1,200 @@
+# The task matrix: which public task sits on which household (docs/PLAN.md, New names).
+# DRAFT for the owner's approval (slice 5). Each workflow's six tasks are two trap-and-twin task
+# pairs and two book-level tasks (docs/PLAN.md, Choices). The eight private tasks, two per
+# workflow, are in the private repo's matrix, on background pairs.
+#
+# role: "trap" or "twin" for a task on a featured pair (`pair_task` is its partner on the other
+# household of the pair), "book" for a task over the whole book. Tasks are written in slices 9
+# and 10; only T-REC-01 exists so far.
+
+# Reconciliation and as-of: what the records say against each other, as of a date.
+
+[[tasks]]
+task_id = "T-REC-01"
+workflow = "reconciliation"
+role = "trap"
+household_id = "HH-4821"
+pair_task = "T-REC-02"
+asks = "Were the fees debited on 2 April 2026 right under the household's agreements and schedule?"
+
+[[tasks]]
+task_id = "T-REC-02"
+workflow = "reconciliation"
+role = "twin"
+household_id = "HH-7350"
+pair_task = "T-REC-01"
+asks = "The same question on the near-miss twin, where billing the daughter's account apart is correct."
+
+[[tasks]]
+task_id = "T-REC-03"
+workflow = "reconciliation"
+role = "trap"
+household_id = "HH-6047"
+pair_task = "T-REC-04"
+asks = "Do the custodian's 2025 IRA distributions agree with what the CRM records, and was the RMD met?"
+
+[[tasks]]
+task_id = "T-REC-04"
+workflow = "reconciliation"
+role = "twin"
+household_id = "HH-6590"
+pair_task = "T-REC-03"
+asks = "The same question on the clean twin."
+
+[[tasks]]
+task_id = "T-REC-05"
+workflow = "reconciliation"
+role = "book"
+household_id = "book"
+asks = "Which households are billed in groups that a signed householding agreement contradicts?"
+
+[[tasks]]
+task_id = "T-REC-06"
+workflow = "reconciliation"
+role = "book"
+household_id = "book"
+asks = "Which households' custodian positions and cash disagree with the portfolio system on 15 April 2026?"
+
+# Meeting prep and follow-up: what to raise with the client, and what to do after.
+
+[[tasks]]
+task_id = "T-MTG-01"
+workflow = "meeting"
+role = "trap"
+household_id = "HH-1204"
+pair_task = "T-MTG-02"
+asks = "Prepare the 2025 review: what will the backdoor Roth conversion cost in tax, and why?"
+
+[[tasks]]
+task_id = "T-MTG-02"
+workflow = "meeting"
+role = "twin"
+household_id = "HH-1587"
+pair_task = "T-MTG-01"
+asks = "The same preparation on the near-miss twin, whose pre-tax money is in a 401(k)."
+
+[[tasks]]
+task_id = "T-MTG-03"
+workflow = "meeting"
+role = "trap"
+household_id = "HH-2316"
+pair_task = "T-MTG-04"
+asks = "Prepare the year-end planning call: net investment income tax, the SALT limit and asset location."
+
+[[tasks]]
+task_id = "T-MTG-04"
+workflow = "meeting"
+role = "twin"
+household_id = "HH-2749"
+pair_task = "T-MTG-03"
+asks = "The same call on the near-miss twin, which stays under the threshold."
+
+[[tasks]]
+task_id = "T-MTG-05"
+workflow = "meeting"
+role = "book"
+household_id = "book"
+asks = "Which households have a meeting follow-up recorded in the CRM that has not happened by 15 April 2026?"
+
+[[tasks]]
+task_id = "T-MTG-06"
+workflow = "meeting"
+role = "book"
+household_id = "book"
+asks = "List the households to call before 15 April 2026 about a 2025 tax or distribution surprise, and why."
+
+# Tax-lot and RMD review (held: no verdict is published before a CPA or EA review).
+
+[[tasks]]
+task_id = "T-TAX-01"
+workflow = "tax_lot_rmd"
+role = "trap"
+household_id = "HH-5271"
+pair_task = "T-TAX-02"
+asks = "Was every 2025 required minimum distribution taken, from the right accounts, by 1 April 2026?"
+
+[[tasks]]
+task_id = "T-TAX-02"
+workflow = "tax_lot_rmd"
+role = "twin"
+household_id = "HH-5814"
+pair_task = "T-TAX-01"
+asks = "The same review on the near-miss twin, which aggregated its IRAs."
+
+[[tasks]]
+task_id = "T-TAX-03"
+workflow = "tax_lot_rmd"
+role = "trap"
+household_id = "HH-9234"
+pair_task = "T-TAX-04"
+asks = "Are the household's 2025 harvested losses deductible as reported?"
+
+[[tasks]]
+task_id = "T-TAX-04"
+workflow = "tax_lot_rmd"
+role = "twin"
+household_id = "HH-9571"
+pair_task = "T-TAX-03"
+asks = "The same review on the near-miss twin, whose replacement came on the 31st day."
+
+[[tasks]]
+task_id = "T-TAX-05"
+workflow = "tax_lot_rmd"
+role = "book"
+household_id = "book"
+asks = "Which IRA owners in the book had a 2025 required minimum distribution that was not met?"
+
+[[tasks]]
+task_id = "T-TAX-06"
+workflow = "tax_lot_rmd"
+role = "book"
+household_id = "book"
+asks = "Which 2025 loss sales in the book have a replacement purchase within 30 days in any household account?"
+
+# Compliance review: issues for reviewer attention, never a legal conclusion.
+
+[[tasks]]
+task_id = "T-CMP-01"
+workflow = "compliance"
+role = "trap"
+household_id = "HH-3058"
+pair_task = "T-CMP-02"
+asks = "Review the account against its IPS: concentration, and whether the cost basis on file can be relied on."
+
+[[tasks]]
+task_id = "T-CMP-02"
+workflow = "compliance"
+role = "twin"
+household_id = "HH-3462"
+pair_task = "T-CMP-01"
+asks = "The same review on the clean twin."
+
+[[tasks]]
+task_id = "T-CMP-03"
+workflow = "compliance"
+role = "trap"
+household_id = "HH-4105"
+pair_task = "T-CMP-04"
+asks = "Is the 2025 Roth conversion documented well enough to report its taxable amount?"
+
+[[tasks]]
+task_id = "T-CMP-04"
+workflow = "compliance"
+role = "twin"
+household_id = "HH-4633"
+pair_task = "T-CMP-03"
+asks = "The same review on the twin, whose basis claim has no Form 8606 behind it (unresolved)."
+
+[[tasks]]
+task_id = "T-CMP-05"
+workflow = "compliance"
+role = "book"
+household_id = "book"
+asks = "Which households exceed an IPS concentration limit or drift band with no documented exception?"
+
+[[tasks]]
+task_id = "T-CMP-06"
+workflow = "compliance"
+role = "book"
+household_id = "book"
+asks = "Which households' records hold an identifier, beneficiary or ownership fact that two sources state differently?"

@@ -8,12 +8,14 @@ from pathlib import Path
 
 import pytest
 
-from casebook.generate.script import load_scripts
+from casebook.generate.script import HouseholdScript, load_scripts
 from casebook.generate.simulate import simulate
 from casebook.model.household import Agreement, BillingGroup
-from casebook.plant import PlantError, plant
+from casebook.plant import PlantContext, PlantError, plant
+from casebook.replay import replay
 from casebook.securities.market import build_market
 from casebook.securities.master import load_master
+from casebook.sources.context import SNAPSHOT_DAYS
 
 from .conftest import SCRIPTS, SEED
 
@@ -26,6 +28,14 @@ def by_hand_fee(value: Decimal) -> Decimal:
     annual += max(min(value, D(2_000_000)) - D(1_000_000), D(0)) * D("0.008")
     annual += max(value - D(2_000_000), D(0)) * D("0.006")
     return (annual / 4).quantize(D("0.01"), rounding=ROUND_HALF_UP)
+
+
+def context(script: HouseholdScript) -> PlantContext:
+    market = build_market(load_master(), SEED)
+    simulation = simulate(script, market)
+    return PlantContext(
+        script, simulation.events, replay(simulation.events, SNAPSHOT_DAYS), simulation.quarters, market
+    )
 
 
 def rows(path: Path) -> list[dict[str, str]]:
@@ -56,20 +66,18 @@ def test_the_registry_figures_follow_from_the_source_files(book: Path) -> None:
 
 
 def test_a_planted_item_that_does_not_hold_fails_the_build() -> None:
-    trap = load_scripts(SCRIPTS)[0]
-    market = build_market(load_master(), SEED)
+    trap = load_scripts(SCRIPTS / "archetype-10")[0]
     one_group = (BillingGroup("BG-4821-1", "FS-STD", ACCOUNTS),)
     joined = dataclasses.replace(trap, household=dataclasses.replace(trap.household, billing_groups=one_group))
     with pytest.raises(PlantError, match="already bill as one group"):
-        plant(joined, simulate(joined, market).quarters)
+        plant(context(joined))
 
 
 def test_a_near_miss_with_a_householding_agreement_fails_the_build() -> None:
-    twin = load_scripts(SCRIPTS)[1]
-    market = build_market(load_master(), SEED)
+    twin = load_scripts(SCRIPTS / "archetype-10")[1]
     letter = Agreement("AGR-7350-9", "householding", (), (), twin.household.configured, "joins all accounts")
     changed = dataclasses.replace(
         twin, household=dataclasses.replace(twin.household, agreements=(*twin.household.agreements, letter))
     )
     with pytest.raises(PlantError, match="near miss has no householding agreement"):
-        plant(changed, simulate(changed, market).quarters)
+        plant(context(changed))

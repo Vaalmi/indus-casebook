@@ -1,0 +1,193 @@
+# Archetype 4, pair 1, twin: unresolved. The same conversion as HH-4105, but the 2024 return carries
+# no IRA basis, and Beatriz believes she made nondeductible contributions years ago with no Form
+# 8606 on file. How much of the conversion is taxable cannot be settled until the old forms or
+# returns are found.
+household_id = "HH-4633"
+name = "Halloran-Mendes household"
+archetype = 4
+pair = 1
+role = "twin"
+configured = 2007-01-15
+
+[[members]]
+person_id = "P-4633-1"
+name = "Beatriz Halloran-Mendes"
+born = 1958-05-21
+relationship = "primary"
+email = "beatriz.halloranmendes@mail.example"
+phone = "555-0121"
+tax_id = "000-46-3301"
+
+[[accounts]]
+account_id = "SYN-46330001"
+account_type = "individual_taxable"
+registration = "Individual, Beatriz Halloran-Mendes"
+opened = 2007-01-15
+owners = ["P-4633-1"]
+cash = "42000.00"
+holdings = [
+  { lot_id = "L-46330001-01", security_id = "SEC-0001", value = "265000", acquired = 2007-02-05, basis_pct = "57" },
+  { lot_id = "L-46330001-02", security_id = "SEC-0018", value = "135000", acquired = 2014-10-06, basis_pct = "99" },
+  { lot_id = "L-46330001-03", security_id = "SEC-0010", value = "75000", acquired = 2012-11-26, basis_pct = "70" },
+]
+
+[[accounts]]
+account_id = "SYN-46330002"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Beatriz Halloran-Mendes"
+opened = 1996-08-19
+owners = ["P-4633-1"]
+cash = "5500.00"
+holdings = [
+  { lot_id = "L-46330002-01", security_id = "SEC-0013", value = "115000", acquired = 2010-09-13, basis_pct = "62" },
+  { lot_id = "L-46330002-02", security_id = "SEC-0001", value = "185000", acquired = 2009-04-06, basis_pct = "66" },
+  { lot_id = "L-46330002-03", security_id = "SEC-0018", value = "100000", acquired = 2017-03-20, basis_pct = "100" },
+]
+
+[[accounts]]
+account_id = "SYN-46330003"
+account_type = "roth_ira"
+registration = "Roth IRA, Beatriz Halloran-Mendes"
+opened = 2020-01-13
+owners = ["P-4633-1"]
+cash = "1200.00"
+holdings = [
+  { lot_id = "L-46330003-01", security_id = "SEC-0001", value = "32000", acquired = 2020-01-21, basis_pct = "88" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-4633-1"
+filing_status = "single"
+person_ids = ["P-4633-1"]
+
+[[billing_groups]]
+billing_group_id = "BG-4633-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-46330001", "SYN-46330002", "SYN-46330003"]
+
+[[disclosures]]
+person_id = "P-4633-1"
+account_ids = ["SYN-46330001", "SYN-46330002", "SYN-46330003"]
+
+[[agreements]]
+agreement_id = "AGR-4633-1"
+kind = "advisory"
+party_ids = ["P-4633-1"]
+account_ids = ["SYN-46330001", "SYN-46330002", "SYN-46330003"]
+signed = 2020-01-13
+summary = "Advisory agreement for Beatriz's individual account, traditional IRA and new Roth IRA on the standard fee schedule."
+
+# Beneficiary designations the custodian holds (social security numbers here and above are in
+# area 000, which is never issued). Her nieces are not household members.
+[[beneficiaries]]
+account_id = "SYN-46330002"
+designation = "primary"
+name = "Lucia Mendes"
+relationship = "niece"
+share = "50"
+designated = 2015-04-27
+
+[[beneficiaries]]
+account_id = "SYN-46330002"
+designation = "primary"
+name = "Clara Mendes-Ostrowski"
+relationship = "niece"
+share = "50"
+designated = 2015-04-27
+
+[[beneficiaries]]
+account_id = "SYN-46330003"
+designation = "primary"
+name = "Lucia Mendes"
+relationship = "niece"
+share = "50"
+designated = 2020-01-13
+
+[[beneficiaries]]
+account_id = "SYN-46330003"
+designation = "primary"
+name = "Clara Mendes-Ostrowski"
+relationship = "niece"
+share = "50"
+designated = 2020-01-13
+
+[[crm_activities]]
+activity_id = "CA-4633-01"
+date = 2025-04-23
+kind = "document_received"
+summary = "Beatriz's 2024 Form 1040 received. It reports no IRA basis and no Form 8606 is attached."
+
+[[crm_activities]]
+activity_id = "CA-4633-02"
+date = 2025-10-21
+kind = "meeting"
+summary = "Conversion planning with Beatriz: before RMDs begin, convert $60,000.00 from her traditional IRA SYN-46330002 to her Roth IRA SYN-46330003 this year, selling part of the large cap fund in the IRA to raise the cash. Beatriz says she made nondeductible contributions to the IRA in the late 1990s, when she could not deduct them, but no Form 8606 is on file with us or with her current preparer. She will look for her returns from those years."
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.72", band = "0.05" },
+  { asset_class = "Fixed income", target = "0.25", band = "0.05" },
+]
+restrictions = []
+concentration_limit = "0.60"
+asset_classes = { "SEC-0001" = "US equity", "SEC-0010" = "US equity", "SEC-0013" = "US equity", "SEC-0018" = "Fixed income" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-4633-1", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [{ person_id = "P-4633-1", basis = "0.00" }]
+
+[[activity]]
+type = "withdrawal"
+date = 2025-03-17
+account_id = "SYN-46330001"
+amount = "11000.00"
+
+[[activity]]
+type = "withdrawal"
+date = 2025-09-16
+account_id = "SYN-46330001"
+amount = "11000.00"
+
+[[activity]]
+type = "sell"
+date = 2025-11-04
+account_id = "SYN-46330002"
+security_id = "SEC-0013"
+units = "225"
+
+[[activity]]
+type = "roth_conversion"
+date = 2025-11-07
+account_id = "SYN-46330002"
+amount = "60000.00"
+to_account_id = "SYN-46330003"
+
+[[activity]]
+type = "buy"
+date = 2025-11-11
+account_id = "SYN-46330003"
+security_id = "SEC-0001"
+units = "210"
+
+[[activity]]
+type = "withdrawal"
+date = 2026-03-17
+account_id = "SYN-46330001"
+amount = "11000.00"
+
+[twin]
+kind = "unresolved"
+explanation = "Unresolved. Beatriz converted $60,000 from her traditional IRA to her Roth IRA on 7 November 2025. Her 2024 return carries no IRA basis, so on the records the whole conversion is taxable. But she told her advisor she made nondeductible contributions in the late 1990s, and no Form 8606 is on file to prove or rule out that basis. If she has basis, part of the conversion is nontaxable under the pro-rata rule of IRC § 408(d)(2); if not, all of it is taxable. The taxable part cannot be settled until her old Forms 8606 or returns are found; the right answer is to say so and ask for them, not to assume either way."

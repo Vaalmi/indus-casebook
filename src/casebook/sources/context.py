@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 
+from casebook.generate.notes import Notes
 from casebook.generate.script import HouseholdScript
 from casebook.model.dates import QUARTER_ENDS, SCENARIO_DATE
 from casebook.model.events import Event
@@ -20,6 +21,8 @@ class EmitContext:
     market: Market
     securities: dict[str, Security]
     real_tickers: bool = False
+    # The owner's hand-written notes, for a featured household that has them.
+    notes: Notes | None = None
 
     def label(self, security_id: str) -> str:
         """The name a security appears under: its alias, or its real ticker in real-ticker mode."""

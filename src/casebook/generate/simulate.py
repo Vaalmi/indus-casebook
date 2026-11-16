@@ -8,17 +8,23 @@ from datetime import date
 from decimal import ROUND_FLOOR, Decimal
 
 from casebook.generate.billing import QuarterBilling, bill_quarter
-from casebook.generate.script import HouseholdScript
+from casebook.generate.script import Activity, HouseholdScript
 from casebook.model.dates import OPENING_DATE, PRIOR_YEAR_END, QUARTER_ENDS, SCENARIO_DATE, add_weekdays
 from casebook.model.events import (
     Buy,
+    CharitableDistribution,
     Contribution,
+    Death,
     Dividend,
     Event,
     Fee,
     Opening,
     OpeningLot,
+    RequiredDistribution,
+    RothConversion,
     Sell,
+    Transfer,
+    Vest,
     Withdrawal,
 )
 from casebook.model.money import cents
@@ -52,6 +58,50 @@ class _Ids:
     def __call__(self) -> str:
         self._next += 1
         return f"E-{self._prefix}-{self._next:04d}"
+
+
+def _event(act: Activity, event_id: str, market: Market, held: Snapshot) -> Event:
+    """The event a scripted activity makes, priced from the market on its day. The script's
+    validation guarantees each kind its fields."""
+    day, account = act.day, act.account_id
+    match act.kind:
+        case "buy" | "sell":
+            assert act.security_id is not None and act.units is not None
+            price = market.price(act.security_id, day)
+            gross = cents(act.units * price)
+            settle = add_weekdays(day, SETTLEMENT_DAYS)
+            if act.kind == "buy":
+                return Buy(event_id, day, settle, account, act.security_id, act.units, price, -gross)
+            return Sell(event_id, day, settle, account, act.security_id, act.units, price, gross)
+        case "contribution":
+            assert act.amount is not None
+            return Contribution(event_id, day, account, act.amount)
+        case "withdrawal":
+            assert act.amount is not None
+            return Withdrawal(event_id, day, account, -act.amount)
+        case "rmd":
+            assert act.amount is not None and act.tax_year is not None and act.withheld is not None
+            return RequiredDistribution(event_id, day, account, -act.amount, act.tax_year, act.withheld)
+        case "qcd":
+            assert act.amount is not None and act.charity is not None
+            return CharitableDistribution(event_id, day, account, -act.amount, act.charity)
+        case "roth_conversion":
+            assert act.amount is not None and act.to_account_id is not None
+            return RothConversion(event_id, day, account, act.to_account_id, act.amount)
+        case "transfer":
+            assert act.to_account_id is not None
+            if act.security_id is None:
+                assert act.amount is not None
+                return Transfer(event_id, day, account, act.to_account_id, None, ZERO, act.amount)
+            assert act.units is not None
+            return Transfer(event_id, day, account, act.to_account_id, act.security_id, act.units, ZERO)
+        case "rsu_vest":
+            assert act.security_id is not None and act.units is not None
+            return Vest(event_id, day, account, act.security_id, act.units, market.price(act.security_id, day))
+        case _:
+            assert act.kind == "death" and act.person_id is not None and act.share is not None
+            prices = tuple((sid, market.price(sid, day)) for sid in sorted(held.holdings(account)))
+            return Death(event_id, day, account, act.person_id, act.share, prices)
 
 
 def simulate(script: HouseholdScript, market: Market) -> Simulation:
@@ -94,20 +144,7 @@ def simulate(script: HouseholdScript, market: Market) -> Simulation:
                     amount = cents(units * rate.per_unit)
                     record(Dividend(next_id(), day, account_id, rate.security_id, units, rate.per_unit, amount))
         for act in (a for a in script.activity if a.day == day):
-            settle = add_weekdays(day, SETTLEMENT_DAYS)
-            if act.kind in ("buy", "sell"):
-                assert act.security_id is not None and act.units is not None
-                price = market.price(act.security_id, day)
-                gross = cents(act.units * price)
-                cls = Buy if act.kind == "buy" else Sell
-                amount = -gross if act.kind == "buy" else gross
-                record(cls(next_id(), day, settle, act.account_id, act.security_id, act.units, price, amount))
-            else:
-                assert act.amount is not None
-                if act.kind == "contribution":
-                    record(Contribution(next_id(), day, act.account_id, act.amount))
-                else:
-                    record(Withdrawal(next_id(), day, act.account_id, -act.amount))
+            record(_event(act, next_id(), market, ledger.snapshot(day)))
         if day in fee_dates:
             quarter_end = fee_dates[day]
             billing = bill_quarter(hh, quarter_end, day, quarter_values[quarter_end])

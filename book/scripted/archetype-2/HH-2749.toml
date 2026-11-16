@@ -1,0 +1,207 @@
+# Archetype 2, pair 1, twin: a near miss. The same shape as HH-2316 (wages under the net
+# investment income tax threshold, a bond fund in the joint account, a December sale of a
+# long-held fund), but the sale is small, so modified AGI stays under the threshold.
+household_id = "HH-2749"
+name = "Farouk-Delaney household"
+archetype = 2
+pair = 1
+role = "twin"
+configured = 2010-09-13
+
+[[members]]
+person_id = "P-2749-1"
+name = "Samira Farouk"
+born = 1972-08-09
+relationship = "primary"
+email = "samira.farouk@mail.example"
+phone = "555-0113"
+tax_id = "000-27-4901"
+
+[[members]]
+person_id = "P-2749-2"
+name = "Patrick Delaney"
+born = 1970-01-24
+relationship = "spouse"
+email = "patrick.delaney@mail.example"
+phone = "555-0114"
+tax_id = "000-27-4902"
+
+[[income]]
+person_id = "P-2749-1"
+kind = "wages"
+payer = "Penhallow Structural Engineers"
+amount = "131000.00"
+year = 2025
+
+[[income]]
+person_id = "P-2749-2"
+kind = "wages"
+payer = "Ashgrove County Library District"
+amount = "83500.00"
+year = 2025
+
+[[accounts]]
+account_id = "SYN-27490001"
+account_type = "joint_taxable"
+registration = "Joint tenants with right of survivorship"
+opened = 2010-09-13
+owners = ["P-2749-1", "P-2749-2"]
+cash = "32000.00"
+holdings = [
+  { lot_id = "L-27490001-01", security_id = "SEC-0018", value = "250000", acquired = 2013-02-11, basis_pct = "103" },
+  { lot_id = "L-27490001-02", security_id = "SEC-0019", value = "230000", acquired = 2010-10-04, basis_pct = "35" },
+  { lot_id = "L-27490001-03", security_id = "SEC-0010", value = "115000", acquired = 2015-03-23, basis_pct = "72" },
+  { lot_id = "L-27490001-04", security_id = "SEC-0002", value = "85000", acquired = 2017-01-17, basis_pct = "86" },
+]
+
+[[accounts]]
+account_id = "SYN-27490002"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Samira Farouk"
+opened = 2002-06-03
+owners = ["P-2749-1"]
+cash = "3500.00"
+holdings = [
+  { lot_id = "L-27490002-01", security_id = "SEC-0013", value = "200000", acquired = 2011-04-11, basis_pct = "100" },
+  { lot_id = "L-27490002-02", security_id = "SEC-0017", value = "85000", acquired = 2014-02-03, basis_pct = "100" },
+]
+
+[[accounts]]
+account_id = "SYN-27490003"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Patrick Delaney"
+opened = 2004-11-15
+owners = ["P-2749-2"]
+cash = "2500.00"
+holdings = [
+  { lot_id = "L-27490003-01", security_id = "SEC-0001", value = "140000", acquired = 2012-07-09, basis_pct = "100" },
+  { lot_id = "L-27490003-02", security_id = "SEC-0021", value = "55000", acquired = 2016-03-28, basis_pct = "100" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-2749-1"
+filing_status = "married_filing_jointly"
+person_ids = ["P-2749-1", "P-2749-2"]
+
+[[billing_groups]]
+billing_group_id = "BG-2749-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-27490001", "SYN-27490002", "SYN-27490003"]
+
+[[disclosures]]
+person_id = "P-2749-1"
+account_ids = ["SYN-27490001", "SYN-27490002", "SYN-27490003"]
+
+[[disclosures]]
+person_id = "P-2749-2"
+account_ids = ["SYN-27490001", "SYN-27490002", "SYN-27490003"]
+
+[[agreements]]
+agreement_id = "AGR-2749-1"
+kind = "advisory"
+party_ids = ["P-2749-1", "P-2749-2"]
+account_ids = ["SYN-27490001", "SYN-27490002", "SYN-27490003"]
+signed = 2010-09-13
+summary = "Advisory agreement for the joint account and both traditional IRAs on the standard fee schedule."
+
+# Beneficiary designations the custodian holds (social security numbers here and above are in
+# area 000, which is never issued). Their sons are not household members.
+[[beneficiaries]]
+account_id = "SYN-27490002"
+designation = "primary"
+name = "Patrick Delaney"
+relationship = "spouse"
+share = "100"
+person_id = "P-2749-2"
+designated = 2008-05-05
+
+[[beneficiaries]]
+account_id = "SYN-27490002"
+designation = "contingent"
+name = "Omar Delaney"
+relationship = "son"
+share = "50"
+designated = 2008-05-05
+
+[[beneficiaries]]
+account_id = "SYN-27490002"
+designation = "contingent"
+name = "Cian Delaney"
+relationship = "son"
+share = "50"
+designated = 2011-09-19
+
+[[beneficiaries]]
+account_id = "SYN-27490003"
+designation = "primary"
+name = "Samira Farouk"
+relationship = "spouse"
+share = "100"
+person_id = "P-2749-1"
+designated = 2008-05-05
+
+[[crm_activities]]
+activity_id = "CA-2749-01"
+date = 2025-12-02
+kind = "call"
+summary = "Patrick called to ask for cash from the joint account for a new car. Agreed to sell a small part of the broad market fund they have held since 2010."
+
+[[crm_activities]]
+activity_id = "CA-2749-02"
+date = 2026-02-11
+kind = "document_received"
+summary = "2025 Forms W-2 received: Samira, Penhallow Structural Engineers, wages $131,000.00; Patrick, Ashgrove County Library District, wages $83,500.00. No other income outside the accounts."
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.65", band = "0.05" },
+  { asset_class = "International equity", target = "0.11", band = "0.04" },
+  { asset_class = "Fixed income", target = "0.20", band = "0.05" },
+]
+restrictions = []
+concentration_limit = "0.25"
+asset_classes = { "SEC-0001" = "US equity", "SEC-0002" = "International equity", "SEC-0010" = "US equity", "SEC-0013" = "US equity", "SEC-0017" = "US equity", "SEC-0018" = "Fixed income", "SEC-0019" = "US equity", "SEC-0021" = "International equity" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-2749-1", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [
+  { person_id = "P-2749-1", basis = "0.00" },
+  { person_id = "P-2749-2", basis = "0.00" },
+]
+
+[[activity]]
+type = "buy"
+date = 2025-03-12
+account_id = "SYN-27490002"
+security_id = "SEC-0017"
+units = "7"
+
+[[activity]]
+type = "sell"
+date = 2025-12-09
+account_id = "SYN-27490001"
+security_id = "SEC-0019"
+units = "60"
+
+[[activity]]
+type = "withdrawal"
+date = 2025-12-16
+account_id = "SYN-27490001"
+amount = "38000.00"
+
+[twin]
+kind = "near_miss"
+explanation = "A near miss. Samira and Patrick's wages are a little under the net investment income tax threshold for joint filers, their joint account pays dividends, and in December 2025 they sold part of a fund held since 2010 at a gain. That looks like the threshold trap, but the sale was small: wages plus dividends and the gain in the joint account, their only income, leave modified AGI under the threshold, so no net investment income tax is owed for 2025. Their IRAs' dividends are not income. The SALT limit applies in full. The bond fund in the taxable account while the IRAs hold equity funds is still worth raising as asset location."

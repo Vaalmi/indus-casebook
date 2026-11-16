@@ -13,10 +13,11 @@ import casebook.build
 import casebook.sources.documents
 from casebook.build import BuildError, build_book
 from casebook.model.files import json_text
+from casebook.plant import PlantContext, Planting
 from casebook.sources.context import EmitContext
 from casebook.sources.transactions import TransactionRow
 
-from .conftest import SCRIPTS, SEED
+from .conftest import FEATURED, SCRIPTS, SEED
 
 REQUIRED = ("item_id", "type", "sources", "justified_conclusion")
 
@@ -28,13 +29,15 @@ def test_every_planted_item_has_a_registry_entry_with_id_type_sources_and_conclu
         if "planted" in tomllib.loads(p.read_text())
     }
     entries = {e["item_id"]: e for e in json.loads((book / "sealed" / "registry.json").read_text())["entries"]}
-    assert planted == {"PI-0001"}
+    # One per public trap: archetypes 1 to 6, 9 and 10 (7 and 8 are held out).
+    assert planted == {"PI-0001", "PI-0002", "PI-0003", "PI-0004", "PI-0005", "PI-0006", "PI-0007", "PI-0010"}
     assert planted <= set(entries)
     for item_id in planted:
         entry = entries[item_id]
         assert all(entry[field] for field in REQUIRED), entry
-        # The sources the difference lies between: the CRM's signed letter and the portfolio system's groups.
-        assert {"crm/crm.json", "portfolio/household.json"} <= set(entry["sources"])
+        assert entry["household_id"] in FEATURED and entry["kind"] in ("situation", "source_disagreement")
+    # The fee breakpoint's difference lies between the CRM's signed letter and the portfolio system's groups.
+    assert {"crm/crm.json", "portfolio/household.json"} <= set(entries["PI-0001"]["sources"])
 
 
 def test_a_build_with_an_unregistered_difference_between_two_sources_fails(
@@ -107,3 +110,35 @@ def test_a_build_whose_check_breaks_leaves_no_book_behind(tmp_path: Path, monkey
     with pytest.raises(RuntimeError, match="the check broke"):
         build_book(SEED, tmp_path / "book", SCRIPTS)
     assert not (tmp_path / "book").exists()
+
+
+@pytest.mark.parametrize(
+    ("household", "difference"),
+    [
+        # Reviewer A, slice 5 round 1: removing the RSU item's entry let the custodian's missing basis through.
+        (
+            "HH-3058",
+            r"crm/crm\.json and custodian/transactions\.csv disagree .*"
+            r"CA-3058-01 releases 800 units on 2025-02-20 at 216\.06; the custodian's vesting shows no basis",
+        ),
+        (
+            "HH-6047",
+            r"CA-6047-02: a charity received 12000\.00 from SYN-60470002 on 2025-09-15; "
+            r"the custodian shows DISTRIBUTION",
+        ),
+    ],
+)
+def test_a_crm_record_the_custodian_contradicts_fails_the_build_without_its_entry(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, household: str, difference: str
+) -> None:
+    real_plant = casebook.build.plant
+
+    def without_entry(context: PlantContext) -> Planting:
+        planting = real_plant(context)
+        if context.script.household.household_id == household:
+            return Planting(entries=(), custodian_events=planting.custodian_events)
+        return planting
+
+    monkeypatch.setattr(casebook.build, "plant", without_entry)
+    with pytest.raises(BuildError, match=difference):
+        build_book(SEED, tmp_path / "book", SCRIPTS)

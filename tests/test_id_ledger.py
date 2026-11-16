@@ -10,15 +10,27 @@ from casebook.build import ID_LEDGER, BuildError, build_book
 from casebook.model.ledger import LedgerError, LedgerHousehold, LedgerTask, load_ledger, parse_ledger
 from casebook.tasks.task import load_task
 
-from .conftest import ROOT, SCRIPTS, SEED
+from .conftest import FEATURED, ROOT, SCRIPTS, SEED
 
 
 def test_the_ledger_is_committed_with_the_published_ids() -> None:
     ledger = load_ledger(ROOT / "book" / "id_ledger.json")
     assert ID_LEDGER == ROOT / "book" / "id_ledger.json"
+    # The 16 public featured households, published with slice 5; archetypes 7 and 8 are held out.
+    pairs = {
+        1: ("HH-1204", "HH-1587"),
+        2: ("HH-2316", "HH-2749"),
+        3: ("HH-3058", "HH-3462"),
+        4: ("HH-4105", "HH-4633"),
+        5: ("HH-5271", "HH-5814"),
+        6: ("HH-6047", "HH-6590"),
+        9: ("HH-9234", "HH-9571"),
+        10: ("HH-4821", "HH-7350"),
+    }
     assert ledger.households == {
-        "HH-4821": LedgerHousehold(archetype=10, pair=1, role="trap"),
-        "HH-7350": LedgerHousehold(archetype=10, pair=1, role="twin"),
+        hh: LedgerHousehold(archetype=a, pair=1, role=role)
+        for a, both in pairs.items()
+        for hh, role in zip(both, ("trap", "twin"), strict=True)
     }
     assert ledger.tasks == {"T-REC-01": LedgerTask("HH-4821", "reconciliation")}
 
@@ -75,7 +87,7 @@ def test_a_household_not_yet_published_builds(tmp_path: Path) -> None:
     del ledger["households"]["HH-7350"]
     path = tmp_path / "id_ledger.json"
     path.write_text(json.dumps(ledger))
-    assert build_book(SEED, tmp_path / "book", SCRIPTS, ledger=path).households == ("HH-4821", "HH-7350")
+    assert build_book(SEED, tmp_path / "book", SCRIPTS, ledger=path).households == FEATURED
 
 
 def test_a_build_without_the_ledger_fails(tmp_path: Path) -> None:

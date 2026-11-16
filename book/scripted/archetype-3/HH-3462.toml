@@ -1,0 +1,247 @@
+# Archetype 3, pair 1, twin: clean. Lucia is a vice president at Ellisar Search Holdings
+# with the same pattern of quarterly RSU releases and a December sale. The custodian
+# booked each release at its value on the day, so its lots carry the right basis, and
+# she holds little employer stock beside the household's funds, within the IPS limit.
+household_id = "HH-3462"
+name = "Marchetti-Osei household"
+archetype = 3
+pair = 1
+role = "twin"
+configured = 2015-09-21
+
+[[members]]
+person_id = "P-3462-1"
+name = "Lucia Marchetti"
+born = 1980-11-05
+relationship = "primary"
+email = "lucia.marchetti@mail.example"
+phone = "555-0157"
+tax_id = "000-34-6201"
+
+[[members]]
+person_id = "P-3462-2"
+name = "Kofi Osei"
+born = 1979-04-22
+relationship = "spouse"
+email = "kofi.osei@mail.example"
+phone = "555-0158"
+tax_id = "000-34-6202"
+
+[[accounts]]
+account_id = "SYN-34620001"
+account_type = "joint_taxable"
+registration = "Joint tenants with right of survivorship"
+opened = 2015-09-21
+owners = ["P-3462-1", "P-3462-2"]
+cash = "35000.00"
+holdings = [
+  { lot_id = "L-34620001-01", security_id = "SEC-0013", value = "610000", acquired = 2016-02-01, basis_pct = "61" },
+  { lot_id = "L-34620001-02", security_id = "SEC-0001", value = "380000", acquired = 2017-06-12, basis_pct = "70" },
+  { lot_id = "L-34620001-03", security_id = "SEC-0003", value = "330000", acquired = 2019-03-04, basis_pct = "101" },
+  { lot_id = "L-34620001-04", security_id = "SEC-0002", value = "190000", acquired = 2018-10-08, basis_pct = "86" },
+]
+
+[[accounts]]
+account_id = "SYN-34620002"
+account_type = "individual_taxable"
+registration = "Individual, Lucia Marchetti (stock plan account)"
+opened = 2020-01-13
+owners = ["P-3462-1"]
+cash = "3000.00"
+holdings = [
+  { lot_id = "L-34620002-01", security_id = "SEC-0003", value = "25000", acquired = 2021-04-05, basis_pct = "98" },
+]
+
+[[accounts]]
+account_id = "SYN-34620003"
+account_type = "401k"
+registration = "401(k), Lucia Marchetti"
+opened = 2013-08-05
+owners = ["P-3462-1"]
+cash = "9000.00"
+holdings = [
+  { lot_id = "L-34620003-01", security_id = "SEC-0013", value = "470000", acquired = 2016-01-04, basis_pct = "100" },
+  { lot_id = "L-34620003-02", security_id = "SEC-0014", value = "230000", acquired = 2018-01-02, basis_pct = "100" },
+]
+
+[[accounts]]
+account_id = "SYN-34620004"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Kofi Osei"
+opened = 2011-05-16
+owners = ["P-3462-2"]
+cash = "6000.00"
+holdings = [
+  { lot_id = "L-34620004-01", security_id = "SEC-0019", value = "210000", acquired = 2014-02-03, basis_pct = "100" },
+  { lot_id = "L-34620004-02", security_id = "SEC-0003", value = "80000", acquired = 2018-08-06, basis_pct = "100" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-3462-1"
+filing_status = "married_filing_jointly"
+person_ids = ["P-3462-1", "P-3462-2"]
+
+[[billing_groups]]
+billing_group_id = "BG-3462-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-34620001", "SYN-34620002", "SYN-34620003", "SYN-34620004"]
+
+[[disclosures]]
+person_id = "P-3462-1"
+account_ids = ["SYN-34620001", "SYN-34620002", "SYN-34620003", "SYN-34620004"]
+
+[[disclosures]]
+person_id = "P-3462-2"
+account_ids = ["SYN-34620001", "SYN-34620002", "SYN-34620003", "SYN-34620004"]
+
+[[agreements]]
+agreement_id = "AGR-3462-1"
+kind = "advisory"
+party_ids = ["P-3462-1", "P-3462-2"]
+account_ids = ["SYN-34620001", "SYN-34620002", "SYN-34620003", "SYN-34620004"]
+signed = 2015-09-21
+summary = "Advisory agreement for all four accounts, billed together as one group on the standard fee schedule."
+
+[[beneficiaries]]
+account_id = "SYN-34620003"
+designation = "primary"
+name = "Kofi Osei"
+relationship = "spouse"
+share = "100"
+person_id = "P-3462-2"
+designated = 2015-10-05
+
+[[beneficiaries]]
+account_id = "SYN-34620004"
+designation = "primary"
+name = "Lucia Marchetti"
+relationship = "spouse"
+share = "100"
+person_id = "P-3462-1"
+designated = 2015-10-05
+
+# Wages on the 2025 W-2s: Lucia's include the value of the four RSU releases.
+[[income]]
+person_id = "P-3462-1"
+kind = "wages"
+payer = "Ellisar Search Holdings"
+amount = "1036860.00"
+year = 2025
+
+[[income]]
+person_id = "P-3462-2"
+kind = "wages"
+payer = "Harrowgate Community College"
+amount = "96000.00"
+year = 2025
+
+# The employer's release confirmations, forwarded by Lucia and filed in the CRM.
+[[crm_activities]]
+activity_id = "CA-3462-01"
+date = 2025-02-25
+kind = "rsu_release_confirmation"
+refers_to = 2025-02-20
+account_id = "SYN-34620002"
+security_id = "SEC-0030"
+units = "400"
+price = "392.54"
+summary = "Release confirmation from Ellisar Search Holdings, forwarded by Lucia Marchetti: 400 restricted stock units released on 2025-02-20 at $392.54 a share (a synthetic price), a release value of $157,016.00, included in her 2025 wages. Shares delivered to SYN-34620002."
+
+[[crm_activities]]
+activity_id = "CA-3462-02"
+date = 2025-05-23
+kind = "rsu_release_confirmation"
+refers_to = 2025-05-20
+account_id = "SYN-34620002"
+security_id = "SEC-0030"
+units = "400"
+price = "408.82"
+summary = "Release confirmation from Ellisar Search Holdings, forwarded by Lucia Marchetti: 400 restricted stock units released on 2025-05-20 at $408.82 a share (a synthetic price), a release value of $163,528.00, included in her 2025 wages. Shares delivered to SYN-34620002."
+
+[[crm_activities]]
+activity_id = "CA-3462-03"
+date = 2025-08-25
+kind = "rsu_release_confirmation"
+refers_to = 2025-08-20
+account_id = "SYN-34620002"
+security_id = "SEC-0030"
+units = "400"
+price = "393.07"
+summary = "Release confirmation from Ellisar Search Holdings, forwarded by Lucia Marchetti: 400 restricted stock units released on 2025-08-20 at $393.07 a share (a synthetic price), a release value of $157,228.00, included in her 2025 wages. Shares delivered to SYN-34620002."
+
+[[crm_activities]]
+activity_id = "CA-3462-04"
+date = 2025-11-24
+kind = "rsu_release_confirmation"
+refers_to = 2025-11-20
+account_id = "SYN-34620002"
+security_id = "SEC-0030"
+units = "400"
+price = "410.22"
+summary = "Release confirmation from Ellisar Search Holdings, forwarded by Lucia Marchetti: 400 restricted stock units released on 2025-11-20 at $410.22 a share (a synthetic price), a release value of $164,088.00, included in her 2025 wages. Shares delivered to SYN-34620002."
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.60", band = "0.05" },
+  { asset_class = "International equity", target = "0.08", band = "0.04" },
+  { asset_class = "Fixed income", target = "0.30", band = "0.05" },
+]
+restrictions = []
+concentration_limit = "0.15"
+asset_classes = { "SEC-0001" = "US equity", "SEC-0002" = "International equity", "SEC-0003" = "Fixed income", "SEC-0013" = "US equity", "SEC-0014" = "Fixed income", "SEC-0019" = "US equity", "SEC-0030" = "US equity" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-3462-1", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [{ person_id = "P-3462-2", basis = "0.00" }]
+
+[[activity]]
+type = "rsu_vest"
+date = 2025-02-20
+account_id = "SYN-34620002"
+security_id = "SEC-0030"
+units = "400"
+
+[[activity]]
+type = "rsu_vest"
+date = 2025-05-20
+account_id = "SYN-34620002"
+security_id = "SEC-0030"
+units = "400"
+
+[[activity]]
+type = "rsu_vest"
+date = 2025-08-20
+account_id = "SYN-34620002"
+security_id = "SEC-0030"
+units = "400"
+
+[[activity]]
+type = "rsu_vest"
+date = 2025-11-20
+account_id = "SYN-34620002"
+security_id = "SEC-0030"
+units = "400"
+
+[[activity]]
+type = "sell"
+date = 2025-12-12
+account_id = "SYN-34620002"
+security_id = "SEC-0030"
+units = "1000"
+
+[twin]
+kind = "clean"
+explanation = "Clean. Like HH-3058, an executive's RSU releases land in a stock plan account during 2025 and some are sold in December. Here the custodian booked each release at its value on the day, which matches the release confirmations in the CRM, so its tax lots and realized lots carry the right basis; and the employer stock left after the sale is within the IPS concentration limit."

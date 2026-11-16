@@ -4,7 +4,8 @@ import shutil
 from pathlib import Path
 
 from casebook.checks import check_book
-from casebook.model.files import ALIASES, MANIFEST, METADATA, read_json, read_manifest
+from casebook.model.archetypes import HELD_OUT_ARCHETYPES, frozen
+from casebook.model.files import ALIASES, MANIFEST, METADATA, SEALED_HOUSEHOLDS, read_json, read_manifest
 from casebook.publish.gates import run_gates
 from casebook.site import STATIC_DIR, data_root, render_site
 
@@ -21,6 +22,13 @@ def build_site(
 ) -> int:
     if read_json(book, METADATA).get("securities") != ALIASES:
         raise SiteBuildError(f"{book} is not a default build; a real-ticker build is never published")
+    held = sorted(
+        h["household_id"]
+        for h in read_json(book, SEALED_HOUSEHOLDS)["households"]
+        if h["set"] == "featured" and h["archetype"] in HELD_OUT_ARCHETYPES
+    )
+    if held and not frozen():
+        raise SiteBuildError(f"{', '.join(held)}: held out until the freeze, so not on the site")
     report = check_book(book)
     if not report.passed:
         failed = ", ".join(sorted(report.failed_households()))

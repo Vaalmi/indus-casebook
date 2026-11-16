@@ -1,8 +1,22 @@
 {
   "_about": "What each published household and task ID means (docs/PLAN.md, New names). An ID keeps its meaning once published: the build refuses a household whose archetype, pair or role differs from its entry, and make check refuses a task file whose household or workflow differs. Add an entry when an ID is first published; never change or remove one.",
   "households": {
+    "HH-1204": { "archetype": 1, "pair": 1, "role": "trap" },
+    "HH-1587": { "archetype": 1, "pair": 1, "role": "twin" },
+    "HH-2316": { "archetype": 2, "pair": 1, "role": "trap" },
+    "HH-2749": { "archetype": 2, "pair": 1, "role": "twin" },
+    "HH-3058": { "archetype": 3, "pair": 1, "role": "trap" },
+    "HH-3462": { "archetype": 3, "pair": 1, "role": "twin" },
+    "HH-4105": { "archetype": 4, "pair": 1, "role": "trap" },
+    "HH-4633": { "archetype": 4, "pair": 1, "role": "twin" },
     "HH-4821": { "archetype": 10, "pair": 1, "role": "trap" },
-    "HH-7350": { "archetype": 10, "pair": 1, "role": "twin" }
+    "HH-5271": { "archetype": 5, "pair": 1, "role": "trap" },
+    "HH-5814": { "archetype": 5, "pair": 1, "role": "twin" },
+    "HH-6047": { "archetype": 6, "pair": 1, "role": "trap" },
+    "HH-6590": { "archetype": 6, "pair": 1, "role": "twin" },
+    "HH-7350": { "archetype": 10, "pair": 1, "role": "twin" },
+    "HH-9234": { "archetype": 9, "pair": 1, "role": "trap" },
+    "HH-9571": { "archetype": 9, "pair": 1, "role": "twin" }
   },
   "tasks": {
     "T-REC-01": { "household_id": "HH-4821", "workflow": "reconciliation" }

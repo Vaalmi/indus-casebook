@@ -1,0 +1,225 @@
+# Archetype 1, pair 1, twin: a near miss. The same backdoor Roth as HH-1204, but Daniel's pre-tax
+# savings sit in his former employer's 401(k), which Form 8606 line 6 does not count, and his only
+# traditional IRA is empty on 31 December 2025, so the conversion is nontaxable.
+household_id = "HH-1587"
+name = "Reyes-Nakamura household"
+archetype = 1
+pair = 1
+role = "twin"
+configured = 2016-03-07
+
+[[members]]
+person_id = "P-1587-1"
+name = "Sofia Reyes-Nakamura"
+born = 1986-02-27
+relationship = "primary"
+email = "sofia.reyesnakamura@mail.example"
+phone = "555-0105"
+tax_id = "000-15-8701"
+
+[[members]]
+person_id = "P-1587-2"
+name = "Daniel Nakamura"
+born = 1983-09-08
+relationship = "spouse"
+email = "daniel.nakamura@mail.example"
+phone = "555-0106"
+tax_id = "000-15-8702"
+
+[[income]]
+person_id = "P-1587-1"
+kind = "wages"
+payer = "Calloway Point Software"
+amount = "198000.00"
+year = 2025
+
+[[income]]
+person_id = "P-1587-2"
+kind = "wages"
+payer = "Brindlemoor Engineering"
+amount = "179000.00"
+year = 2025
+
+[[accounts]]
+account_id = "SYN-15870001"
+account_type = "joint_taxable"
+registration = "Joint tenants with right of survivorship"
+opened = 2016-03-07
+owners = ["P-1587-1", "P-1587-2"]
+cash = "19000.00"
+holdings = [
+  { lot_id = "L-15870001-01", security_id = "SEC-0001", value = "170000", acquired = 2016-03-14, basis_pct = "61" },
+  { lot_id = "L-15870001-02", security_id = "SEC-0002", value = "50000", acquired = 2018-07-09, basis_pct = "92" },
+  { lot_id = "L-15870001-03", security_id = "SEC-0003", value = "55000", acquired = 2019-05-20, basis_pct = "104" },
+]
+
+[[accounts]]
+account_id = "SYN-15870002"
+account_type = "401k"
+registration = "401(k), Daniel Nakamura, former employer plan of Pellmoor Avionics"
+opened = 2014-07-01
+owners = ["P-1587-2"]
+cash = "2000.00"
+holdings = [
+  { lot_id = "L-15870002-01", security_id = "SEC-0013", value = "105000", acquired = 2019-01-15, basis_pct = "100" },
+  { lot_id = "L-15870002-02", security_id = "SEC-0003", value = "45000", acquired = 2019-01-15, basis_pct = "100" },
+]
+
+[[accounts]]
+account_id = "SYN-15870003"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Daniel Nakamura"
+opened = 2024-12-10
+owners = ["P-1587-2"]
+cash = "0.00"
+holdings = []
+
+[[accounts]]
+account_id = "SYN-15870004"
+account_type = "roth_ira"
+registration = "Roth IRA, Daniel Nakamura"
+opened = 2013-03-11
+owners = ["P-1587-2"]
+cash = "700.00"
+holdings = [
+  { lot_id = "L-15870004-01", security_id = "SEC-0001", value = "19000", acquired = 2014-03-20, basis_pct = "48" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-1587-1"
+filing_status = "married_filing_jointly"
+person_ids = ["P-1587-1", "P-1587-2"]
+
+[[billing_groups]]
+billing_group_id = "BG-1587-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-15870001", "SYN-15870002", "SYN-15870003", "SYN-15870004"]
+
+[[disclosures]]
+person_id = "P-1587-1"
+account_ids = ["SYN-15870001", "SYN-15870002", "SYN-15870003", "SYN-15870004"]
+
+[[disclosures]]
+person_id = "P-1587-2"
+account_ids = ["SYN-15870001", "SYN-15870002", "SYN-15870003", "SYN-15870004"]
+
+[[agreements]]
+agreement_id = "AGR-1587-1"
+kind = "advisory"
+party_ids = ["P-1587-1", "P-1587-2"]
+account_ids = ["SYN-15870001", "SYN-15870002", "SYN-15870003", "SYN-15870004"]
+signed = 2024-12-10
+summary = "Advisory agreement on the standard fee schedule, restated to add Daniel's new traditional IRA to the joint account, his former employer's 401(k) and his Roth IRA."
+
+# Beneficiary designations the custodian holds (social security numbers here and above are in
+# area 000, which is never issued).
+[[beneficiaries]]
+account_id = "SYN-15870002"
+designation = "primary"
+name = "Sofia Reyes-Nakamura"
+relationship = "spouse"
+share = "100"
+person_id = "P-1587-1"
+designated = 2016-05-02
+
+[[beneficiaries]]
+account_id = "SYN-15870003"
+designation = "primary"
+name = "Sofia Reyes-Nakamura"
+relationship = "spouse"
+share = "100"
+person_id = "P-1587-1"
+designated = 2024-12-10
+
+[[beneficiaries]]
+account_id = "SYN-15870004"
+designation = "primary"
+name = "Sofia Reyes-Nakamura"
+relationship = "spouse"
+share = "100"
+person_id = "P-1587-1"
+designated = 2016-05-02
+
+[[beneficiaries]]
+account_id = "SYN-15870004"
+designation = "contingent"
+name = "Hiroshi Nakamura"
+relationship = "brother"
+share = "100"
+designated = 2016-05-02
+
+[[crm_activities]]
+activity_id = "CA-1587-01"
+date = 2024-12-10
+kind = "meeting"
+summary = "Planning meeting with Sofia and Daniel. Their wages are above the Roth IRA income limit, so Daniel will make his 2025 IRA contribution to the new traditional IRA SYN-15870003, nondeductible, and convert it to his Roth IRA SYN-15870004. His pre-tax savings stay in his former employer's 401(k) SYN-15870002."
+
+[[crm_activities]]
+activity_id = "CA-1587-02"
+date = 2026-02-10
+kind = "document_received"
+summary = "2025 Forms W-2 received: Sofia, Calloway Point Software, wages $198,000.00; Daniel, Brindlemoor Engineering, wages $179,000.00."
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.66", band = "0.05" },
+  { asset_class = "International equity", target = "0.10", band = "0.04" },
+  { asset_class = "Fixed income", target = "0.20", band = "0.05" },
+]
+restrictions = []
+concentration_limit = "0.50"
+asset_classes = { "SEC-0001" = "US equity", "SEC-0002" = "International equity", "SEC-0003" = "Fixed income", "SEC-0013" = "US equity" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-1587-1", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [{ person_id = "P-1587-2", basis = "0.00" }]
+
+[[activity]]
+type = "contribution"
+date = 2025-02-11
+account_id = "SYN-15870003"
+amount = "7000.00"
+
+[[activity]]
+type = "roth_conversion"
+date = 2025-02-14
+account_id = "SYN-15870003"
+amount = "7000.00"
+to_account_id = "SYN-15870004"
+
+[[activity]]
+type = "buy"
+date = 2025-02-19
+account_id = "SYN-15870004"
+security_id = "SEC-0001"
+units = "25"
+
+[[activity]]
+type = "contribution"
+date = 2025-07-14
+account_id = "SYN-15870001"
+amount = "25000.00"
+
+[[activity]]
+type = "buy"
+date = 2025-07-16
+account_id = "SYN-15870001"
+security_id = "SEC-0001"
+units = "70"
+
+[twin]
+kind = "near_miss"
+explanation = "A near miss. Daniel made a backdoor Roth: a $7,000 nondeductible contribution to a new traditional IRA, converted to his Roth IRA three days later. That looks like the pro-rata trap, because he has a large pre-tax balance. But it sits in his former employer's 401(k), and Form 8606 line 6 counts only traditional, SEP and SIMPLE IRAs. His only traditional IRA was empty on 31 December 2025, so line 10 is 1.000, the whole $7,000 conversion is nontaxable, and no basis carries to 2026."

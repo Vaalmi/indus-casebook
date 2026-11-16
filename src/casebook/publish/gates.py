@@ -3,6 +3,7 @@
 import csv
 import io
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -13,6 +14,11 @@ from casebook.securities.scan import RealIdentifierScan, default_scan
 
 PRICE_COLUMN = "price"
 PRICE_LABEL_COLUMN = "price_label"
+# A price written in a record's prose: an amount a share or a unit, or "price" before an amount.
+_PROSE_PRICE = re.compile(
+    r"\$\s?\d[\d,]*(?:\.\d+)?\s+(?:a|per|each)\s+(?:share|unit)\b|\bprice[sd]?\b[^$.\n]{0,20}\$\s?\d",
+    re.IGNORECASE,
+)
 
 
 def _files(root: Path) -> list[Path]:
@@ -70,7 +76,12 @@ def synthetic_problems(site: Path) -> list[str]:
             text = text_of(path.name, path.read_bytes()).lower()
         except UnscannableFileError:
             continue  # real_identifier_problems reports a file no gate can read
-        if ("price" in path.name or "price" in text) and SYNTHETIC not in text:
+        # CSV and JSON carry their prices in fields, checked row by row above; in their free text a
+        # price is one written as a price ("$216.06 a share", "priced at $40"), not the word in a
+        # name. Pages and documents are read as text.
+        structured = path.suffix in (".csv", ".json")
+        shows = _PROSE_PRICE.search(text) is not None if structured else "price" in text
+        if ("price" in path.name or shows) and SYNTHETIC not in text:
             problems.append(f"{relative}: shows prices without the word {SYNTHETIC!r}")
     return problems
 

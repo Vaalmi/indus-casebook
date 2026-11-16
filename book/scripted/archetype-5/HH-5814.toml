@@ -1,0 +1,229 @@
+# Archetype 5, pair 1, twin: a near miss. The same shape as HH-5271: Prema turned 73 in 2025 and
+# has two traditional IRAs and her former employer's 401(k). Her rollover IRA shows no
+# distribution, which looks like a missed RMD. But her two IRAs' RMDs were taken together from the
+# larger IRA, which IRA aggregation allows, and the 401(k)'s own RMD was paid from the 401(k).
+household_id = "HH-5814"
+name = "Raghavan-Kessler household"
+archetype = 5
+pair = 1
+role = "twin"
+configured = 2017-10-23
+
+[[members]]
+person_id = "P-5814-1"
+name = "Prema Raghavan"
+born = 1952-07-22
+relationship = "primary"
+email = "prema.raghavan@mail.example"
+phone = "555-0129"
+tax_id = "000-58-1401"
+
+[[members]]
+person_id = "P-5814-2"
+name = "Martin Kessler"
+born = 1957-01-09
+relationship = "spouse"
+email = "martin.kessler@mail.example"
+phone = "555-0130"
+tax_id = "000-58-1402"
+
+[[accounts]]
+account_id = "SYN-58140001"
+account_type = "joint_taxable"
+registration = "Joint tenants with right of survivorship"
+opened = 2017-10-23
+owners = ["P-5814-1", "P-5814-2"]
+cash = "21000.00"
+holdings = [
+  { lot_id = "L-58140001-01", security_id = "SEC-0001", value = "190000", acquired = 2017-11-06, basis_pct = "61" },
+  { lot_id = "L-58140001-02", security_id = "SEC-0002", value = "65000", acquired = 2019-04-15, basis_pct = "88" },
+  { lot_id = "L-58140001-03", security_id = "SEC-0008", value = "110000", acquired = 2020-06-01, basis_pct = "99" },
+]
+
+[[accounts]]
+account_id = "SYN-58140002"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Prema Raghavan"
+opened = 2004-02-09
+owners = ["P-5814-1"]
+cash = "13000.00"
+holdings = [
+  { lot_id = "L-58140002-01", security_id = "SEC-0001", value = "280000", acquired = 2010-07-12, basis_pct = "100" },
+  { lot_id = "L-58140002-02", security_id = "SEC-0003", value = "215000", acquired = 2013-01-28, basis_pct = "100" },
+  { lot_id = "L-58140002-03", security_id = "SEC-0002", value = "75000", acquired = 2016-05-02, basis_pct = "100" },
+]
+
+[[accounts]]
+account_id = "SYN-58140003"
+account_type = "traditional_ira"
+registration = "Traditional IRA (rollover), Prema Raghavan"
+opened = 2012-04-16
+owners = ["P-5814-1"]
+cash = "5000.00"
+holdings = [
+  { lot_id = "L-58140003-01", security_id = "SEC-0013", value = "110000", acquired = 2012-04-30, basis_pct = "100" },
+  { lot_id = "L-58140003-02", security_id = "SEC-0014", value = "80000", acquired = 2015-09-08, basis_pct = "100" },
+]
+
+[[accounts]]
+account_id = "SYN-58140004"
+account_type = "401k"
+registration = "Hollins and Reade Packaging 401(k) Plan, Prema Raghavan (former employee)"
+opened = 1999-08-30
+owners = ["P-5814-1"]
+cash = "7000.00"
+holdings = [
+  { lot_id = "L-58140004-01", security_id = "SEC-0013", value = "175000", acquired = 2007-10-15, basis_pct = "100" },
+  { lot_id = "L-58140004-02", security_id = "SEC-0014", value = "130000", acquired = 2012-06-25, basis_pct = "100" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-5814-1"
+filing_status = "married_filing_jointly"
+person_ids = ["P-5814-1", "P-5814-2"]
+
+[[billing_groups]]
+billing_group_id = "BG-5814-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-58140001", "SYN-58140002", "SYN-58140003", "SYN-58140004"]
+
+[[disclosures]]
+person_id = "P-5814-1"
+account_ids = ["SYN-58140001", "SYN-58140002", "SYN-58140003", "SYN-58140004"]
+
+[[disclosures]]
+person_id = "P-5814-2"
+account_ids = ["SYN-58140001", "SYN-58140002", "SYN-58140003", "SYN-58140004"]
+
+[[agreements]]
+agreement_id = "AGR-5814-1"
+kind = "advisory"
+party_ids = ["P-5814-1", "P-5814-2"]
+account_ids = ["SYN-58140001", "SYN-58140002", "SYN-58140003", "SYN-58140004"]
+signed = 2017-10-23
+summary = "Advisory agreement for the joint account, Prema's two IRAs and her former employer's 401(k) on the standard fee schedule."
+
+[[beneficiaries]]
+account_id = "SYN-58140002"
+designation = "primary"
+name = "Martin Kessler"
+relationship = "spouse"
+share = "100"
+person_id = "P-5814-2"
+designated = 2004-02-09
+
+[[beneficiaries]]
+account_id = "SYN-58140003"
+designation = "primary"
+name = "Martin Kessler"
+relationship = "spouse"
+share = "100"
+person_id = "P-5814-2"
+designated = 2012-04-16
+
+[[beneficiaries]]
+account_id = "SYN-58140004"
+designation = "primary"
+name = "Martin Kessler"
+relationship = "spouse"
+share = "100"
+person_id = "P-5814-2"
+designated = 1999-08-30
+
+[[crm_activities]]
+activity_id = "CA-5814-01"
+date = 2020-01-31
+kind = "retirement"
+summary = "Prema Raghavan retired from Hollins and Reade Packaging. Her 401(k) stays in the plan as a former employee's account."
+
+[[crm_activities]]
+activity_id = "CA-5814-02"
+date = 2025-10-27
+kind = "distribution_instruction"
+summary = "Prema Raghavan signed a distribution form with the 401(k) plan for its 2025 required minimum distribution, paid from the plan, with 10% federal tax withheld."
+
+[[crm_activities]]
+activity_id = "CA-5814-03"
+date = 2025-11-24
+kind = "distribution_instruction"
+summary = "Prema Raghavan signed a distribution form for the 2025 required minimum distributions of both her IRAs, taken together from IRA SYN-58140002, with 10% federal tax withheld."
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.50", band = "0.05" },
+  { asset_class = "International equity", target = "0.10", band = "0.04" },
+  { asset_class = "Fixed income", target = "0.40", band = "0.05" },
+]
+restrictions = []
+concentration_limit = "0.35"
+asset_classes = { "SEC-0001" = "US equity", "SEC-0002" = "International equity", "SEC-0003" = "Fixed income", "SEC-0008" = "Fixed income", "SEC-0013" = "US equity", "SEC-0014" = "Fixed income" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-5814-1", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [{ person_id = "P-5814-1", basis = "0.00" }]
+
+[[activity]]
+type = "contribution"
+date = 2025-04-07
+account_id = "SYN-58140001"
+amount = "10000.00"
+
+[[activity]]
+type = "buy"
+date = 2025-04-09
+account_id = "SYN-58140001"
+security_id = "SEC-0001"
+units = "15"
+
+[[activity]]
+type = "sell"
+date = 2025-11-03
+account_id = "SYN-58140004"
+security_id = "SEC-0014"
+units = "300"
+
+[[activity]]
+type = "rmd"
+date = 2025-11-05
+account_id = "SYN-58140004"
+amount = "11771.97"
+tax_year = 2025
+withheld = "1177.20"
+
+[[activity]]
+type = "sell"
+date = 2025-12-01
+account_id = "SYN-58140002"
+security_id = "SEC-0003"
+units = "70"
+
+[[activity]]
+type = "rmd"
+date = 2025-12-04
+account_id = "SYN-58140002"
+amount = "29329.16"
+tax_year = 2025
+withheld = "2932.92"
+
+[[activity]]
+type = "withdrawal"
+date = 2026-01-20
+account_id = "SYN-58140001"
+amount = "8000.00"
+
+[twin]
+kind = "near_miss"
+explanation = "A near miss. Prema turned 73 in 2025 and her rollover IRA shows no 2025 distribution, which looks like a missed first RMD. But both IRAs' RMDs were taken together from her larger IRA, which is allowed because IRA RMDs may be aggregated, and her 401(k)'s RMD, which may not be aggregated with the IRAs', was paid from the 401(k). Nothing is short."

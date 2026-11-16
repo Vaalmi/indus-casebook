@@ -1,0 +1,218 @@
+# Archetype 1, pair 1, trap. Luka makes a backdoor Roth: a nondeductible contribution to a new
+# traditional IRA, converted to his Roth days later. His rollover IRA from a former employer still
+# holds pre-tax money on 31 December 2025, so the pro-rata rule makes most of the conversion taxable.
+household_id = "HH-1204"
+name = "Adebayo-Kovac household"
+archetype = 1
+pair = 1
+role = "trap"
+configured = 2015-08-17
+
+[[members]]
+person_id = "P-1204-1"
+name = "Funmilayo Adebayo-Kovac"
+born = 1985-06-03
+relationship = "primary"
+email = "funmilayo.adebayokovac@mail.example"
+phone = "555-0101"
+tax_id = "000-12-0401"
+
+[[members]]
+person_id = "P-1204-2"
+name = "Luka Kovac"
+born = 1984-11-19
+relationship = "spouse"
+email = "luka.kovac@mail.example"
+phone = "555-0102"
+tax_id = "000-12-0402"
+
+[[income]]
+person_id = "P-1204-1"
+kind = "wages"
+payer = "Quillfield Diagnostics"
+amount = "212000.00"
+year = 2025
+
+[[income]]
+person_id = "P-1204-2"
+kind = "wages"
+payer = "Harrowgate Freight Systems"
+amount = "186000.00"
+year = 2025
+
+[[accounts]]
+account_id = "SYN-12040001"
+account_type = "joint_taxable"
+registration = "Joint tenants with right of survivorship"
+opened = 2015-08-17
+owners = ["P-1204-1", "P-1204-2"]
+cash = "22000.00"
+holdings = [
+  { lot_id = "L-12040001-01", security_id = "SEC-0001", value = "185000", acquired = 2015-09-01, basis_pct = "58" },
+  { lot_id = "L-12040001-02", security_id = "SEC-0002", value = "55000", acquired = 2018-03-12, basis_pct = "88" },
+  { lot_id = "L-12040001-03", security_id = "SEC-0003", value = "60000", acquired = 2019-10-07, basis_pct = "103" },
+]
+
+[[accounts]]
+account_id = "SYN-12040002"
+account_type = "traditional_ira"
+registration = "Rollover IRA, Luka Kovac"
+opened = 2020-06-15
+owners = ["P-1204-2"]
+cash = "2500.00"
+holdings = [
+  { lot_id = "L-12040002-01", security_id = "SEC-0013", value = "110000", acquired = 2020-06-22, basis_pct = "100" },
+  { lot_id = "L-12040002-02", security_id = "SEC-0003", value = "48000", acquired = 2020-06-22, basis_pct = "100" },
+]
+
+[[accounts]]
+account_id = "SYN-12040003"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Luka Kovac"
+opened = 2024-12-09
+owners = ["P-1204-2"]
+cash = "0.00"
+holdings = []
+
+[[accounts]]
+account_id = "SYN-12040004"
+account_type = "roth_ira"
+registration = "Roth IRA, Luka Kovac"
+opened = 2012-05-04
+owners = ["P-1204-2"]
+cash = "800.00"
+holdings = [
+  { lot_id = "L-12040004-01", security_id = "SEC-0001", value = "21000", acquired = 2014-04-10, basis_pct = "45" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-1204-1"
+filing_status = "married_filing_jointly"
+person_ids = ["P-1204-1", "P-1204-2"]
+
+[[billing_groups]]
+billing_group_id = "BG-1204-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-12040001", "SYN-12040002", "SYN-12040003", "SYN-12040004"]
+
+[[disclosures]]
+person_id = "P-1204-1"
+account_ids = ["SYN-12040001", "SYN-12040002", "SYN-12040003", "SYN-12040004"]
+
+[[disclosures]]
+person_id = "P-1204-2"
+account_ids = ["SYN-12040001", "SYN-12040002", "SYN-12040003", "SYN-12040004"]
+
+[[agreements]]
+agreement_id = "AGR-1204-1"
+kind = "advisory"
+party_ids = ["P-1204-1", "P-1204-2"]
+account_ids = ["SYN-12040001", "SYN-12040002", "SYN-12040003", "SYN-12040004"]
+signed = 2024-12-09
+summary = "Advisory agreement on the standard fee schedule, restated to add Luka's new traditional IRA to the joint account, his rollover IRA and his Roth IRA."
+
+# Beneficiary designations the custodian holds (social security numbers here and above are in
+# area 000, which is never issued).
+[[beneficiaries]]
+account_id = "SYN-12040002"
+designation = "primary"
+name = "Funmilayo Adebayo-Kovac"
+relationship = "spouse"
+share = "100"
+person_id = "P-1204-1"
+designated = 2020-06-15
+
+[[beneficiaries]]
+account_id = "SYN-12040003"
+designation = "primary"
+name = "Funmilayo Adebayo-Kovac"
+relationship = "spouse"
+share = "100"
+person_id = "P-1204-1"
+designated = 2024-12-09
+
+[[beneficiaries]]
+account_id = "SYN-12040004"
+designation = "primary"
+name = "Funmilayo Adebayo-Kovac"
+relationship = "spouse"
+share = "100"
+person_id = "P-1204-1"
+designated = 2015-09-28
+
+[[crm_activities]]
+activity_id = "CA-1204-01"
+date = 2024-12-09
+kind = "meeting"
+summary = "Planning meeting with Funmilayo and Luka. Their wages are above the Roth IRA income limit, so Luka will make his 2025 IRA contribution to the new traditional IRA SYN-12040003, nondeductible, and convert it to his Roth IRA SYN-12040004. His rollover IRA SYN-12040002 stays as it is."
+
+[[crm_activities]]
+activity_id = "CA-1204-02"
+date = 2026-02-12
+kind = "document_received"
+summary = "2025 Forms W-2 received: Funmilayo, Quillfield Diagnostics, wages $212,000.00; Luka, Harrowgate Freight Systems, wages $186,000.00."
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.66", band = "0.05" },
+  { asset_class = "International equity", target = "0.10", band = "0.04" },
+  { asset_class = "Fixed income", target = "0.20", band = "0.05" },
+]
+restrictions = []
+concentration_limit = "0.50"
+asset_classes = { "SEC-0001" = "US equity", "SEC-0002" = "International equity", "SEC-0003" = "Fixed income", "SEC-0013" = "US equity" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-1204-1", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [{ person_id = "P-1204-2", basis = "0.00" }]
+
+[[activity]]
+type = "contribution"
+date = 2025-02-10
+account_id = "SYN-12040003"
+amount = "7000.00"
+
+[[activity]]
+type = "roth_conversion"
+date = 2025-02-13
+account_id = "SYN-12040003"
+amount = "7000.00"
+to_account_id = "SYN-12040004"
+
+[[activity]]
+type = "buy"
+date = 2025-02-18
+account_id = "SYN-12040004"
+security_id = "SEC-0001"
+units = "25"
+
+[[activity]]
+type = "contribution"
+date = 2025-06-16
+account_id = "SYN-12040001"
+amount = "30000.00"
+
+[[activity]]
+type = "buy"
+date = 2025-06-18
+account_id = "SYN-12040001"
+security_id = "SEC-0001"
+units = "80"
+
+[planted]
+item_id = "PI-0002"
+type = "backdoor_roth_pro_rata"
+person_id = "P-1204-2"

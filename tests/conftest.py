@@ -15,6 +15,25 @@ SCRIPTS = ROOT / "book" / "scripted"
 README = ROOT / "README.md"
 SEED = 2026
 STANDIN = ROOT / "tests" / "standin" / "claude.py"
+# The public featured households (archetypes 7 and 8 are held out until the freeze).
+FEATURED = (
+    "HH-1204",
+    "HH-1587",
+    "HH-2316",
+    "HH-2749",
+    "HH-3058",
+    "HH-3462",
+    "HH-4105",
+    "HH-4633",
+    "HH-4821",
+    "HH-5271",
+    "HH-5814",
+    "HH-6047",
+    "HH-6590",
+    "HH-7350",
+    "HH-9234",
+    "HH-9571",
+)
 
 
 @pytest.fixture(scope="session")

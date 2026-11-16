@@ -1,0 +1,194 @@
+# Archetype 4, pair 1, trap. Rosalind, 67 and years from her first RMD, sells part of a fund in her
+# traditional IRA and converts $60,000 to her Roth. Her old nondeductible contributions left basis
+# in the IRA, carried on her 2024 return, so part of the conversion is nontaxable, pro rata over
+# the IRA's value at the end of 2025.
+household_id = "HH-4105"
+name = "Achterberg household"
+archetype = 4
+pair = 1
+role = "trap"
+configured = 2006-03-20
+
+[[members]]
+person_id = "P-4105-1"
+name = "Rosalind Achterberg"
+born = 1958-09-14
+relationship = "primary"
+email = "rosalind.achterberg@mail.example"
+phone = "555-0117"
+tax_id = "000-41-0501"
+
+[[accounts]]
+account_id = "SYN-41050001"
+account_type = "individual_taxable"
+registration = "Individual, Rosalind Achterberg"
+opened = 2006-03-20
+owners = ["P-4105-1"]
+cash = "45000.00"
+holdings = [
+  { lot_id = "L-41050001-01", security_id = "SEC-0001", value = "280000", acquired = 2007-05-14, basis_pct = "55" },
+  { lot_id = "L-41050001-02", security_id = "SEC-0018", value = "140000", acquired = 2015-01-12, basis_pct = "98" },
+  { lot_id = "L-41050001-03", security_id = "SEC-0010", value = "70000", acquired = 2013-09-03, basis_pct = "72" },
+]
+
+[[accounts]]
+account_id = "SYN-41050002"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Rosalind Achterberg"
+opened = 1994-04-11
+owners = ["P-4105-1"]
+cash = "6000.00"
+holdings = [
+  { lot_id = "L-41050002-01", security_id = "SEC-0013", value = "120000", acquired = 2011-02-07, basis_pct = "60" },
+  { lot_id = "L-41050002-02", security_id = "SEC-0001", value = "190000", acquired = 2008-10-20, basis_pct = "70" },
+  { lot_id = "L-41050002-03", security_id = "SEC-0018", value = "95000", acquired = 2016-05-02, basis_pct = "100" },
+]
+
+[[accounts]]
+account_id = "SYN-41050003"
+account_type = "roth_ira"
+registration = "Roth IRA, Rosalind Achterberg"
+opened = 2019-12-02
+owners = ["P-4105-1"]
+cash = "1500.00"
+holdings = [
+  { lot_id = "L-41050003-01", security_id = "SEC-0001", value = "35000", acquired = 2019-12-09, basis_pct = "85" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-4105-1"
+filing_status = "single"
+person_ids = ["P-4105-1"]
+
+[[billing_groups]]
+billing_group_id = "BG-4105-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-41050001", "SYN-41050002", "SYN-41050003"]
+
+[[disclosures]]
+person_id = "P-4105-1"
+account_ids = ["SYN-41050001", "SYN-41050002", "SYN-41050003"]
+
+[[agreements]]
+agreement_id = "AGR-4105-1"
+kind = "advisory"
+party_ids = ["P-4105-1"]
+account_ids = ["SYN-41050001", "SYN-41050002", "SYN-41050003"]
+signed = 2019-12-02
+summary = "Advisory agreement for Rosalind's individual account, traditional IRA and new Roth IRA on the standard fee schedule."
+
+# Beneficiary designations the custodian holds (social security numbers here and above are in
+# area 000, which is never issued). Her children are not household members.
+[[beneficiaries]]
+account_id = "SYN-41050002"
+designation = "primary"
+name = "Hannelore Achterberg-Price"
+relationship = "daughter"
+share = "50"
+designated = 2012-06-18
+
+[[beneficiaries]]
+account_id = "SYN-41050002"
+designation = "primary"
+name = "Tobias Achterberg"
+relationship = "son"
+share = "50"
+designated = 2012-06-18
+
+[[beneficiaries]]
+account_id = "SYN-41050003"
+designation = "primary"
+name = "Hannelore Achterberg-Price"
+relationship = "daughter"
+share = "50"
+designated = 2019-12-02
+
+[[beneficiaries]]
+account_id = "SYN-41050003"
+designation = "primary"
+name = "Tobias Achterberg"
+relationship = "son"
+share = "50"
+designated = 2019-12-02
+
+[[crm_activities]]
+activity_id = "CA-4105-01"
+date = 2025-04-22
+kind = "document_received"
+summary = "Rosalind's 2024 Form 1040 and Form 8606 received. The Form 8606 shows $38,500.00 of basis in her traditional IRAs, from nondeductible contributions she made in the 1990s and 2000s, carried to 2025."
+
+[[crm_activities]]
+activity_id = "CA-4105-02"
+date = 2025-10-20
+kind = "meeting"
+summary = "Conversion planning with Rosalind: before RMDs begin, convert $60,000.00 from her traditional IRA SYN-41050002 to her Roth IRA SYN-41050003 this year, selling part of the large cap fund in the IRA to raise the cash."
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.72", band = "0.05" },
+  { asset_class = "Fixed income", target = "0.25", band = "0.05" },
+]
+restrictions = []
+concentration_limit = "0.60"
+asset_classes = { "SEC-0001" = "US equity", "SEC-0010" = "US equity", "SEC-0013" = "US equity", "SEC-0018" = "Fixed income" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-4105-1", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [{ person_id = "P-4105-1", basis = "38500.00" }]
+
+[[activity]]
+type = "withdrawal"
+date = 2025-03-14
+account_id = "SYN-41050001"
+amount = "12000.00"
+
+[[activity]]
+type = "withdrawal"
+date = 2025-09-15
+account_id = "SYN-41050001"
+amount = "12000.00"
+
+[[activity]]
+type = "sell"
+date = 2025-11-03
+account_id = "SYN-41050002"
+security_id = "SEC-0013"
+units = "230"
+
+[[activity]]
+type = "roth_conversion"
+date = 2025-11-06
+account_id = "SYN-41050002"
+amount = "60000.00"
+to_account_id = "SYN-41050003"
+
+[[activity]]
+type = "buy"
+date = 2025-11-10
+account_id = "SYN-41050003"
+security_id = "SEC-0001"
+units = "210"
+
+[[activity]]
+type = "withdrawal"
+date = 2026-03-16
+account_id = "SYN-41050001"
+amount = "12000.00"
+
+[planted]
+item_id = "PI-0005"
+type = "conversion_ira_basis"
+person_id = "P-4105-1"

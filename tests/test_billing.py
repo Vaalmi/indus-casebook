@@ -51,6 +51,8 @@ def household(groups: tuple[BillingGroup, ...], accounts: tuple[str, ...]) -> Ho
         disclosures=(),
         agreements=(),
         beneficiaries=(),
+        income=(),
+        crm_activities=(),
         fee_schedule=SCHEDULE,
         allocation=(),
         asset_classes={},

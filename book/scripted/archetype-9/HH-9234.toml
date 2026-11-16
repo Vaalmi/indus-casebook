@@ -1,0 +1,188 @@
+# Archetype 9, pair 1, trap. Marcus and Ingrid harvest a loss: in November they sell the
+# mid-cap fund they bought near its top in 2023, out of their joint account, and buy an
+# equal-weight fund in its place. Sixteen days later Ingrid's IRA buys the same mid-cap
+# fund: a wash sale across accounts, so most of the loss is disallowed, and because the
+# replacement is in an IRA it is never added to any basis.
+household_id = "HH-9234"
+name = "Oyelaran-Halvorsen household"
+archetype = 9
+pair = 1
+role = "trap"
+configured = 2011-03-14
+
+[[members]]
+person_id = "P-9234-1"
+name = "Marcus Oyelaran"
+born = 1966-05-09
+relationship = "primary"
+email = "marcus.oyelaran@mail.example"
+phone = "555-0172"
+tax_id = "000-92-3401"
+
+[[members]]
+person_id = "P-9234-2"
+name = "Ingrid Halvorsen"
+born = 1968-12-01
+relationship = "spouse"
+email = "ingrid.halvorsen@mail.example"
+phone = "555-0173"
+tax_id = "000-92-3402"
+
+[[accounts]]
+account_id = "SYN-92340001"
+account_type = "joint_taxable"
+registration = "Joint tenants with right of survivorship"
+opened = 2011-03-14
+owners = ["P-9234-1", "P-9234-2"]
+cash = "60000.00"
+holdings = [
+  { lot_id = "L-92340001-01", security_id = "SEC-0025", value = "240000", acquired = 2023-07-17, basis_pct = "116" },
+  { lot_id = "L-92340001-02", security_id = "SEC-0001", value = "380000", acquired = 2013-05-06, basis_pct = "58" },
+  { lot_id = "L-92340001-03", security_id = "SEC-0003", value = "210000", acquired = 2020-02-03, basis_pct = "104" },
+  { lot_id = "L-92340001-04", security_id = "SEC-0006", value = "120000", acquired = 2021-06-07, basis_pct = "97" },
+]
+
+[[accounts]]
+account_id = "SYN-92340002"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Ingrid Halvorsen"
+opened = 2004-09-01
+owners = ["P-9234-2"]
+cash = "150000.00"
+holdings = [
+  { lot_id = "L-92340002-01", security_id = "SEC-0014", value = "160000", acquired = 2015-03-02, basis_pct = "100" },
+  { lot_id = "L-92340002-02", security_id = "SEC-0013", value = "140000", acquired = 2016-08-01, basis_pct = "100" },
+]
+
+[[accounts]]
+account_id = "SYN-92340003"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Marcus Oyelaran"
+opened = 2002-01-22
+owners = ["P-9234-1"]
+cash = "8000.00"
+holdings = [
+  { lot_id = "L-92340003-01", security_id = "SEC-0019", value = "260000", acquired = 2012-04-02, basis_pct = "100" },
+  { lot_id = "L-92340003-02", security_id = "SEC-0003", value = "90000", acquired = 2017-10-02, basis_pct = "100" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-9234-1"
+filing_status = "married_filing_jointly"
+person_ids = ["P-9234-1", "P-9234-2"]
+
+[[billing_groups]]
+billing_group_id = "BG-9234-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-92340001", "SYN-92340002", "SYN-92340003"]
+
+[[disclosures]]
+person_id = "P-9234-1"
+account_ids = ["SYN-92340001", "SYN-92340002", "SYN-92340003"]
+
+[[disclosures]]
+person_id = "P-9234-2"
+account_ids = ["SYN-92340001", "SYN-92340002", "SYN-92340003"]
+
+[[agreements]]
+agreement_id = "AGR-9234-1"
+kind = "advisory"
+party_ids = ["P-9234-1", "P-9234-2"]
+account_ids = ["SYN-92340001", "SYN-92340002", "SYN-92340003"]
+signed = 2011-03-14
+summary = "Advisory agreement for the joint account and both IRAs, billed together as one group on the standard fee schedule."
+
+[[beneficiaries]]
+account_id = "SYN-92340002"
+designation = "primary"
+name = "Marcus Oyelaran"
+relationship = "spouse"
+share = "100"
+person_id = "P-9234-1"
+designated = 2004-09-01
+
+[[beneficiaries]]
+account_id = "SYN-92340002"
+designation = "contingent"
+name = "Tobi Oyelaran"
+relationship = "son"
+share = "100"
+designated = 2004-09-01
+
+[[beneficiaries]]
+account_id = "SYN-92340003"
+designation = "primary"
+name = "Ingrid Halvorsen"
+relationship = "spouse"
+share = "100"
+person_id = "P-9234-2"
+designated = 2002-01-22
+
+[[beneficiaries]]
+account_id = "SYN-92340003"
+designation = "contingent"
+name = "Tobi Oyelaran"
+relationship = "son"
+share = "100"
+designated = 2002-01-22
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.55", band = "0.05" },
+  { asset_class = "International equity", target = "0.08", band = "0.04" },
+  { asset_class = "Fixed income", target = "0.30", band = "0.05" },
+]
+restrictions = []
+concentration_limit = "0.25"
+asset_classes = { "SEC-0001" = "US equity", "SEC-0003" = "Fixed income", "SEC-0006" = "International equity", "SEC-0013" = "US equity", "SEC-0014" = "Fixed income", "SEC-0019" = "US equity", "SEC-0025" = "US equity", "SEC-0027" = "US equity" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-9234-1", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [
+  { person_id = "P-9234-1", basis = "0.00" },
+  { person_id = "P-9234-2", basis = "0.00" },
+]
+
+[[activity]]
+type = "withdrawal"
+date = 2025-06-09
+account_id = "SYN-92340001"
+amount = "12000.00"
+
+[[activity]]
+type = "sell"
+date = 2025-11-03
+account_id = "SYN-92340001"
+security_id = "SEC-0025"
+units = "847"
+
+[[activity]]
+type = "buy"
+date = 2025-11-03
+account_id = "SYN-92340001"
+security_id = "SEC-0027"
+units = "4500"
+
+[[activity]]
+type = "buy"
+date = 2025-11-19
+account_id = "SYN-92340002"
+security_id = "SEC-0025"
+units = "500"
+
+[planted]
+item_id = "PI-0010"
+type = "cross_account_wash_sale"

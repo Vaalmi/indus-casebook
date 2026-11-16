@@ -7,6 +7,8 @@ import pytest
 from casebook.checks import CHECKS, check_book
 from casebook.cli import main
 
+from .conftest import FEATURED
+
 HH = "HH-4821"
 
 
@@ -37,11 +39,9 @@ def failures(book: Path) -> dict[tuple[str, str], tuple[str, ...]]:
 def test_the_built_book_passes_every_check_on_every_household(book: Path, capsys: pytest.CaptureFixture[str]) -> None:
     report = check_book(book)
     assert report.passed
-    assert [(line.household_id, line.check) for line in report.lines] == [
-        (h, c) for h in ("HH-4821", "HH-7350") for c in CHECKS
-    ]
+    assert [(line.household_id, line.check) for line in report.lines] == [(h, c) for h in FEATURED for c in CHECKS]
     assert main(["check", "--book", str(book)]) == 0
-    assert capsys.readouterr().out.endswith("18 lines: 18 pass, 0 fail\n")
+    assert capsys.readouterr().out.endswith("144 lines: 144 pass, 0 fail\n")
 
 
 def test_a_unit_defect_fails_the_units_check_and_names_file_line_and_account(book_copy: Path) -> None:

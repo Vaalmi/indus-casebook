@@ -1,0 +1,249 @@
+# Archetype 3, pair 1, trap. Priya is a senior vice president at Bramwell Devices Group.
+# Four quarterly RSU releases land in her stock plan account in 2025 and she sells the
+# first two in December. The custodian booked every release at no cost, so its tax lots
+# show zero basis and its realized lots overstate the gain by the shares' release value,
+# which the CRM holds from the employer's release confirmations. Employer stock is far
+# above the IPS concentration limit.
+household_id = "HH-3058"
+name = "Raghunathan-Cole household"
+archetype = 3
+pair = 1
+role = "trap"
+configured = 2014-06-02
+
+[[members]]
+person_id = "P-3058-1"
+name = "Priya Raghunathan"
+born = 1976-09-14
+relationship = "primary"
+email = "priya.raghunathan@mail.example"
+phone = "555-0153"
+tax_id = "000-30-5801"
+
+[[members]]
+person_id = "P-3058-2"
+name = "Daniel Cole"
+born = 1974-02-03
+relationship = "spouse"
+email = "daniel.cole@mail.example"
+phone = "555-0154"
+tax_id = "000-30-5802"
+
+[[accounts]]
+account_id = "SYN-30580001"
+account_type = "joint_taxable"
+registration = "Joint tenants with right of survivorship"
+opened = 2014-06-02
+owners = ["P-3058-1", "P-3058-2"]
+cash = "40000.00"
+holdings = [
+  { lot_id = "L-30580001-01", security_id = "SEC-0028", value = "650000", acquired = 2016-03-01, basis_pct = "28" },
+  { lot_id = "L-30580001-02", security_id = "SEC-0001", value = "420000", acquired = 2015-01-12, basis_pct = "64" },
+  { lot_id = "L-30580001-03", security_id = "SEC-0003", value = "260000", acquired = 2019-05-06, basis_pct = "102" },
+  { lot_id = "L-30580001-04", security_id = "SEC-0002", value = "150000", acquired = 2018-02-12, basis_pct = "88" },
+]
+
+[[accounts]]
+account_id = "SYN-30580002"
+account_type = "individual_taxable"
+registration = "Individual, Priya Raghunathan (stock plan account)"
+opened = 2019-08-01
+owners = ["P-3058-1"]
+cash = "2500.00"
+holdings = [
+  { lot_id = "L-30580002-01", security_id = "SEC-0003", value = "20000", acquired = 2020-03-02, basis_pct = "99" },
+]
+
+[[accounts]]
+account_id = "SYN-30580003"
+account_type = "401k"
+registration = "401(k), Priya Raghunathan"
+opened = 2012-04-02
+owners = ["P-3058-1"]
+cash = "12000.00"
+holdings = [
+  { lot_id = "L-30580003-01", security_id = "SEC-0013", value = "520000", acquired = 2016-01-04, basis_pct = "100" },
+  { lot_id = "L-30580003-02", security_id = "SEC-0014", value = "210000", acquired = 2018-01-02, basis_pct = "100" },
+]
+
+[[accounts]]
+account_id = "SYN-30580004"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Daniel Cole"
+opened = 2009-10-19
+owners = ["P-3058-2"]
+cash = "5000.00"
+holdings = [
+  { lot_id = "L-30580004-01", security_id = "SEC-0019", value = "180000", acquired = 2013-07-01, basis_pct = "100" },
+  { lot_id = "L-30580004-02", security_id = "SEC-0003", value = "90000", acquired = 2017-09-05, basis_pct = "100" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-3058-1"
+filing_status = "married_filing_jointly"
+person_ids = ["P-3058-1", "P-3058-2"]
+
+[[billing_groups]]
+billing_group_id = "BG-3058-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-30580001", "SYN-30580002", "SYN-30580003", "SYN-30580004"]
+
+[[disclosures]]
+person_id = "P-3058-1"
+account_ids = ["SYN-30580001", "SYN-30580002", "SYN-30580003", "SYN-30580004"]
+
+[[disclosures]]
+person_id = "P-3058-2"
+account_ids = ["SYN-30580001", "SYN-30580002", "SYN-30580003", "SYN-30580004"]
+
+[[agreements]]
+agreement_id = "AGR-3058-1"
+kind = "advisory"
+party_ids = ["P-3058-1", "P-3058-2"]
+account_ids = ["SYN-30580001", "SYN-30580002", "SYN-30580003", "SYN-30580004"]
+signed = 2014-06-02
+summary = "Advisory agreement for all four accounts, billed together as one group on the standard fee schedule."
+
+[[beneficiaries]]
+account_id = "SYN-30580003"
+designation = "primary"
+name = "Daniel Cole"
+relationship = "spouse"
+share = "100"
+person_id = "P-3058-2"
+designated = 2014-06-16
+
+[[beneficiaries]]
+account_id = "SYN-30580004"
+designation = "primary"
+name = "Priya Raghunathan"
+relationship = "spouse"
+share = "100"
+person_id = "P-3058-1"
+designated = 2014-06-16
+
+# Wages on the 2025 W-2s: Priya's include the value of the four RSU releases.
+[[income]]
+person_id = "P-3058-1"
+kind = "wages"
+payer = "Bramwell Devices Group"
+amount = "1175944.00"
+year = 2025
+
+[[income]]
+person_id = "P-3058-2"
+kind = "wages"
+payer = "Wrenfield Design Studio"
+amount = "138000.00"
+year = 2025
+
+# The employer's release confirmations, forwarded by Priya and filed in the CRM.
+[[crm_activities]]
+activity_id = "CA-3058-01"
+date = 2025-02-24
+kind = "rsu_release_confirmation"
+refers_to = 2025-02-20
+account_id = "SYN-30580002"
+security_id = "SEC-0028"
+units = "800"
+price = "216.06"
+summary = "Release confirmation from Bramwell Devices Group, forwarded by Priya Raghunathan: 800 restricted stock units released on 2025-02-20 at $216.06 a share (a synthetic price), a release value of $172,848.00, included in her 2025 wages. Shares delivered to SYN-30580002."
+
+[[crm_activities]]
+activity_id = "CA-3058-02"
+date = 2025-05-22
+kind = "rsu_release_confirmation"
+refers_to = 2025-05-20
+account_id = "SYN-30580002"
+security_id = "SEC-0028"
+units = "800"
+price = "229.90"
+summary = "Release confirmation from Bramwell Devices Group, forwarded by Priya Raghunathan: 800 restricted stock units released on 2025-05-20 at $229.90 a share (a synthetic price), a release value of $183,920.00, included in her 2025 wages. Shares delivered to SYN-30580002."
+
+[[crm_activities]]
+activity_id = "CA-3058-03"
+date = 2025-08-22
+kind = "rsu_release_confirmation"
+refers_to = 2025-08-20
+account_id = "SYN-30580002"
+security_id = "SEC-0028"
+units = "800"
+price = "236.83"
+summary = "Release confirmation from Bramwell Devices Group, forwarded by Priya Raghunathan: 800 restricted stock units released on 2025-08-20 at $236.83 a share (a synthetic price), a release value of $189,464.00, included in her 2025 wages. Shares delivered to SYN-30580002."
+
+[[crm_activities]]
+activity_id = "CA-3058-04"
+date = 2025-11-24
+kind = "rsu_release_confirmation"
+refers_to = 2025-11-20
+account_id = "SYN-30580002"
+security_id = "SEC-0028"
+units = "800"
+price = "274.64"
+summary = "Release confirmation from Bramwell Devices Group, forwarded by Priya Raghunathan: 800 restricted stock units released on 2025-11-20 at $274.64 a share (a synthetic price), a release value of $219,712.00, included in her 2025 wages. Shares delivered to SYN-30580002."
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.60", band = "0.05" },
+  { asset_class = "International equity", target = "0.10", band = "0.04" },
+  { asset_class = "Fixed income", target = "0.28", band = "0.05" },
+]
+restrictions = []
+concentration_limit = "0.15"
+asset_classes = { "SEC-0001" = "US equity", "SEC-0002" = "International equity", "SEC-0003" = "Fixed income", "SEC-0013" = "US equity", "SEC-0014" = "Fixed income", "SEC-0019" = "US equity", "SEC-0028" = "US equity" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-3058-1", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [{ person_id = "P-3058-2", basis = "0.00" }]
+
+[[activity]]
+type = "rsu_vest"
+date = 2025-02-20
+account_id = "SYN-30580002"
+security_id = "SEC-0028"
+units = "800"
+
+[[activity]]
+type = "rsu_vest"
+date = 2025-05-20
+account_id = "SYN-30580002"
+security_id = "SEC-0028"
+units = "800"
+
+[[activity]]
+type = "rsu_vest"
+date = 2025-08-20
+account_id = "SYN-30580002"
+security_id = "SEC-0028"
+units = "800"
+
+[[activity]]
+type = "rsu_vest"
+date = 2025-11-20
+account_id = "SYN-30580002"
+security_id = "SEC-0028"
+units = "800"
+
+[[activity]]
+type = "sell"
+date = 2025-12-12
+account_id = "SYN-30580002"
+security_id = "SEC-0028"
+units = "1600"
+
+[planted]
+item_id = "PI-0004"
+type = "rsu_basis_missing"

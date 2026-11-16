@@ -24,8 +24,19 @@ def _build(args: argparse.Namespace) -> int:
     from casebook.generate.script import ScriptError
 
     out = args.out or (REAL_BOOK if args.real_tickers else DEFAULT_BOOK)
+    scripts = args.scripts
+    if args.held_out:
+        from casebook.runner.run import PrivateFolderError, private_root
+
+        try:
+            private = private_root()
+        except PrivateFolderError as error:
+            print(f"build failed: {error}", file=sys.stderr)
+            return 1
+        scripts = args.scripts if args.scripts != DEFAULT_SCRIPTS else private / DEFAULT_SCRIPTS
+        out = args.out or private / out
     try:
-        result = build_book(args.seed, out, args.scripts, args.real_tickers)
+        result = build_book(args.seed, out, scripts, args.real_tickers, held_out=args.held_out)
     except (BuildError, ScriptError) as error:
         print(f"build failed: {error}", file=sys.stderr)
         return 1
@@ -81,6 +92,14 @@ def _canary(args: argparse.Namespace) -> int:
     return 1 if result.leaked or result.failure else 0
 
 
+def _facts(args: argparse.Namespace) -> int:
+    from casebook.generate.facts import write_fact_sheets
+
+    written = write_fact_sheets(args.book, args.out)
+    print(f"wrote {len(written)} fact sheets into {args.out}")
+    return 0
+
+
 def parser() -> argparse.ArgumentParser:
     top = argparse.ArgumentParser(prog="casebook", description="The Indus Casebook")
     commands = top.add_subparsers(dest="command", required=True)
@@ -89,6 +108,9 @@ def parser() -> argparse.ArgumentParser:
     build.add_argument("--out", type=Path, default=None, help=f"default {DEFAULT_BOOK}, or {REAL_BOOK}")
     build.add_argument("--real-tickers", action="store_true", help="real tickers with invented prices, for runs")
     build.add_argument("--scripts", type=Path, default=DEFAULT_SCRIPTS)
+    build.add_argument(
+        "--held-out", action="store_true", help="build the held-out pairs from $CASEBOOK_PRIVATE, into it"
+    )
     build.set_defaults(run=_build)
     check = commands.add_parser("check", help="run every check on every household")
     check.add_argument("--book", type=Path, default=DEFAULT_BOOK)
@@ -109,6 +131,10 @@ def parser() -> argparse.ArgumentParser:
     run.add_argument("--keys", type=Path, default=PUBLISHED_KEYS)
     run.add_argument("--runs", type=Path, default=PUBLISHED_RUNS, help="where the mapped run records go")
     run.set_defaults(run=_run)
+    facts = commands.add_parser("facts", help="write each featured household's fact sheet, for its notes")
+    facts.add_argument("--book", type=Path, default=DEFAULT_BOOK)
+    facts.add_argument("--out", type=Path, default=Path("out/facts"))
+    facts.set_defaults(run=_facts)
     canary = commands.add_parser("canary", help="check a run cannot read a sealed file outside its workspace")
     canary.set_defaults(run=_canary)
     return top

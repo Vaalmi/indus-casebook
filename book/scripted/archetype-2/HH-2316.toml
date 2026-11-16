@@ -1,0 +1,210 @@
+# Archetype 2, pair 1, trap. Wages a little under the net investment income tax threshold, a bond
+# fund in the joint account while the IRAs hold equity funds, and a December 2025 sale of a fund
+# held since 2009 whose gain pushes modified AGI over the threshold.
+household_id = "HH-2316"
+name = "Lindqvist-Osei household"
+archetype = 2
+pair = 1
+role = "trap"
+configured = 2008-05-19
+
+[[members]]
+person_id = "P-2316-1"
+name = "Ingrid Lindqvist"
+born = 1971-04-16
+relationship = "primary"
+email = "ingrid.lindqvist@mail.example"
+phone = "555-0109"
+tax_id = "000-23-1601"
+
+[[members]]
+person_id = "P-2316-2"
+name = "Kwame Osei"
+born = 1969-12-02
+relationship = "spouse"
+email = "kwame.osei@mail.example"
+phone = "555-0110"
+tax_id = "000-23-1602"
+
+[[income]]
+person_id = "P-2316-1"
+kind = "wages"
+payer = "Marrowfield Regional Health"
+amount = "141500.00"
+year = 2025
+
+[[income]]
+person_id = "P-2316-2"
+kind = "wages"
+payer = "Ellery Vale School District"
+amount = "87000.00"
+year = 2025
+
+[[accounts]]
+account_id = "SYN-23160001"
+account_type = "joint_taxable"
+registration = "Joint tenants with right of survivorship"
+opened = 2008-05-19
+owners = ["P-2316-1", "P-2316-2"]
+cash = "35000.00"
+holdings = [
+  { lot_id = "L-23160001-01", security_id = "SEC-0018", value = "260000", acquired = 2012-04-02, basis_pct = "104" },
+  { lot_id = "L-23160001-02", security_id = "SEC-0019", value = "240000", acquired = 2009-03-16, basis_pct = "32" },
+  { lot_id = "L-23160001-03", security_id = "SEC-0010", value = "120000", acquired = 2014-06-09, basis_pct = "70" },
+  { lot_id = "L-23160001-04", security_id = "SEC-0002", value = "80000", acquired = 2016-11-14, basis_pct = "85" },
+]
+
+[[accounts]]
+account_id = "SYN-23160002"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Ingrid Lindqvist"
+opened = 2001-02-12
+owners = ["P-2316-1"]
+cash = "4000.00"
+holdings = [
+  { lot_id = "L-23160002-01", security_id = "SEC-0013", value = "210000", acquired = 2010-08-02, basis_pct = "100" },
+  { lot_id = "L-23160002-02", security_id = "SEC-0017", value = "90000", acquired = 2013-05-13, basis_pct = "100" },
+]
+
+[[accounts]]
+account_id = "SYN-23160003"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Kwame Osei"
+opened = 2003-08-25
+owners = ["P-2316-2"]
+cash = "3000.00"
+holdings = [
+  { lot_id = "L-23160003-01", security_id = "SEC-0001", value = "150000", acquired = 2011-01-18, basis_pct = "100" },
+  { lot_id = "L-23160003-02", security_id = "SEC-0021", value = "50000", acquired = 2015-09-08, basis_pct = "100" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-2316-1"
+filing_status = "married_filing_jointly"
+person_ids = ["P-2316-1", "P-2316-2"]
+
+[[billing_groups]]
+billing_group_id = "BG-2316-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-23160001", "SYN-23160002", "SYN-23160003"]
+
+[[disclosures]]
+person_id = "P-2316-1"
+account_ids = ["SYN-23160001", "SYN-23160002", "SYN-23160003"]
+
+[[disclosures]]
+person_id = "P-2316-2"
+account_ids = ["SYN-23160001", "SYN-23160002", "SYN-23160003"]
+
+[[agreements]]
+agreement_id = "AGR-2316-1"
+kind = "advisory"
+party_ids = ["P-2316-1", "P-2316-2"]
+account_ids = ["SYN-23160001", "SYN-23160002", "SYN-23160003"]
+signed = 2008-05-19
+summary = "Advisory agreement for the joint account and both traditional IRAs on the standard fee schedule."
+
+# Beneficiary designations the custodian holds (social security numbers here and above are in
+# area 000, which is never issued). Their daughter is not a household member.
+[[beneficiaries]]
+account_id = "SYN-23160002"
+designation = "primary"
+name = "Kwame Osei"
+relationship = "spouse"
+share = "100"
+person_id = "P-2316-2"
+designated = 2001-02-12
+
+[[beneficiaries]]
+account_id = "SYN-23160002"
+designation = "contingent"
+name = "Astrid Osei"
+relationship = "daughter"
+share = "100"
+designated = 2006-10-30
+
+[[beneficiaries]]
+account_id = "SYN-23160003"
+designation = "primary"
+name = "Ingrid Lindqvist"
+relationship = "spouse"
+share = "100"
+person_id = "P-2316-1"
+designated = 2003-08-25
+
+[[beneficiaries]]
+account_id = "SYN-23160003"
+designation = "contingent"
+name = "Astrid Osei"
+relationship = "daughter"
+share = "100"
+designated = 2006-10-30
+
+[[crm_activities]]
+activity_id = "CA-2316-01"
+date = 2025-12-03
+kind = "call"
+summary = "Ingrid called to ask for cash from the joint account for Astrid's spring tuition and the kitchen work. Agreed to sell part of the broad market fund they have held since 2009."
+
+[[crm_activities]]
+activity_id = "CA-2316-02"
+date = 2026-02-09
+kind = "document_received"
+summary = "2025 Forms W-2 received: Ingrid, Marrowfield Regional Health, wages $141,500.00; Kwame, Ellery Vale School District, wages $87,000.00. No other income outside the accounts."
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.65", band = "0.05" },
+  { asset_class = "International equity", target = "0.11", band = "0.04" },
+  { asset_class = "Fixed income", target = "0.20", band = "0.05" },
+]
+restrictions = []
+concentration_limit = "0.25"
+asset_classes = { "SEC-0001" = "US equity", "SEC-0002" = "International equity", "SEC-0010" = "US equity", "SEC-0013" = "US equity", "SEC-0017" = "US equity", "SEC-0018" = "Fixed income", "SEC-0019" = "US equity", "SEC-0021" = "International equity" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-2316-1", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [
+  { person_id = "P-2316-1", basis = "0.00" },
+  { person_id = "P-2316-2", basis = "0.00" },
+]
+
+[[activity]]
+type = "buy"
+date = 2025-03-10
+account_id = "SYN-23160002"
+security_id = "SEC-0017"
+units = "8"
+
+[[activity]]
+type = "sell"
+date = 2025-12-08
+account_id = "SYN-23160001"
+security_id = "SEC-0019"
+units = "400"
+
+[[activity]]
+type = "withdrawal"
+date = 2025-12-15
+account_id = "SYN-23160001"
+amount = "60000.00"
+
+[planted]
+item_id = "PI-0003"
+type = "niit_threshold"
+tax_unit_id = "TU-2316-1"
+sale_date = 2025-12-08
+security_id = "SEC-0019"

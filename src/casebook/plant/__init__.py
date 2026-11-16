@@ -1,142 +1,53 @@
-"""Planted items: check the situation the script claims really holds, and write its registry entry."""
+"""Planted items: check the situation a script claims really holds, and write its registry entry.
 
-from decimal import Decimal
+One module per archetype. Each names the planted item type its trap carries, plants it
+(`plant_trap`), and checks that the twin is what its script says it is (`check_twin`): clean, a
+near miss or unresolved.
+"""
 
-from casebook.generate.billing import QuarterBilling, quarterly_fee
-from casebook.generate.script import HouseholdScript
-from casebook.model.files import CRM_JSON, PORTFOLIO_BILLING, PORTFOLIO_HOUSEHOLD, TRANSACTIONS_CSV
-from casebook.model.household import Household
-from casebook.model.money import usd
-from casebook.model.registry import FigureTable, RegistryEntry
+from types import ModuleType
 
-ZERO = Decimal(0)
+from casebook.plant import (
+    a01_backdoor_roth,
+    a02_niit,
+    a03_rsu_basis,
+    a04_conversion_basis,
+    a05_first_rmd,
+    a06_qcd,
+    a07_inherited_ira,
+    a08_widowed,
+    a09_wash_sale,
+    a10_fee_breakpoint,
+)
+from casebook.plant.common import PlantContext, PlantError, Planting
 
+__all__ = ["PlantContext", "PlantError", "Planting", "plant"]
 
-class PlantError(ValueError):
-    pass
-
-
-def _names(household: Household, person_ids: tuple[str, ...]) -> str:
-    names = [household.person(p).name for p in person_ids]
-    return names[0] if len(names) == 1 else ", ".join(names[:-1]) + " and " + names[-1]
-
-
-def _groups_of(household: Household, account_ids: tuple[str, ...]) -> list[str]:
-    return sorted({g.billing_group_id for g in household.billing_groups for a in account_ids if a in g.account_ids})
-
-
-def _first_bound(household: Household) -> Decimal:
-    bound = household.fee_schedule.tiers[0].up_to
-    if bound is None:
-        raise PlantError(f"{household.household_id}: a flat fee schedule has no breakpoint to miss")
-    return bound
-
-
-def missed_fee_breakpoint(script: HouseholdScript, quarters: tuple[QuarterBilling, ...]) -> RegistryEntry:
-    assert script.planted is not None
-    hh = script.household
-    spec = script.planted
-    agreement = next((a for a in hh.agreements if a.agreement_id == spec.agreement_id), None)
-    if agreement is None or agreement.kind != "householding":
-        raise PlantError(f"{spec.item_id}: {spec.agreement_id} is not a householding agreement of {hh.household_id}")
-    groups = _groups_of(hh, agreement.account_ids)
-    if len(groups) < 2:
-        raise PlantError(
-            f"{spec.item_id}: the agreement's accounts already bill as one group, so no breakpoint is missed"
-        )
-    rows: list[tuple[str, ...]] = []
-    billed_total = implied_total = ZERO
-    for quarter in quarters:
-        combined = sum((quarter.account_values[a] for a in agreement.account_ids), ZERO)
-        billed = sum((quarter.account_fees[a] for a in agreement.account_ids), ZERO)
-        implied = quarterly_fee(hh.fee_schedule, combined)
-        if billed <= implied:
-            raise PlantError(
-                f"{spec.item_id}: in the quarter to {quarter.quarter_end} the fee debited is not above the agreed fee"
-            )
-        billed_total += billed
-        implied_total += implied
-        rows.append(
-            (
-                quarter.quarter_end.isoformat(),
-                quarter.fee_date.isoformat(),
-                usd(combined),
-                usd(billed),
-                usd(implied),
-                usd(billed - implied),
-            )
-        )
-    over = billed_total - implied_total
-    bound = _first_bound(hh)
-    conclusion = (
-        f"The householding agreement {agreement.agreement_id}, signed on {agreement.signed.isoformat()} by "
-        f"{_names(hh, agreement.party_ids)}, puts accounts {', '.join(agreement.account_ids)} in one billing group. "
-        f"The portfolio system still bills them as {len(groups)} groups ({', '.join(groups)}). Their combined "
-        f"quarter-end value was above {usd(bound)} in each of the {len(quarters)} quarters billed from "
-        f"{quarters[0].fee_date.isoformat()} to {quarters[-1].fee_date.isoformat()}, so the schedule's lower rates "
-        f"above {usd(bound)} should have applied. The fees debited on these accounts total {usd(billed_total)}; "
-        f"the agreement implies {usd(implied_total)}. The household was overbilled by {usd(over)}."
-    )
-    return RegistryEntry(
-        item_id=spec.item_id,
-        household_id=hh.household_id,
-        kind="source_disagreement",
-        item_type=spec.item_type,
-        title="Missed fee breakpoint: a signed householding agreement is not applied in billing",
-        sources=(CRM_JSON, PORTFOLIO_HOUSEHOLD, PORTFOLIO_BILLING, TRANSACTIONS_CSV),
-        conclusion=conclusion,
-        figures=(
-            (f"Fees debited, {len(quarters)} quarters", usd(billed_total)),
-            ("Fees under the agreement", usd(implied_total)),
-            ("Overbilled", usd(over)),
-        ),
-        table=FigureTable(
-            columns=(
-                "Quarter end",
-                "Fee debited on",
-                "Combined value",
-                "Fees debited",
-                "Fees under the agreement",
-                "Overbilled",
-            ),
-            rows=tuple(rows),
-        ),
-        references=(agreement.agreement_id, *agreement.account_ids),
-    )
+ARCHETYPE_PLANTERS: dict[int, ModuleType] = {
+    1: a01_backdoor_roth,
+    2: a02_niit,
+    3: a03_rsu_basis,
+    4: a04_conversion_basis,
+    5: a05_first_rmd,
+    6: a06_qcd,
+    7: a07_inherited_ira,
+    8: a08_widowed,
+    9: a09_wash_sale,
+    10: a10_fee_breakpoint,
+}
 
 
-def check_near_miss_breakpoint(script: HouseholdScript, quarters: tuple[QuarterBilling, ...]) -> None:
-    """A near miss looks like the trap: accounts above the breakpoint together, billed apart.
-
-    What makes it a near miss is that no agreement joins them.
-    """
-    hh = script.household
-    if any(a.kind == "householding" for a in hh.agreements):
-        raise PlantError(f"{hh.household_id}: a near miss has no householding agreement")
-    if len(hh.billing_groups) < 2:
-        raise PlantError(f"{hh.household_id}: a near miss bills its accounts in more than one group")
-    bound = _first_bound(hh)
-    for quarter in quarters:
-        if sum(quarter.account_values.values(), ZERO) <= bound:
-            raise PlantError(
-                f"{hh.household_id}: in the quarter to {quarter.quarter_end} "
-                f"the accounts together are not above {usd(bound)}"
-            )
-
-
-PLANTERS = {"missed_fee_breakpoint": missed_fee_breakpoint}
-NEAR_MISS_CHECKS = {10: check_near_miss_breakpoint}
-
-
-def plant(script: HouseholdScript, quarters: tuple[QuarterBilling, ...]) -> tuple[RegistryEntry, ...]:
+def plant(context: PlantContext) -> Planting:
+    script = context.script
+    module = ARCHETYPE_PLANTERS[script.household.archetype]
     if script.planted is not None:
-        planter = PLANTERS.get(script.planted.item_type)
-        if planter is None:
-            raise PlantError(f"{script.source}: no planter for {script.planted.item_type!r}")
-        return (planter(script, quarters),)
-    if script.twin is not None and script.twin.kind == "near_miss":
-        check = NEAR_MISS_CHECKS.get(script.household.archetype)
-        if check is None:
-            raise PlantError(f"{script.source}: no near-miss check for archetype {script.household.archetype}")
-        check(script, quarters)
-    return ()
+        if script.planted.item_type != module.ITEM_TYPE:
+            raise PlantError(
+                f"{script.source}: archetype {script.household.archetype} plants {module.ITEM_TYPE!r}, "
+                f"not {script.planted.item_type!r}"
+            )
+        planting: Planting = module.plant_trap(context)
+    else:
+        assert script.twin is not None
+        planting = module.check_twin(context, script.twin.kind)
+    return planting

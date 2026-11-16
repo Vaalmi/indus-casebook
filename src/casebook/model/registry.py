@@ -1,6 +1,7 @@
 """A registry entry: one planted item (docs/SPEC.md, The book)."""
 
 from dataclasses import dataclass
+from datetime import date
 from typing import Any
 
 PLANTED_KINDS = ("situation", "source_disagreement")
@@ -23,6 +24,9 @@ class RegistryEntry:
     conclusion: str
     figures: tuple[tuple[str, str], ...]
     table: FigureTable
+    # The first day the conclusion can be reached from the files: the day its last piece of evidence
+    # is on record. A note citing the item cannot be dated earlier (docs/SPEC.md, No future evidence).
+    known_as_of: date
     # The records the item is about (transaction, account, agreement, security IDs): a check
     # accepts an entry only for the very records it names.
     references: tuple[str, ...] = ()
@@ -44,6 +48,7 @@ class RegistryEntry:
             "justified_conclusion": self.conclusion,
             "figures": [{"label": label, "value": value} for label, value in self.figures],
             "table": {"columns": list(self.table.columns), "rows": [list(r) for r in self.table.rows]},
+            "known_as_of": self.known_as_of.isoformat(),
             "references": list(self.references),
         }
 
@@ -63,5 +68,6 @@ def parse_entry(raw: dict[str, Any]) -> RegistryEntry:
             columns=tuple(str(c) for c in table["columns"]),
             rows=tuple(tuple(str(v) for v in row) for row in table["rows"]),
         ),
+        known_as_of=date.fromisoformat(str(raw["known_as_of"])),
         references=tuple(str(r) for r in raw.get("references", [])),
     )

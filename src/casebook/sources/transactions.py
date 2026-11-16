@@ -20,6 +20,8 @@ from casebook.model.events import (
     Transfer,
     Vest,
     Withdrawal,
+    lot_id,
+    transaction_id,
 )
 from casebook.model.files import (
     BUY,
@@ -57,15 +59,6 @@ class TransactionRow:
     price: Decimal | None
     amount: Decimal
     description: str
-
-
-def transaction_id(event_id: str) -> str:
-    return "T" + event_id.removeprefix("E")
-
-
-def lot_id(event_id: str) -> str:
-    """The lot a purchase or a vesting opens (the ledger's naming)."""
-    return f"L-{event_id}"
 
 
 def _row(
@@ -175,8 +168,12 @@ def rows_for(context: EmitContext, event: Event) -> list[TransactionRow]:
                 _row(event, event.to_account_id, TRANSFER_IN, ZERO, into, event.security_id, event.units),
             ]
         case Vest():
-            text = f"RSU vesting, {fmt(event.units)} {name(event.security_id)} at {fmt(event.price)}"
             lot = lot_id(event.event_id)
+            if event.price == ZERO:
+                # A custodian that was never given the vesting's value holds the shares with no basis.
+                text = f"RSU vesting, {fmt(event.units)} {name(event.security_id)}, no cost basis"
+                return [_row(event, event.account_id, RSU_VEST, ZERO, text, event.security_id, event.units, lot)]
+            text = f"RSU vesting, {fmt(event.units)} {name(event.security_id)} at {fmt(event.price)}"
             return [
                 _row(event, event.account_id, RSU_VEST, ZERO, text, event.security_id, event.units, lot, event.price)
             ]

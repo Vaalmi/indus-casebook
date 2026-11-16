@@ -17,10 +17,12 @@ from casebook.model.files import (
     household_dir,
 )
 from casebook.notice import NOTICE
+from casebook.securities.market import build_market
+from casebook.securities.master import load_master
 
-from .conftest import SCRIPTS, SEED
+from .conftest import FEATURED, SCRIPTS, SEED
 
-HOUSEHOLDS = ("HH-4821", "HH-7350")
+HOUSEHOLDS = FEATURED
 
 
 def tree_hash(root: Path) -> str:
@@ -38,7 +40,14 @@ def test_the_pair_has_four_source_sets_an_event_log_and_one_registry_entry(book:
         assert log["events"][0]["type"] == "opening"
     entries = json.loads((book / REGISTRY).read_text())["entries"]
     assert [(e["item_id"], e["household_id"], e["type"]) for e in entries] == [
-        ("PI-0001", "HH-4821", "missed_fee_breakpoint")
+        ("PI-0001", "HH-4821", "missed_fee_breakpoint"),
+        ("PI-0002", "HH-1204", "backdoor_roth_pro_rata"),
+        ("PI-0003", "HH-2316", "niit_threshold"),
+        ("PI-0004", "HH-3058", "rsu_basis_missing"),
+        ("PI-0005", "HH-4105", "conversion_ira_basis"),
+        ("PI-0006", "HH-5271", "first_rmd_401k_shortfall"),
+        ("PI-0007", "HH-6047", "qcd_evidenced_in_crm_only"),
+        ("PI-0010", "HH-9234", "cross_account_wash_sale"),
     ]
 
 
@@ -48,10 +57,11 @@ def test_the_same_seed_builds_a_byte_identical_book(book: Path, tmp_path: Path) 
     assert tree_hash(again) == tree_hash(book)
 
 
-def test_another_seed_builds_other_prices(book: Path, tmp_path: Path) -> None:
-    other = tmp_path / "other"
-    build_book(SEED + 1, other, SCRIPTS)
-    assert (other / PRICES_CSV).read_bytes() != (book / PRICES_CSV).read_bytes()
+def test_another_seed_draws_other_prices() -> None:
+    # The featured scripts are tuned to seed 2026's prices (a planter refuses a situation that no
+    # longer holds), so the seed's effect is shown on the market itself.
+    master = load_master()
+    assert build_market(master, SEED + 1).prices != build_market(master, SEED).prices
 
 
 def test_a_new_version_redraws_no_price(book: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

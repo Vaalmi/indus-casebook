@@ -2,7 +2,7 @@
 .PHONY: setup check
 
 PLAYWRIGHT_FLAGS ?=
-MONEY_PACKAGES = src/casebook/model src/casebook/replay src/casebook/keys
+MONEY_PACKAGES = src/casebook/model src/casebook/replay src/casebook/keys src/casebook/rules
 
 setup:
 	uv sync --frozen

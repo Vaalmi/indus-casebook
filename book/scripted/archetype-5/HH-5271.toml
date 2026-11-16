@@ -1,0 +1,211 @@
+# Archetype 5, pair 1, trap. Teodoro turned 73 in 2025, his first distribution year. He has two
+# traditional IRAs and the 401(k) from Calloway Turbine Works, where he worked until 2019. In
+# December 2025 he took one distribution from his larger IRA for the three accounts' RMDs added
+# together. The IRAs may be aggregated; the 401(k) may not, so its RMD was never taken, and the
+# required beginning date of 1 April 2026 has passed.
+household_id = "HH-5271"
+name = "Villanueva household"
+archetype = 5
+pair = 1
+role = "trap"
+configured = 2018-03-05
+
+[[members]]
+person_id = "P-5271-1"
+name = "Teodoro Villanueva"
+born = 1952-03-14
+relationship = "primary"
+email = "teodoro.villanueva@mail.example"
+phone = "555-0125"
+tax_id = "000-52-7101"
+
+[[members]]
+person_id = "P-5271-2"
+name = "Marguerite Villanueva"
+born = 1955-10-02
+relationship = "spouse"
+email = "marguerite.villanueva@mail.example"
+phone = "555-0126"
+tax_id = "000-52-7102"
+
+[[accounts]]
+account_id = "SYN-52710001"
+account_type = "joint_taxable"
+registration = "Joint tenants with right of survivorship"
+opened = 2018-03-05
+owners = ["P-5271-1", "P-5271-2"]
+cash = "24000.00"
+holdings = [
+  { lot_id = "L-52710001-01", security_id = "SEC-0001", value = "210000", acquired = 2018-03-19, basis_pct = "58" },
+  { lot_id = "L-52710001-02", security_id = "SEC-0002", value = "70000", acquired = 2019-08-12, basis_pct = "86" },
+  { lot_id = "L-52710001-03", security_id = "SEC-0008", value = "120000", acquired = 2020-02-24, basis_pct = "101" },
+]
+
+[[accounts]]
+account_id = "SYN-52710002"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Teodoro Villanueva"
+opened = 2003-06-16
+owners = ["P-5271-1"]
+cash = "14000.00"
+holdings = [
+  { lot_id = "L-52710002-01", security_id = "SEC-0001", value = "300000", acquired = 2009-04-06, basis_pct = "100" },
+  { lot_id = "L-52710002-02", security_id = "SEC-0003", value = "230000", acquired = 2012-10-15, basis_pct = "100" },
+  { lot_id = "L-52710002-03", security_id = "SEC-0002", value = "80000", acquired = 2016-01-11, basis_pct = "100" },
+]
+
+[[accounts]]
+account_id = "SYN-52710003"
+account_type = "traditional_ira"
+registration = "Traditional IRA (rollover), Teodoro Villanueva"
+opened = 2011-09-07
+owners = ["P-5271-1"]
+cash = "5500.00"
+holdings = [
+  { lot_id = "L-52710003-01", security_id = "SEC-0013", value = "120000", acquired = 2011-09-20, basis_pct = "100" },
+  { lot_id = "L-52710003-02", security_id = "SEC-0014", value = "85000", acquired = 2014-05-27, basis_pct = "100" },
+]
+
+[[accounts]]
+account_id = "SYN-52710004"
+account_type = "401k"
+registration = "Calloway Turbine Works 401(k) Plan, Teodoro Villanueva (former employee)"
+opened = 1998-02-02
+owners = ["P-5271-1"]
+cash = "7500.00"
+holdings = [
+  { lot_id = "L-52710004-01", security_id = "SEC-0013", value = "190000", acquired = 2008-11-03, basis_pct = "100" },
+  { lot_id = "L-52710004-02", security_id = "SEC-0014", value = "140000", acquired = 2013-03-18, basis_pct = "100" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-5271-1"
+filing_status = "married_filing_jointly"
+person_ids = ["P-5271-1", "P-5271-2"]
+
+[[billing_groups]]
+billing_group_id = "BG-5271-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-52710001", "SYN-52710002", "SYN-52710003", "SYN-52710004"]
+
+[[disclosures]]
+person_id = "P-5271-1"
+account_ids = ["SYN-52710001", "SYN-52710002", "SYN-52710003", "SYN-52710004"]
+
+[[disclosures]]
+person_id = "P-5271-2"
+account_ids = ["SYN-52710001", "SYN-52710002", "SYN-52710003", "SYN-52710004"]
+
+[[agreements]]
+agreement_id = "AGR-5271-1"
+kind = "advisory"
+party_ids = ["P-5271-1", "P-5271-2"]
+account_ids = ["SYN-52710001", "SYN-52710002", "SYN-52710003", "SYN-52710004"]
+signed = 2018-03-05
+summary = "Advisory agreement for the joint account, Teodoro's two IRAs and his former employer's 401(k) on the standard fee schedule."
+
+[[beneficiaries]]
+account_id = "SYN-52710002"
+designation = "primary"
+name = "Marguerite Villanueva"
+relationship = "spouse"
+share = "100"
+person_id = "P-5271-2"
+designated = 2003-06-16
+
+[[beneficiaries]]
+account_id = "SYN-52710003"
+designation = "primary"
+name = "Marguerite Villanueva"
+relationship = "spouse"
+share = "100"
+person_id = "P-5271-2"
+designated = 2011-09-07
+
+[[beneficiaries]]
+account_id = "SYN-52710004"
+designation = "primary"
+name = "Marguerite Villanueva"
+relationship = "spouse"
+share = "100"
+person_id = "P-5271-2"
+designated = 1998-02-02
+
+# Records the CRM holds beside its notes: when Teodoro left the plan's employer, and his
+# distribution instruction for 2025.
+[[crm_activities]]
+activity_id = "CA-5271-01"
+date = 2019-06-28
+kind = "retirement"
+summary = "Teodoro Villanueva retired from Calloway Turbine Works. His 401(k) stays in the plan as a former employee's account."
+
+[[crm_activities]]
+activity_id = "CA-5271-02"
+date = 2025-11-24
+kind = "distribution_instruction"
+summary = "Teodoro Villanueva signed a distribution form for his 2025 required minimum distribution: one payment from IRA SYN-52710002, with 10% federal tax withheld."
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.50", band = "0.05" },
+  { asset_class = "International equity", target = "0.10", band = "0.04" },
+  { asset_class = "Fixed income", target = "0.40", band = "0.05" },
+]
+restrictions = []
+concentration_limit = "0.35"
+asset_classes = { "SEC-0001" = "US equity", "SEC-0002" = "International equity", "SEC-0003" = "Fixed income", "SEC-0008" = "Fixed income", "SEC-0013" = "US equity", "SEC-0014" = "Fixed income" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-5271-1", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [{ person_id = "P-5271-1", basis = "0.00" }]
+
+[[activity]]
+type = "contribution"
+date = 2025-03-10
+account_id = "SYN-52710001"
+amount = "12000.00"
+
+[[activity]]
+type = "buy"
+date = 2025-03-12
+account_id = "SYN-52710001"
+security_id = "SEC-0001"
+units = "20"
+
+[[activity]]
+type = "sell"
+date = 2025-12-01
+account_id = "SYN-52710002"
+security_id = "SEC-0003"
+units = "110"
+
+[[activity]]
+type = "rmd"
+date = 2025-12-04
+account_id = "SYN-52710002"
+amount = "44202.50"
+tax_year = 2025
+withheld = "4420.25"
+
+[[activity]]
+type = "withdrawal"
+date = 2026-02-17
+account_id = "SYN-52710001"
+amount = "9000.00"
+
+[planted]
+item_id = "PI-0006"
+type = "first_rmd_401k_shortfall"

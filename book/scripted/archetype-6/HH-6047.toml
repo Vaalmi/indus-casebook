@@ -1,0 +1,180 @@
+# Archetype 6, pair 1, trap. Bernard, 78, has taken RMDs for years. In September 2025 he gave
+# part of his 2025 RMD straight from his IRA to a literacy charity as a qualified charitable
+# distribution, and took the rest in November. The custodian coded the charity payment as an
+# ordinary required distribution, so its records treat it as taxable. Only the CRM shows it was a
+# QCD: Bernard's signed request and the charity's acknowledgment letter.
+household_id = "HH-6047"
+name = "Lachance household"
+archetype = 6
+pair = 1
+role = "trap"
+configured = 2012-05-14
+
+[[members]]
+person_id = "P-6047-1"
+name = "Bernard Lachance"
+born = 1947-05-09
+relationship = "primary"
+email = "bernard.lachance@mail.example"
+phone = "555-0133"
+tax_id = "000-60-4701"
+
+[[members]]
+person_id = "P-6047-2"
+name = "Yoshiko Lachance"
+born = 1949-11-21
+relationship = "spouse"
+email = "yoshiko.lachance@mail.example"
+phone = "555-0134"
+tax_id = "000-60-4702"
+
+[[accounts]]
+account_id = "SYN-60470001"
+account_type = "joint_taxable"
+registration = "Joint tenants with right of survivorship"
+opened = 2012-05-14
+owners = ["P-6047-1", "P-6047-2"]
+cash = "26000.00"
+holdings = [
+  { lot_id = "L-60470001-01", security_id = "SEC-0001", value = "180000", acquired = 2012-06-04, basis_pct = "44" },
+  { lot_id = "L-60470001-02", security_id = "SEC-0010", value = "95000", acquired = 2015-03-23, basis_pct = "71" },
+  { lot_id = "L-60470001-03", security_id = "SEC-0008", value = "150000", acquired = 2018-07-09, basis_pct = "102" },
+]
+
+[[accounts]]
+account_id = "SYN-60470002"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Bernard Lachance"
+opened = 2001-01-22
+owners = ["P-6047-1"]
+cash = "12000.00"
+holdings = [
+  { lot_id = "L-60470002-01", security_id = "SEC-0001", value = "190000", acquired = 2006-02-13, basis_pct = "100" },
+  { lot_id = "L-60470002-02", security_id = "SEC-0003", value = "210000", acquired = 2010-09-27, basis_pct = "100" },
+  { lot_id = "L-60470002-03", security_id = "SEC-0006", value = "65000", acquired = 2014-11-17, basis_pct = "100" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-6047-1"
+filing_status = "married_filing_jointly"
+person_ids = ["P-6047-1", "P-6047-2"]
+
+[[billing_groups]]
+billing_group_id = "BG-6047-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-60470001", "SYN-60470002"]
+
+[[disclosures]]
+person_id = "P-6047-1"
+account_ids = ["SYN-60470001", "SYN-60470002"]
+
+[[disclosures]]
+person_id = "P-6047-2"
+account_ids = ["SYN-60470001", "SYN-60470002"]
+
+[[agreements]]
+agreement_id = "AGR-6047-1"
+kind = "advisory"
+party_ids = ["P-6047-1", "P-6047-2"]
+account_ids = ["SYN-60470001", "SYN-60470002"]
+signed = 2012-05-14
+summary = "Advisory agreement for the joint account and Bernard's IRA on the standard fee schedule."
+
+[[beneficiaries]]
+account_id = "SYN-60470002"
+designation = "primary"
+name = "Yoshiko Lachance"
+relationship = "spouse"
+share = "100"
+person_id = "P-6047-2"
+designated = 2001-01-22
+
+[[beneficiaries]]
+account_id = "SYN-60470002"
+designation = "contingent"
+name = "Tessaly Harbor Literacy Alliance"
+relationship = "charity"
+share = "100"
+designated = 2019-03-11
+
+# The only records that show the September payment was a QCD.
+[[crm_activities]]
+activity_id = "CA-6047-01"
+date = 2025-08-28
+kind = "qcd_request"
+summary = "QCD request signed by Bernard Lachance: pay $12,000.00 from IRA SYN-60470002 directly to Tessaly Harbor Literacy Alliance, a public charity, as a qualified charitable distribution toward his 2025 required minimum distribution. Sent to the custodian the same day."
+
+[[crm_activities]]
+activity_id = "CA-6047-02"
+date = 2025-10-06
+kind = "charity_acknowledgment"
+refers_to = 2025-09-15
+account_id = "SYN-60470002"
+amount = "12000.00"
+summary = "Acknowledgment letter from Tessaly Harbor Literacy Alliance: received $12,000.00 from the IRA of Bernard Lachance on 2025-09-15, paid by the custodian directly to the charity. No goods or services were provided in return. Filed with the household's 2025 tax papers."
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.45", band = "0.05" },
+  { asset_class = "International equity", target = "0.07", band = "0.04" },
+  { asset_class = "Fixed income", target = "0.48", band = "0.05" },
+]
+restrictions = []
+concentration_limit = "0.30"
+asset_classes = { "SEC-0001" = "US equity", "SEC-0003" = "Fixed income", "SEC-0006" = "International equity", "SEC-0008" = "Fixed income", "SEC-0010" = "US equity" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-6047-1", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [{ person_id = "P-6047-1", basis = "0.00" }]
+
+[[activity]]
+type = "sell"
+date = 2025-09-10
+account_id = "SYN-60470002"
+security_id = "SEC-0003"
+units = "20"
+
+[[activity]]
+type = "qcd"
+date = 2025-09-15
+account_id = "SYN-60470002"
+amount = "12000.00"
+charity = "Tessaly Harbor Literacy Alliance"
+
+[[activity]]
+type = "sell"
+date = 2025-11-14
+account_id = "SYN-60470002"
+security_id = "SEC-0001"
+units = "35"
+
+[[activity]]
+type = "rmd"
+date = 2025-11-18
+account_id = "SYN-60470002"
+amount = "9659.73"
+tax_year = 2025
+withheld = "965.97"
+
+[[activity]]
+type = "withdrawal"
+date = 2025-12-15
+account_id = "SYN-60470001"
+amount = "10000.00"
+
+[planted]
+item_id = "PI-0007"
+type = "qcd_evidenced_in_crm_only"

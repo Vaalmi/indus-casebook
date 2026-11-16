@@ -1,0 +1,176 @@
+# Archetype 6, pair 1, twin: clean. The same shape as HH-6047: Celestine, 78, gave part of her
+# 2025 RMD from her IRA to a hospice as a qualified charitable distribution and took the rest in
+# December. Here the custodian coded the charity payment as a QCD, and the CRM's request and
+# acknowledgment agree with it.
+household_id = "HH-6590"
+name = "Abara household"
+archetype = 6
+pair = 1
+role = "twin"
+configured = 2013-08-19
+
+[[members]]
+person_id = "P-6590-1"
+name = "Celestine Abara"
+born = 1947-02-17
+relationship = "primary"
+email = "celestine.abara@mail.example"
+phone = "555-0137"
+tax_id = "000-65-9001"
+
+[[members]]
+person_id = "P-6590-2"
+name = "Ifeoma Abara-Lowe"
+born = 1979-06-30
+relationship = "daughter"
+email = "ifeoma.abaralowe@mail.example"
+phone = "555-0138"
+tax_id = "000-65-9002"
+
+[[accounts]]
+account_id = "SYN-65900001"
+account_type = "individual_taxable"
+registration = "Individual, Celestine Abara"
+opened = 2013-08-19
+owners = ["P-6590-1"]
+cash = "22000.00"
+holdings = [
+  { lot_id = "L-65900001-01", security_id = "SEC-0001", value = "160000", acquired = 2013-09-03, basis_pct = "47" },
+  { lot_id = "L-65900001-02", security_id = "SEC-0010", value = "85000", acquired = 2016-02-08, basis_pct = "69" },
+  { lot_id = "L-65900001-03", security_id = "SEC-0008", value = "140000", acquired = 2019-05-20, basis_pct = "100" },
+]
+
+[[accounts]]
+account_id = "SYN-65900002"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Celestine Abara"
+opened = 2002-04-08
+owners = ["P-6590-1"]
+cash = "13000.00"
+holdings = [
+  { lot_id = "L-65900002-01", security_id = "SEC-0001", value = "220000", acquired = 2007-03-19, basis_pct = "100" },
+  { lot_id = "L-65900002-02", security_id = "SEC-0003", value = "240000", acquired = 2011-10-10, basis_pct = "100" },
+  { lot_id = "L-65900002-03", security_id = "SEC-0006", value = "75000", acquired = 2015-06-22, basis_pct = "100" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-6590-1"
+filing_status = "single"
+person_ids = ["P-6590-1"]
+
+[[tax_units]]
+tax_unit_id = "TU-6590-2"
+filing_status = "single"
+person_ids = ["P-6590-2"]
+
+[[billing_groups]]
+billing_group_id = "BG-6590-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-65900001", "SYN-65900002"]
+
+[[disclosures]]
+person_id = "P-6590-1"
+account_ids = ["SYN-65900001", "SYN-65900002"]
+
+[[disclosures]]
+person_id = "P-6590-2"
+account_ids = ["SYN-65900001", "SYN-65900002"]
+
+[[agreements]]
+agreement_id = "AGR-6590-1"
+kind = "advisory"
+party_ids = ["P-6590-1"]
+account_ids = ["SYN-65900001", "SYN-65900002"]
+signed = 2013-08-19
+summary = "Advisory agreement for Celestine's individual account and IRA on the standard fee schedule. Her daughter Ifeoma may be told about both accounts."
+
+[[beneficiaries]]
+account_id = "SYN-65900002"
+designation = "primary"
+name = "Ifeoma Abara-Lowe"
+relationship = "daughter"
+share = "100"
+person_id = "P-6590-2"
+designated = 2016-09-12
+
+[[crm_activities]]
+activity_id = "CA-6590-01"
+date = 2025-05-29
+kind = "qcd_request"
+summary = "QCD request signed by Celestine Abara: pay $15,000.00 from IRA SYN-65900002 directly to Arrowmere Valley Hospice, a public charity, as a qualified charitable distribution toward her 2025 required minimum distribution. Sent to the custodian the same day."
+
+[[crm_activities]]
+activity_id = "CA-6590-02"
+date = 2025-07-08
+kind = "charity_acknowledgment"
+refers_to = 2025-06-10
+account_id = "SYN-65900002"
+amount = "15000.00"
+summary = "Acknowledgment letter from Arrowmere Valley Hospice: received $15,000.00 from the IRA of Celestine Abara on 2025-06-10, paid by the custodian directly to the charity. No goods or services were provided in return. Filed with her 2025 tax papers."
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.45", band = "0.05" },
+  { asset_class = "International equity", target = "0.08", band = "0.04" },
+  { asset_class = "Fixed income", target = "0.47", band = "0.05" },
+]
+restrictions = []
+concentration_limit = "0.30"
+asset_classes = { "SEC-0001" = "US equity", "SEC-0003" = "Fixed income", "SEC-0006" = "International equity", "SEC-0008" = "Fixed income", "SEC-0010" = "US equity" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-6590-1", short_term = "0.00", long_term = "0.00" },
+  { tax_unit_id = "TU-6590-2", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [{ person_id = "P-6590-1", basis = "0.00" }]
+
+[[activity]]
+type = "sell"
+date = 2025-06-04
+account_id = "SYN-65900002"
+security_id = "SEC-0003"
+units = "20"
+
+[[activity]]
+type = "qcd"
+date = 2025-06-10
+account_id = "SYN-65900002"
+amount = "15000.00"
+charity = "Arrowmere Valley Hospice"
+
+[[activity]]
+type = "sell"
+date = 2025-11-24
+account_id = "SYN-65900002"
+security_id = "SEC-0001"
+units = "40"
+
+[[activity]]
+type = "rmd"
+date = 2025-12-01
+account_id = "SYN-65900002"
+amount = "9882.45"
+tax_year = 2025
+withheld = "988.25"
+
+[[activity]]
+type = "withdrawal"
+date = 2026-03-02
+account_id = "SYN-65900001"
+amount = "7500.00"
+
+[twin]
+kind = "clean"
+explanation = "Clean. Celestine, 78, paid $15,000.00 from her IRA straight to Arrowmere Valley Hospice in June 2025 and took the rest of her 2025 RMD in December. The custodian coded the charity payment as a qualified charitable distribution and the CRM's signed request and acknowledgment letter agree: it is within the 2025 limit, she was over 70 and a half, and the QCD and the December distribution together meet her 2025 RMD."

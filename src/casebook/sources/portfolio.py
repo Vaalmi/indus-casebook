@@ -30,6 +30,7 @@ def _household(context: EmitContext) -> dict[str, Any]:
                 "name": p.name,
                 "born": p.born.isoformat(),
                 "relationship": p.relationship,
+                **({"died": p.died.isoformat()} if p.died else {}),
                 **TODAY,
             }
             for p in hh.members
