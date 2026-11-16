@@ -60,7 +60,8 @@ def book_price_rows(household_root: Path) -> list[tuple[str, date, Decimal, int]
     """Every row of the book's synthetic price series: security, date, price, line."""
     rows = read_csv(book_root(household_root), PRICES_CSV, PRICES_COLUMNS)
     return [
-        (r["security_id"], parse_date(r["date"]), parse_decimal(r["price"]), i) for i, r in enumerate(rows, start=2)
+        (r["security_id"], parse_date(r["valuation_date"]), parse_decimal(r["price"]), i)
+        for i, r in enumerate(rows, start=2)
     ]
 
 

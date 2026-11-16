@@ -203,6 +203,9 @@ def test_custodian_owners_that_differ_from_legal_ownership_fail(book_copy: Path)
     assert found == (
         "custodian/accounts.csv and portfolio/household.json disagree with no registry entry: "
         "SYN-48210003 owners ['Ngozi Okafor']",
+        # The statement, which the custodian issued, still names the owner the portfolio system holds.
+        "documents/statement-SYN-48210003-2026Q1.pdf and custodian/accounts.csv disagree with no registry entry: "
+        "SYN-48210003 is owned by Ngozi Lind",
     )
 
 
@@ -249,7 +252,7 @@ def test_a_duplicate_row_in_the_book_price_series_fails_the_prices_check(book_co
     path = book_copy / "securities" / "prices_synthetic.csv"
     lines = path.read_text().splitlines()
     first = lines[1].split(",")
-    first[3] = "0.01"
+    first[lines[0].split(",").index("price")] = "0.01"
     lines.insert(1, ",".join(first))
     path.write_text("\n".join(lines) + "\n")
     found = problems(book_copy, "prices and values")
@@ -425,3 +428,65 @@ def test_shares_sold_before_the_loss_sale_replace_nothing(book_copy: Path) -> No
         "1053.00,-7.40,2025-01-16,2025-01-16\n"
     )
     assert problems(book_copy, "wash sales") == ()
+
+
+# Reviewers A and B, slice 4 round 1: facts two sources share that the check did not compare
+
+
+def test_a_portfolio_price_that_differs_from_the_custodian_fails(book_copy: Path) -> None:
+    # A-S2: only units were compared.
+    edit_json(household(book_copy) / "portfolio" / "positions.json", lambda d: d["positions"][0].update(price="0.01"))
+    found = problems(book_copy, "sources agree")
+    assert any(
+        p.startswith("custodian/positions.csv and portfolio/positions.json disagree") and "at 0.01" in p for p in found
+    )
+
+
+def test_a_beneficiary_named_otherwise_than_the_household_member_fails(book_copy: Path) -> None:
+    # A-S2: Henrik's IRA names its primary beneficiary as P-4821-1 but calls her someone else.
+    path = household(book_copy) / "custodian" / "beneficiaries.csv"
+    edit_csv_cell(path, {"designation": "primary"}, "name", "Ngozi Lind")
+    found = problems(book_copy, "sources agree")
+    assert found == (
+        "custodian/beneficiaries.csv and portfolio/household.json disagree with no registry entry: "
+        "SYN-48210002's primary beneficiary P-4821-1 is Ngozi Lind and Adaeze Okafor-Lind",
+    )
+
+
+def test_a_crm_contact_that_differs_from_the_household_member_fails(book_copy: Path) -> None:
+    edit_json(household(book_copy) / "crm" / "crm.json", lambda d: d["contacts"][2].update(relationship="niece"))
+    found = problems(book_copy, "sources agree")
+    assert found == (
+        "crm/crm.json and portfolio/household.json disagree with no registry entry: "
+        "P-4821-3 is Ngozi Lind, niece and Ngozi Lind, daughter",
+    )
+
+
+def test_an_account_only_the_portfolio_system_knows_fails(book_copy: Path) -> None:
+    def extra(data: dict[str, Any]) -> None:
+        data["legal_ownership"].append({**data["legal_ownership"][0], "account_id": "SYN-48219999"})
+
+    edit_json(household(book_copy) / "portfolio" / "household.json", extra)
+    assert any("SYN-48219999 is in the portfolio system only" in p for p in problems(book_copy, "sources agree"))
+
+
+def test_statement_activity_that_differs_from_the_custodian_fails(book_copy: Path) -> None:
+    # B-S2: statement activity was never compared with the custodian's transactions.
+    path = household(book_copy) / "custodian" / "transactions.csv"
+    with path.open(newline="") as handle:
+        fee = next(r for r in csv.DictReader(handle) if r["type"] == "FEE" and r["trade_date"] == "2026-01-02")
+    edit_csv_cell(path, {"transaction_id": fee["transaction_id"], "account_id": fee["account_id"]}, "amount", "-1.00")
+    found = problems(book_copy, "sources agree")
+    statement = f"documents/statement-{fee['account_id']}-2026Q1.pdf and custodian/transactions.csv disagree"
+    assert any(p.startswith(statement) and "activity from 2026-01-01 to 2026-03-31 differs" in p for p in found)
+
+
+def test_a_statement_owner_that_differs_from_the_custodian_fails(book_copy: Path) -> None:
+    path = household(book_copy) / "custodian" / "accounts.csv"
+    edit_csv_cell(path, {"account_id": "SYN-48210003"}, "owners", "Adaeze Okafor-Lind")
+    found = problems(book_copy, "sources agree")
+    assert any(
+        p.startswith("documents/statement-SYN-48210003-2026Q1.pdf and custodian/accounts.csv disagree")
+        and "SYN-48210003 is owned by Ngozi Lind" in p
+        for p in found
+    )

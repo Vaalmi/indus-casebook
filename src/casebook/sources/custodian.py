@@ -1,4 +1,4 @@
-"""Custodian CSVs: accounts, positions, transactions, tax lots, and settled and unsettled cash."""
+"""Custodian CSVs: accounts, positions, transactions, tax lots, beneficiaries, and settled and unsettled cash."""
 
 from datetime import date
 
@@ -6,6 +6,8 @@ from casebook.model.dates import PRIOR_YEAR_END, SCENARIO_DATE
 from casebook.model.files import (
     ACCOUNTS_COLUMNS,
     ACCOUNTS_CSV,
+    BENEFICIARIES_COLUMNS,
+    BENEFICIARIES_CSV,
     CASH_COLUMNS,
     CASH_CSV,
     POSITIONS_COLUMNS,
@@ -157,6 +159,23 @@ def _cash(context: EmitContext) -> str:
     return csv_text(CASH_COLUMNS, rows)
 
 
+def _beneficiaries(context: EmitContext) -> str:
+    rows = [
+        {
+            "account_id": b.account_id,
+            "designation": b.designation,
+            "name": b.name,
+            "relationship": b.relationship,
+            "share_percent": fmt(b.share),
+            "person_id": b.person_id or "",
+            "valuation_date": b.designated.isoformat(),
+            "known_as_of": b.designated.isoformat(),
+        }
+        for b in context.script.household.beneficiaries
+    ]
+    return csv_text(BENEFICIARIES_COLUMNS, rows)
+
+
 def emit(context: EmitContext) -> dict[str, bytes]:
     return {
         ACCOUNTS_CSV: _accounts(context).encode(),
@@ -165,4 +184,5 @@ def emit(context: EmitContext) -> dict[str, bytes]:
         TAX_LOTS_CSV: _tax_lots(context).encode(),
         REALIZED_CSV: _realized(context).encode(),
         CASH_CSV: _cash(context).encode(),
+        BENEFICIARIES_CSV: _beneficiaries(context).encode(),
     }

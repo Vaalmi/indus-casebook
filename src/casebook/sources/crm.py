@@ -50,6 +50,7 @@ def emit(context: EmitContext) -> dict[str, bytes]:
             "relationship": p.relationship,
             "email": p.email,
             "phone": p.phone,
+            "tax_id": p.tax_id,
             "valuation_date": SCENARIO_DATE.isoformat(),
             "known_as_of": SCENARIO_DATE.isoformat(),
         }

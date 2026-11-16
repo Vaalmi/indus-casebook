@@ -1,0 +1,10 @@
+{
+  "_about": "What each published household and task ID means (docs/PLAN.md, New names). An ID keeps its meaning once published: the build refuses a household whose archetype, pair or role differs from its entry, and make check refuses a task file whose household or workflow differs. Add an entry when an ID is first published; never change or remove one.",
+  "households": {
+    "HH-4821": { "archetype": 10, "pair": 1, "role": "trap" },
+    "HH-7350": { "archetype": 10, "pair": 1, "role": "twin" }
+  },
+  "tasks": {
+    "T-REC-01": { "household_id": "HH-4821", "workflow": "reconciliation" }
+  }
+}

@@ -9,10 +9,12 @@ from typing import Any
 
 from casebook.model.dates import parse_date
 from casebook.model.events import UnsupportedEventError
+from casebook.model.files import DESIGNATIONS
 from casebook.model.household import (
     Account,
     Agreement,
     AllocationTarget,
+    Beneficiary,
     BillingGroup,
     Disclosure,
     FeeSchedule,
@@ -22,6 +24,7 @@ from casebook.model.household import (
     LossCarryforward,
     Ownership,
     Person,
+    Restriction,
     TaxProfile,
     TaxUnit,
 )
@@ -124,6 +127,7 @@ def _parse(raw: dict[str, Any], source: str) -> HouseholdScript:
                 str(p["relationship"]),
                 str(p["email"]),
                 str(p["phone"]),
+                str(p["tax_id"]),
             )
             for p in raw["members"]
         ),
@@ -151,6 +155,18 @@ def _parse(raw: dict[str, Any], source: str) -> HouseholdScript:
             )
             for a in raw["agreements"]
         ),
+        beneficiaries=tuple(
+            Beneficiary(
+                str(b["account_id"]),
+                str(b["designation"]),
+                str(b["name"]),
+                str(b["relationship"]),
+                _dec(b, "share"),
+                str(b["person_id"]) if "person_id" in b else None,
+                _date(b, "designated"),
+            )
+            for b in raw.get("beneficiaries", [])
+        ),
         fee_schedule=FeeSchedule(
             schedule_id=str(raw["fee_schedule"]["schedule_id"]),
             basis=str(raw["fee_schedule"]["basis"]),
@@ -163,7 +179,10 @@ def _parse(raw: dict[str, Any], source: str) -> HouseholdScript:
             AllocationTarget(str(t["asset_class"]), _dec(t, "target"), _dec(t, "band")) for t in raw["ips"]["targets"]
         ),
         asset_classes={str(k): str(v) for k, v in raw["ips"]["asset_classes"].items()},
-        restrictions=tuple(str(r) for r in raw["ips"]["restrictions"]),
+        restrictions=tuple(
+            Restriction(str(r["restriction_id"]), str(r["text"]), _date(r, "recorded"))
+            for r in raw["ips"]["restrictions"]
+        ),
         concentration_limit=_dec(raw["ips"], "concentration_limit"),
         tax_profile=TaxProfile(
             known_as_of=_date(raw["tax_profile"], "known_as_of"),
@@ -244,6 +263,19 @@ def _validate(script: HouseholdScript) -> None:
     for owned in hh.ownership:
         if not set(owned.owner_ids) <= people:
             raise ScriptError(script.source, f"account {owned.account_id} has an owner outside the household")
+    designated: dict[tuple[str, str], Decimal] = {}
+    for b in hh.beneficiaries:
+        if b.account_id not in account_ids:
+            raise ScriptError(script.source, f"a beneficiary names unknown account {b.account_id}")
+        if b.designation not in DESIGNATIONS:
+            raise ScriptError(script.source, f"designation {b.designation!r} is not one of {DESIGNATIONS}")
+        if b.person_id is not None and b.person_id not in people:
+            raise ScriptError(script.source, f"beneficiary {b.name} names {b.person_id}, who is not in the household")
+        key = (b.account_id, b.designation)
+        designated[key] = designated.get(key, Decimal(0)) + b.share
+    for (account_id, designation), total in sorted(designated.items()):
+        if total != 100:
+            raise ScriptError(script.source, f"{account_id}'s {designation} beneficiaries share {total}%, not 100%")
     for act in script.activity:
         if act.account_id not in account_ids:
             raise ScriptError(script.source, f"activity on {act.day} names unknown account {act.account_id}")

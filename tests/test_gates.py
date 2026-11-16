@@ -108,8 +108,9 @@ def test_a_real_ticker_or_name_planted_in_a_page_fails_the_build(
 
 
 def test_a_real_ticker_in_a_published_data_file_fails_the_build(book_copy: Path, tmp_path: Path) -> None:
+    # The account type, which no other source repeats, so only the alias gate can catch it.
     path = book_copy / "households" / "HH-4821" / "custodian" / "accounts.csv"
-    path.write_text(path.read_text().replace("Joint tenants", "JNJ tenants", 1))
+    path.write_text(path.read_text().replace("joint_taxable", "JNJ", 1))
     with pytest.raises(SiteBuildError, match=re.escape("accounts.csv: real ticker 'JNJ'")):
         build_site(book_copy, tmp_path / "site", README)
 
@@ -134,7 +135,7 @@ def test_an_escaped_real_name_is_still_a_leak(tmp_path: Path, name: str, content
 
 
 def test_a_ticker_inside_a_longer_word_is_not_a_leak(tmp_path: Path) -> None:
-    (tmp_path / "page.html").write_text("<p>BNDX MSFTs XJNJ</p>")
+    (tmp_path / "page.html").write_text("<p>BNDQ MSFTs XJNJ</p>")
     assert real_identifier_problems(tmp_path) == []
 
 

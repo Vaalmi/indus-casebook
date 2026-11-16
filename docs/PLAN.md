@@ -204,15 +204,15 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 
 **Depends on:** 3.
 
-- [ ] The custodian set holds positions, transactions, tax lots, beneficiaries, and settled and unsettled cash as separate fields; the portfolio-system set holds IPS targets, restrictions, the fee schedule and trade-date positions (schema tests on emitted files)
-- [ ] Every observation in every source set carries a valuation date and a known-as-of date; household membership, legal ownership, tax unit, billing group and disclosure permission are separate schema fields
-- [ ] The security master has 50 securities with exactly three fields each; the schema rejects a fourth; every price file and chart carries "synthetic"
-- [ ] A default build contains no real ticker in any file; `--real-tickers` writes to `out/real/` and differs from the default only in identifiers (a test maps one onto the other)
-- [ ] Every planted item has a registry entry with ID, type, sources involved and justified conclusion; a build with an unregistered difference between two sources fails
-- [ ] Identifiers match the cannot-be-valid shapes; a planted valid-looking Social Security number fails the build
-- [ ] The ID ledger exists; changing a published ID's archetype, pair or role fails the build
-- [ ] Restore: on a second clone, the same seed and version tag reproduce every hash in the manifest
-- [ ] The one check command passes
+- [x] The custodian set holds positions, transactions, tax lots, beneficiaries, and settled and unsettled cash as separate fields; the portfolio-system set holds IPS targets, restrictions, the fee schedule and trade-date positions (schema tests on emitted files)
+- [x] Every observation in every source set carries a valuation date and a known-as-of date; household membership, legal ownership, tax unit, billing group and disclosure permission are separate schema fields
+- [x] The security master has 50 securities with exactly three fields each; the schema rejects a fourth; every price file and chart carries "synthetic"
+- [x] A default build contains no real ticker in any file; `--real-tickers` writes to `out/real/` and differs from the default only in identifiers (a test maps one onto the other)
+- [x] Every planted item has a registry entry with ID, type, sources involved and justified conclusion; a build with an unregistered difference between two sources fails
+- [x] Identifiers match the cannot-be-valid shapes; a planted valid-looking Social Security number fails the build
+- [x] The ID ledger exists; changing a published ID's archetype, pair or role fails the build
+- [x] Restore: on a second clone, the same seed and version tag reproduce every hash in the manifest
+- [x] The one check command passes
 
 ### Slice 5: Build the ten archetypes and the featured 20 (week 5)
 

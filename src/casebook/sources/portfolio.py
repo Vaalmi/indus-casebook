@@ -83,7 +83,15 @@ def _ips(context: EmitContext) -> dict[str, Any]:
             {"security_id": sid, "security": context.label(sid), "asset_class": cls, **TODAY}
             for sid, cls in sorted(hh.asset_classes.items())
         ],
-        "restrictions": [{"restriction": r, **TODAY} for r in hh.restrictions],
+        "restrictions": [
+            {
+                "restriction_id": r.restriction_id,
+                "restriction": r.text,
+                "valuation_date": r.recorded.isoformat(),
+                "known_as_of": r.recorded.isoformat(),
+            }
+            for r in hh.restrictions
+        ],
         "concentration_limit": {"share_of_household": fmt(hh.concentration_limit), **TODAY},
     }
 

@@ -13,6 +13,7 @@ class Person:
     relationship: str
     email: str
     phone: str
+    tax_id: str
 
 
 @dataclass(frozen=True)
@@ -61,6 +62,28 @@ class Agreement:
     account_ids: tuple[str, ...]
     signed: date
     summary: str
+
+
+@dataclass(frozen=True)
+class Beneficiary:
+    """A beneficiary designation on an account, as the custodian holds it."""
+
+    account_id: str
+    designation: str
+    name: str
+    relationship: str
+    share: Decimal
+    person_id: str | None
+    designated: date
+
+
+@dataclass(frozen=True)
+class Restriction:
+    """An IPS restriction the portfolio system records."""
+
+    restriction_id: str
+    text: str
+    recorded: date
 
 
 @dataclass(frozen=True)
@@ -121,10 +144,11 @@ class Household:
     billing_groups: tuple[BillingGroup, ...]
     disclosures: tuple[Disclosure, ...]
     agreements: tuple[Agreement, ...]
+    beneficiaries: tuple[Beneficiary, ...]
     fee_schedule: FeeSchedule
     allocation: tuple[AllocationTarget, ...]
     asset_classes: dict[str, str]
-    restrictions: tuple[str, ...]
+    restrictions: tuple[Restriction, ...]
     concentration_limit: Decimal
     tax_profile: TaxProfile
     configured: date

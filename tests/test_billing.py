@@ -50,6 +50,7 @@ def household(groups: tuple[BillingGroup, ...], accounts: tuple[str, ...]) -> Ho
         billing_groups=groups,
         disclosures=(),
         agreements=(),
+        beneficiaries=(),
         fee_schedule=SCHEDULE,
         allocation=(),
         asset_classes={},

@@ -32,6 +32,7 @@ TRANSACTIONS_CSV = "custodian/transactions.csv"
 TAX_LOTS_CSV = "custodian/tax_lots.csv"
 REALIZED_CSV = "custodian/realized_lots.csv"
 CASH_CSV = "custodian/cash.csv"
+BENEFICIARIES_CSV = "custodian/beneficiaries.csv"
 PORTFOLIO_TAX_PROFILE = "portfolio/tax_profile.json"
 PORTFOLIO_HOUSEHOLD = "portfolio/household.json"
 PORTFOLIO_BILLING = "portfolio/billing.json"
@@ -83,7 +84,7 @@ TRANSACTION_TYPES = (
 UNIT_SIGNS = {BUY: 1, SELL: -1, TRANSFER_IN: 1, TRANSFER_OUT: -1, RSU_VEST: 1, SPLIT: 1}
 
 SECURITIES_COLUMNS = ("security_id", "security")
-PRICES_COLUMNS = ("security_id", "security", "date", "price", "price_label")
+PRICES_COLUMNS = ("security_id", "security", "price", "price_label", "valuation_date", "known_as_of")
 ACCOUNTS_COLUMNS = (
     "account_id",
     "account_type",
@@ -148,6 +149,17 @@ REALIZED_COLUMNS = (
     "known_as_of",
 )
 CASH_COLUMNS = ("account_id", "settled_cash", "unsettled_cash", "valuation_date", "known_as_of")
+BENEFICIARIES_COLUMNS = (
+    "account_id",
+    "designation",
+    "name",
+    "relationship",
+    "share_percent",
+    "person_id",
+    "valuation_date",
+    "known_as_of",
+)
+DESIGNATIONS = ("primary", "contingent")
 
 
 class FileFormatError(ValueError):

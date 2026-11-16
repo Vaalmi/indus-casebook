@@ -1,3 +1,4 @@
+import csv
 import hashlib
 import json
 from pathlib import Path
@@ -82,9 +83,9 @@ def test_the_data_metadata_carries_the_notice_and_the_data_licence(book: Path) -
 
 
 def test_every_price_in_the_price_file_is_labelled_synthetic(book: Path) -> None:
-    lines = (book / PRICES_CSV).read_text().splitlines()
-    assert lines[0].endswith(",price_label")
-    assert all(line.endswith(",synthetic") for line in lines[1:])
+    with (book / PRICES_CSV).open(newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    assert rows and all(row["price_label"] == "synthetic" for row in rows)
 
 
 @pytest.mark.parametrize("leak", [b"Holds 40 MSFT", b"a Microsoft position", b"Vanguard Total Bond Market fund"])

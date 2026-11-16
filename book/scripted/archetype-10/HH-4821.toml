@@ -15,6 +15,7 @@ born = 1967-02-11
 relationship = "primary"
 email = "adaeze.okaforlind@mail.example"
 phone = "555-0142"
+tax_id = "000-48-2101"
 
 [[members]]
 person_id = "P-4821-2"
@@ -23,6 +24,7 @@ born = 1965-08-30
 relationship = "spouse"
 email = "henrik.lind@mail.example"
 phone = "555-0143"
+tax_id = "000-48-2102"
 
 [[members]]
 person_id = "P-4821-3"
@@ -31,6 +33,7 @@ born = 1996-05-19
 relationship = "daughter"
 email = "ngozi.lind@mail.example"
 phone = "555-0144"
+tax_id = "000-48-2103"
 
 [[accounts]]
 account_id = "SYN-48210001"
@@ -127,6 +130,26 @@ party_ids = ["P-4821-1", "P-4821-2", "P-4821-3"]
 account_ids = ["SYN-48210001", "SYN-48210002", "SYN-48210003"]
 signed = 2024-11-18
 summary = "Householding letter: the joint account, Henrik's IRA and Ngozi's individual account are billed together as one group from the next billing cycle."
+
+# Beneficiary designations the custodian holds (social security numbers here and above are in
+# area 000, which is never issued).
+[[beneficiaries]]
+account_id = "SYN-48210002"
+designation = "primary"
+name = "Adaeze Okafor-Lind"
+relationship = "spouse"
+share = "100"
+person_id = "P-4821-1"
+designated = 2012-01-20
+
+[[beneficiaries]]
+account_id = "SYN-48210002"
+designation = "contingent"
+name = "Ngozi Lind"
+relationship = "daughter"
+share = "100"
+person_id = "P-4821-3"
+designated = 2012-01-20
 
 [fee_schedule]
 schedule_id = "FS-STD"

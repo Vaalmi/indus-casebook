@@ -15,6 +15,7 @@ born = 1966-10-03
 relationship = "primary"
 email = "maeve.brennansato@mail.example"
 phone = "555-0161"
+tax_id = "000-73-5001"
 
 [[members]]
 person_id = "P-7350-2"
@@ -23,6 +24,7 @@ born = 1964-01-27
 relationship = "spouse"
 email = "kenji.sato@mail.example"
 phone = "555-0162"
+tax_id = "000-73-5002"
 
 [[members]]
 person_id = "P-7350-3"
@@ -31,6 +33,7 @@ born = 1995-07-08
 relationship = "daughter"
 email = "aiko.sato@mail.example"
 phone = "555-0163"
+tax_id = "000-73-5003"
 
 [[accounts]]
 account_id = "SYN-73500001"
@@ -120,6 +123,33 @@ account_ids = ["SYN-73500003"]
 signed = 2020-02-03
 summary = "Advisory agreement for Aiko's individual account on the standard fee schedule, billed on its own. Aiko has not agreed to household billing."
 
+# Beneficiary designations the custodian holds. Kenji's nephew is not a household member.
+[[beneficiaries]]
+account_id = "SYN-73500002"
+designation = "primary"
+name = "Maeve Brennan-Sato"
+relationship = "spouse"
+share = "100"
+person_id = "P-7350-1"
+designated = 2011-03-08
+
+[[beneficiaries]]
+account_id = "SYN-73500002"
+designation = "contingent"
+name = "Aiko Sato"
+relationship = "daughter"
+share = "50"
+person_id = "P-7350-3"
+designated = 2011-03-08
+
+[[beneficiaries]]
+account_id = "SYN-73500002"
+designation = "contingent"
+name = "Ronan Sato-Quill"
+relationship = "nephew"
+share = "50"
+designated = 2011-03-08
+
 [fee_schedule]
 schedule_id = "FS-STD"
 basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
@@ -135,7 +165,9 @@ targets = [
   { asset_class = "International equity", target = "0.08", band = "0.04" },
   { asset_class = "Fixed income", target = "0.35", band = "0.05" },
 ]
-restrictions = []
+restrictions = [
+  { restriction_id = "R-7350-1", text = "No individual tobacco stocks, at Maeve's request.", recorded = 2020-02-03 },
+]
 concentration_limit = "0.20"
 asset_classes = { "SEC-0001" = "US equity", "SEC-0002" = "International equity", "SEC-0003" = "Fixed income", "SEC-0004" = "US equity", "SEC-0005" = "US equity" }
 

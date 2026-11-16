@@ -1,4 +1,9 @@
-"""`casebook build`: generate, replay, plant and emit every household, then write the manifest."""
+"""`casebook build`: generate, replay, plant and emit every household, then write the manifest.
+
+The build refuses a household that contradicts the ID ledger, an identifier outside its invalid
+range, a real ticker or name in a default build, and two sources that disagree with no registry
+entry.
+"""
 
 import hashlib
 import shutil
@@ -7,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from casebook import BOOK_VERSION
+from casebook.checks.agreement import check_sources_agree
 from casebook.generate.script import HouseholdScript, load_scripts
 from casebook.generate.simulate import simulate
 from casebook.model.archetypes import ARCHETYPES
@@ -26,8 +32,11 @@ from casebook.model.files import (
     SYNTHETIC,
     csv_text,
     event_log_path,
+    household_dir,
     json_text,
 )
+from casebook.model.identifiers import file_problems
+from casebook.model.ledger import LedgerError, load_ledger
 from casebook.model.money import fmt
 from casebook.model.registry import RegistryEntry
 from casebook.notice import NOTICE
@@ -41,6 +50,7 @@ from casebook.sources import emit_household
 from casebook.sources.context import SNAPSHOT_DAYS
 
 DATA_LICENCE = "CC-BY-4.0"
+ID_LEDGER = Path(__file__).resolve().parents[2] / "book" / "id_ledger.json"
 
 
 class BuildError(RuntimeError):
@@ -61,9 +71,11 @@ def _book_files(master: tuple[Security, ...], market: Market, real_tickers: bool
         {
             "security_id": sid,
             "security": aliases[sid],
-            "date": day.isoformat(),
             "price": fmt(price),
             "price_label": SYNTHETIC,
+            # A closing price is known the day it is struck.
+            "valuation_date": day.isoformat(),
+            "known_as_of": day.isoformat(),
         }
         for (sid, day), price in sorted(market.prices.items())
     ]
@@ -87,12 +99,21 @@ def _sealed_household(script: HouseholdScript) -> dict[str, Any]:
     }
 
 
-def generate_book(seed: int, scripts_dir: Path, real_tickers: bool = False) -> dict[str, bytes]:
+def generate_book(
+    seed: int, scripts_dir: Path, real_tickers: bool = False, ledger: Path = ID_LEDGER
+) -> dict[str, bytes]:
     master = load_master()
     market = build_market(master, seed)
     scripts = load_scripts(scripts_dir)
     if not scripts:
         raise BuildError(f"no household scripts under {scripts_dir}")
+    try:
+        published = load_ledger(ledger)
+        for script in scripts:
+            hh = script.household
+            published.check_household(hh.household_id, hh.archetype, script.pair, script.role)
+    except LedgerError as error:
+        raise BuildError(str(error)) from error
     files = _book_files(master, market, real_tickers)
     entries: list[RegistryEntry] = []
     for script in scripts:
@@ -144,11 +165,29 @@ def refuse_real_identifiers(files: dict[str, bytes]) -> None:
         raise BuildError(f"a default build may not contain a real ticker or security name ({shown})")
 
 
-def build_book(seed: int, out: Path, scripts_dir: Path, real_tickers: bool = False) -> BuildResult:
+def refuse_valid_looking_identifiers(files: dict[str, bytes]) -> None:
+    problems = [p for name, data in sorted(files.items()) for p in file_problems(name, data, text_of(name, data))]
+    if problems:
+        shown = "; ".join(problems[:10])
+        raise BuildError(f"identifiers must use ranges that cannot be valid ({shown})")
+
+
+def refuse_unregistered_differences(out: Path, households: tuple[str, ...]) -> None:
+    """docs/SPEC.md, Rules: no two sources disagree without a registry entry."""
+    problems = [f"{h}: {p}" for h in households for p in check_sources_agree(out / household_dir(h))]
+    if problems:
+        shown = "; ".join(problems[:10])
+        raise BuildError(f"two sources disagree with no registry entry ({shown})")
+
+
+def build_book(
+    seed: int, out: Path, scripts_dir: Path, real_tickers: bool = False, ledger: Path = ID_LEDGER
+) -> BuildResult:
     """Build the book. Real-ticker mode is for runs only: its output goes to out/real/, never published."""
-    files = generate_book(seed, scripts_dir, real_tickers)
+    files = generate_book(seed, scripts_dir, real_tickers, ledger)
     if not real_tickers:
         refuse_real_identifiers(files)
+    refuse_valid_looking_identifiers(files)
     if out.exists():
         shutil.rmtree(out)
     for name, data in files.items():
@@ -156,6 +195,14 @@ def build_book(seed: int, out: Path, scripts_dir: Path, real_tickers: bool = Fal
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(data)
     households = tuple(
-        name.split("/")[1] for name in files if name.startswith("households/") and name.endswith("/crm/crm.json")
+        sorted(
+            name.split("/")[1] for name in files if name.startswith("households/") and name.endswith("/crm/crm.json")
+        )
     )
-    return BuildResult(out, tuple(sorted(households)), len(files))
+    try:
+        refuse_unregistered_differences(out, households)
+    except BaseException:
+        # A refused or broken build leaves no book behind to be mistaken for a good one.
+        shutil.rmtree(out)
+        raise
+    return BuildResult(out, households, len(files))

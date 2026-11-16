@@ -20,10 +20,15 @@ PUBLISHED_KEYS = Path("published/keys")
 
 
 def _build(args: argparse.Namespace) -> int:
-    from casebook.build import build_book
+    from casebook.build import BuildError, build_book
+    from casebook.generate.script import ScriptError
 
     out = args.out or (REAL_BOOK if args.real_tickers else DEFAULT_BOOK)
-    result = build_book(args.seed, out, args.scripts, args.real_tickers)
+    try:
+        result = build_book(args.seed, out, args.scripts, args.real_tickers)
+    except (BuildError, ScriptError) as error:
+        print(f"build failed: {error}", file=sys.stderr)
+        return 1
     print(f"built {len(result.households)} households, {result.files} files, into {result.root}")
     return 0
 

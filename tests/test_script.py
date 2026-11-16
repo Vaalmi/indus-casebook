@@ -63,3 +63,32 @@ def test_two_scripts_may_not_share_a_household_id(tmp_path: Path) -> None:
         (tmp_path / name).write_bytes(TRAP.read_bytes())
     with pytest.raises(ScriptError, match="share a household ID"):
         load_scripts(tmp_path)
+
+
+def test_beneficiaries_and_restrictions_load_typed() -> None:
+    script = parse_script(raw(), "test.toml")
+    first = script.household.beneficiaries[0]
+    assert (first.account_id, first.designation, first.name, str(first.share), first.person_id) == (
+        "SYN-48210002",
+        "primary",
+        "Adaeze Okafor-Lind",
+        "100",
+        "P-4821-1",
+    )
+    assert script.household.person("P-4821-1").tax_id == "000-48-2101"
+
+
+@pytest.mark.parametrize(
+    ("change", "message"),
+    [
+        ({"account_id": "SYN-99999999"}, "a beneficiary names unknown account SYN-99999999"),
+        ({"designation": "secondary"}, "designation 'secondary' is not one of"),
+        ({"person_id": "P-0000-1"}, "names P-0000-1, who is not in the household"),
+        ({"share": "60"}, "SYN-48210002's primary beneficiaries share 60%, not 100%"),
+    ],
+)
+def test_a_beneficiary_designation_that_cannot_hold_is_refused(change: dict[str, str], message: str) -> None:
+    data = raw()
+    data["beneficiaries"][0].update(change)
+    with pytest.raises(ScriptError, match=re.escape(message)):
+        parse_script(data, "test.toml")
