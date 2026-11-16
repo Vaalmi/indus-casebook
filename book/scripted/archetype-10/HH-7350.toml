@@ -136,7 +136,17 @@ targets = [
   { asset_class = "Fixed income", target = "0.35", band = "0.05" },
 ]
 restrictions = []
+concentration_limit = "0.20"
 asset_classes = { "SEC-0001" = "US equity", "SEC-0002" = "International equity", "SEC-0003" = "Fixed income", "SEC-0004" = "US equity", "SEC-0005" = "US equity" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-7350-1", short_term = "0.00", long_term = "0.00" },
+  { tax_unit_id = "TU-7350-2", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [{ person_id = "P-7350-2", basis = "0.00" }]
 
 [[activity]]
 type = "buy"

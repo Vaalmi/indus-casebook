@@ -23,6 +23,9 @@ class RegistryEntry:
     conclusion: str
     figures: tuple[tuple[str, str], ...]
     table: FigureTable
+    # The records the item is about (transaction, account, agreement, security IDs): a check
+    # accepts an entry only for the very records it names.
+    references: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         if self.kind not in PLANTED_KINDS:
@@ -41,6 +44,7 @@ class RegistryEntry:
             "justified_conclusion": self.conclusion,
             "figures": [{"label": label, "value": value} for label, value in self.figures],
             "table": {"columns": list(self.table.columns), "rows": [list(r) for r in self.table.rows]},
+            "references": list(self.references),
         }
 
 
@@ -59,4 +63,5 @@ def parse_entry(raw: dict[str, Any]) -> RegistryEntry:
             columns=tuple(str(c) for c in table["columns"]),
             rows=tuple(tuple(str(v) for v in row) for row in table["rows"]),
         ),
+        references=tuple(str(r) for r in raw.get("references", [])),
     )

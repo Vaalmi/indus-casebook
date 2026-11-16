@@ -101,6 +101,7 @@ def missed_fee_breakpoint(script: HouseholdScript, quarters: tuple[QuarterBillin
             ),
             rows=tuple(rows),
         ),
+        references=(agreement.agreement_id, *agreement.account_ids),
     )
 
 

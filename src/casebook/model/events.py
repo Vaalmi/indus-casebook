@@ -1,7 +1,7 @@
 """The whitelisted event union, and its parsing at the boundary.
 
-Slice 1 needs six of the thirteen whitelisted events plus the opening lots; the rest
-arrive with slice 3. Any other event type is refused with UnsupportedEventError.
+The thirteen events docs/SPEC.md whitelists, plus the opening lots every history starts
+from. Any other event type is refused with UnsupportedEventError, naming it.
 """
 
 import datetime as dt
@@ -103,7 +103,105 @@ class Fee:
     billing_group_id: str
 
 
-type Event = Opening | Buy | Sell | Dividend | Contribution | Withdrawal | Fee
+@dataclass(frozen=True)
+class RequiredDistribution:
+    """An RMD: cash out of an IRA. `amount` is the gross, negative; `withheld` is the part sent as tax."""
+
+    event_id: str
+    date: dt.date
+    account_id: str
+    amount: Decimal
+    tax_year: int
+    withheld: Decimal
+
+
+@dataclass(frozen=True)
+class CharitableDistribution:
+    """A QCD: cash out of an IRA straight to a charity. `amount` is negative."""
+
+    event_id: str
+    date: dt.date
+    account_id: str
+    amount: Decimal
+    charity: str
+
+
+@dataclass(frozen=True)
+class RothConversion:
+    """Cash moved from a traditional IRA (`account_id`) to a Roth IRA; `amount` is the gross, positive."""
+
+    event_id: str
+    date: dt.date
+    account_id: str
+    to_account_id: str
+    amount: Decimal
+
+
+@dataclass(frozen=True)
+class Transfer:
+    """Units of a security moved in kind, lots keeping their dates and basis; or cash, when `security_id` is None."""
+
+    event_id: str
+    date: dt.date
+    account_id: str
+    to_account_id: str
+    security_id: str | None
+    units: Decimal
+    amount: Decimal
+
+
+@dataclass(frozen=True)
+class Vest:
+    """RSU vesting: units arrive with a basis of their value on the vesting date."""
+
+    event_id: str
+    date: dt.date
+    account_id: str
+    security_id: str
+    units: Decimal
+    price: Decimal
+
+
+@dataclass(frozen=True)
+class Split:
+    """A stock split in one account: every lot's units times numerator over denominator, basis unchanged."""
+
+    event_id: str
+    date: dt.date
+    account_id: str
+    security_id: str
+    numerator: int
+    denominator: int
+
+
+@dataclass(frozen=True)
+class Death:
+    """A death: `share` of each lot's basis in the account steps up to its value on the day."""
+
+    event_id: str
+    date: dt.date
+    account_id: str
+    person_id: str
+    share: Decimal
+    prices: tuple[tuple[str, Decimal], ...]
+
+
+type Event = (
+    Opening
+    | Buy
+    | Sell
+    | Dividend
+    | Contribution
+    | Withdrawal
+    | Fee
+    | RequiredDistribution
+    | CharitableDistribution
+    | RothConversion
+    | Transfer
+    | Vest
+    | Split
+    | Death
+)
 
 EVENT_TYPES: dict[str, type] = {
     "opening": Opening,
@@ -113,7 +211,15 @@ EVENT_TYPES: dict[str, type] = {
     "contribution": Contribution,
     "withdrawal": Withdrawal,
     "fee": Fee,
+    "rmd": RequiredDistribution,
+    "qcd": CharitableDistribution,
+    "roth_conversion": RothConversion,
+    "transfer": Transfer,
+    "rsu_vest": Vest,
+    "split": Split,
+    "death": Death,
 }
+WHITELISTED = tuple(name for name in EVENT_TYPES if name != "opening")
 _TYPE_NAMES = {cls: name for name, cls in EVENT_TYPES.items()}
 
 
@@ -185,6 +291,39 @@ def parse_event(raw: dict[str, Any]) -> Event:
             return Contribution(event_id, day, account_id=account, amount=_dec(raw, "amount"))
         case "withdrawal":
             return Withdrawal(event_id, day, account_id=account, amount=_dec(raw, "amount"))
+        case "rmd":
+            return RequiredDistribution(
+                event_id, day, account, _dec(raw, "amount"), int(_field(raw, "tax_year")), _dec(raw, "withheld")
+            )
+        case "qcd":
+            return CharitableDistribution(event_id, day, account, _dec(raw, "amount"), str(_field(raw, "charity")))
+        case "roth_conversion":
+            return RothConversion(event_id, day, account, str(_field(raw, "to_account_id")), _dec(raw, "amount"))
+        case "transfer":
+            security = _field(raw, "security_id")
+            return Transfer(
+                event_id,
+                day,
+                account,
+                str(_field(raw, "to_account_id")),
+                None if security is None else str(security),
+                _dec(raw, "units"),
+                _dec(raw, "amount"),
+            )
+        case "rsu_vest":
+            return Vest(event_id, day, account, str(_field(raw, "security_id")), _dec(raw, "units"), _dec(raw, "price"))
+        case "split":
+            return Split(
+                event_id,
+                day,
+                account,
+                str(_field(raw, "security_id")),
+                int(_field(raw, "numerator")),
+                int(_field(raw, "denominator")),
+            )
+        case "death":
+            prices = tuple((str(k), parse_decimal(str(v))) for k, v in sorted(dict(_field(raw, "prices")).items()))
+            return Death(event_id, day, account, str(_field(raw, "person_id")), _dec(raw, "share"), prices)
         case _:
             return Fee(
                 event_id,
@@ -210,12 +349,14 @@ def event_to_dict(event: Event) -> dict[str, Any]:
                 }
                 for lot in value
             ]
+        elif name == "prices":
+            out[name] = {security: fmt(price) for security, price in value}
         elif isinstance(value, Decimal):
             out[name] = fmt(value)
         elif isinstance(value, dt.date):
             out[name] = value.isoformat()
         else:
             out[name] = value
-    if isinstance(event, Buy | Sell):
+    if isinstance(event, Buy | Sell | Vest | Death):
         out["price_label"] = SYNTHETIC
     return out

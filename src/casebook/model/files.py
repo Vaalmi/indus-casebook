@@ -30,7 +30,9 @@ ACCOUNTS_CSV = "custodian/accounts.csv"
 POSITIONS_CSV = "custodian/positions.csv"
 TRANSACTIONS_CSV = "custodian/transactions.csv"
 TAX_LOTS_CSV = "custodian/tax_lots.csv"
+REALIZED_CSV = "custodian/realized_lots.csv"
 CASH_CSV = "custodian/cash.csv"
+PORTFOLIO_TAX_PROFILE = "portfolio/tax_profile.json"
 PORTFOLIO_HOUSEHOLD = "portfolio/household.json"
 PORTFOLIO_BILLING = "portfolio/billing.json"
 PORTFOLIO_IPS = "portfolio/ips.json"
@@ -39,6 +41,8 @@ CRM_JSON = "crm/crm.json"
 DOCUMENTS_INDEX = "documents/index.json"
 
 SYNTHETIC = "synthetic"
+# A statement states its account's total in one line: "Total value on 2026-03-31: $1,234.56".
+STATEMENT_TOTAL = "Total value on"
 # metadata.json "securities": how a build names securities.
 ALIASES = "aliases"
 REAL_TICKERS = "real tickers"
@@ -49,7 +53,34 @@ DIVIDEND = "DIVIDEND"
 CONTRIBUTION = "CONTRIBUTION"
 WITHDRAWAL = "WITHDRAWAL"
 FEE = "FEE"
-TRANSACTION_TYPES = (BUY, SELL, DIVIDEND, CONTRIBUTION, WITHDRAWAL, FEE)
+DISTRIBUTION = "DISTRIBUTION"
+QCD = "QCD"
+CONVERSION_OUT = "CONVERSION_OUT"
+CONVERSION_IN = "CONVERSION_IN"
+TRANSFER_OUT = "TRANSFER_OUT"
+TRANSFER_IN = "TRANSFER_IN"
+RSU_VEST = "RSU_VEST"
+SPLIT = "SPLIT"
+STEP_UP = "STEP_UP"
+TRANSACTION_TYPES = (
+    BUY,
+    SELL,
+    DIVIDEND,
+    CONTRIBUTION,
+    WITHDRAWAL,
+    FEE,
+    DISTRIBUTION,
+    QCD,
+    CONVERSION_OUT,
+    CONVERSION_IN,
+    TRANSFER_OUT,
+    TRANSFER_IN,
+    RSU_VEST,
+    SPLIT,
+    STEP_UP,
+)
+# How a transaction's units column moves a holding; other types leave units alone.
+UNIT_SIGNS = {BUY: 1, SELL: -1, TRANSFER_IN: 1, TRANSFER_OUT: -1, RSU_VEST: 1, SPLIT: 1}
 
 SECURITIES_COLUMNS = ("security_id", "security")
 PRICES_COLUMNS = ("security_id", "security", "date", "price", "price_label")
@@ -82,6 +113,7 @@ TRANSACTIONS_COLUMNS = (
     "security_id",
     "security",
     "units",
+    "lot_id",
     "price",
     "price_label",
     "amount",
@@ -97,6 +129,21 @@ TAX_LOTS_COLUMNS = (
     "acquired_date",
     "units",
     "cost_basis",
+    "valuation_date",
+    "known_as_of",
+)
+REALIZED_COLUMNS = (
+    "transaction_id",
+    "account_id",
+    "lot_id",
+    "security_id",
+    "security",
+    "acquired_date",
+    "sold_date",
+    "units",
+    "cost_basis",
+    "proceeds",
+    "gain",
     "valuation_date",
     "known_as_of",
 )
@@ -191,7 +238,10 @@ class TransactionRow:
     type: str
     security_id: str
     units: Decimal | None
+    lot_id: str
+    price: Decimal | None
     amount: Decimal
+    description: str
 
 
 @dataclass(frozen=True)
@@ -200,9 +250,25 @@ class TaxLotRow:
     account_id: str
     lot_id: str
     security_id: str
+    acquired_date: date
     units: Decimal
     cost_basis: Decimal
     valuation_date: date
+
+
+@dataclass(frozen=True)
+class RealizedRow:
+    line: int
+    transaction_id: str
+    account_id: str
+    lot_id: str
+    security_id: str
+    acquired_date: date
+    sold_date: date
+    units: Decimal
+    cost_basis: Decimal
+    proceeds: Decimal
+    gain: Decimal
 
 
 @dataclass(frozen=True)
@@ -251,7 +317,10 @@ def read_transactions(household_root: Path) -> list[TransactionRow]:
             type=r["type"],
             security_id=r["security_id"],
             units=_decimal(path, i, "units", r["units"]) if r["units"] else None,
+            lot_id=r["lot_id"],
+            price=_decimal(path, i, "price", r["price"]) if r["price"] else None,
             amount=_decimal(path, i, "amount", r["amount"]),
+            description=r["description"],
         )
         for i, r in enumerate(read_csv(household_root, path, TRANSACTIONS_COLUMNS), start=2)
     ]
@@ -265,11 +334,32 @@ def read_tax_lots(household_root: Path) -> list[TaxLotRow]:
             account_id=r["account_id"],
             lot_id=r["lot_id"],
             security_id=r["security_id"],
+            acquired_date=_date(path, i, "acquired_date", r["acquired_date"]),
             units=_decimal(path, i, "units", r["units"]),
             cost_basis=_decimal(path, i, "cost_basis", r["cost_basis"]),
             valuation_date=_date(path, i, "valuation_date", r["valuation_date"]),
         )
         for i, r in enumerate(read_csv(household_root, path, TAX_LOTS_COLUMNS), start=2)
+    ]
+
+
+def read_realized(household_root: Path) -> list[RealizedRow]:
+    path = REALIZED_CSV
+    return [
+        RealizedRow(
+            line=i,
+            transaction_id=r["transaction_id"],
+            account_id=r["account_id"],
+            lot_id=r["lot_id"],
+            security_id=r["security_id"],
+            acquired_date=_date(path, i, "acquired_date", r["acquired_date"]),
+            sold_date=_date(path, i, "sold_date", r["sold_date"]),
+            units=_decimal(path, i, "units", r["units"]),
+            cost_basis=_decimal(path, i, "cost_basis", r["cost_basis"]),
+            proceeds=_decimal(path, i, "proceeds", r["proceeds"]),
+            gain=_decimal(path, i, "gain", r["gain"]),
+        )
+        for i, r in enumerate(read_csv(household_root, path, REALIZED_COLUMNS), start=2)
     ]
 
 

@@ -3,30 +3,26 @@
 from datetime import date
 
 from casebook.model.dates import PRIOR_YEAR_END, SCENARIO_DATE
-from casebook.model.events import Buy, Contribution, Dividend, Fee, Opening, Sell, Withdrawal
 from casebook.model.files import (
     ACCOUNTS_COLUMNS,
     ACCOUNTS_CSV,
-    BUY,
     CASH_COLUMNS,
     CASH_CSV,
-    CONTRIBUTION,
-    DIVIDEND,
-    FEE,
     POSITIONS_COLUMNS,
     POSITIONS_CSV,
-    SELL,
+    REALIZED_COLUMNS,
+    REALIZED_CSV,
     SYNTHETIC,
     TAX_LOTS_COLUMNS,
     TAX_LOTS_CSV,
     TRANSACTIONS_COLUMNS,
     TRANSACTIONS_CSV,
-    WITHDRAWAL,
     csv_text,
 )
 from casebook.model.money import cents, fmt
 from casebook.replay import Snapshot
 from casebook.sources.context import SNAPSHOT_DAYS, EmitContext
+from casebook.sources.transactions import transaction_id, transaction_rows
 
 
 def _snapshots(context: EmitContext) -> list[tuple[date, Snapshot]]:
@@ -75,76 +71,75 @@ def _positions(context: EmitContext) -> str:
     return csv_text(POSITIONS_COLUMNS, rows)
 
 
-def describe(context: EmitContext, event: object) -> tuple[str, str]:
-    """The custodian's transaction type and description for an event."""
-    match event:
-        case Buy():
-            return BUY, f"Buy {fmt(event.units)} {context.label(event.security_id)}"
-        case Sell():
-            return SELL, f"Sell {fmt(event.units)} {context.label(event.security_id)}"
-        case Dividend():
-            return DIVIDEND, f"Dividend {context.label(event.security_id)}, {fmt(event.per_unit)} per unit"
-        case Contribution():
-            return CONTRIBUTION, "Contribution"
-        case Withdrawal():
-            return WITHDRAWAL, "Withdrawal"
-        case Fee():
-            return FEE, f"Advisory fee, quarter to {event.period_end.isoformat()}"
-        case _:
-            raise TypeError(f"no transaction for {event!r}")
-
-
-def transaction_id(event_id: str) -> str:
-    return "T" + event_id.removeprefix("E")
-
-
 def _transactions(context: EmitContext) -> str:
-    rows: list[dict[str, str]] = []
-    for event in context.events:
-        if isinstance(event, Opening):
-            continue
-        kind, description = describe(context, event)
-        trade = isinstance(event, Buy | Sell)
-        has_security = isinstance(event, Buy | Sell | Dividend)
-        rows.append(
-            {
-                "transaction_id": transaction_id(event.event_id),
-                "account_id": event.account_id,
-                "trade_date": event.date.isoformat(),
-                "settle_date": (event.settle_date if isinstance(event, Buy | Sell) else event.date).isoformat(),
-                "type": kind,
-                "security_id": event.security_id if has_security else "",
-                "security": context.label(event.security_id) if has_security else "",
-                "units": fmt(event.units) if has_security else "",
-                "price": fmt(event.price) if trade else "",
-                "price_label": SYNTHETIC if trade else "",
-                "amount": fmt(event.amount),
-                "description": description,
-                "valuation_date": event.date.isoformat(),
-                "known_as_of": event.date.isoformat(),
-            }
-        )
+    rows = [
+        {
+            "transaction_id": row.transaction_id,
+            "account_id": row.account_id,
+            "trade_date": row.trade_date.isoformat(),
+            "settle_date": row.settle_date.isoformat(),
+            "type": row.kind,
+            "security_id": row.security_id or "",
+            "security": context.label(row.security_id) if row.security_id else "",
+            "units": fmt(row.units) if row.units is not None else "",
+            "lot_id": row.lot_id,
+            "price": fmt(row.price) if row.price is not None else "",
+            "price_label": SYNTHETIC if row.price is not None else "",
+            "amount": fmt(row.amount),
+            "description": row.description,
+            "valuation_date": row.trade_date.isoformat(),
+            "known_as_of": row.trade_date.isoformat(),
+        }
+        for row in transaction_rows(context)
+    ]
     return csv_text(TRANSACTIONS_COLUMNS, rows)
 
 
 def _tax_lots(context: EmitContext) -> str:
-    final = context.replayed.snapshots[SCENARIO_DATE]
-    lots = sorted(final.lots, key=lambda lot: (lot.account_id, lot.security_id, lot.acquired, lot.lot_id))
+    """Open lots at the prior 31 December (the opening lots) and on the scenario date."""
+    rows: list[dict[str, str]] = []
+    for day, snapshot in (
+        (PRIOR_YEAR_END, context.replayed.opening),
+        (SCENARIO_DATE, context.replayed.snapshots[SCENARIO_DATE]),
+    ):
+        for lot in sorted(snapshot.lots, key=lambda lot: (lot.account_id, lot.security_id, lot.acquired, lot.lot_id)):
+            rows.append(
+                {
+                    "account_id": lot.account_id,
+                    "lot_id": lot.lot_id,
+                    "security_id": lot.security_id,
+                    "security": context.label(lot.security_id),
+                    "acquired_date": lot.acquired.isoformat(),
+                    "units": fmt(lot.units),
+                    "cost_basis": fmt(lot.cost),
+                    "valuation_date": day.isoformat(),
+                    "known_as_of": day.isoformat(),
+                }
+            )
+    return csv_text(TAX_LOTS_COLUMNS, rows)
+
+
+def _realized(context: EmitContext) -> str:
+    """Each lot a sale closed, in whole or in part: the custodian's realized gain and loss detail."""
     rows = [
         {
-            "account_id": lot.account_id,
-            "lot_id": lot.lot_id,
-            "security_id": lot.security_id,
-            "security": context.label(lot.security_id),
-            "acquired_date": lot.acquired.isoformat(),
-            "units": fmt(lot.units),
-            "cost_basis": fmt(lot.cost),
-            "valuation_date": SCENARIO_DATE.isoformat(),
-            "known_as_of": SCENARIO_DATE.isoformat(),
+            "transaction_id": transaction_id(closed.event_id),
+            "account_id": closed.account_id,
+            "lot_id": closed.lot_id,
+            "security_id": closed.security_id,
+            "security": context.label(closed.security_id),
+            "acquired_date": closed.acquired.isoformat(),
+            "sold_date": closed.sold.isoformat(),
+            "units": fmt(closed.units),
+            "cost_basis": fmt(closed.cost),
+            "proceeds": fmt(closed.proceeds),
+            "gain": fmt(closed.proceeds - closed.cost),
+            "valuation_date": closed.sold.isoformat(),
+            "known_as_of": closed.sold.isoformat(),
         }
-        for lot in lots
+        for closed in context.replayed.closed
     ]
-    return csv_text(TAX_LOTS_COLUMNS, rows)
+    return csv_text(REALIZED_COLUMNS, rows)
 
 
 def _cash(context: EmitContext) -> str:
@@ -168,5 +163,6 @@ def emit(context: EmitContext) -> dict[str, bytes]:
         POSITIONS_CSV: _positions(context).encode(),
         TRANSACTIONS_CSV: _transactions(context).encode(),
         TAX_LOTS_CSV: _tax_lots(context).encode(),
+        REALIZED_CSV: _realized(context).encode(),
         CASH_CSV: _cash(context).encode(),
     }

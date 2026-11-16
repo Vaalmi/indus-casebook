@@ -86,6 +86,30 @@ class AllocationTarget:
 
 
 @dataclass(frozen=True)
+class LossCarryforward:
+    """Capital loss carried into 2025 from the 2024 return, per tax unit."""
+
+    tax_unit_id: str
+    short_term: Decimal
+    long_term: Decimal
+
+
+@dataclass(frozen=True)
+class IraBasis:
+    """After-tax basis in a person's traditional IRAs at 31 December 2024 (Form 8606)."""
+
+    person_id: str
+    basis: Decimal
+
+
+@dataclass(frozen=True)
+class TaxProfile:
+    known_as_of: date
+    loss_carryforwards: tuple[LossCarryforward, ...]
+    ira_basis: tuple[IraBasis, ...]
+
+
+@dataclass(frozen=True)
 class Household:
     household_id: str
     name: str
@@ -101,6 +125,8 @@ class Household:
     allocation: tuple[AllocationTarget, ...]
     asset_classes: dict[str, str]
     restrictions: tuple[str, ...]
+    concentration_limit: Decimal
+    tax_profile: TaxProfile
     configured: date
 
     def account(self, account_id: str) -> Account:

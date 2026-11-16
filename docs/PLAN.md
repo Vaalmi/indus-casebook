@@ -191,14 +191,14 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 
 **Depends on:** 1.
 
-- [ ] Every history starts from opening lots dated 1 January 2025 and replays to 15 April 2026; a test rejects any other opening date
-- [ ] Each of the thirteen whitelisted events has a replay test with a hand-worked expected ledger, including the stock split and the death with basis step-up
-- [ ] An input needing any other event (a test uses a merger) is rejected with `UnsupportedEventError` naming the event
-- [ ] Carry-in history is present and checked: acquisition dates, loss carryforwards, IRA basis, prior 31 December balances
-- [ ] `casebook check` reports all nine checks in the spec per household. For each check a seeded defect makes that check fail and the report names the household, the line, and the account, lot or file
-- [ ] The wash-sale check looks 30 days either side across taxpayer, spouse and IRA accounts, and passes only when the repurchase has a registry entry
+- [x] Every history starts from opening lots dated 1 January 2025 and replays to 15 April 2026; a test rejects any other opening date
+- [x] Each of the thirteen whitelisted events has a replay test with a hand-worked expected ledger, including the stock split and the death with basis step-up
+- [x] An input needing any other event (a test uses a merger) is rejected with `UnsupportedEventError` naming the event
+- [x] Carry-in history is present and checked: acquisition dates, loss carryforwards, IRA basis, prior 31 December balances
+- [x] `casebook check` reports all nine checks in the spec per household. For each check a seeded defect makes that check fail and the report names the household, the line, and the account, lot or file
+- [x] The wash-sale check looks 30 days either side across taxpayer, spouse and IRA accounts, and passes only when the repurchase has a registry entry
 - [ ] The household checks and the grader tests run on every commit (the hook) and every push (the Action)
-- [ ] The one check command passes
+- [x] The one check command passes
 
 ### Slice 4: Emit the four source sets in full, with aliases and the registry (week 4)
 

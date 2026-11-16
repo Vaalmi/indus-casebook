@@ -80,6 +80,7 @@ def _sealed_household(script: HouseholdScript) -> dict[str, Any]:
         "archetype_name": ARCHETYPES[script.household.archetype],
         "pair": script.pair,
         "role": script.role,
+        "set": "featured",
         "twin_kind": script.twin.kind if script.twin else None,
         "explanation": script.twin.explanation if script.twin else None,
         "script": script.source,

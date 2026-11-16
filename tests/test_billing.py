@@ -10,6 +10,7 @@ from casebook.model.household import (
     FeeSchedule,
     FeeTier,
     Household,
+    TaxProfile,
 )
 
 D = Decimal
@@ -53,6 +54,8 @@ def household(groups: tuple[BillingGroup, ...], accounts: tuple[str, ...]) -> Ho
         allocation=(),
         asset_classes={},
         restrictions=(),
+        concentration_limit=D("0.20"),
+        tax_profile=TaxProfile(date(2025, 4, 15), (), ()),
         configured=date(2020, 1, 1),
     )
 

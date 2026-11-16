@@ -13,12 +13,11 @@ from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import Flowable, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 from casebook.model.dates import add_weekdays
-from casebook.model.events import Opening
-from casebook.model.files import DOCUMENTS_INDEX, SYNTHETIC, json_text
+from casebook.model.files import DOCUMENTS_INDEX, STATEMENT_TOTAL, SYNTHETIC, json_text
 from casebook.model.money import cents, fmt, usd
 from casebook.notice import NOTICE
 from casebook.sources.context import EmitContext
-from casebook.sources.custodian import describe
+from casebook.sources.transactions import transaction_rows
 
 STATEMENT_START = date(2026, 1, 1)
 STATEMENT_END = date(2026, 3, 31)
@@ -70,18 +69,17 @@ def _statement(context: EmitContext, account_id: str) -> bytes:
     holdings.append(["Cash", "", "", usd(cash)])
     holdings.append(["Total", "", "", usd(total + cash)])
     activity = [["Date", "Type", "Description", "Amount"]]
-    for event in context.events:
-        if isinstance(event, Opening) or event.account_id != account_id:
-            continue
-        if STATEMENT_START <= event.date <= STATEMENT_END:
-            kind, description = describe(context, event)
-            activity.append([event.date.isoformat(), kind.title(), description, usd(event.amount)])
+    for row in transaction_rows(context):
+        if row.account_id == account_id and STATEMENT_START <= row.trade_date <= STATEMENT_END:
+            kind = row.kind.replace("_", " ").capitalize()
+            activity.append([row.trade_date.isoformat(), kind, row.description, usd(row.amount)])
     story: list[Flowable] = [
         Paragraph("Quarterly account statement", styles["Title"]),
         Paragraph(f"Account {account_id}: {account.registration}", styles["Normal"]),
         Paragraph("Owners: " + "; ".join(hh.person(p).name for p in hh.owners(account_id)), styles["Normal"]),
         Paragraph(f"Period {STATEMENT_START.isoformat()} to {STATEMENT_END.isoformat()}", styles["Normal"]),
         Paragraph(f"Prices are {SYNTHETIC}.", styles["Normal"]),
+        Paragraph(f"{STATEMENT_TOTAL} {STATEMENT_END.isoformat()}: {usd(total + cash)}", styles["Normal"]),
         Spacer(1, 12),
         Paragraph(f"Holdings on {STATEMENT_END.isoformat()}", styles["Heading2"]),
         _table(holdings),

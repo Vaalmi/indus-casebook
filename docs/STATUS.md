@@ -2,7 +2,7 @@
 
 <!-- Kept current as each ticket or phase lands (docs/PROCESS.md). The first thing a new session reads after AGENTS.md. -->
 
-Building `docs/PLAN.md` on branch `build/preview`. Slices 1 and 2 are built and reviewed. Slice 1: one scripted pair for archetype 10 (HH-4821, the trap; HH-7350, its twin), built from a seed, checked, and rendered as a static site under aliases. Slice 2: one reconciliation task, T-REC-01, run live on the signed-in `claude` CLI under the three arms, graded, and shown on a task page. Each slice has one criterion waiting on the owner (below). Slice 3 is in progress.
+Building `docs/PLAN.md` on branch `build/preview`. Slices 1 and 2 are built and reviewed. Slice 1: one scripted pair for archetype 10 (HH-4821, the trap; HH-7350, its twin), built from a seed, checked, and rendered as a static site under aliases. Slice 2: one reconciliation task, T-REC-01, run live on the signed-in `claude` CLI under the three arms, graded, and shown on a task page. Slice 3: every whitelisted event replays against a hand-worked ledger, and `casebook check` runs all nine checks of the spec on every household. Slices 1 and 2 each have one criterion waiting on the owner (below), and two decisions wait on the owner.
 
 ## Running it
 
@@ -10,7 +10,7 @@ Building `docs/PLAN.md` on branch `build/preview`. Slices 1 and 2 are built and 
 make setup                          # uv sync, Playwright's Chromium, the git hook (once per clone)
 make check                          # the one check command
 uv run casebook build --seed 2026   # the book, into out/book/0.0.1/
-uv run casebook check               # pass or fail per check per household; exits 1 on a fail
+uv run casebook check               # nine checks per household, pass or fail; exits 1 on a fail
 uv run casebook site                # the site, into out/site/; refuses a failed check or gate
 
 # Runs (the real CLI; CASEBOOK_PRIVATE is a folder outside this repo for unmapped records)
@@ -31,7 +31,7 @@ Open `out/site/index.html` in a browser, or serve `out/site/` with any static se
 | Plan, slices 1 to 17 | approved by the owner, 16 November 2026; reviewed | `docs/PLAN.md`; `review/plan-r1-*.md`, `review/plan-r2-*.md`, `review/plan-amend-*.md` |
 | Slice 1: one pair on the public site | built, reviewed (both reviewers pass); 7 of 9 criteria ticked. Waiting on the owner: the GitHub Pages delivery and rollback, and the Action's first run, which needs a push | `make check`: 122 passed, coverage 95.27%; a fresh clone ran `make setup && make check` clean; two builds gave tree hash `9c24cbca…` both times; `review/slice1-*.md` |
 | Slice 2: one task under three arms | built; 10 of 11 criteria ticked. Waiting on the owner: approval of the first skill and the checklist, and a decision on finding S1 ([how strictly the grader counts a fabricated figure](decisions/2026-11-16-fabricated-figure-rule.md)); reviewer_a passes the slice, reviewer_b holds S1 only | Live canary on `claude` 2.1.304 (Read by absolute and relative path and Grep on the parent, each refused by `--restricted`); three live runs of T-REC-01 (12:10 to 12:12 UTC), one attempt each, all 100, each arm loading only its own instruction; `make check`: 233 passed, coverage 94.19%; `review/slice2-*.md` |
-| Slice 3: replay every history and all nine checks | in progress | — |
+| Slice 3: replay every history and all nine checks | built, reviewed; 7 of 8 criteria ticked. Waiting on the owner's first push: the Action half of "the checks run on every commit and every push" (the hook half runs on every commit) | `make check`: 286 passed, coverage 92.18%; `casebook check`: 18 lines, 18 pass, on the default and the real-ticker builds; `review/slice3-*.md` |
 
 ### What the owner does for slice 1's last criterion
 
@@ -40,13 +40,15 @@ Open `out/site/index.html` in a browser, or serve `out/site/` with any static se
 3. In Settings → Environments → `github-pages` → "Deployment branches and tags", add a tag rule `v*`. Without it GitHub refuses to deploy from a tag.
 4. Tag the slice 1 commit and push the tag: `git tag v0.0.1 <commit>` then `git push origin v0.0.1`. The "Publish site" workflow builds, checks and publishes it; it refuses a tag that does not match the package version (`uv version --short`).
 5. Open `https://<owner>.github.io/<repo>/households/HH-4821.html` in a private window: it should load with no account, the notice banner on top.
-6. Rollback: once a `v0.0.2` exists (the builder will set version 0.0.2 in a later slice's commit), push it, see the site change, then run Actions → "Publish site" → Run workflow → "Use workflow from" tag `v0.0.1`. The site's footer should read "Book 0.0.1" again.
+6. Rollback, after the price-seed decision below: once a `v0.0.2` exists (the builder sets version 0.0.2 in a commit, which with the plan's seeding re-draws every price), push it, see the site change, then run Actions → "Publish site" → Run workflow → "Use workflow from" tag `v0.0.1`. The site's footer should read "Book 0.0.1" again.
 
 The "Check" workflow runs `make check` on every push; its first run is the evidence for the Action half of slice 1's first criterion.
 
 ### What the owner does for slice 2
 
 **Decide** [how strictly the grader counts a fabricated figure](decisions/2026-11-16-fabricated-figure-rule.md) (one page; my recommendation is option 1).
+
+**Decide** [whether a new book version should re-draw every price](decisions/2026-11-16-version-in-the-price-seed.md) (one page; my recommendation is option 2). Until then the book stays at version 0.0.1, so the `v0.0.2` rollback test waits.
 
 **Approve the skill and the checklist:**
 
@@ -64,6 +66,7 @@ The "Check" workflow runs `make check` on every push; its first run is the evide
 - **The six earlier live runs of T-REC-01 are not published.** They were graded under graders since corrected (a false fabricated-figure zero, docked dates, then the stricter rule); their records stay in `$CASEBOOK_PRIVATE`. The published three are the runs under the final grader.
 - **Published transcripts omit the files a run read as base64** (the statement PDFs), with a note in their place: they carry real tickers and cannot be mapped in place. The book publishes the same documents under aliases.
 - **`$CASEBOOK_PRIVATE` is a plain folder,** `../indus-casebook-private`, until slice 11 makes it a private repo with a backup.
+- **Slice 3 changed the book's files** under the same version 0.0.1 (nothing is released yet): the custodian's transactions gain a `lot_id` column and one row per account an event touches; new `custodian/realized_lots.csv` and `portfolio/tax_profile.json`; tax lots listed on the prior 31 December too; each statement states its total in one line; registry entries name the records they are about (`references`), and every check that accepts an entry requires it to name the specific records. The generator does not yet produce the seven events slice 3 added (RMD, QCD, Roth conversion, transfer, RSU vesting, split, death); slice 5's archetypes will use them.
 - **Real-ticker mode was built in slice 2,** since runs read real tickers; slice 4 still owes its tests (the two builds differ only in identifiers; no real ticker in any default-build file across the 50 securities).
 - **The CLI's default model was `claude-fable-5-1`;** the shared configuration pins `claude-opus-5-5`, and every run's reported model confirms it.
 - **Where slice 1 differs from the plan's module table** (both reviewers saw these and raised none as a blocker): `generate` uses `replay` to know holdings for dividends and fees; `plant` uses `generate.billing`; three small modules the table does not name (`notice.py`, `seeding.py`, `published_text.py`); real security names for the alias scan live in `securities/real_names.json`, outside the three-field master.
@@ -78,6 +81,7 @@ One line per unit of work (`docs/REVIEW_PROTOCOL.md`).
 | Plan amendment: the owner's answers on U1 to U6 (U4 changes what is held; slices 14 and 16 gain criteria). One targeted check, same sessions, since the plan's two rounds were spent | 2026-11-16 05:06 | 2026-11-16 05:08 | reviewer_a, GPT-6 Astra xhigh (`01a1d80b-c6cd-77b3-9717-b84879527a15`); reviewer_b, GPT-6.1 Sol high (`01a1d80b-c6cd-76e0-8dc5-f717c28f2d64`) | A: PASS. B: PASS | None | None |
 | Slice 1, two reviewers (publish gates, checks, licence check) | 2026-11-16 06:06 | 2026-11-16 06:21 | reviewer_a, GPT-6 Astra xhigh (`01a1e409-bb52-79c2-99d2-89101a06bcb1`); reviewer_b, GPT-6.1 Sol high (`01a1e409-bb52-7453-b035-46216c8a1271`) | A: R1 BLOCK, R2 PASS. B: R1 BLOCK, R2 BLOCK (S1 held on new evidence), targeted check of S1 PASS | All confirmed by probe and fixed in the slice 1 commit: an HTML-escaped real name passed the alias gate (both; then a tag inside a name, B round 2); a priced JSON file lacked the synthetic check (A); a parenthesised SPDX expression passed the licence check (both); the units and cash checks passed with no opening balance (both) | A: the "price" text test is broad and may refuse prose that mentions prices |
 | Slice 2, two reviewers (the seal, the runner, the grader, the gates) | 2026-11-16 06:37 | open: S1 awaits the owner's decision (2026-11-16 07:15) | reviewer_a, GPT-6 Astra xhigh (`01a1e426-4923-7003-86f6-70aaba4bb447`); reviewer_b, GPT-6.1 Sol high (`01a1e426-4913-7070-9ebe-8b2a3b261fc5`) | A: R1 BLOCK, R2 BLOCK (S1, S2 held; S8 new), targeted check PASS. B: R1 BLOCK, R2 BLOCK (S1, S2 held; N1 new), targeted check BLOCK (S1 held) | All confirmed by probe and fixed in the slice 2 commit: fabricated figures were checked only in the `figures` list, then missed prose amounts without a dollar sign (S1, both; still held by B for bare multipliers); a linked source file, then a linked household folder, was read (S2, both); an alias book ran as if real (A-S3, B-S4); the key read a household before its manifest check (A-S4, B-S3); the tag build had no run records (S5, both); a Skill call without a result counted as loaded (A-H1); a CLI that could not start raised (A-D1); published transcripts carried real tickers inside base64 PDFs (A-S8, B-N1). S6, the owner's approval, is the owner's step | A: the outside-program test had a dead branch (fixed). B: the grade used the key held in memory (now re-hashed from files) |
+| Slice 3, two reviewers (the nine checks are release gates) | 2026-11-16 07:20 | 2026-11-16 07:43 | reviewer_a, GPT-6 Astra xhigh (`01a1e44d-efcd-7053-8879-1825da31be5b`); reviewer_b, GPT-6.1 Sol high (`01a1e44d-efe0-7a81-8119-d6296b2c975f`) | A: R1 BLOCK, R2 BLOCK (S6 held; D2 new), targeted check PASS. B: R1 BLOCK, R2 BLOCK (S5 new), targeted check PASS | All confirmed by probe and fixed in the slice 3 commit: duplicate rows in the price series collapsed before checking (A-S5, B-S1); carried-in entries passed without amounts (A-S4, B-S2); cash compared one way only (B-S3); retained shares of a partly sold purchase missed as replacements (B-S4), then shares already sold counted as replacements (A-D2); the wash-sale check trusted the gain column (A-S1, B-D1); one registry entry excused every wash sale (A-S2); spouses filing apart missed (A-S3); statements compared by total only, then without price and cash (A-S6, B-S5); a zero distribution met an RMD (A-S7); a cash transfer failed for blank units (A-D1) | None |
 
 
 ## Milestones

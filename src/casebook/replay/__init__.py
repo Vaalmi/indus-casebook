@@ -8,13 +8,20 @@ from decimal import Decimal
 from casebook.model.dates import OPENING_DATE, SCENARIO_DATE
 from casebook.model.events import (
     Buy,
+    CharitableDistribution,
     Contribution,
+    Death,
     Dividend,
     Event,
     Fee,
     Opening,
+    RequiredDistribution,
+    RothConversion,
     Sell,
+    Split,
+    Transfer,
     UnsupportedEventError,
+    Vest,
     Withdrawal,
     event_type,
 )
@@ -60,6 +67,7 @@ class Lot:
 
 @dataclass(frozen=True)
 class ClosedLot:
+    event_id: str
     lot_id: str
     account_id: str
     security_id: str
@@ -98,6 +106,7 @@ class Ledger:
         self._pending: list[tuple[date, str, Decimal]] = []
         self._day = OPENING_DATE
         self.closed: list[ClosedLot] = []
+        self.split_units: dict[str, Decimal] = {}
 
     def _require_open(self, event: Event) -> None:
         if event.account_id not in self._settled:
@@ -138,17 +147,106 @@ class Ledger:
                 self._require_open(event)
                 self._relieve(event)
                 self._pending.append((event.settle_date, event.account_id, event.amount))
-            case Dividend() | Contribution() | Withdrawal() | Fee():
+            case Dividend() | Contribution() | Withdrawal() | Fee() | RequiredDistribution() | CharitableDistribution():
                 self._require_open(event)
                 self._settled[event.account_id] += event.amount
+            case RothConversion():
+                self._require_open(event)
+                self._require_account(event.event_id, event.to_account_id)
+                self._settled[event.account_id] -= event.amount
+                self._settled[event.to_account_id] += event.amount
+            case Transfer():
+                self._require_open(event)
+                self._require_account(event.event_id, event.to_account_id)
+                if event.security_id is None:
+                    self._settled[event.account_id] -= event.amount
+                    self._settled[event.to_account_id] += event.amount
+                else:
+                    self._move(event, event.security_id)
+            case Vest():
+                self._require_open(event)
+                cost = cents(event.units * event.price)
+                self._lots.append(
+                    Lot(f"L-{event.event_id}", event.account_id, event.security_id, event.date, event.units, cost)
+                )
+            case Split():
+                self._require_open(event)
+                ratio = Decimal(event.numerator) / Decimal(event.denominator)
+                before = sum((lot.units for lot in self._held(event.account_id, event.security_id)), ZERO)
+                self.split_units[event.event_id] = before * ratio - before
+                self._lots = [
+                    replace(lot, units=lot.units * ratio)
+                    if (lot.account_id, lot.security_id) == (event.account_id, event.security_id)
+                    else lot
+                    for lot in self._lots
+                ]
+            case Death():
+                self._require_open(event)
+                self._step_up(event)
             case _:  # pragma: no cover - the type union makes this unreachable
                 raise UnsupportedEventError(event_type(event))
 
-    def _relieve(self, sale: Sell) -> None:
-        held = sorted(
-            (lot for lot in self._lots if (lot.account_id, lot.security_id) == (sale.account_id, sale.security_id)),
+    def _require_account(self, event_id: str, account_id: str) -> None:
+        if account_id not in self._settled:
+            raise ReplayError(f"event {event_id}: account {account_id} has no opening lots")
+
+    def _held(self, account_id: str, security_id: str) -> list[Lot]:
+        return sorted(
+            (lot for lot in self._lots if (lot.account_id, lot.security_id) == (account_id, security_id)),
             key=lambda lot: (lot.acquired, lot.lot_id),
         )
+
+    def _move(self, transfer: Transfer, security_id: str) -> None:
+        """In kind: whole lots keep their IDs; a lot split by the move leaves its moved part as `<lot>/<event>`."""
+        held = self._held(transfer.account_id, security_id)
+        if sum((lot.units for lot in held), ZERO) < transfer.units:
+            raise OversoldError(f"event {transfer.event_id} moves more {security_id} than {transfer.account_id} holds")
+        remaining = transfer.units
+        for lot in held:
+            if remaining == 0:
+                break
+            take = min(lot.units, remaining)
+            index = self._lots.index(lot)
+            if take == lot.units:
+                self._lots[index] = replace(lot, account_id=transfer.to_account_id)
+            else:
+                cost = cents(lot.cost * take / lot.units)
+                self._lots[index] = replace(lot, units=lot.units - take, cost=lot.cost - cost)
+                moved = Lot(
+                    f"{lot.lot_id}/{transfer.event_id}", transfer.to_account_id, security_id, lot.acquired, take, cost
+                )
+                self._lots.append(moved)
+            remaining -= take
+
+    def _step_up(self, death: Death) -> None:
+        """The stepped part takes the day's value and date; a part not stepped up keeps its lot ID, basis and date."""
+        prices = dict(death.prices)
+        if not 0 < death.share <= 1:
+            raise ReplayError(f"event {death.event_id}: a step-up share is above 0 and at most 1, not {death.share}")
+        stepped: list[Lot] = []
+        for lot in self._lots:
+            if lot.account_id != death.account_id:
+                stepped.append(lot)
+                continue
+            if lot.security_id not in prices:
+                raise ReplayError(f"event {death.event_id} gives no value for {lot.security_id}")
+            units = lot.units * death.share
+            new = Lot(
+                lot.lot_id if death.share == 1 else f"{lot.lot_id}-S",
+                lot.account_id,
+                lot.security_id,
+                death.date,
+                units,
+                cents(units * prices[lot.security_id]),
+            )
+            stepped.append(new)
+            if death.share < 1:
+                kept = lot.cost - cents(lot.cost * death.share)
+                stepped.append(replace(lot, units=lot.units - units, cost=kept))
+        self._lots = stepped
+
+    def _relieve(self, sale: Sell) -> None:
+        held = self._held(sale.account_id, sale.security_id)
         if sum((lot.units for lot in held), ZERO) < sale.units:
             raise OversoldError(
                 f"event {sale.event_id} sells {sale.units} of {sale.security_id} in {sale.account_id}, "
@@ -162,7 +260,17 @@ class Ledger:
             cost = lot.cost if take == lot.units else cents(lot.cost * take / lot.units)
             proceeds = cents(sale.amount * take / sale.units)
             self.closed.append(
-                ClosedLot(lot.lot_id, lot.account_id, lot.security_id, lot.acquired, sale.date, take, cost, proceeds)
+                ClosedLot(
+                    sale.event_id,
+                    lot.lot_id,
+                    lot.account_id,
+                    lot.security_id,
+                    lot.acquired,
+                    sale.date,
+                    take,
+                    cost,
+                    proceeds,
+                )
             )
             index = self._lots.index(lot)
             if take == lot.units:
@@ -193,6 +301,7 @@ class ReplayResult:
     opening: Snapshot
     snapshots: dict[date, Snapshot]
     closed: tuple[ClosedLot, ...]
+    split_units: dict[str, Decimal]
 
 
 def replay(events: Sequence[Event], days: Iterable[date]) -> ReplayResult:
@@ -218,4 +327,4 @@ def replay(events: Sequence[Event], days: Iterable[date]) -> ReplayResult:
         ledger.apply(event)
     for day in wanted:
         snapshots[day] = ledger.snapshot(day)
-    return ReplayResult(opening, snapshots, tuple(ledger.closed))
+    return ReplayResult(opening, snapshots, tuple(ledger.closed), dict(ledger.split_units))

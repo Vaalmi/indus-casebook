@@ -2,12 +2,13 @@
 
 from typing import Any
 
-from casebook.model.dates import SCENARIO_DATE
+from casebook.model.dates import PRIOR_YEAR_END, SCENARIO_DATE
 from casebook.model.files import (
     PORTFOLIO_BILLING,
     PORTFOLIO_HOUSEHOLD,
     PORTFOLIO_IPS,
     PORTFOLIO_POSITIONS,
+    PORTFOLIO_TAX_PROFILE,
     SYNTHETIC,
     json_text,
 )
@@ -83,6 +84,20 @@ def _ips(context: EmitContext) -> dict[str, Any]:
             for sid, cls in sorted(hh.asset_classes.items())
         ],
         "restrictions": [{"restriction": r, **TODAY} for r in hh.restrictions],
+        "concentration_limit": {"share_of_household": fmt(hh.concentration_limit), **TODAY},
+    }
+
+
+def _tax_profile(context: EmitContext) -> dict[str, Any]:
+    """What the advisor's planning system carries in from the 2024 return."""
+    profile = context.script.household.tax_profile
+    dates = {"valuation_date": PRIOR_YEAR_END.isoformat(), "known_as_of": profile.known_as_of.isoformat()}
+    return {
+        "loss_carryforwards": [
+            {"tax_unit_id": c.tax_unit_id, "short_term": fmt(c.short_term), "long_term": fmt(c.long_term), **dates}
+            for c in profile.loss_carryforwards
+        ],
+        "ira_basis": [{"person_id": b.person_id, "basis": fmt(b.basis), **dates} for b in profile.ira_basis],
     }
 
 
@@ -117,4 +132,5 @@ def emit(context: EmitContext) -> dict[str, bytes]:
         PORTFOLIO_BILLING: json_text(_billing(context)).encode(),
         PORTFOLIO_IPS: json_text(_ips(context)).encode(),
         PORTFOLIO_POSITIONS: json_text(_positions(context)).encode(),
+        PORTFOLIO_TAX_PROFILE: json_text(_tax_profile(context)).encode(),
     }

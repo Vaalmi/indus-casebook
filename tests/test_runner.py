@@ -85,7 +85,8 @@ def test_the_fixture_loader_drops_every_row_and_document_known_after_the_cutoff(
     # The Q1 statements become known on 2026-04-07, so neither they nor their index entries appear.
     assert json.loads((tmp_path / "documents" / "index.json").read_text())["documents"] == []
     assert list((tmp_path / "documents").glob("*.pdf")) == []
-    assert not (tmp_path / "custodian" / "tax_lots.csv").read_text().splitlines()[1:]
+    lot_dates = {line.split(",")[-2] for line in (tmp_path / "custodian" / "tax_lots.csv").read_text().splitlines()[1:]}
+    assert lot_dates == {"2024-12-31"}
 
 
 def test_every_arm_gets_the_same_arguments_environment_and_config_but_the_instruction(

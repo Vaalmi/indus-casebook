@@ -18,8 +18,11 @@ from casebook.model.household import (
     FeeSchedule,
     FeeTier,
     Household,
+    IraBasis,
+    LossCarryforward,
     Ownership,
     Person,
+    TaxProfile,
     TaxUnit,
 )
 from casebook.model.money import parse_decimal
@@ -161,6 +164,15 @@ def _parse(raw: dict[str, Any], source: str) -> HouseholdScript:
         ),
         asset_classes={str(k): str(v) for k, v in raw["ips"]["asset_classes"].items()},
         restrictions=tuple(str(r) for r in raw["ips"]["restrictions"]),
+        concentration_limit=_dec(raw["ips"], "concentration_limit"),
+        tax_profile=TaxProfile(
+            known_as_of=_date(raw["tax_profile"], "known_as_of"),
+            loss_carryforwards=tuple(
+                LossCarryforward(str(c["tax_unit_id"]), _dec(c, "short_term"), _dec(c, "long_term"))
+                for c in raw["tax_profile"]["loss_carryforwards"]
+            ),
+            ira_basis=tuple(IraBasis(str(b["person_id"]), _dec(b, "basis")) for b in raw["tax_profile"]["ira_basis"]),
+        ),
         configured=_date(raw, "configured"),
     )
     accounts = tuple(

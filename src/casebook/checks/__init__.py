@@ -4,17 +4,30 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 
+from casebook.checks.agreement import check_sources_agree
+from casebook.checks.carry_in import check_carry_in
 from casebook.checks.cash import check_cash
 from casebook.checks.dates import check_dates
+from casebook.checks.lots import check_lots
+from casebook.checks.prices import check_prices
+from casebook.checks.thresholds import check_thresholds
 from casebook.checks.units import check_units
+from casebook.checks.wash_sales import check_wash_sales
 from casebook.model.files import FileFormatError, household_dir, read_manifest
 
 type Check = Callable[[Path], list[str]]
 
+# The nine checks of docs/SPEC.md, in its order.
 CHECKS: dict[str, Check] = {
     "units": check_units,
     "cash": check_cash,
+    "prices and values": check_prices,
+    "lots and basis": check_lots,
+    "wash sales": check_wash_sales,
+    "carry-in history": check_carry_in,
     "valuation date not after known-as-of": check_dates,
+    "sources agree": check_sources_agree,
+    "background thresholds": check_thresholds,
 }
 
 

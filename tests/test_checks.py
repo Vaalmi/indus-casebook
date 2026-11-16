@@ -1,3 +1,4 @@
+import csv
 import json
 from pathlib import Path
 
@@ -15,14 +16,16 @@ def household(book: Path) -> Path:
 
 def edit_csv_cell(path: Path, match: dict[str, str], column: str, value: str) -> int:
     """Change one cell in the first row matching `match`; return the row's line number."""
-    lines = path.read_text().splitlines()
-    header = lines[0].split(",")
-    for number, line in enumerate(lines[1:], start=2):
-        cells = line.split(",")
-        if all(cells[header.index(k)] == v for k, v in match.items()):
-            cells[header.index(column)] = value
-            lines[number - 1] = ",".join(cells)
-            path.write_text("\n".join(lines) + "\n")
+    with path.open(newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    columns = list(rows[0]) if rows else []
+    for number, row in enumerate(rows, start=2):
+        if all(row[k] == v for k, v in match.items()):
+            row[column] = value
+            with path.open("w", newline="") as handle:
+                writer = csv.DictWriter(handle, fieldnames=columns, lineterminator="\n")
+                writer.writeheader()
+                writer.writerows(rows)
             return number
     raise AssertionError(f"no row matches {match}")
 
@@ -38,7 +41,7 @@ def test_the_built_book_passes_every_check_on_every_household(book: Path, capsys
         (h, c) for h in ("HH-4821", "HH-7350") for c in CHECKS
     ]
     assert main(["check", "--book", str(book)]) == 0
-    assert capsys.readouterr().out.endswith("6 lines: 6 pass, 0 fail\n")
+    assert capsys.readouterr().out.endswith("18 lines: 18 pass, 0 fail\n")
 
 
 def test_a_unit_defect_fails_the_units_check_and_names_file_line_and_account(book_copy: Path) -> None:
@@ -48,14 +51,15 @@ def test_a_unit_defect_fails_the_units_check_and_names_file_line_and_account(boo
     )
     problems = failures(book_copy)[(HH, "units")]
     assert any(f"custodian/positions.csv line {line}: SYN-48210001 SEC-0001 on 2025-06-30" in p for p in problems)
-    assert set(failures(book_copy)) == {(HH, "units")}
+    # The same row's value no longer equals units times price, so that check fails too.
+    assert set(failures(book_copy)) == {(HH, "units"), (HH, "prices and values")}
 
 
 def test_open_lots_that_disagree_with_closing_units_fail_the_units_check(book_copy: Path) -> None:
     path = household(book_copy) / "custodian" / "tax_lots.csv"
     edit_csv_cell(path, {"lot_id": "L-48210003-02"}, "units", "1")
     problems = failures(book_copy)[(HH, "units")]
-    assert any("custodian/tax_lots.csv: SYN-48210003 SEC-0005 open lots hold" in p for p in problems)
+    assert any("custodian/tax_lots.csv: SYN-48210003 SEC-0005 lots on 2024-12-31 hold 1" in p for p in problems)
 
 
 def test_a_cash_defect_fails_the_cash_check_and_names_file_line_and_account(book_copy: Path) -> None:
