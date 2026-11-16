@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{% endblock %} · The Indus Casebook</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="{{ root }}/static/style.css">
+</head>
+<body>
+<aside class="notice" role="note" aria-label="Notice" data-notice>
+  <p><strong>{{ notice_headline }}</strong> {{ notice_body }}</p>
+</aside>
+<header class="masthead">
+  <a class="brand" href="{{ root }}/index.html">The Indus Casebook</a>
+  <span class="masthead-meta">Book {{ metadata.version }} · scenario date {{ scenario_date }}</span>
+</header>
+<main>
+{% block main %}{% endblock %}
+</main>
+<footer class="footer">
+  <p>Book {{ metadata.version }}, built from seed {{ metadata.seed }}. Code under Apache-2.0; data under {{ metadata.licence }}. Every price is synthetic and every security appears under an invented name.</p>
+</footer>
+</body>
+</html>

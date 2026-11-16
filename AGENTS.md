@@ -1,6 +1,6 @@
 # Indus Casebook
 
-<One sentence: what this product is, for whom, and what it lets them do.>
+A public, seeded book of invented client households and graded advisor tasks, so an independent US advisor can see whether an AI assistant handles messy client records safely, and a builder can rerun the same test with one command.
 
 ## Your role
 
@@ -27,4 +27,6 @@ The owner decides what to build and reviews your plans and builds. `docs/SPEC.md
 
 ## Off limits
 
-<Real user data, production systems, sealed evaluation answers, anything else no agent may open. Delete this section if there is nothing.>
+- Real client data of any kind. The book is invented; nothing here may read a real custodian, CRM or tax file.
+- The private set under `$CASEBOOK_PRIVATE`, except in the slice whose work is the private set.
+- The owner's signed-in CLIs (`claude`, `codex`, `agy`) beyond the live runs a slice names, within its budget.

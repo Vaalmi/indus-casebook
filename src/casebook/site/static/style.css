@@ -1,0 +1,60 @@
+:root {
+  --ink: #1d2329;
+  --muted: #5b6670;
+  --line: #d9dee3;
+  --paper: #ffffff;
+  --panel: #f5f7f9;
+  --accent: #1f5f8b;
+  --notice-bg: #fff4d6;
+  --notice-line: #c99a1a;
+  --measure: 72rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e4e8ec;
+    --muted: #a3adb6;
+    --line: #38424b;
+    --paper: #14191e;
+    --panel: #1c232a;
+    --accent: #7db8e0;
+    --notice-bg: #3a2f10;
+    --notice-line: #c99a1a;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+a { color: var(--accent); }
+.notice {
+  background: var(--notice-bg);
+  border-bottom: 2px solid var(--notice-line);
+  padding: 0.6rem 1rem;
+  font-size: 0.85rem;
+}
+.notice p { margin: 0 auto; max-width: var(--measure); }
+.masthead, main, .footer { max-width: var(--measure); margin: 0 auto; padding: 0 1rem; }
+.masthead { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: baseline; padding-top: 1rem; }
+.brand { font-weight: 700; font-size: 1.1rem; text-decoration: none; color: var(--ink); }
+.masthead-meta, .crumbs, .files, .date { color: var(--muted); font-size: 0.85rem; }
+h1 { font-size: 1.6rem; margin: 1rem 0 0.25rem; }
+h2 { font-size: 1.25rem; margin: 2rem 0 0.75rem; border-bottom: 1px solid var(--line); padding-bottom: 0.25rem; }
+h3 { font-size: 1.05rem; margin: 0 0 0.5rem; }
+h4 { font-size: 0.9rem; margin: 0.9rem 0 0.3rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; }
+table { border-collapse: collapse; width: 100%; font-size: 0.8rem; }
+th, td { text-align: left; padding: 0.2rem 0.4rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; }
+.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+ul { padding-left: 1.1rem; margin: 0.2rem 0; font-size: 0.85rem; }
+.sources, .layers { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
+.source, .layer, .planted { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 0.75rem; overflow-x: auto; }
+.figures { display: grid; grid-template-columns: auto auto; gap: 0.2rem 1rem; justify-content: start; }
+.figures dt { color: var(--muted); }
+.figures dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+.scroll { overflow-x: auto; }
+.list td, .list th { font-size: 0.9rem; }
+.footer { color: var(--muted); font-size: 0.8rem; margin-top: 3rem; padding-bottom: 2rem; border-top: 1px solid var(--line); }
+details { margin-top: 0.75rem; font-size: 0.85rem; }

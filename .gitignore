@@ -3,3 +3,11 @@ review/
 .env
 .env.*
 !.env.example
+out/
+.venv/
+.coverage
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.claude/launch.json
+.import_linter_cache/

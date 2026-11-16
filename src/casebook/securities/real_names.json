@@ -1,0 +1,11 @@
+{
+  "_about": "Real security names, used only by the scan that keeps them out of published files. Not part of the security master, which holds three fields.",
+  "names": {
+    "BND": ["Vanguard Total Bond Market"],
+    "JNJ": ["Johnson & Johnson", "Johnson and Johnson"],
+    "MSFT": ["Microsoft"],
+    "VTI": ["Vanguard Total Stock Market"],
+    "VXUS": ["Vanguard Total International Stock"]
+  },
+  "issuers": ["Vanguard"]
+}

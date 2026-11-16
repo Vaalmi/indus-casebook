@@ -1,0 +1,56 @@
+# Publishes the site from a release tag (docs/SPEC.md, Running it). Rolling back the
+# site means running this workflow again on the previous tag: Actions → "Publish site"
+# → Run workflow → "Use workflow from" the tag, or "Re-run all jobs" on that tag's run.
+name: Publish site
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Refuse anything but a release tag
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        run: |
+          echo "The site is published only from a release tag; this run is on ${GITHUB_REF}." >&2
+          exit 1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.13.1"
+          enable-cache: false
+      - run: uv sync --frozen
+      - name: The tag names the package version
+        run: test "v$(uv version --short)" = "${GITHUB_REF_NAME}"
+      - run: uv run casebook build --seed 2026
+      - run: uv run casebook check
+      - run: uv run casebook site
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: out/site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

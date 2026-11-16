@@ -4,7 +4,7 @@ How work moves from the owner's words to merged code in Indus Casebook. `docs/RE
 
 ## The one check command
 
-`<command>` runs every check: lint, format, types, tests with the coverage floor, and the end-to-end tests. Write it here once and keep it the only entry point.
+`make check` runs every check: lint, format, types, the import contracts, the float and licence checks, tests with the 85% coverage floor, and the end-to-end tests (a seeded build, the household checks, the site build and its gates, Playwright on the built site). `make setup` installs what it needs. It is the only entry point.
 
 - The checks call no real model and reach no outside service. Stand-ins replace both. They never read `.env`.
 - A pre-commit hook runs the checks for what changed. CI runs the whole command on every push.

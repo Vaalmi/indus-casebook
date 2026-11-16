@@ -1,0 +1,83 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "indus-casebook"
+version = "0.0.1"
+description = "A seeded book of synthetic households and graded advisor tasks, with the evidence published under aliases"
+requires-python = ">=3.13,<3.14"
+license = "Apache-2.0"
+dependencies = [
+  "jinja2==3.1.6",
+  "pypdf==7.1.0",
+  "reportlab==5.1.0",
+]
+
+[dependency-groups]
+dev = [
+  "import-linter==2.16",
+  "playwright==1.65.2",
+  "pyright==1.1.414",
+  "pytest==9.2.0",
+  "pytest-cov==7.1.0",
+  "ruff==0.17.5",
+]
+
+[project.scripts]
+casebook = "casebook.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/casebook"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q --cov=casebook --cov-report=term-missing:skip-covered --cov-fail-under=85"
+filterwarnings = ["error"]
+
+[tool.coverage.run]
+branch = true
+source = ["casebook"]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "PTH", "DTZ"]
+
+[tool.pyright]
+pythonVersion = "3.13"
+typeCheckingMode = "strict"
+include = ["src", "tests", "tools"]
+reportMissingTypeStubs = false
+reportUnknownMemberType = false
+reportUnknownVariableType = false
+reportUnknownArgumentType = false
+venvPath = "."
+venv = ".venv"
+
+[tool.importlinter]
+root_package = "casebook"
+
+# docs/PLAN.md, import contract 2: a check that reused the ledger would agree with
+# the ledger's mistakes, so checks read emitted files through model and nothing else.
+[[tool.importlinter.contracts]]
+name = "checks import only model"
+type = "forbidden"
+source_modules = ["casebook.checks"]
+forbidden_modules = [
+  "casebook.build",
+  "casebook.cli",
+  "casebook.generate",
+  "casebook.notice",
+  "casebook.plant",
+  "casebook.publish",
+  "casebook.published_text",
+  "casebook.replay",
+  "casebook.securities",
+  "casebook.seeding",
+  "casebook.site",
+  "casebook.sources",
+]

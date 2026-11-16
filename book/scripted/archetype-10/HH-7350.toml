@@ -1,0 +1,189 @@
+# Archetype 10, pair 1, twin: a near miss. The same shape as HH-4821, but Aiko's
+# account is under her own advisory agreement and nothing joins it to her parents'
+# billing group, so billing it on its own is correct.
+household_id = "HH-7350"
+name = "Brennan-Sato household"
+archetype = 10
+pair = 1
+role = "twin"
+configured = 2020-02-03
+
+[[members]]
+person_id = "P-7350-1"
+name = "Maeve Brennan-Sato"
+born = 1966-10-03
+relationship = "primary"
+email = "maeve.brennansato@mail.example"
+phone = "555-0161"
+
+[[members]]
+person_id = "P-7350-2"
+name = "Kenji Sato"
+born = 1964-01-27
+relationship = "spouse"
+email = "kenji.sato@mail.example"
+phone = "555-0162"
+
+[[members]]
+person_id = "P-7350-3"
+name = "Aiko Sato"
+born = 1995-07-08
+relationship = "daughter"
+email = "aiko.sato@mail.example"
+phone = "555-0163"
+
+[[accounts]]
+account_id = "SYN-73500001"
+account_type = "joint_taxable"
+registration = "Joint tenants with right of survivorship"
+opened = 2015-09-21
+owners = ["P-7350-1", "P-7350-2"]
+cash = "28000.00"
+holdings = [
+  { lot_id = "L-73500001-01", security_id = "SEC-0001", value = "280000", acquired = 2015-10-05, basis_pct = "49" },
+  { lot_id = "L-73500001-02", security_id = "SEC-0002", value = "120000", acquired = 2017-06-12, basis_pct = "84" },
+  { lot_id = "L-73500001-03", security_id = "SEC-0003", value = "225000", acquired = 2018-11-19, basis_pct = "102" },
+  { lot_id = "L-73500001-04", security_id = "SEC-0004", value = "80000", acquired = 2019-05-06, basis_pct = "41" },
+  { lot_id = "L-73500001-05", security_id = "SEC-0004", value = "45000", acquired = 2022-01-10, basis_pct = "88" },
+]
+
+[[accounts]]
+account_id = "SYN-73500002"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Kenji Sato"
+opened = 2011-03-08
+owners = ["P-7350-2"]
+cash = "5000.00"
+holdings = [
+  { lot_id = "L-73500002-01", security_id = "SEC-0003", value = "205000", acquired = 2014-08-18, basis_pct = "100" },
+  { lot_id = "L-73500002-02", security_id = "SEC-0001", value = "190000", acquired = 2013-02-25, basis_pct = "57" },
+]
+
+[[accounts]]
+account_id = "SYN-73500003"
+account_type = "individual_taxable"
+registration = "Individual, Aiko Sato"
+opened = 2020-02-03
+owners = ["P-7350-3"]
+cash = "20000.00"
+holdings = [
+  { lot_id = "L-73500003-01", security_id = "SEC-0001", value = "240000", acquired = 2020-02-10, basis_pct = "74" },
+  { lot_id = "L-73500003-02", security_id = "SEC-0005", value = "110000", acquired = 2021-07-19, basis_pct = "95" },
+  { lot_id = "L-73500003-03", security_id = "SEC-0003", value = "160000", acquired = 2021-07-19, basis_pct = "106" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-7350-1"
+filing_status = "married_filing_jointly"
+person_ids = ["P-7350-1", "P-7350-2"]
+
+[[tax_units]]
+tax_unit_id = "TU-7350-2"
+filing_status = "single"
+person_ids = ["P-7350-3"]
+
+[[billing_groups]]
+billing_group_id = "BG-7350-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-73500001", "SYN-73500002"]
+
+[[billing_groups]]
+billing_group_id = "BG-7350-2"
+schedule_id = "FS-STD"
+account_ids = ["SYN-73500003"]
+
+[[disclosures]]
+person_id = "P-7350-1"
+account_ids = ["SYN-73500001", "SYN-73500002"]
+
+[[disclosures]]
+person_id = "P-7350-2"
+account_ids = ["SYN-73500001", "SYN-73500002"]
+
+[[disclosures]]
+person_id = "P-7350-3"
+account_ids = ["SYN-73500003"]
+
+[[agreements]]
+agreement_id = "AGR-7350-1"
+kind = "advisory"
+party_ids = ["P-7350-1", "P-7350-2"]
+account_ids = ["SYN-73500001", "SYN-73500002"]
+signed = 2015-09-21
+summary = "Advisory agreement for the joint account and Kenji's IRA on the standard fee schedule."
+
+[[agreements]]
+agreement_id = "AGR-7350-2"
+kind = "advisory"
+party_ids = ["P-7350-3"]
+account_ids = ["SYN-73500003"]
+signed = 2020-02-03
+summary = "Advisory agreement for Aiko's individual account on the standard fee schedule, billed on its own. Aiko has not agreed to household billing."
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.55", band = "0.05" },
+  { asset_class = "International equity", target = "0.08", band = "0.04" },
+  { asset_class = "Fixed income", target = "0.35", band = "0.05" },
+]
+restrictions = []
+asset_classes = { "SEC-0001" = "US equity", "SEC-0002" = "International equity", "SEC-0003" = "Fixed income", "SEC-0004" = "US equity", "SEC-0005" = "US equity" }
+
+[[activity]]
+type = "buy"
+date = 2025-02-20
+account_id = "SYN-73500003"
+security_id = "SEC-0005"
+units = "25"
+
+[[activity]]
+type = "contribution"
+date = 2025-04-09
+account_id = "SYN-73500002"
+amount = "8000.00"
+
+[[activity]]
+type = "buy"
+date = 2025-04-11
+account_id = "SYN-73500002"
+security_id = "SEC-0001"
+units = "20"
+
+[[activity]]
+type = "contribution"
+date = 2025-06-02
+account_id = "SYN-73500001"
+amount = "20000.00"
+
+[[activity]]
+type = "buy"
+date = 2025-06-04
+account_id = "SYN-73500001"
+security_id = "SEC-0001"
+units = "50"
+
+[[activity]]
+type = "sell"
+date = 2025-08-25
+account_id = "SYN-73500001"
+security_id = "SEC-0004"
+units = "120"
+
+[[activity]]
+type = "withdrawal"
+date = 2025-12-01
+account_id = "SYN-73500001"
+amount = "15000.00"
+
+[twin]
+kind = "near_miss"
+explanation = "A near miss. The three accounts together are worth more than $1,000,000 and are billed in two groups, which looks like a missed breakpoint. But Aiko's account is under her own advisory agreement, and no householding agreement joins it to her parents' accounts, so billing it on its own is correct."

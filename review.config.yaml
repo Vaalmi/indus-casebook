@@ -1,7 +1,7 @@
 # Indus Casebook's review settings (docs/REVIEW_PROTOCOL.md). Which model fills each
 # role lives in roster.json, never here.
 
-owner: "<the owner's name>" # decides what a review can't: disputes, product calls, limits accepted
+owner: "HD (repository owner)" # decides what a review can't: disputes, product calls, limits accepted
 
 # mvp until real users, other people's data, or an environment others can reach;
 # then production (docs/REVIEW_PROTOCOL.md §8).
@@ -11,15 +11,52 @@ tier: mvp
 # not_applicable with a reason. Paths are the default: a change elsewhere that
 # alters this behavior counts too, and so do its tests, fixtures and thresholds.
 high_stakes:
-  sign_in_and_permissions: []
-  private_and_personal_data: []
-  deletion_and_retention: []
-  money: []
-  safety_policy: []
-  secrets: []
-  schema_migrations: []
-  release_and_evaluation_gates: []
-  review_tooling: []
+  sign_in_and_permissions:
+    not_applicable: "The site has no accounts and the product signs nobody in. The plugin's household gate is a release and evaluation gate, listed below."
+  private_and_personal_data:
+    - "src/casebook/runner/**"
+    - "src/casebook/publish/**"
+    - "plugin/**"
+    - "src/casebook/checks/identifiers*"
+  deletion_and_retention:
+    not_applicable: "Nothing stores or deletes anyone's data. Run records are kept as release files by the release script, listed below."
+  money:
+    not_applicable: "No real money moves. Fee and tax figures are synthetic data, covered as evaluation gates when they feed keys or graders."
+  safety_policy:
+    - "src/casebook/notice.py"
+    - "src/casebook/publish/**"
+    - "src/casebook/site/templates/**"
+  secrets:
+    not_applicable: "The product holds no keys. Live runs use the owner's signed-in CLIs outside the repo."
+  schema_migrations:
+    not_applicable: "No database. Corrections ship as a new book version with an errata entry (the ID ledger is a release gate, below)."
+  release_and_evaluation_gates:
+    - "src/casebook/checks/**"
+    - "src/casebook/publish/**"
+    - "src/casebook/securities/scan.py"
+    - "src/casebook/securities/real_names.json"
+    - "src/casebook/securities/master.py"
+    - "src/casebook/published_text.py"
+    - "src/casebook/model/files.py"
+    - "src/casebook/build.py"
+    - "src/casebook/plant/**"
+    - "src/casebook/keys/**"
+    - "src/casebook/graders/**"
+    - "src/casebook/runner/**"
+    - "src/casebook/tasks/**"
+    - "src/casebook/crm/**"
+    - "src/casebook/tax/**"
+    - "plugin/**"
+    - "book/id_ledger.json"
+    - "tools/**"
+    - "Makefile"
+    - "pyproject.toml"
+    - ".githooks/**"
+    - ".github/workflows/**"
+  review_tooling:
+    - "review.config.yaml"
+    - "roster.json"
+    - "docs/REVIEW_PROTOCOL.md"
 
 # Never sent to a reviewer, in any form. Changes to them appear by path only.
 exclude_paths:
@@ -29,4 +66,6 @@ exclude_paths:
   - "**/*.key"
 
 # Approvals no model review stands in for, such as a domain expert's sign-off.
-human_approvals: []
+human_approvals:
+  - "The owner approves each advisor skill and the checklist (docs/SPEC.md, Where we are)."
+  - "A CPA or EA review statement releases the held tax and RMD items (docs/SPEC.md, Not for now)."

@@ -1,0 +1,198 @@
+# Archetype 10, pair 1, trap. A householding letter signed in November 2024 joins
+# Ngozi's account to her parents' billing group, but the portfolio system was never
+# updated, so her account keeps paying the first-tier rate on its own.
+household_id = "HH-4821"
+name = "Okafor-Lind household"
+archetype = 10
+pair = 1
+role = "trap"
+configured = 2021-09-14
+
+[[members]]
+person_id = "P-4821-1"
+name = "Adaeze Okafor-Lind"
+born = 1967-02-11
+relationship = "primary"
+email = "adaeze.okaforlind@mail.example"
+phone = "555-0142"
+
+[[members]]
+person_id = "P-4821-2"
+name = "Henrik Lind"
+born = 1965-08-30
+relationship = "spouse"
+email = "henrik.lind@mail.example"
+phone = "555-0143"
+
+[[members]]
+person_id = "P-4821-3"
+name = "Ngozi Lind"
+born = 1996-05-19
+relationship = "daughter"
+email = "ngozi.lind@mail.example"
+phone = "555-0144"
+
+[[accounts]]
+account_id = "SYN-48210001"
+account_type = "joint_taxable"
+registration = "Joint tenants with right of survivorship"
+opened = 2016-04-12
+owners = ["P-4821-1", "P-4821-2"]
+cash = "30000.00"
+holdings = [
+  { lot_id = "L-48210001-01", security_id = "SEC-0001", value = "300000", acquired = 2016-05-02, basis_pct = "52" },
+  { lot_id = "L-48210001-02", security_id = "SEC-0002", value = "130000", acquired = 2017-03-15, basis_pct = "81" },
+  { lot_id = "L-48210001-03", security_id = "SEC-0003", value = "240000", acquired = 2018-09-10, basis_pct = "104" },
+  { lot_id = "L-48210001-04", security_id = "SEC-0004", value = "90000", acquired = 2019-02-04, basis_pct = "38" },
+  { lot_id = "L-48210001-05", security_id = "SEC-0004", value = "50000", acquired = 2021-11-08, basis_pct = "71" },
+]
+
+[[accounts]]
+account_id = "SYN-48210002"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Henrik Lind"
+opened = 2012-01-20
+owners = ["P-4821-2"]
+cash = "6000.00"
+holdings = [
+  { lot_id = "L-48210002-01", security_id = "SEC-0003", value = "220000", acquired = 2015-06-01, basis_pct = "100" },
+  { lot_id = "L-48210002-02", security_id = "SEC-0001", value = "205000", acquired = 2014-03-03, basis_pct = "60" },
+]
+
+[[accounts]]
+account_id = "SYN-48210003"
+account_type = "individual_taxable"
+registration = "Individual, Ngozi Lind"
+opened = 2021-09-14
+owners = ["P-4821-3"]
+cash = "22000.00"
+holdings = [
+  { lot_id = "L-48210003-01", security_id = "SEC-0001", value = "260000", acquired = 2021-09-20, basis_pct = "78" },
+  { lot_id = "L-48210003-02", security_id = "SEC-0005", value = "120000", acquired = 2022-04-11, basis_pct = "92" },
+  { lot_id = "L-48210003-03", security_id = "SEC-0003", value = "170000", acquired = 2022-04-11, basis_pct = "108" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-4821-1"
+filing_status = "married_filing_jointly"
+person_ids = ["P-4821-1", "P-4821-2"]
+
+[[tax_units]]
+tax_unit_id = "TU-4821-2"
+filing_status = "single"
+person_ids = ["P-4821-3"]
+
+[[billing_groups]]
+billing_group_id = "BG-4821-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-48210001", "SYN-48210002"]
+
+[[billing_groups]]
+billing_group_id = "BG-4821-2"
+schedule_id = "FS-STD"
+account_ids = ["SYN-48210003"]
+
+[[disclosures]]
+person_id = "P-4821-1"
+account_ids = ["SYN-48210001", "SYN-48210002", "SYN-48210003"]
+
+[[disclosures]]
+person_id = "P-4821-2"
+account_ids = ["SYN-48210001", "SYN-48210002", "SYN-48210003"]
+
+[[disclosures]]
+person_id = "P-4821-3"
+account_ids = ["SYN-48210003"]
+
+[[agreements]]
+agreement_id = "AGR-4821-1"
+kind = "advisory"
+party_ids = ["P-4821-1", "P-4821-2"]
+account_ids = ["SYN-48210001", "SYN-48210002"]
+signed = 2016-04-12
+summary = "Advisory agreement for the joint account and Henrik's IRA on the standard fee schedule."
+
+[[agreements]]
+agreement_id = "AGR-4821-2"
+kind = "advisory"
+party_ids = ["P-4821-3"]
+account_ids = ["SYN-48210003"]
+signed = 2021-09-14
+summary = "Advisory agreement for Ngozi's individual account on the standard fee schedule."
+
+[[agreements]]
+agreement_id = "AGR-4821-3"
+kind = "householding"
+party_ids = ["P-4821-1", "P-4821-2", "P-4821-3"]
+account_ids = ["SYN-48210001", "SYN-48210002", "SYN-48210003"]
+signed = 2024-11-18
+summary = "Householding letter: the joint account, Henrik's IRA and Ngozi's individual account are billed together as one group from the next billing cycle."
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.55", band = "0.05" },
+  { asset_class = "International equity", target = "0.08", band = "0.04" },
+  { asset_class = "Fixed income", target = "0.35", band = "0.05" },
+]
+restrictions = []
+asset_classes = { "SEC-0001" = "US equity", "SEC-0002" = "International equity", "SEC-0003" = "Fixed income", "SEC-0004" = "US equity", "SEC-0005" = "US equity" }
+
+[[activity]]
+type = "buy"
+date = 2025-02-18
+account_id = "SYN-48210003"
+security_id = "SEC-0005"
+units = "30"
+
+[[activity]]
+type = "contribution"
+date = 2025-04-10
+account_id = "SYN-48210002"
+amount = "8000.00"
+
+[[activity]]
+type = "buy"
+date = 2025-04-14
+account_id = "SYN-48210002"
+security_id = "SEC-0001"
+units = "25"
+
+[[activity]]
+type = "contribution"
+date = 2025-05-12
+account_id = "SYN-48210001"
+amount = "25000.00"
+
+[[activity]]
+type = "buy"
+date = 2025-05-14
+account_id = "SYN-48210001"
+security_id = "SEC-0001"
+units = "60"
+
+[[activity]]
+type = "sell"
+date = 2025-09-08
+account_id = "SYN-48210001"
+security_id = "SEC-0004"
+units = "150"
+
+[[activity]]
+type = "withdrawal"
+date = 2025-11-20
+account_id = "SYN-48210001"
+amount = "18000.00"
+
+[planted]
+item_id = "PI-0001"
+type = "missed_fee_breakpoint"
+agreement_id = "AGR-4821-3"

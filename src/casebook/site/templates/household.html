@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block title %}{{ household.household_id }}{% endblock %}
+{% macro files(source) %}
+  <p class="files">Files:
+  {% for f in household.files[source] %}<a href="{{ household_data }}/{{ f }}">{{ f.split("/")[-1] }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
+  </p>
+{% endmacro %}
+{% macro people(ids) %}{% for p in ids %}{{ household.names[p] }}{% if not loop.last %}, {% endif %}{% endfor %}{% endmacro %}
+{% block main %}
+<nav class="crumbs"><a href="../index.html">Households</a></nav>
+<header class="household-head">
+  <h1>{{ household.household_id }} · {{ household.name }}</h1>
+  <p>Archetype {{ household.archetype }}: {{ household.archetype_name }} · pair {{ household.pair }} · {{ household.role }}{% if household.twin_kind %} ({{ household.twin_kind|replace("_", " ") }}){% endif %}</p>
+</header>
+
+<section aria-labelledby="sources-heading">
+  <h2 id="sources-heading">Four source sets</h2>
+  <div class="sources">
+    <article class="source" data-source-set="custodian">
+      <h3>Custodian</h3>
+      <h4>Accounts</h4>
+      <table>
+        <thead><tr><th>Account</th><th>Registration</th><th>Owners</th></tr></thead>
+        <tbody>{% for a in household.accounts %}<tr><td>{{ a.account_id }}</td><td>{{ a.registration }}</td><td>{{ a.owners }}</td></tr>{% endfor %}</tbody>
+      </table>
+      <h4>Positions on {{ scenario_date }}</h4>
+      <table>
+        <thead><tr><th>Account</th><th>Security</th><th class="num">Units</th><th class="num">Price (synthetic)</th><th class="num">Value</th></tr></thead>
+        <tbody>{% for p in household.positions %}<tr><td>{{ p.account_id }}</td><td>{{ p.security }}</td><td class="num">{{ p.units }}</td><td class="num">{{ p.price|money }}</td><td class="num">{{ p.market_value|money }}</td></tr>{% endfor %}</tbody>
+      </table>
+      <h4>Cash on {{ scenario_date }}</h4>
+      <table>
+        <thead><tr><th>Account</th><th class="num">Settled</th><th class="num">Unsettled</th></tr></thead>
+        <tbody>{% for c in household.cash %}<tr><td>{{ c.account_id }}</td><td class="num">{{ c.settled_cash }}</td><td class="num">{{ c.unsettled_cash }}</td></tr>{% endfor %}</tbody>
+      </table>
+      <p>{{ household.transactions|length }} transactions from 2025-01-01, with tax lots and quarter-end balances, are in the files.</p>
+      {{ files("custodian") }}
+    </article>
+
+    <article class="source" data-source-set="portfolio">
+      <h3>Portfolio system</h3>
+      <h4>Household membership</h4>
+      <ul>{% for m in household.portfolio.household_membership %}<li>{{ m.name }} ({{ m.relationship }})</li>{% endfor %}</ul>
+      <h4>Legal ownership</h4>
+      <ul>{% for o in household.portfolio.legal_ownership %}<li>{{ o.account_id }}: {{ people(o.owner_ids) }}</li>{% endfor %}</ul>
+      <h4>Tax units</h4>
+      <ul>{% for t in household.portfolio.tax_units %}<li>{{ t.tax_unit_id }}, {{ t.filing_status|replace("_", " ") }}: {{ people(t.person_ids) }}</li>{% endfor %}</ul>
+      <h4>Billing groups</h4>
+      <ul>{% for g in household.portfolio.billing_groups %}<li>{{ g.billing_group_id }}: {{ g.account_ids|join(", ") }} (last changed {{ g.last_changed }})</li>{% endfor %}</ul>
+      <h4>Disclosure permissions</h4>
+      <ul>{% for d in household.portfolio.disclosure_permissions %}<li>{{ household.names[d.person_id] }} may be told about {{ d.may_be_told_about|join(", ") }}</li>{% endfor %}</ul>
+      <h4>Fee schedule</h4>
+      {% for s in household.billing.fee_schedules %}
+      <p>{{ s.schedule_id }}: {{ s.basis }}.</p>
+      <ul>{% for t in s.tiers %}<li>{% if t.up_to %}Up to {{ t.up_to|money }}{% else %}Above that{% endif %}: {{ t.annual_rate }} a year</li>{% endfor %}</ul>
+      {% endfor %}
+      <h4>IPS targets</h4>
+      <ul>{% for t in household.ips.targets %}<li>{{ t.asset_class }}: {{ t.target }} ± {{ t.band }}</li>{% endfor %}</ul>
+      {{ files("portfolio") }}
+    </article>
+
+    <article class="source" data-source-set="crm">
+      <h3>CRM</h3>
+      <h4>Contacts</h4>
+      <ul>{% for c in household.crm.contacts %}<li>{{ c.name }} ({{ c.relationship }}), {{ c.email }}, {{ c.phone }}</li>{% endfor %}</ul>
+      <h4>Agreements</h4>
+      <ul>{% for a in household.crm.agreements %}<li>{{ a.agreement_id }}, {{ a.kind }}, signed {{ a.signed }} by {{ people(a.party_ids) }}: {{ a.summary }}</li>{% endfor %}</ul>
+      <h4>Notes</h4>
+      <ul class="notes">{% for n in household.crm.notes %}<li><span class="date">{{ n.date }}</span> {{ n.text }}</li>{% endfor %}</ul>
+      {{ files("crm") }}
+    </article>
+
+    <article class="source" data-source-set="documents">
+      <h3>Documents</h3>
+      <ul>{% for d in household.documents %}<li><a href="{{ household_data }}/documents/{{ d.file }}">{{ d.kind|replace("_", " ")|capitalize }}, {{ d.account_id }}</a>: valued {{ d.valuation_date }}, known as of {{ d.known_as_of }}</li>{% endfor %}</ul>
+      {{ files("documents") }}
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="planted-heading" data-section="planted-item">
+  <h2 id="planted-heading">Planted item</h2>
+  {% if household.planted %}
+  <div class="planted">
+    <p><strong>{{ household.planted.item_id }}: {{ household.planted.title }}</strong></p>
+    <p>Kind: {{ household.planted.kind|replace("_", " ") }}. Sources involved: {% for s in household.planted.sources %}<a href="{{ household_data }}/{{ s }}">{{ s }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.</p>
+  </div>
+  {% else %}
+  <p>None. This household is the twin in pair {{ household.pair }}{% if household.twin_kind %}, a {{ household.twin_kind|replace("_", " ") }}{% endif %}.</p>
+  {% endif %}
+</section>
+
+<section aria-labelledby="truth-heading">
+  <h2 id="truth-heading">Three truth layers</h2>
+  <div class="layers">
+    <article class="layer" data-truth-layer="events">
+      <h3>1. Events</h3>
+      <p>What happened, from the event log. The AI under test never sees it.</p>
+      <h4>Advisory fees debited</h4>
+      <table>
+        <thead><tr><th>Date</th><th>Account</th><th>Billing group</th><th>Quarter to</th><th class="num">Amount</th></tr></thead>
+        <tbody>{% for e in household.fee_events %}<tr><td>{{ e.date }}</td><td>{{ e.account_id }}</td><td>{{ e.billing_group_id }}</td><td>{{ e.period_end }}</td><td class="num">{{ e.amount|money }}</td></tr>{% endfor %}</tbody>
+      </table>
+      <details>
+        <summary>All {{ household.events|length }} events</summary>
+        <table>
+          <thead><tr><th>Date</th><th>Event</th><th>Account</th><th class="num">Amount</th></tr></thead>
+          <tbody>{% for e in household.events %}<tr><td>{{ e.date }}</td><td>{{ e.type }}</td><td>{{ e.account_id }}</td><td class="num">{% if e.amount is defined %}{{ e.amount|money }}{% else %}opening lots{% endif %}</td></tr>{% endfor %}</tbody>
+        </table>
+      </details>
+      <p class="files"><a href="../{{ data }}/sealed/{{ household.household_id }}/events.json">events.json</a></p>
+    </article>
+
+    <article class="layer" data-truth-layer="observations">
+      <h3>2. Source observations</h3>
+      <p>What each source records about billing.</p>
+      <h4>CRM: agreements</h4>
+      <ul>{% for a in household.crm.agreements %}<li>{{ a.agreement_id }} ({{ a.kind }}, signed {{ a.signed }}): {{ a.account_ids|join(", ") }}</li>{% endfor %}</ul>
+      <h4>Portfolio system: billing groups</h4>
+      <ul>{% for g in household.portfolio.billing_groups %}<li>{{ g.billing_group_id }}: {{ g.account_ids|join(", ") }}, last changed {{ g.last_changed }}</li>{% endfor %}</ul>
+      <h4>Custodian: fee debits</h4>
+      <table>
+        <thead><tr><th>Date</th><th>Account</th><th class="num">Amount</th></tr></thead>
+        <tbody>{% for t in household.fees %}<tr><td>{{ t.trade_date }}</td><td>{{ t.account_id }}</td><td class="num">{{ t.amount|money }}</td></tr>{% endfor %}</tbody>
+      </table>
+    </article>
+
+    <article class="layer" data-truth-layer="conclusion">
+      <h3>3. Justified conclusion</h3>
+      {% if household.planted %}
+      <p>{{ household.planted.conclusion }}</p>
+      <dl class="figures">{% for label, value in household.planted.figures %}<dt>{{ label }}</dt><dd>{{ value }}</dd>{% endfor %}</dl>
+      <div class="scroll">
+      <table>
+        <thead><tr>{% for c in household.planted.table.columns %}<th>{{ c }}</th>{% endfor %}</tr></thead>
+        <tbody>{% for row in household.planted.table.rows %}<tr>{% for v in row %}<td>{{ v }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+      </table>
+      </div>
+      {% else %}
+      <p>{{ household.explanation }}</p>
+      {% endif %}
+    </article>
+  </div>
+</section>
+{% endblock %}

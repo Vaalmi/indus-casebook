@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Households{% endblock %}
+{% block main %}
+<section class="intro">
+  <h1>Invented households, real-looking records</h1>
+  <p>Each household's evidence is spread across four source sets: custodian files, a portfolio system, CRM notes and documents. A pair shares an archetype: the trap holds a planted item, its twin is clean, a near miss or unresolved. Each household page shows the source sets side by side, the planted item and the three truth layers.</p>
+</section>
+<section class="households" aria-labelledby="households-heading">
+  <h2 id="households-heading">Households</h2>
+  <table class="list">
+    <thead><tr><th>Household</th><th>Archetype</th><th>Pair</th><th>Role</th></tr></thead>
+    <tbody>
+    {% for h in households %}
+      <tr data-household="{{ h.household_id }}">
+        <td><a href="households/{{ h.household_id }}.html">{{ h.household_id }} · {{ h.name }}</a></td>
+        <td>{{ h.archetype }}: {{ h.archetype_name }}</td>
+        <td>{{ h.pair }}</td>
+        <td>{{ h.role|capitalize }}{% if h.twin_kind %} ({{ h.twin_kind|replace("_", " ") }}){% endif %}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+<section class="data" aria-labelledby="data-heading">
+  <h2 id="data-heading">The book's files</h2>
+  <p>Download the <a href="{{ data }}/metadata.json">book metadata</a>, the <a href="{{ data }}/manifest.json">manifest with file hashes</a>, the <a href="{{ data }}/securities/securities.csv">securities list</a> and the <a href="{{ data }}/securities/prices_synthetic.csv">synthetic price series</a>.</p>
+</section>
+{% endblock %}

@@ -1,0 +1,3 @@
+#!/bin/sh
+# Runs the one check command before every commit (docs/PROCESS.md).
+exec make check
