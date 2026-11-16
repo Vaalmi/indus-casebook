@@ -5,7 +5,15 @@ from pathlib import Path
 
 from casebook.checks import check_book
 from casebook.model.archetypes import HELD_OUT_ARCHETYPES, frozen
-from casebook.model.files import ALIASES, MANIFEST, METADATA, SEALED_HOUSEHOLDS, read_json, read_manifest
+from casebook.model.files import (
+    ALIASES,
+    MANIFEST,
+    METADATA,
+    SEALED_HOUSEHOLDS,
+    is_tax_summary,
+    read_json,
+    read_manifest,
+)
 from casebook.publish.gates import run_gates
 from casebook.site import STATIC_DIR, data_root, render_site
 
@@ -45,7 +53,8 @@ def build_site(
         path.write_text(html, encoding="utf-8")
     shutil.copytree(STATIC_DIR, staging / "static")
     data = staging / data_root(manifest.version)
-    for name in [*manifest.files, MANIFEST]:
+    # Every book file but the tax summaries, which stay off the site until the tax review.
+    for name in [*(n for n in manifest.files if not is_tax_summary(n)), MANIFEST]:
         target = data / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(book / name, target)

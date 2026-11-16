@@ -22,6 +22,7 @@ from casebook.generate.background.common import (
     holding_rows,
     household,
     person,
+    with_social_security,
 )
 from casebook.generate.script import AccountScript, Activity, HouseholdScript, PlantedSpec, TwinSpec
 from casebook.model.dates import PRIOR_YEAR_END, SCENARIO_DATE, add_weekdays
@@ -293,4 +294,4 @@ def _draw(spec: PairSpec, market: Market, household_id: str, stale: bool) -> Hou
 def generate_pair(spec: PairSpec, market: Market) -> tuple[HouseholdScript, HouseholdScript]:
     trap = fit_ips(_draw(spec, market, spec.trap_id, stale=True), market)
     twin = fit_ips(_draw(spec, market, spec.twin_id, stale=False), market)
-    return trap, twin
+    return with_social_security(spec.rng, trap), with_social_security(spec.rng, twin)

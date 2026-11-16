@@ -27,11 +27,6 @@ ITEM_TYPE = "inherited_ira_annual_rmd"
 INHERITED = "inherited_ira"
 SINGLE_LIFE = "single_life"
 YEAR_END = date(DISTRIBUTION_YEAR, 12, 31)
-# Legal facts the 2025 rules table does not hold. A child of the decedent is an eligible designated
-# beneficiary, outside the ten-year rule, while a minor (age 21, 26 CFR 1.401(a)(9)-4(e)(3)), or
-# when not more than ten years younger than the decedent (26 U.S.C. § 401(a)(9)(E)(ii)(V)).
-MAJORITY_AGE = 21
-EDB_YEARS = 10
 
 
 @dataclass(frozen=True)
@@ -59,10 +54,13 @@ def _inheritance(context: PlantContext) -> Inheritance:
     if len(owners) != 1:
         raise PlantError(f"{hh.household_id}: an inherited IRA has one beneficiary as owner")
     beneficiary = hh.person(owners[0])
+    # A child of the decedent is an eligible designated beneficiary, outside the ten-year rule, while a
+    # minor or when not more than ten years younger than the decedent.
     b, d = beneficiary.born, decedent.born
-    if (b.year - EDB_YEARS, b.month, b.day) <= (d.year, d.month, d.day) or age_in(
+    younger_by, majority = int(rules.value("eligible_beneficiary_years")), int(rules.value("age_of_majority"))
+    if (b.year - younger_by, b.month, b.day) <= (d.year, d.month, d.day) or age_in(
         beneficiary.born, decedent.died.year
-    ) < MAJORITY_AGE:
+    ) < majority:
         raise PlantError(
             f"{hh.household_id}: {beneficiary.name} is an eligible designated beneficiary "
             "(not more than ten years younger than the decedent, or a minor), outside the ten-year rule"

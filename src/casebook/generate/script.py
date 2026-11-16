@@ -49,7 +49,7 @@ SCRIPTED_ACTIVITY = (
     "death",
 )
 ACCOUNT_TYPES = ("joint_taxable", "individual_taxable", "traditional_ira", "roth_ira", "401k", "inherited_ira")
-INCOME_KINDS = ("wages",)
+INCOME_KINDS = ("wages", "social_security")
 # The fields each kind of activity needs, beyond its date and account.
 ACTIVITY_FIELDS: dict[str, tuple[str, ...]] = {
     "buy": ("security_id", "units"),

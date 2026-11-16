@@ -25,6 +25,7 @@ from casebook.model.household import (
     FeeSchedule,
     FeeTier,
     Household,
+    Income,
     IraBasis,
     LossCarryforward,
     Ownership,
@@ -433,3 +434,25 @@ def fit_ips(script: HouseholdScript, market: Market, concentration_limit: Decima
     fitted = replace(script, household=household)
     validate_script(fitted)
     return fitted
+
+
+SOCIAL_SECURITY_FROM_AGE = 67
+
+
+def with_social_security(rng: random.Random, script: HouseholdScript) -> HouseholdScript:
+    """Give each living member of 67 or over at the end of 2025 a year of Social Security benefits:
+    a monthly benefit drawn from $1,400 to $3,800, times twelve (SSA-1099 box 5)."""
+    lines = tuple(
+        Income(
+            p.person_id,
+            "social_security",
+            "Social Security Administration",
+            cents(Decimal(rng.randint(1400, 3800) * 12)),
+            2025,
+        )
+        for p in script.household.members
+        if p.died is None and 2025 - p.born.year >= SOCIAL_SECURITY_FROM_AGE
+    )
+    if not lines:
+        return script
+    return replace(script, household=replace(script.household, income=(*script.household.income, *lines)))

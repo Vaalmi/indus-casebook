@@ -5,7 +5,7 @@ Why each part is what it is. Versions are pinned in `pyproject.toml` and `uv.loc
 ## Language and packaging
 
 - **Python 3.13, managed by uv with a lockfile.** One package, `casebook` under `src/`, and one command, `casebook`. Carried from WealthContext's stack, so the owner runs one toolchain. Turned down: Node for the generator, since the tax cross-check (Tax-Calculator) and the form filler (pypdf) are Python.
-- **Money is `Decimal`, rounded half-up to the cent** in `src/casebook/model/money.py` only. `tools/check_no_float.py` fails the check on any float in `model` and `replay` (and in `tax` and `keys` once they exist). Turned down: integer cents, which would make every emitted file and every test literal harder to read.
+- **Money is `Decimal`, rounded half-up to the cent** in `src/casebook/model/money.py` only. `tools/check_no_float.py` fails the check on any float in `model`, `replay`, `rules`, `tax` and `keys`, except `tax/crosscheck.py`: Tax-Calculator computes in float, and that one file, its only caller, turns every figure into a Decimal rounded half-up to the cent as it leaves. Turned down: integer cents, which would make every emitted file and every test literal harder to read.
 - **Determinism without floats.** The synthetic market draws integers from a stream seeded by the seed and the security (never the version, by the owner's decision of 16 November 2026), and steps prices in Decimal, so every platform builds the same bytes. JSON is written with sorted keys; PDFs use ReportLab's invariant mode.
 
 ## The book

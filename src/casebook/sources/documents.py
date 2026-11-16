@@ -1,41 +1,23 @@
-"""Document PDFs: a quarterly statement per account, and the index that dates each document."""
+"""Document PDFs: a quarterly statement per account, the 2025 tax documents, and the index that dates each document."""
 
-import io
 from datetime import date
 from decimal import Decimal
 from typing import Any
 
 from reportlab.lib import colors
-from reportlab.lib.pagesizes import LETTER
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.utils import simpleSplit
-from reportlab.pdfgen.canvas import Canvas
-from reportlab.platypus import Flowable, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.platypus import Flowable, Paragraph, Spacer, Table, TableStyle
 
 from casebook.model.dates import add_weekdays
 from casebook.model.files import DOCUMENTS_INDEX, STATEMENT_TOTAL, SYNTHETIC, json_text
 from casebook.model.money import cents, fmt, usd
-from casebook.notice import NOTICE
+from casebook.sources import pdf, tax_documents
 from casebook.sources.context import EmitContext
 from casebook.sources.transactions import transaction_rows
 
 STATEMENT_START = date(2026, 1, 1)
 STATEMENT_END = date(2026, 3, 31)
 MAILED_AFTER_WEEKDAYS = 5
-MARGIN = 54
-FOOTER_SIZE = 6.5
-
-
-def _footer(canvas: Canvas, _doc: object) -> None:
-    width = LETTER[0] - 2 * MARGIN
-    lines = simpleSplit(NOTICE, "Helvetica", FOOTER_SIZE, width)
-    canvas.saveState()
-    canvas.setFont("Helvetica", FOOTER_SIZE)
-    y = MARGIN - 18
-    for line in reversed(lines):
-        canvas.drawString(MARGIN, y, line)
-        y += FOOTER_SIZE + 1.5
-    canvas.restoreState()
 
 
 def _table(rows: list[list[str]]) -> Table:
@@ -87,20 +69,7 @@ def _statement(context: EmitContext, account_id: str) -> bytes:
         Paragraph("Activity in the period", styles["Heading2"]),
         _table(activity),
     ]
-    buffer = io.BytesIO()
-    doc = SimpleDocTemplate(
-        buffer,
-        pagesize=LETTER,
-        leftMargin=MARGIN,
-        rightMargin=MARGIN,
-        topMargin=MARGIN,
-        bottomMargin=MARGIN + 40,
-        title=f"Quarterly statement {account_id}",
-        author="The Indus Casebook (synthetic)",
-        invariant=1,
-    )
-    doc.build(story, onFirstPage=_footer, onLaterPages=_footer)
-    return buffer.getvalue()
+    return pdf.render(f"Quarterly statement {account_id}", story)
 
 
 def statement_name(account_id: str) -> str:
@@ -125,5 +94,7 @@ def emit(context: EmitContext) -> dict[str, bytes]:
                 "known_as_of": known.isoformat(),
             }
         )
+    files.update(tax_documents.emit(context))
+    index += tax_documents.index_entries(context)
     files[DOCUMENTS_INDEX] = json_text({"documents": index}).encode()
     return files

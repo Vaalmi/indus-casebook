@@ -82,9 +82,14 @@ def test_the_fixture_loader_drops_every_row_and_document_known_after_the_cutoff(
     for name in ("positions.csv", "transactions.csv", "cash.csv", "tax_lots.csv", "accounts.csv"):
         for line in (tmp_path / "custodian" / name).read_text().splitlines()[1:]:
             assert line.split(",")[-1] <= "2026-03-31", (name, line)
-    # The Q1 statements become known on 2026-04-07, so neither they nor their index entries appear.
-    assert json.loads((tmp_path / "documents" / "index.json").read_text())["documents"] == []
-    assert list((tmp_path / "documents").glob("*.pdf")) == []
+    # The Q1 statements become known on 2026-04-07, so neither they nor their index entries appear; the
+    # 2025 tax documents, issued from 2026-01-30 to 2026-02-17, do.
+    entries = json.loads((tmp_path / "documents" / "index.json").read_text())["documents"]
+    assert sorted((e["kind"], e["known_as_of"]) for e in entries) == [
+        ("form_1099_composite", "2026-02-17"),
+        ("form_1099_composite", "2026-02-17"),
+    ]
+    assert sorted(p.name for p in (tmp_path / "documents").glob("*.pdf")) == sorted(e["file"] for e in entries)
     lot_dates = {line.split(",")[-2] for line in (tmp_path / "custodian" / "tax_lots.csv").read_text().splitlines()[1:]}
     assert lot_dates == {"2024-12-31"}
 

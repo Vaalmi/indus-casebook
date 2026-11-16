@@ -28,21 +28,16 @@ IRA = "traditional_ira"
 PLAN = "401k"
 DISTRIBUTION_YEAR = PRIOR_YEAR_END.year + 1
 
-# Legal facts the 2025 rules table does not hold, named once here with their sources.
-# The required beginning date: 1 April of the year after the year the owner reaches the applicable
-# age (26 U.S.C. § 401(a)(9)(C)(i); for an IRA, § 408(a)(6)); for a plan, the year after the later
-# of that year and retirement (§ 401(a)(9)(C)(i)(II)).
+# Dates the 2025 rules table (decimals only) cannot hold, named once here with their sources; the
+# ages themselves are in the table. The required beginning date: 1 April of the year after the year
+# the owner reaches the applicable age (26 U.S.C. § 401(a)(9)(C)(i); for an IRA, § 408(a)(6)); for a
+# plan, the year after the later of that year and retirement (§ 401(a)(9)(C)(i)(II)).
 RBD_MONTH, RBD_DAY = 4, 1
-# The applicable age before the 2025 table's 73 (which covers those born 1951 to 1959): 70½ for
-# those born before 1 July 1949 (§ 401(a)(9)(C)(i) before 2020); 72 for those born from 1 July 1949
-# to 1950 (SECURE Act § 114, Pub. L. 116-94); 75 from 1960 (§ 401(a)(9)(C)(v)(II)).
+# Which applicable age a birth date takes: `rmd_age_before_secure` (70½) before 1 July 1949,
+# `rmd_age_secure` (72) to 1950, `rmd_age` (73) from 1951, `rmd_age_from_1960` (75) from 1960.
 AGE_72_FROM, AGE_73_FROM, AGE_75_FROM = date(1949, 7, 1), date(1951, 1, 1), date(1960, 1, 1)
-AGE_70_HALF_YEARS, AGE_72 = 70, 72
+HALF = Decimal("0.5")
 HALF_YEAR_MONTHS = 6
-# The Uniform Lifetime table applies unless the sole beneficiary is a spouse more than ten years
-# younger, who takes the Joint and Last Survivor table (26 CFR 1.401(a)(9)-5(c)(2)), which the
-# rules table does not hold.
-JOINT_TABLE_YEARS = 10
 UNIFORM = "uniform_lifetime"
 
 
@@ -55,9 +50,13 @@ def age_in(born: date, year: int) -> int:
     return year - born.year
 
 
-def half_birthday(born: date, years: int) -> date:
-    """The day six calendar months after the birthday at `years`: 70½ is half_birthday(born, 70)."""
-    month = born.month + HALF_YEAR_MONTHS
+def attains(born: date, age: Decimal) -> date:
+    """The day a person attains `age`, a whole or a half year: 70½ is six calendar months after the
+    70th birthday."""
+    years = int(age)
+    if age - years not in (ZERO, HALF):
+        raise PlantError(f"an age of {age} is neither a whole nor a half year")
+    month = born.month + (HALF_YEAR_MONTHS if age - years else 0)
     year = born.year + years + (month - 1) // 12
     month = (month - 1) % 12 + 1
     return date(year, month, min(born.day, calendar.monthrange(year, month)[1]))
@@ -66,12 +65,15 @@ def half_birthday(born: date, years: int) -> date:
 def required_beginning_date(rules: Rules, born: date) -> date:
     """An IRA owner's required beginning date, from the applicable age for their birth date."""
     if born >= AGE_75_FROM:
-        raise PlantError(f"an owner born {born.isoformat()} has applicable age 75, which no featured household uses")
+        age = rules.value("rmd_age_from_1960")
+        raise PlantError(f"an owner born {born.isoformat()} has applicable age {age}, which no featured household uses")
     if born >= AGE_73_FROM:
-        return date(born.year + int(rules.value("rmd_age")) + 1, RBD_MONTH, RBD_DAY)
-    if born >= AGE_72_FROM:
-        return date(born.year + AGE_72 + 1, RBD_MONTH, RBD_DAY)
-    return date(half_birthday(born, AGE_70_HALF_YEARS).year + 1, RBD_MONTH, RBD_DAY)
+        age = rules.value("rmd_age")
+    elif born >= AGE_72_FROM:
+        age = rules.value("rmd_age_secure")
+    else:
+        age = rules.value("rmd_age_before_secure")
+    return date(attains(born, age).year + 1, RBD_MONTH, RBD_DAY)
 
 
 def prior_year_end_balance(context: PlantContext, account_id: str) -> Decimal:
@@ -105,9 +107,10 @@ def refuse_joint_table(hh: Household, account_id: str, owner_born: date) -> None
     primaries = [b for b in hh.beneficiaries if b.account_id == account_id and b.designation == "primary"]
     if len(primaries) == 1 and primaries[0].person_id is not None and primaries[0].relationship == "spouse":
         spouse = hh.person(primaries[0].person_id)
-        if spouse.born.year - owner_born.year > JOINT_TABLE_YEARS:
+        gap = int(load_rules(DISTRIBUTION_YEAR).value("joint_table_spouse_years"))
+        if spouse.born.year - owner_born.year > gap:
             raise PlantError(
-                f"{account_id}: the sole beneficiary is a spouse more than {JOINT_TABLE_YEARS} years younger, "
+                f"{account_id}: the sole beneficiary is a spouse more than {gap} years younger, "
                 "so the Joint and Last Survivor table applies, which the rules table does not hold"
             )
 

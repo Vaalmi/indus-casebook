@@ -88,6 +88,21 @@ def test_the_money_packages_hold_no_float() -> None:
     assert float_main(["src/casebook/model", "src/casebook/replay"]) == 0
 
 
+def test_every_tax_file_but_the_tax_calculator_boundary_holds_no_float() -> None:
+    assert float_main(["src/casebook/tax", "--except", "src/casebook/tax/crosscheck.py"]) == 0
+    # The boundary itself is where Tax-Calculator's floats are; without the exception the check fails.
+    assert float_main(["src/casebook/tax"]) == 1
+
+
+def test_an_exception_names_one_existing_file_only(tmp_path: Path) -> None:
+    (tmp_path / "bad.py").write_text("RATE = 0.01\n")
+    (tmp_path / "other.py").write_text("SHARE = 0.5\n")
+    assert float_main([str(tmp_path), "--except", str(tmp_path / "bad.py")]) == 1
+    (tmp_path / "other.py").unlink()
+    assert float_main([str(tmp_path), "--except", str(tmp_path / "bad.py")]) == 0
+    assert float_main([str(tmp_path), "--except", str(tmp_path / "renamed.py")]) == 1
+
+
 def test_the_float_check_fails_on_a_planted_float(tmp_path: Path) -> None:
     (tmp_path / "bad.py").write_text("RATE = 0.01\n")
     assert float_main([str(tmp_path)]) == 1

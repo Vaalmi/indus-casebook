@@ -10,8 +10,10 @@ requires-python = ">=3.13,<3.14"
 license = "Apache-2.0"
 dependencies = [
   "jinja2==3.1.6",
+  "pandas==3.1.1",
   "pypdf==7.1.0",
   "reportlab==5.1.0",
+  "taxcalc==6.9.1",
 ]
 
 [dependency-groups]
@@ -85,6 +87,7 @@ forbidden_modules = [
   "casebook.site",
   "casebook.sources",
   "casebook.tasks",
+  "casebook.tax",
 ]
 
 # docs/PLAN.md, import contract 1: answer keys and graders never import the generator
@@ -99,4 +102,6 @@ forbidden_modules = [
   "casebook.plant",
   "casebook.replay",
   "casebook.sources",
+  "casebook.tax.engine",
+  "casebook.tax.facts",
 ]

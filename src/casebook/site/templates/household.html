@@ -74,7 +74,7 @@
 
     <article class="source" data-source-set="documents">
       <h3>Documents</h3>
-      <ul>{% for d in household.documents %}<li><a href="{{ household_data }}/documents/{{ d.file }}">{{ d.kind|replace("_", " ")|capitalize }}, {{ d.account_id }}</a>: valued {{ d.valuation_date }}, known as of {{ d.known_as_of }}</li>{% endfor %}</ul>
+      <ul>{% for d in household.documents %}<li><a href="{{ household_data }}/documents/{{ d.file }}">{{ d.kind|document }}, {% if d.account_id is defined %}{{ d.account_id }}{% else %}{{ people([d.person_id]) }}{% endif %}</a>: valued {{ d.valuation_date }}, known as of {{ d.known_as_of }}</li>{% endfor %}</ul>
       {{ files("documents") }}
     </article>
   </div>

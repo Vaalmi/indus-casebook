@@ -239,14 +239,14 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 
 **Depends on:** 6.
 
-- [ ] Every parameter in the 2025 rules table cites a primary source; a parameter with no citation fails to load
-- [ ] All 100 households have a composite 1099, and a 1099-R, W-2 and SSA-1099 where the event log calls for one (a test compares documents present with events)
-- [ ] All 100 have a tax summary with income, bracket, net investment income tax, loss carryforwards and IRA basis
-- [ ] The in-house engine and Tax-Calculator agree on every household's summary: within 2 dollars on income, tax and net investment income tax, and on the same bracket. The engine and the `keys` implementation agree within 2 dollars on loss carryforwards and IRA basis. The report lists each household's differences
-- [ ] A summary altered in one field only fails the comparison, with one test per field: income, bracket, net investment income tax, loss carryforwards, IRA basis
-- [ ] The three hand-worked probe cases and at least one IRS worked example each for Form 8606 and the capital loss carryover are tests with literal expected values
-- [ ] The dependency check passes with Tax-Calculator imported and fails if PolicyEngine or `tenforty` is added
-- [ ] The one check command passes
+- [x] Every parameter in the 2025 rules table cites a primary source; a parameter with no citation fails to load
+- [x] All 100 households have a composite 1099, and a 1099-R, W-2 and SSA-1099 where the event log calls for one (a test compares documents present with events)
+- [x] All 100 have a tax summary with income, bracket, net investment income tax, loss carryforwards and IRA basis
+- [x] The in-house engine and Tax-Calculator agree on every household's summary: within 2 dollars on income, tax and net investment income tax, and on the same bracket. The engine and the `keys` implementation agree within 2 dollars on loss carryforwards and IRA basis. The report lists each household's differences
+- [x] A summary altered in one field only fails the comparison, with one test per field: income, bracket, net investment income tax, loss carryforwards, IRA basis
+- [x] The three hand-worked probe cases and at least one IRS worked example each for Form 8606 and the capital loss carryover are tests with literal expected values
+- [x] The dependency check passes with Tax-Calculator imported and fails if PolicyEngine or `tenforty` is added
+- [x] The one check command passes
 
 ### Slice 8: Fill the official forms for the featured 20 (week 8)
 

@@ -103,6 +103,14 @@ def _facts(args: argparse.Namespace) -> int:
     return 0
 
 
+def _tax(args: argparse.Namespace) -> int:
+    from casebook.tax.summary import book_units, tax_report
+
+    report = tax_report(book_units(args.book))
+    print(report.render())
+    return 0 if report.agrees else 1
+
+
 def parser() -> argparse.ArgumentParser:
     top = argparse.ArgumentParser(prog="casebook", description="The Indus Casebook")
     commands = top.add_subparsers(dest="command", required=True)
@@ -138,6 +146,9 @@ def parser() -> argparse.ArgumentParser:
     facts.add_argument("--book", type=Path, default=DEFAULT_BOOK)
     facts.add_argument("--out", type=Path, default=Path("out/facts"))
     facts.set_defaults(run=_facts)
+    tax = commands.add_parser("tax", help="compare the 2025 tax engine with Tax-Calculator and the keys, per household")
+    tax.add_argument("--book", type=Path, default=DEFAULT_BOOK)
+    tax.set_defaults(run=_tax)
     canary = commands.add_parser("canary", help="check a run cannot read a sealed file outside its workspace")
     canary.set_defaults(run=_canary)
     return top

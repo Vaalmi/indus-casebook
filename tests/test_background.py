@@ -109,6 +109,12 @@ def test_the_whole_book_is_100_households_and_900_passing_lines(tmp_path: Path) 
     assert len(result.households) == 100
     report = check_book(out)
     assert report.passed and len(report.lines) == 900
+    # Slice 7 on all 100: a composite 1099 each, and a tax summary each whose every figure agrees.
+    for household in result.households:
+        index = json.loads((out / "households" / household / "documents" / "index.json").read_text())["documents"]
+        assert any(entry["kind"] == "form_1099_composite" for entry in index), household
+        summary = json.loads((out / "sealed" / household / "tax_summary.json").read_text())
+        assert summary["summaries"] and all(c["agrees"] for c in summary["comparisons"]), household
 
 
 def sealed_households(book: Path) -> list[dict[str, Any]]:

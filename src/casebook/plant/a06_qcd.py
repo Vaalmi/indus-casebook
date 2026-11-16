@@ -20,9 +20,9 @@ from casebook.plant.a05_first_rmd import (
     UNIFORM,
     Payout,
     age_in,
+    attains,
     distributions_for,
     gross,
-    half_birthday,
     prior_year_end_balance,
     refuse_joint_table,
     required_beginning_date,
@@ -33,9 +33,6 @@ from casebook.rules import load_rules
 ITEM_TYPE = "qcd_evidenced_in_crm_only"
 ZERO = Decimal(0)
 YEAR_END = date(DISTRIBUTION_YEAR, 12, 31)
-# A QCD is made on or after the day the owner attains age 70½ (26 U.S.C. § 408(d)(8)(B)(ii)), an
-# age the 2025 rules table does not hold.
-QCD_AGE_YEARS = 70
 # The CRM records that show a payment was a QCD.
 QCD_REQUEST = "qcd_request"
 ACKNOWLEDGMENT = "charity_acknowledgment"
@@ -94,7 +91,7 @@ def _qcd_year(context: PlantContext) -> QcdYear:
     owner = hh.person(owners[0])
     if required_beginning_date(rules, owner.born) > YEAR_END:
         raise PlantError(f"{hh.household_id}: {owner.name} is not yet past the required beginning date")
-    aged = half_birthday(owner.born, QCD_AGE_YEARS)
+    aged = attains(owner.born, rules.value("qcd_age"))  # 26 U.S.C. § 408(d)(8)(B)(ii)
     if qcd.date < aged:
         raise PlantError(f"{hh.household_id}: the QCD on {qcd.date} is before {owner.name} is 70½ on {aged}")
     limit = rules.value("qcd_limit")

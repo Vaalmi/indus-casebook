@@ -2,7 +2,9 @@
 .PHONY: setup check
 
 PLAYWRIGHT_FLAGS ?=
-MONEY_PACKAGES = src/casebook/model src/casebook/replay src/casebook/keys src/casebook/rules
+MONEY_PACKAGES = src/casebook/model src/casebook/replay src/casebook/keys src/casebook/rules src/casebook/tax
+# Tax-Calculator computes in float; its one boundary converts every figure to Decimal as it leaves.
+FLOAT_BOUNDARY = src/casebook/tax/crosscheck.py
 
 setup:
 	uv sync --frozen
@@ -14,6 +16,6 @@ check:
 	uv run ruff format --check .
 	uv run pyright
 	uv run lint-imports
-	uv run python tools/check_no_float.py $(MONEY_PACKAGES)
+	uv run python tools/check_no_float.py $(MONEY_PACKAGES) --except $(FLOAT_BOUNDARY)
 	uv run python tools/check_licences.py
 	uv run pytest

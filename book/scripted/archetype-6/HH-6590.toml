@@ -108,6 +108,14 @@ account_id = "SYN-65900002"
 amount = "15000.00"
 summary = "Acknowledgment letter from Arrowmere Valley Hospice: received $15,000.00 from the IRA of Celestine Abara on 2025-06-10, paid by the custodian directly to the charity. No goods or services were provided in return. Filed with her 2025 tax papers."
 
+# Social Security benefits for 2025 (SSA-1099 box 5).
+[[income]]
+person_id = "P-6590-1"
+kind = "social_security"
+payer = "Social Security Administration"
+amount = "29880.00"
+year = 2025
+
 [fee_schedule]
 schedule_id = "FS-STD"
 basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"

@@ -36,11 +36,13 @@ from casebook.model.files import (
     event_log_path,
     household_dir,
     json_text,
+    tax_summary_path,
 )
 from casebook.model.identifiers import file_problems
 from casebook.model.ledger import LedgerError, load_ledger
 from casebook.model.money import fmt
 from casebook.model.registry import RegistryEntry
+from casebook.model.tax import TAX_YEAR, TaxUnitFacts, facts_to_dict, summary_to_dict
 from casebook.notice import NOTICE
 from casebook.plant import PlantContext, plant
 from casebook.published_text import text_of
@@ -50,6 +52,8 @@ from casebook.securities.master import Security, by_id, load_master
 from casebook.securities.scan import default_scan
 from casebook.sources import emit_household
 from casebook.sources.context import SNAPSHOT_DAYS
+from casebook.tax.facts import TaxFactsError, tax_unit_facts
+from casebook.tax.summary import TaxReport, tax_report
 
 DATA_LICENCE = "CC-BY-4.0"
 REPO = Path(__file__).resolve().parents[2]
@@ -167,6 +171,7 @@ def generate_book(
         raise BuildError(str(error)) from error
     files = _book_files(master, market, real_tickers)
     entries: list[RegistryEntry] = []
+    units: list[TaxUnitFacts] = []
     for folder, script in found:
         simulation = simulate(script, market)
         replayed = replay(simulation.events, SNAPSHOT_DAYS)
@@ -194,18 +199,27 @@ def generate_book(
             if problems:
                 raise BuildError("; ".join(problems))
         files.update(emit_household(script, recorded, recorded_ledger, market, master, real_tickers, notes))
+        # The tax facts are what happened, not what the custodian recorded.
+        try:
+            facts = tax_unit_facts(script, simulation.events, replayed, market, by_id(master))
+        except TaxFactsError as error:
+            raise BuildError(f"{script.household.household_id}: {error}") from error
+        units += facts
         log = {
             "household_id": script.household.household_id,
             "opening_date": OPENING_DATE.isoformat(),
             "scenario_date": SCENARIO_DATE.isoformat(),
             "events": [event_to_dict(e) for e in simulation.events],
-            # Income outside the accounts, for the tax-unit facts (W-2s arrive with slice 7).
+            # Income outside the accounts: the wage and Social Security lines the W-2s and SSA-1099s state.
             "income": [
                 {"person_id": i.person_id, "kind": i.kind, "payer": i.payer, "amount": fmt(i.amount), "year": i.year}
                 for i in script.household.income
             ],
+            # Each tax unit's 2025 facts, gathered from the events: what the tax calculators read.
+            "tax_units": [facts_to_dict(f) for f in facts],
         }
         files[event_log_path(script.household.household_id)] = json_text(log).encode()
+    files.update(_tax_files(units))
     files[REGISTRY] = json_text({"entries": [e.to_dict() for e in sorted(entries, key=lambda e: e.item_id)]}).encode()
     files[SEALED_HOUSEHOLDS] = json_text({"households": [_sealed_household(s) for s in scripts]}).encode()
     files[METADATA] = json_text(
@@ -234,6 +248,35 @@ def generate_book(
             "files": {name: hashlib.sha256(data).hexdigest() for name, data in sorted(files.items())},
         }
     ).encode()
+    return files
+
+
+def _tax_files(units: list[TaxUnitFacts]) -> dict[str, bytes]:
+    """Each household's tax summary from the engine, with every figure the comparison checked. A book
+    whose calculators disagree is refused."""
+    report: TaxReport = tax_report(units)
+    if not report.agrees:
+        raise BuildError("the tax calculators disagree:\n" + "\n".join(c.render() for c in report.disagreements))
+    files: dict[str, bytes] = {}
+    for household in dict.fromkeys(unit.household_id for unit in units):
+        summary = {
+            "household_id": household,
+            "tax_year": TAX_YEAR,
+            "summaries": [summary_to_dict(s) for s in report.summaries if s.household_id == household],
+            "comparisons": [
+                {
+                    "tax_unit_id": c.tax_unit_id,
+                    "field": c.field,
+                    "against": c.against,
+                    "engine": None if c.engine is None else fmt(c.engine),
+                    "other": None if c.other is None else fmt(c.other),
+                    "agrees": c.agrees,
+                }
+                for c in report.comparisons
+                if c.household_id == household
+            ],
+        }
+        files[tax_summary_path(household)] = json_text(summary).encode()
     return files
 
 

@@ -190,6 +190,19 @@ def event_log_path(household_id: str) -> str:
     return f"sealed/{household_id}/events.json"
 
 
+TAX_SUMMARY = "tax_summary.json"
+
+
+def tax_summary_path(household_id: str) -> str:
+    """The household's 2025 tax summary and its comparison: sealed, and kept off the site until the tax
+    review (SPEC: "Tax answer sheets are absent until review")."""
+    return f"sealed/{household_id}/{TAX_SUMMARY}"
+
+
+def is_tax_summary(name: str) -> bool:
+    return name.startswith("sealed/") and name.endswith(f"/{TAX_SUMMARY}")
+
+
 # Writing. JSON has sorted keys and a final newline; CSV uses "\n" line endings.
 
 

@@ -148,6 +148,21 @@ date = 2025-11-24
 kind = "distribution_instruction"
 summary = "Prema Raghavan signed a distribution form for the 2025 required minimum distributions of both her IRAs, taken together from IRA SYN-58140002, with 10% federal tax withheld."
 
+# Social Security benefits for 2025 (SSA-1099 box 5).
+[[income]]
+person_id = "P-5814-1"
+kind = "social_security"
+payer = "Social Security Administration"
+amount = "31248.00"
+year = 2025
+
+[[income]]
+person_id = "P-5814-2"
+kind = "social_security"
+payer = "Social Security Administration"
+amount = "26904.00"
+year = 2025
+
 [fee_schedule]
 schedule_id = "FS-STD"
 basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"

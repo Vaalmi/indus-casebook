@@ -56,6 +56,19 @@ KEY_EVENTS: dict[int, tuple[str, ...]] = {
 TWIN_SOURCES = ("custodian/transactions.csv", "crm/crm.json")
 _DATES = ("valuation_date", "known_as_of")
 
+# How the household page names each kind of document in the documents index.
+DOCUMENT_KINDS = {
+    "quarterly_statement": "Quarterly statement",
+    "form_1099_composite": "Composite Form 1099",
+    "form_1099_r": "Form 1099-R",
+    "form_w2": "Form W-2",
+    "form_ssa_1099": "Form SSA-1099",
+}
+
+
+def _document(kind: str) -> str:
+    return DOCUMENT_KINDS[kind]
+
 
 def data_root(version: str) -> str:
     """Where the published book files sit inside the site."""
@@ -199,6 +212,7 @@ def environment() -> Environment:
         lstrip_blocks=True,
     )
     env.filters["money"] = _money
+    env.filters["document"] = _document
     return env
 
 
