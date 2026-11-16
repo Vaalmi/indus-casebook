@@ -2,7 +2,7 @@
 
 <!-- Kept current as each ticket or phase lands (docs/PROCESS.md). The first thing a new session reads after AGENTS.md. -->
 
-Building `docs/PLAN.md` on branch `build/preview`. Slices 1 and 2 are built and reviewed. Slice 1: one scripted pair for archetype 10 (HH-4821, the trap; HH-7350, its twin), built from a seed, checked, and rendered as a static site under aliases. Slice 2: one reconciliation task, T-REC-01, run live on the signed-in `claude` CLI under the three arms, graded, and shown on a task page. Slice 3: every whitelisted event replays against a hand-worked ledger, and `casebook check` runs all nine checks of the spec on every household. Slices 1 and 2 each have one criterion waiting on the owner (below), and two decisions wait on the owner.
+Building `docs/PLAN.md` on branch `build/preview`. Slices 1 to 3 are built and reviewed (commits `494098b`, `359e56b`, `f0cdc5a`). Slice 1: one scripted pair for archetype 10 (HH-4821, the trap; HH-7350, its twin), built from a seed, checked, and rendered as a static site under aliases. Slice 2: one reconciliation task, T-REC-01, run live on the signed-in `claude` CLI under the three arms, graded, and shown on a task page. Slice 3: every whitelisted event replays against a hand-worked ledger, and `casebook check` runs all nine checks of the spec on every household. Each slice has a criterion waiting on the owner, and two decisions wait on the owner (below). Next: slice 4, once the owner has decided whether a new version re-draws every price, since slice 4's restore criterion and every manifest hash depend on how the book is seeded.
 
 ## Running it
 
@@ -44,7 +44,7 @@ Open `out/site/index.html` in a browser, or serve `out/site/` with any static se
 
 The "Check" workflow runs `make check` on every push; its first run is the evidence for the Action half of slice 1's first criterion.
 
-### What the owner does for slice 2
+### What the owner decides and approves
 
 **Decide** [how strictly the grader counts a fabricated figure](decisions/2026-11-16-fabricated-figure-rule.md) (one page; my recommendation is option 1).
 
@@ -61,7 +61,8 @@ The "Check" workflow runs `make check` on every push; its first run is the evide
 - **Spec, reading U3** (the notice and watermark after review) is deferred by the owner to after the preview; slice 17 waits on it.
 - **Slice 1's featured pair has template CRM notes**, marked `"author": "template"`. The owner writes the featured households' notes in slice 5.
 - **Slice 1's security master has 5 securities,** the ones the pair holds. Slice 4 brings the 50 and the test that no ticker is an English word; slice 1's test covers length and the product's own acronyms.
-- **Every book version re-draws the synthetic prices,** since each random stream is seeded by the seed, the version and the subject (`docs/PLAN.md`, Choices and why). A correction version therefore changes every price and fee in the book, not only the corrected item. The owner may want the version left out of the price seed; that would change a plan line.
+- **Every book version re-draws the synthetic prices,** since each random stream is seeded by the seed, the version and the subject (`docs/PLAN.md`, Choices and why). A correction version therefore changes every price and fee in the book, not only the corrected item. Waiting on the owner: [the decision page](decisions/2026-11-16-version-in-the-price-seed.md).
+- **The seven events slice 3 added are tested at the replay boundary but not yet end to end.** No household uses them, so the lots check's paths for splits, moves in kind and step-ups (`checks/lots.py`, 62% covered) and the custodian rows for those events (`sources/transactions.py`, 61%) have not run on an emitted book. Slice 5's archetypes (RMDs, QCDs, Roth conversions, RSUs, a death) exercise them; a defect there would surface as a failed check on a built household.
 - **The fabricated-figure rule is strict, by the reviewers' reading of the spec.** Every amount an answer states as money, prose included, must be in the household's files or among the figures the task's key derives; a derivation the key does not list counts as fabricated and zeroes the run. Live runs turned up three honest derivations (an account's value at another quarter end, a fee shared across accounts, several amounts in one figure); the key now lists them and the answers are regression tests. Others will surface on later tasks; each needs the key widened. The owner may prefer a looser rule (only figures an answer attributes to a file); that would change what the spec's "fabricated figure" means in practice.
 - **The six earlier live runs of T-REC-01 are not published.** They were graded under graders since corrected (a false fabricated-figure zero, docked dates, then the stricter rule); their records stay in `$CASEBOOK_PRIVATE`. The published three are the runs under the final grader.
 - **Published transcripts omit the files a run read as base64** (the statement PDFs), with a note in their place: they carry real tickers and cannot be mapped in place. The book publishes the same documents under aliases.
