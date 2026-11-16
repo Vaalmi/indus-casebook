@@ -18,10 +18,18 @@ Why each part is what it is. Versions are pinned in `pyproject.toml` and `uv.loc
 - **Jinja2 templates, static files, no build step.** `casebook site` renders the pages from a built, checked book and copies the published files beside them. The pages work from `file://` and need no JavaScript yet. Turned down: a static-site generator, which would add a second toolchain for three kinds of page.
 - **GitHub Pages, published from a release tag** by `.github/workflows/pages.yml` (the owner's decision, 13 November 2026). Rolling back is running the same workflow on the previous tag.
 
+## Runs
+
+- **The CLI under test is `claude -p`, started only by `src/casebook/runner/cli.py`.** Every arm shares one configuration (`runner/config.py`): the model `claude-opus-5-5`, the tools Read, Glob, Grep and Skill, 40 turns, a 15-minute timeout, three retries, and `--restricted --strict-mcp-config --no-session-persistence --permission-mode dontAsk --permission-prompts none --output-format stream-json --verbose`. The only difference between arms is `--plugin-dir` (the checklist or the skill). The environment the CLI sees is reduced to HOME, LANG, LOGNAME, PATH, TMPDIR and USER.
+- **`--restricted` is the confinement, proven live by the canary** (`casebook canary`, 16 November 2026): Read by absolute and by relative path, and Grep on the parent folder, were each refused as outside the workspace. It also hides the owner's own skills; only the CLI's built-in skills are listed, the same in every arm. Turned down for now: a container, the plan's fallback if the canary ever leaks.
+- **Skill is in every arm's tools,** because `--tools` otherwise removes the route by which a user's installed skill loads. A run refuses a task whose tools differ from the shared ones.
+- **Runs read the real-ticker build** (`casebook build --real-tickers`, into `out/real/`); `publish/mapper.py` maps outputs back to aliases and refuses a record where a real identifier survives. Unmapped records and transcripts go to `$CASEBOOK_PRIVATE/runs/`, outside the repo. Mapped records and transcripts, and the reconciliation key, go to `published/` and are committed, since a release tag must rebuild the same task pages; the preflight refuses any key in a workspace. A run refuses an alias book, a household missing from the manifest, and a link anywhere in the household's folder.
+- **The checks use a stand-in CLI**, `tests/standin/claude.py`, named by `CASEBOOK_CLAUDE`. It speaks the same stream-json and can answer, error, time out, stop on quota, skip the skill or leak, so every failure path is tested without a model.
+
 ## Checks
 
 - **`make check`** runs ruff (lint and format), pyright in strict mode, import-linter, the float check, the licence check and pytest with an 85% coverage floor. The pytest run includes the end-to-end tests: a seeded build, the checks, the site build with its gates, and Playwright on the built site.
-- **import-linter** holds the import contracts in `docs/PLAN.md`. Slice 1 has contract 2: `checks` imports only `model`.
+- **import-linter** holds the import contracts in `docs/PLAN.md`: contract 1 (keys and graders import no generator code) and contract 2 (`checks` imports only `model`). Contract 3, one module per outside program, is a test that only `runner/cli.py` imports `subprocess`.
 - **The licence check** (`tools/check_licences.py`) reads every installed package's declared licence and also refuses known offenders by name, since `tenforty` declares MIT and bundles GPL code. LGPL passes: the rule names GPL and AGPL, and an LGPL library may be imported. A package that declares no licence fails until someone checks it by hand.
 - **Playwright (Apache-2.0)**, Chromium only, from pytest against a local server. Turned down: Node Playwright, a second toolchain.
 - **A pre-commit hook** (`.githooks/pre-commit`, installed by `make setup`) and **a GitHub Action** (`.github/workflows/check.yml`, on every push) both run `make check`.

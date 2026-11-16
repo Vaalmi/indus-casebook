@@ -4,7 +4,7 @@ import shutil
 from pathlib import Path
 
 from casebook.checks import check_book
-from casebook.model.files import MANIFEST, METADATA, read_manifest
+from casebook.model.files import ALIASES, MANIFEST, METADATA, read_json, read_manifest
 from casebook.publish.gates import run_gates
 from casebook.site import STATIC_DIR, data_root, render_site
 
@@ -13,7 +13,14 @@ class SiteBuildError(RuntimeError):
     pass
 
 
-def build_site(book: Path, out: Path, readme: Path) -> int:
+RUNS_DATA = "data/runs"
+
+
+def build_site(
+    book: Path, out: Path, readme: Path, runs: Path | None = None, tasks: Path | None = None, keys: Path | None = None
+) -> int:
+    if read_json(book, METADATA).get("securities") != ALIASES:
+        raise SiteBuildError(f"{book} is not a default build; a real-ticker build is never published")
     report = check_book(book)
     if not report.passed:
         failed = ", ".join(sorted(report.failed_households()))
@@ -22,7 +29,8 @@ def build_site(book: Path, out: Path, readme: Path) -> int:
     staging = out.with_name(out.name + ".staging")
     if staging.exists():
         shutil.rmtree(staging)
-    pages = render_site(book)
+    keys_dir = keys / manifest.version if keys else None
+    pages = render_site(book, runs, tasks, keys_dir)
     for name, html in pages.items():
         path = staging / name
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -33,6 +41,11 @@ def build_site(book: Path, out: Path, readme: Path) -> int:
         target = data / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(book / name, target)
+    if runs and runs.is_dir():
+        for path in sorted(p for p in runs.rglob("*") if p.is_file()):
+            target = staging / RUNS_DATA / path.relative_to(runs)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(path, target)
     problems = run_gates(staging, readme, data / METADATA)
     if problems:
         raise SiteBuildError("the site fails its gates:\n  " + "\n  ".join(problems))

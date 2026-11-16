@@ -34,8 +34,8 @@ def test_removing_the_notice_from_a_page_fails_the_build(
 ) -> None:
     real = site_build.render_site
 
-    def without_notice(book_root: Path) -> dict[str, str]:
-        pages = real(book_root)
+    def without_notice(book_root: Path, *rest: Path | None) -> dict[str, str]:
+        pages = real(book_root, *rest)
         page = pages["households/HH-7350.html"]
         start, end = page.index("<aside"), page.index("</aside>") + len("</aside>")
         pages["households/HH-7350.html"] = page[:start] + page[end:]
@@ -97,8 +97,8 @@ def test_a_real_ticker_or_name_planted_in_a_page_fails_the_build(
 ) -> None:
     real = site_build.render_site
 
-    def with_leak(book_root: Path) -> dict[str, str]:
-        pages = real(book_root)
+    def with_leak(book_root: Path, *rest: Path | None) -> dict[str, str]:
+        pages = real(book_root, *rest)
         pages["index.html"] = pages["index.html"].replace("</main>", planted + "</main>")
         return pages
 
@@ -159,3 +159,25 @@ def test_the_site_command_reports_a_failed_gate(book: Path, tmp_path: Path, caps
     readme.write_text("# No notice here\n")
     assert main(["site", "--book", str(book), "--out", str(tmp_path / "site"), "--readme", str(readme)]) == 1
     assert "README.md lacks the notice" in capsys.readouterr().err
+
+
+def test_a_real_ticker_inside_an_embedded_pdf_is_a_leak_and_mapping_omits_it(tmp_path: Path) -> None:
+    # Reviewers A and B, slice 2 round 2, new: transcripts carried statement PDFs as base64.
+    import base64
+    import io
+
+    from reportlab.pdfgen.canvas import Canvas
+
+    from casebook.publish.mapper import OMITTED, map_to_aliases
+
+    buffer = io.BytesIO()
+    canvas = Canvas(buffer, invariant=1)
+    canvas.drawString(72, 720, "Holdings: 891 VTI at 336.56 synthetic")
+    canvas.save()
+    blob = base64.b64encode(buffer.getvalue()).decode()
+    line = {"tool_use_result": {"file": {"base64": blob}}, "message": {"content": [{"source": {"data": blob}}]}}
+    (tmp_path / "run.transcript.jsonl").write_text(json.dumps(line) + "\n")
+    assert real_identifier_problems(tmp_path) == ["run.transcript.jsonl: real ticker 'VTI'"]
+    mapped = map_to_aliases(line)
+    assert mapped["tool_use_result"]["file"]["base64"] == OMITTED
+    assert mapped["message"]["content"][0]["source"]["data"] == OMITTED

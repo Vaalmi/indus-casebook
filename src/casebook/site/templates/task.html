@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}{{ view.task.task_id }}{% endblock %}
+{% block main %}
+<nav class="crumbs"><a href="../index.html">Households and tasks</a></nav>
+<header class="household-head">
+  <h1>{{ view.task.task_id }}: {{ view.task.workflow|capitalize }}</h1>
+  <p>On <a href="../households/{{ view.task.household_id }}.html">{{ view.task.household_id }}</a>, with evidence known by {{ view.task.cutoff }}.</p>
+</header>
+
+<section aria-labelledby="task-heading" data-section="task">
+  <h2 id="task-heading">The task</h2>
+  <pre class="prompt">{{ view.task.prompt }}</pre>
+  <p>The AI under test gets the household's four source sets as they stood on {{ view.task.cutoff }}, read on real tickers with invented prices. It has the tools {{ view.task.allowed_tools|join(", ") }}, and Skill, by which the checklist and skill arms load their instruction; nothing that runs code or reaches the web. Its output is shown here under aliases.</p>
+</section>
+
+<section aria-labelledby="arms-heading">
+  <h2 id="arms-heading">What each arm produced</h2>
+  <div class="layers">
+  {% for arm in view.arms %}
+    <article class="layer arm" data-arm="{{ arm.arm }}">
+      <h3>{{ arm.name }}</h3>
+      {% if not arm.record %}
+      <p>Not run yet.</p>
+      {% else %}
+      <p class="run-name" data-run-name>{{ arm.tool }} · model {{ arm.models or "not reported" }} · {{ arm.date }}</p>
+      {% if arm.record.state == "failed" %}
+      <p class="failed" data-outcome="failed">Run failed, not scored: {{ arm.record.failure_reason }}</p>
+      {% else %}
+      {% set grade = arm.record.grade %}
+      <p class="{{ 'passed' if grade.passed else 'failed' }}" data-outcome="{{ 'passed' if grade.passed else 'failed' }}">
+        {{ "Passed" if grade.passed else "Failed" }}: {{ grade.score }} of 100{% if grade.critical_fail %}. Critical fail, scored zero: {{ grade.critical_fail }}{% endif %}
+      </p>
+      <table class="breakdown">
+        <thead><tr><th>Criterion</th><th class="num">Earned</th><th>Detail</th></tr></thead>
+        <tbody>
+        {% for c in grade.breakdown %}
+          <tr class="{{ 'hit' if c.earned == c.points else 'miss' }}" data-criterion="{{ c.name }}"><td>{{ "✓" if c.earned == c.points else "✗" }} {{ c.name|replace("_", " ") }}</td><td class="num">{{ c.earned }}/{{ c.points }}</td><td>{{ c.detail }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      <p class="counts">Correct "unresolved": {{ grade.counts.correct_unresolved }} · unnecessary refusal: {{ grade.counts.unnecessary_refusal }} · false alarm: {{ grade.counts.false_alarm }}</p>
+      <details>
+        <summary>The output</summary>
+        <pre class="output">{{ arm.record.output }}</pre>
+      </details>
+      {% endif %}
+      <p class="files">{{ arm.runs }} run{{ "s" if arm.runs != 1 }} under this arm; latest <a href="../data/runs/{{ view.task.task_id }}/{{ arm.record.run_id }}.json">run record</a>{% if arm.record.state != "failed" %}, <a href="../data/runs/{{ view.task.task_id }}/{{ arm.record.run_id }}.transcript.jsonl">transcript</a>{% endif %}.</p>
+      {% endif %}
+    </article>
+  {% endfor %}
+  </div>
+</section>
+
+<section aria-labelledby="why-heading" data-section="justified-conclusion">
+  <h2 id="why-heading">Why the justified conclusion is what it is</h2>
+  <p>{{ view.task.justified_conclusion }}</p>
+  {% if view.key %}
+  <dl class="figures">
+    <dt>Finding</dt><dd>{{ view.key.finding|replace("_", " ") }}</dd>
+    <dt>Fees debited on {{ view.key.fee_date }}</dt><dd>{{ view.key.debited_fee|money }}</dd>
+    <dt>Fees under the agreements</dt><dd>{{ view.key.correct_fee|money }}</dd>
+    <dt>Amount misbilled</dt><dd>{{ view.key.amount_misbilled|money }}</dd>
+  </dl>
+  {% endif %}
+</section>
+{% endblock %}

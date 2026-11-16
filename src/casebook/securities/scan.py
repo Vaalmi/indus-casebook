@@ -25,7 +25,7 @@ class RealIdentifier:
 
 
 class RealIdentifierScan:
-    def __init__(self, master: tuple[Security, ...], names: dict[str, list[str]], issuers: list[str]):
+    def __init__(self, master: tuple[Security, ...], names: dict[str, list[str]], issuers: dict[str, str]):
         tickers = sorted((s.real_ticker for s in master), key=len, reverse=True)
         self._tickers = re.compile(r"(?<![A-Za-z0-9])(" + "|".join(map(re.escape, tickers)) + r")(?![A-Za-z0-9])")
         phrases = sorted({n for ns in names.values() for n in ns} | set(issuers), key=len, reverse=True)

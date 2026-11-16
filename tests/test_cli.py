@@ -13,6 +13,7 @@ def test_build_check_and_site_from_the_command_line(tmp_path: Path, capsys: pyte
     assert "built 2 households" in capsys.readouterr().out
     assert main(["check", "--book", str(book)]) == 0
     site = tmp_path / "site"
-    assert main(["site", "--book", str(book), "--out", str(site), "--readme", str(README)]) == 0
+    none = str(tmp_path / "no-runs")
+    assert main(["site", "--book", str(book), "--out", str(site), "--readme", str(README), "--runs", none]) == 0
     assert "built 3 pages" in capsys.readouterr().out
     assert (site / "households" / "HH-4821.html").is_file()

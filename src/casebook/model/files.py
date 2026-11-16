@@ -39,6 +39,9 @@ CRM_JSON = "crm/crm.json"
 DOCUMENTS_INDEX = "documents/index.json"
 
 SYNTHETIC = "synthetic"
+# metadata.json "securities": how a build names securities.
+ALIASES = "aliases"
+REAL_TICKERS = "real tickers"
 
 BUY = "BUY"
 SELL = "SELL"

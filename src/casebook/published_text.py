@@ -1,20 +1,50 @@
 """The readable text of a file that is about to be published, so the gates can scan it."""
 
+import base64
+import binascii
 import html
 import io
 import json
 import logging
+import re
 from html.parser import HTMLParser
 from typing import Any
 
 from pypdf import PdfReader
 
-TEXT_SUFFIXES = (".csv", ".json", ".md", ".txt", ".css", ".js")
+TEXT_SUFFIXES = (".csv", ".json", ".jsonl", ".md", ".txt", ".css", ".js")
 logging.getLogger("pypdf").setLevel(logging.ERROR)
 
 
 class UnscannableFileError(ValueError):
     pass
+
+
+_BASE64 = re.compile(r"[A-Za-z0-9+/]+={0,2}")
+BLOB_MIN = 64
+
+
+def decoded_blob(value: str) -> str | None:
+    """The readable text inside a base64 string (a PDF's text, or decoded UTF-8), or None if it is not one.
+
+    Transcripts carry the files a run read, PDFs among them, as base64; their text must be
+    scanned like any other published text.
+    """
+    if len(value) < BLOB_MIN or len(value) % 4 or not _BASE64.fullmatch(value):
+        return None
+    try:
+        data = base64.b64decode(value, validate=True)
+    except (binascii.Error, ValueError):
+        return None
+    if data.startswith(b"%PDF"):
+        try:
+            return "\n".join(pdf_pages_text(data))
+        except Exception as error:  # an unreadable PDF must not pass the gate unread
+            raise UnscannableFileError(f"an embedded PDF cannot be read ({error})") from error
+    try:
+        return data.decode("utf-8")
+    except UnicodeDecodeError:
+        return None
 
 
 class _Text(HTMLParser):
@@ -54,6 +84,9 @@ def _json_strings(value: Any) -> list[str]:
         return [s for k, v in value.items() for s in (str(k), *_json_strings(v))]
     if isinstance(value, list):
         return [s for item in value for s in _json_strings(item)]
+    if isinstance(value, str):
+        blob = decoded_blob(value)
+        return [value] if blob is None else [value, blob]
     return [str(value)] if value is not None else []
 
 
@@ -73,9 +106,11 @@ def text_of(name: str, data: bytes) -> str:
         # Joined with nothing, the rendered text keeps such names whole; joined with spaces, it keeps a
         # ticker in one cell apart from the next.
         return "\n".join((text, html.unescape(text), html_visible_text(text, ""), html_visible_text(text, " ")))
-    if name.endswith(".json"):
+    if name.endswith((".json", ".jsonl")):
+        documents = [text] if name.endswith(".json") else [line for line in text.splitlines() if line.strip()]
         try:
-            return text + "\n" + "\n".join(_json_strings(json.loads(text)))
+            decoded = [s for document in documents for s in _json_strings(json.loads(document))]
         except json.JSONDecodeError as error:
             raise UnscannableFileError(f"{name}: not JSON ({error}), so it cannot be scanned") from error
+        return text + "\n" + "\n".join(decoded)
     return text

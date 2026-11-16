@@ -16,8 +16,9 @@ def emit_household(
     replayed: ReplayResult,
     market: Market,
     master: tuple[Security, ...],
+    real_tickers: bool = False,
 ) -> dict[str, bytes]:
-    context = EmitContext(script, events, replayed, market, by_id(master))
+    context = EmitContext(script, events, replayed, market, by_id(master), real_tickers)
     root = household_dir(script.household.household_id)
     files: dict[str, bytes] = {}
     for emitter in (custodian.emit, portfolio.emit, crm.emit, documents.emit):

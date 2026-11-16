@@ -7,5 +7,5 @@
     "VTI": ["Vanguard Total Stock Market"],
     "VXUS": ["Vanguard Total International Stock"]
   },
-  "issuers": ["Vanguard"]
+  "issuers": {"Vanguard": "Larkspur"}
 }

@@ -13,10 +13,12 @@ from casebook.model.archetypes import ARCHETYPES
 from casebook.model.dates import OPENING_DATE, SCENARIO_DATE
 from casebook.model.events import event_to_dict
 from casebook.model.files import (
+    ALIASES,
     MANIFEST,
     METADATA,
     PRICES_COLUMNS,
     PRICES_CSV,
+    REAL_TICKERS,
     REGISTRY,
     SEALED_HOUSEHOLDS,
     SECURITIES_COLUMNS,
@@ -52,9 +54,9 @@ class BuildResult:
     files: int
 
 
-def _book_files(master: tuple[Security, ...], market: Market) -> dict[str, bytes]:
-    securities = [{"security_id": s.internal_id, "security": s.alias} for s in master]
-    aliases = {s.internal_id: s.alias for s in master}
+def _book_files(master: tuple[Security, ...], market: Market, real_tickers: bool) -> dict[str, bytes]:
+    aliases = {s.internal_id: s.real_ticker if real_tickers else s.alias for s in master}
+    securities = [{"security_id": sid, "security": name} for sid, name in aliases.items()]
     prices = [
         {
             "security_id": sid,
@@ -84,19 +86,19 @@ def _sealed_household(script: HouseholdScript) -> dict[str, Any]:
     }
 
 
-def generate_book(seed: int, scripts_dir: Path) -> dict[str, bytes]:
+def generate_book(seed: int, scripts_dir: Path, real_tickers: bool = False) -> dict[str, bytes]:
     master = load_master()
     market = build_market(master, seed, BOOK_VERSION)
     scripts = load_scripts(scripts_dir)
     if not scripts:
         raise BuildError(f"no household scripts under {scripts_dir}")
-    files = _book_files(master, market)
+    files = _book_files(master, market, real_tickers)
     entries: list[RegistryEntry] = []
     for script in scripts:
         simulation = simulate(script, market)
         replayed = replay(simulation.events, SNAPSHOT_DAYS)
         entries += plant(script, simulation.quarters)
-        files.update(emit_household(script, simulation.events, replayed, market, master))
+        files.update(emit_household(script, simulation.events, replayed, market, master, real_tickers))
         log = {
             "household_id": script.household.household_id,
             "opening_date": OPENING_DATE.isoformat(),
@@ -116,7 +118,7 @@ def generate_book(seed: int, scripts_dir: Path) -> dict[str, bytes]:
             "opening_date": OPENING_DATE.isoformat(),
             "scenario_date": SCENARIO_DATE.isoformat(),
             "prices": SYNTHETIC,
-            "securities": "aliases",
+            "securities": REAL_TICKERS if real_tickers else ALIASES,
         }
     ).encode()
     files[MANIFEST] = json_text(
@@ -141,9 +143,11 @@ def refuse_real_identifiers(files: dict[str, bytes]) -> None:
         raise BuildError(f"a default build may not contain a real ticker or security name ({shown})")
 
 
-def build_book(seed: int, out: Path, scripts_dir: Path) -> BuildResult:
-    files = generate_book(seed, scripts_dir)
-    refuse_real_identifiers(files)
+def build_book(seed: int, out: Path, scripts_dir: Path, real_tickers: bool = False) -> BuildResult:
+    """Build the book. Real-ticker mode is for runs only: its output goes to out/real/, never published."""
+    files = generate_book(seed, scripts_dir, real_tickers)
+    if not real_tickers:
+        refuse_real_identifiers(files)
     if out.exists():
         shutil.rmtree(out)
     for name, data in files.items():

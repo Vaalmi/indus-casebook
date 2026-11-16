@@ -58,3 +58,12 @@ ul { padding-left: 1.1rem; margin: 0.2rem 0; font-size: 0.85rem; }
 .list td, .list th { font-size: 0.9rem; }
 .footer { color: var(--muted); font-size: 0.8rem; margin-top: 3rem; padding-bottom: 2rem; border-top: 1px solid var(--line); }
 details { margin-top: 0.75rem; font-size: 0.85rem; }
+.prompt, .output { white-space: pre-wrap; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 0.75rem; font-size: 0.8rem; overflow-x: auto; }
+.passed { color: #1d7a3a; font-weight: 600; }
+.failed { color: #b3261e; font-weight: 600; }
+.breakdown tr.miss td { color: #b3261e; }
+.run-name, .counts { color: var(--muted); font-size: 0.8rem; }
+@media (prefers-color-scheme: dark) {
+  .passed { color: #6fcf8e; }
+  .failed, .breakdown tr.miss td { color: #ff8a80; }
+}

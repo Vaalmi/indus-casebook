@@ -21,6 +21,24 @@
     </tbody>
   </table>
 </section>
+{% if tasks %}
+<section class="tasks" aria-labelledby="tasks-heading">
+  <h2 id="tasks-heading">Tasks</h2>
+  <table class="list">
+    <thead><tr><th>Task</th><th>Workflow</th><th>Household</th>{% for arm in tasks[0].arms %}<th>{{ arm.name }}</th>{% endfor %}</tr></thead>
+    <tbody>
+    {% for t in tasks %}
+      <tr data-task="{{ t.task.task_id }}">
+        <td><a href="tasks/{{ t.task.task_id }}.html">{{ t.task.task_id }}</a></td>
+        <td>{{ t.task.workflow|capitalize }}</td>
+        <td>{{ t.task.household_id }}</td>
+        {% for arm in t.arms %}<td>{% if not arm.record %}not run{% elif arm.record.state == "failed" %}failed run{% else %}{{ "passed" if arm.record.grade.passed else "failed" }}, {{ arm.record.grade.score }}{% endif %}</td>{% endfor %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
 <section class="data" aria-labelledby="data-heading">
   <h2 id="data-heading">The book's files</h2>
   <p>Download the <a href="{{ data }}/metadata.json">book metadata</a>, the <a href="{{ data }}/manifest.json">manifest with file hashes</a>, the <a href="{{ data }}/securities/securities.csv">securities list</a> and the <a href="{{ data }}/securities/prices_synthetic.csv">synthetic price series</a>.</p>

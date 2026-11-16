@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from playwright.sync_api import Browser, Page, sync_playwright
+from playwright.sync_api import Browser, Page
 
 from casebook.notice import NOTICE
 
@@ -29,14 +29,6 @@ def server(site: Path) -> Iterator[str]:
     yield f"http://127.0.0.1:{httpd.server_address[1]}"
     httpd.shutdown()
     httpd.server_close()
-
-
-@pytest.fixture(scope="module")
-def browser() -> Iterator[Browser]:
-    with sync_playwright() as playwright:
-        chromium = playwright.chromium.launch()
-        yield chromium
-        chromium.close()
 
 
 def visit(browser: Browser, url: str, width: int = 1440) -> tuple[Page, list[str]]:

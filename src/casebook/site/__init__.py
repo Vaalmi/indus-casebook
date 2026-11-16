@@ -1,4 +1,4 @@
-"""The static site, rendered from a built, checked book: one page per household, and an index."""
+"""The static site, rendered from a built, checked book: a page per household, a page per task run, an index."""
 
 from dataclasses import dataclass
 from pathlib import Path
@@ -34,6 +34,7 @@ from casebook.model.files import (
 from casebook.model.money import parse_decimal, usd
 from casebook.model.registry import RegistryEntry, parse_entry
 from casebook.notice import NOTICE, NOTICE_HEADLINE
+from casebook.site.tasks import task_views
 
 STATIC_DIR = Path(__file__).parent / "static"
 
@@ -140,7 +141,9 @@ def environment() -> Environment:
     return env
 
 
-def render_site(book: Path) -> dict[str, str]:
+def render_site(
+    book: Path, runs: Path | None = None, tasks: Path | None = None, keys: Path | None = None
+) -> dict[str, str]:
     manifest = read_manifest(book)
     metadata = read_json(book, METADATA)
     sealed = {h["household_id"]: h for h in read_json(book, SEALED_HOUSEHOLDS)["households"]}
@@ -154,7 +157,12 @@ def render_site(book: Path) -> dict[str, str]:
         "data": data_root(manifest.version),
         "scenario_date": SCENARIO_DATE.isoformat(),
     }
-    pages = {"index.html": env.get_template("index.html").render(households=households, root=".", **common)}
+    views = task_views(tasks, runs, keys) if runs and tasks else []
+    pages = {
+        "index.html": env.get_template("index.html").render(households=households, tasks=views, root=".", **common)
+    }
+    for view in views:
+        pages[f"tasks/{view.task.task_id}.html"] = env.get_template("task.html").render(view=view, root="..", **common)
     for household in households:
         page = env.get_template("household.html").render(
             household=household,

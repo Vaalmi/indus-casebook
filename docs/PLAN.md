@@ -175,17 +175,17 @@ The thinnest path through every layer an outsider sees: one scripted pair for ar
 
 One reconciliation task on the trap household, attempted by Claude Code under each arm, graded, and shown on a task page. It proves the seal, the equal arms and the run record on a real CLI before any more tasks are written.
 
-- [ ] Canary test, live: a run told to read a sealed file outside its workspace, by absolute and relative path, does not obtain its content. If it does, the slice stops and switches to a container before going on
-- [ ] `uv run casebook run --task T-REC-01 --arm skill` creates a fresh workspace and writes a run record holding every field the spec lists; a schema test rejects a record missing any of them
-- [ ] The runner refuses to start, each with a named error and a test: a sealed file copied or symlinked into the workspace; an observation or document whose known-as-of date is after the cutoff; a household ID absent from the manifest
-- [ ] For any two arms the CLI arguments, environment and config hash are equal except the instruction (a test); a run whose transcript shows no instruction loaded is `failed`
-- [ ] A fixture note containing an instruction and shell characters changes neither the prompt nor the arguments (a test)
-- [ ] A stand-in CLI that errors, times out or reports a quota stop yields a `failed` record with the reason and no score
-- [ ] The grader passes its own tests: three defective outputs fail, a clean control passes, and a fabricated figure scores zero while keeping its breakdown
+- [x] Canary test, live: a run told to read a sealed file outside its workspace, by absolute and relative path, does not obtain its content. If it does, the slice stops and switches to a container before going on
+- [x] `uv run casebook run --task T-REC-01 --arm skill` creates a fresh workspace and writes a run record holding every field the spec lists; a schema test rejects a record missing any of them
+- [x] The runner refuses to start, each with a named error and a test: a sealed file copied or symlinked into the workspace; an observation or document whose known-as-of date is after the cutoff; a household ID absent from the manifest
+- [x] For any two arms the CLI arguments, environment and config hash are equal except the instruction (a test); a run whose transcript shows no instruction loaded is `failed`
+- [x] A fixture note containing an instruction and shell characters changes neither the prompt nor the arguments (a test)
+- [x] A stand-in CLI that errors, times out or reports a quota stop yields a `failed` record with the reason and no score
+- [x] The grader passes its own tests: three defective outputs fail, a clean control passes, and a fabricated figure scores zero while keeping its breakdown
 - [ ] The first skill (reconciliation and as-of) and the checklist are drafted and the owner has approved them
-- [ ] The task page shows what each arm produced with the failure marked, and names tool, version, model and date; published outputs contain no real ticker (the gate from slice 1, now on run outputs)
-- [ ] Runs in the real delivery environment: three live runs on the signed-in `claude` CLI, one per arm, with up to three retries, on the subscription
-- [ ] The one check command passes
+- [x] The task page shows what each arm produced with the failure marked, and names tool, version, model and date; published outputs contain no real ticker (the gate from slice 1, now on run outputs)
+- [x] Runs in the real delivery environment: three live runs on the signed-in `claude` CLI, one per arm, with up to three retries, on the subscription
+- [x] The one check command passes
 
 ### Slice 3: Replay every history from opening lots, and check it (week 3)
 

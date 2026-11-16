@@ -1,0 +1,463 @@
+{
+  "amount_misbilled": "508.56",
+  "billing_groups": [
+    {
+      "account_ids": [
+        "SYN-48210001",
+        "SYN-48210002",
+        "SYN-48210003"
+      ],
+      "fee": "4944.85",
+      "portfolio_group_ids": [
+        "BG-4821-1",
+        "BG-4821-2"
+      ],
+      "schedule_id": "FS-STD",
+      "value": "2296567.47"
+    }
+  ],
+  "computed_figures": [
+    {
+      "label": "SYN-48210001 value at 2026-03-31",
+      "value": "1023583.21"
+    },
+    {
+      "label": "SYN-48210002 value at 2026-03-31",
+      "value": "552437.15"
+    },
+    {
+      "label": "SYN-48210003 value at 2026-03-31",
+      "value": "720547.11"
+    },
+    {
+      "label": "SYN-48210001 positions value at 2024-12-31",
+      "value": "809269.71"
+    },
+    {
+      "label": "SYN-48210001 cash at 2024-12-31",
+      "value": "30000.00"
+    },
+    {
+      "label": "SYN-48210001 value at 2024-12-31",
+      "value": "839269.71"
+    },
+    {
+      "label": "SYN-48210002 positions value at 2024-12-31",
+      "value": "424818.78"
+    },
+    {
+      "label": "SYN-48210002 cash at 2024-12-31",
+      "value": "6000.00"
+    },
+    {
+      "label": "SYN-48210002 value at 2024-12-31",
+      "value": "430818.78"
+    },
+    {
+      "label": "SYN-48210003 positions value at 2024-12-31",
+      "value": "549494.46"
+    },
+    {
+      "label": "SYN-48210003 cash at 2024-12-31",
+      "value": "22000.00"
+    },
+    {
+      "label": "SYN-48210003 value at 2024-12-31",
+      "value": "571494.46"
+    },
+    {
+      "label": "SYN-48210001 positions value at 2025-03-31",
+      "value": "847988.12"
+    },
+    {
+      "label": "SYN-48210001 cash at 2025-03-31",
+      "value": "32779.24"
+    },
+    {
+      "label": "SYN-48210001 value at 2025-03-31",
+      "value": "880767.36"
+    },
+    {
+      "label": "SYN-48210002 positions value at 2025-03-31",
+      "value": "448444.26"
+    },
+    {
+      "label": "SYN-48210002 cash at 2025-03-31",
+      "value": "7282.95"
+    },
+    {
+      "label": "SYN-48210002 value at 2025-03-31",
+      "value": "455727.21"
+    },
+    {
+      "label": "SYN-48210003 positions value at 2025-03-31",
+      "value": "591712.28"
+    },
+    {
+      "label": "SYN-48210003 cash at 2025-03-31",
+      "value": "11615.78"
+    },
+    {
+      "label": "SYN-48210003 value at 2025-03-31",
+      "value": "603328.06"
+    },
+    {
+      "label": "SYN-48210001 positions value at 2025-06-30",
+      "value": "902029.32"
+    },
+    {
+      "label": "SYN-48210001 cash at 2025-06-30",
+      "value": "35820.87"
+    },
+    {
+      "label": "SYN-48210001 value at 2025-06-30",
+      "value": "937850.19"
+    },
+    {
+      "label": "SYN-48210002 positions value at 2025-06-30",
+      "value": "479613.52"
+    },
+    {
+      "label": "SYN-48210002 cash at 2025-06-30",
+      "value": "5963.21"
+    },
+    {
+      "label": "SYN-48210002 value at 2025-06-30",
+      "value": "485576.73"
+    },
+    {
+      "label": "SYN-48210003 positions value at 2025-06-30",
+      "value": "620215.58"
+    },
+    {
+      "label": "SYN-48210003 cash at 2025-06-30",
+      "value": "11395.11"
+    },
+    {
+      "label": "SYN-48210003 value at 2025-06-30",
+      "value": "631610.69"
+    },
+    {
+      "label": "SYN-48210001 positions value at 2025-09-30",
+      "value": "901914.76"
+    },
+    {
+      "label": "SYN-48210001 cash at 2025-09-30",
+      "value": "67790.75"
+    },
+    {
+      "label": "SYN-48210001 value at 2025-09-30",
+      "value": "969705.51"
+    },
+    {
+      "label": "SYN-48210002 positions value at 2025-09-30",
+      "value": "496649.36"
+    },
+    {
+      "label": "SYN-48210002 cash at 2025-09-30",
+      "value": "6219.71"
+    },
+    {
+      "label": "SYN-48210002 value at 2025-09-30",
+      "value": "502869.07"
+    },
+    {
+      "label": "SYN-48210003 positions value at 2025-09-30",
+      "value": "642978.18"
+    },
+    {
+      "label": "SYN-48210003 cash at 2025-09-30",
+      "value": "11155.36"
+    },
+    {
+      "label": "SYN-48210003 value at 2025-09-30",
+      "value": "654133.54"
+    },
+    {
+      "label": "SYN-48210001 positions value at 2025-12-31",
+      "value": "924298.89"
+    },
+    {
+      "label": "SYN-48210001 cash at 2025-12-31",
+      "value": "50499.43"
+    },
+    {
+      "label": "SYN-48210001 value at 2025-12-31",
+      "value": "974798.32"
+    },
+    {
+      "label": "SYN-48210002 positions value at 2025-12-31",
+      "value": "519074.66"
+    },
+    {
+      "label": "SYN-48210002 cash at 2025-12-31",
+      "value": "6507.99"
+    },
+    {
+      "label": "SYN-48210002 value at 2025-12-31",
+      "value": "525582.65"
+    },
+    {
+      "label": "SYN-48210003 positions value at 2025-12-31",
+      "value": "664295.66"
+    },
+    {
+      "label": "SYN-48210003 cash at 2025-12-31",
+      "value": "10920.78"
+    },
+    {
+      "label": "SYN-48210003 value at 2025-12-31",
+      "value": "675216.44"
+    },
+    {
+      "label": "SYN-48210001 positions value at 2026-03-31",
+      "value": "972242.83"
+    },
+    {
+      "label": "SYN-48210001 cash at 2026-03-31",
+      "value": "51340.38"
+    },
+    {
+      "label": "SYN-48210001 value at 2026-03-31",
+      "value": "1023583.21"
+    },
+    {
+      "label": "SYN-48210002 positions value at 2026-03-31",
+      "value": "545621.18"
+    },
+    {
+      "label": "SYN-48210002 cash at 2026-03-31",
+      "value": "6815.97"
+    },
+    {
+      "label": "SYN-48210002 value at 2026-03-31",
+      "value": "552437.15"
+    },
+    {
+      "label": "SYN-48210003 positions value at 2026-03-31",
+      "value": "709833.60"
+    },
+    {
+      "label": "SYN-48210003 cash at 2026-03-31",
+      "value": "10713.51"
+    },
+    {
+      "label": "SYN-48210003 value at 2026-03-31",
+      "value": "720547.11"
+    },
+    {
+      "label": "SYN-48210001 positions value at 2026-04-15",
+      "value": "986622.03"
+    },
+    {
+      "label": "SYN-48210001 cash at 2026-04-15",
+      "value": "48968.48"
+    },
+    {
+      "label": "SYN-48210001 value at 2026-04-15",
+      "value": "1035590.51"
+    },
+    {
+      "label": "SYN-48210002 positions value at 2026-04-15",
+      "value": "553230.58"
+    },
+    {
+      "label": "SYN-48210002 cash at 2026-04-15",
+      "value": "5535.83"
+    },
+    {
+      "label": "SYN-48210002 value at 2026-04-15",
+      "value": "558766.41"
+    },
+    {
+      "label": "SYN-48210003 positions value at 2026-04-15",
+      "value": "716823.28"
+    },
+    {
+      "label": "SYN-48210003 cash at 2026-04-15",
+      "value": "8912.14"
+    },
+    {
+      "label": "SYN-48210003 value at 2026-04-15",
+      "value": "725735.42"
+    },
+    {
+      "label": "SYN-48210001 fee debited",
+      "value": "2371.90"
+    },
+    {
+      "label": "SYN-48210002 fee debited",
+      "value": "1280.14"
+    },
+    {
+      "label": "SYN-48210003 fee debited",
+      "value": "1801.37"
+    },
+    {
+      "label": "portfolio BG-4821-1 group SYN-48210001 + SYN-48210002 value",
+      "value": "1576020.36"
+    },
+    {
+      "label": "portfolio BG-4821-1 group SYN-48210001 + SYN-48210002 value at 0.0100",
+      "value": "1000000"
+    },
+    {
+      "label": "portfolio BG-4821-1 group SYN-48210001 + SYN-48210002 annual fee at 0.0100",
+      "value": "10000.0000"
+    },
+    {
+      "label": "portfolio BG-4821-1 group SYN-48210001 + SYN-48210002 quarterly fee at 0.0100",
+      "value": "2500.0000"
+    },
+    {
+      "label": "portfolio BG-4821-1 group SYN-48210001 + SYN-48210002 value at 0.0080",
+      "value": "576020.36"
+    },
+    {
+      "label": "portfolio BG-4821-1 group SYN-48210001 + SYN-48210002 annual fee at 0.0080",
+      "value": "4608.162880"
+    },
+    {
+      "label": "portfolio BG-4821-1 group SYN-48210001 + SYN-48210002 quarterly fee at 0.0080",
+      "value": "1152.040720"
+    },
+    {
+      "label": "portfolio BG-4821-1 group SYN-48210001 + SYN-48210002 annual fee",
+      "value": "14608.162880"
+    },
+    {
+      "label": "portfolio BG-4821-1 group SYN-48210001 + SYN-48210002 quarterly fee",
+      "value": "3652.04"
+    },
+    {
+      "label": "portfolio BG-4821-1 fee debited",
+      "value": "3652.04"
+    },
+    {
+      "label": "portfolio BG-4821-2 group SYN-48210003 value",
+      "value": "720547.11"
+    },
+    {
+      "label": "portfolio BG-4821-2 group SYN-48210003 value at 0.0100",
+      "value": "720547.11"
+    },
+    {
+      "label": "portfolio BG-4821-2 group SYN-48210003 annual fee at 0.0100",
+      "value": "7205.471100"
+    },
+    {
+      "label": "portfolio BG-4821-2 group SYN-48210003 quarterly fee at 0.0100",
+      "value": "1801.367775"
+    },
+    {
+      "label": "portfolio BG-4821-2 group SYN-48210003 annual fee",
+      "value": "7205.471100"
+    },
+    {
+      "label": "portfolio BG-4821-2 group SYN-48210003 quarterly fee",
+      "value": "1801.37"
+    },
+    {
+      "label": "portfolio BG-4821-2 fee debited",
+      "value": "1801.37"
+    },
+    {
+      "label": "correct group SYN-48210001 + SYN-48210002 + SYN-48210003 value",
+      "value": "2296567.47"
+    },
+    {
+      "label": "correct group SYN-48210001 + SYN-48210002 + SYN-48210003 value at 0.0100",
+      "value": "1000000"
+    },
+    {
+      "label": "correct group SYN-48210001 + SYN-48210002 + SYN-48210003 annual fee at 0.0100",
+      "value": "10000.0000"
+    },
+    {
+      "label": "correct group SYN-48210001 + SYN-48210002 + SYN-48210003 quarterly fee at 0.0100",
+      "value": "2500.0000"
+    },
+    {
+      "label": "correct group SYN-48210001 + SYN-48210002 + SYN-48210003 value at 0.0080",
+      "value": "1000000"
+    },
+    {
+      "label": "correct group SYN-48210001 + SYN-48210002 + SYN-48210003 annual fee at 0.0080",
+      "value": "8000.0000"
+    },
+    {
+      "label": "correct group SYN-48210001 + SYN-48210002 + SYN-48210003 quarterly fee at 0.0080",
+      "value": "2000.0000"
+    },
+    {
+      "label": "correct group SYN-48210001 + SYN-48210002 + SYN-48210003 value at 0.0060",
+      "value": "296567.47"
+    },
+    {
+      "label": "correct group SYN-48210001 + SYN-48210002 + SYN-48210003 annual fee at 0.0060",
+      "value": "1779.404820"
+    },
+    {
+      "label": "correct group SYN-48210001 + SYN-48210002 + SYN-48210003 quarterly fee at 0.0060",
+      "value": "444.851205"
+    },
+    {
+      "label": "correct group SYN-48210001 + SYN-48210002 + SYN-48210003 annual fee",
+      "value": "19779.404820"
+    },
+    {
+      "label": "correct group SYN-48210001 + SYN-48210002 + SYN-48210003 quarterly fee",
+      "value": "4944.85"
+    },
+    {
+      "label": "SYN-48210001 share of the correct fee",
+      "value": "2203.93"
+    },
+    {
+      "label": "SYN-48210002 share of the correct fee",
+      "value": "1189.48"
+    },
+    {
+      "label": "SYN-48210003 share of the correct fee",
+      "value": "1551.44"
+    },
+    {
+      "label": "correct group SYN-48210001 + SYN-48210002 + SYN-48210003 shares added up",
+      "value": "4944.85"
+    },
+    {
+      "label": "SYN-48210001 overbilled",
+      "value": "167.97"
+    },
+    {
+      "label": "SYN-48210002 overbilled",
+      "value": "90.66"
+    },
+    {
+      "label": "SYN-48210003 overbilled",
+      "value": "249.93"
+    },
+    {
+      "label": "total value",
+      "value": "2296567.47"
+    },
+    {
+      "label": "fees debited",
+      "value": "5453.41"
+    },
+    {
+      "label": "correct fee",
+      "value": "4944.85"
+    },
+    {
+      "label": "amount misbilled",
+      "value": "508.56"
+    }
+  ],
+  "correct_fee": "4944.85",
+  "debited_fee": "5453.41",
+  "fee_date": "2026-04-02",
+  "finding": "fee_error",
+  "household_id": "HH-4821",
+  "quarter_end": "2026-03-31"
+}

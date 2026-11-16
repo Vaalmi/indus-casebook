@@ -19,7 +19,9 @@ class EmitContext:
     replayed: ReplayResult
     market: Market
     securities: dict[str, Security]
+    real_tickers: bool = False
 
     def label(self, security_id: str) -> str:
-        """The name a security appears under in a default build: its alias."""
-        return self.securities[security_id].alias
+        """The name a security appears under: its alias, or its real ticker in real-ticker mode."""
+        security = self.securities[security_id]
+        return security.real_ticker if self.real_tickers else security.alias
