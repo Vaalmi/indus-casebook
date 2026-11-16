@@ -1,0 +1,80 @@
+# Schedule 1 (Form 1040) 2025, Additional Income and Adjustments to Income.
+# Each key is a line as the form prints it (the scheme is in casebook.tax.forms); its value is the
+# PDF field that holds it. The comment after each entry is the field's own label, from the form's XFA.
+#
+# Left out:
+# - the Form 1099-K amount above line 1 (f1_03): no household in the book is sent a Form 1099-K.
+# - line 22 (f2_14): "Reserved for future use".
+
+[fields]
+names = "topmostSubform[0].Page1[0].f1_01[0]"  # Name(s) shown on Form 1040, 1040-S R, or 1040-N R.
+ssn = "topmostSubform[0].Page1[0].f1_02[0]"  # Your social security number.
+"1" = "topmostSubform[0].Page1[0].f1_04[0]"  # Part I. Additional Income. 1. Taxable refunds, credits, or offsets of state and local i...
+"2a" = "topmostSubform[0].Page1[0].f1_05[0]"  # 2a. Alimony received.
+"2b" = "topmostSubform[0].Page1[0].f1_06[0]"  # 2b. Date of original divorce or separation agreement (see instructions):
+"3" = "topmostSubform[0].Page1[0].f1_07[0]"  # 3. Business income or (loss). Attach Schedule C.
+"4_4797" = "topmostSubform[0].Page1[0].c1_1[0]"  # 4. Other gains or (losses). Check if any from Form(s): 4797.
+"4_4684" = "topmostSubform[0].Page1[0].c1_2[0]"  # 4. 4684.
+"4" = "topmostSubform[0].Page1[0].f1_08[0]"  # 4. Amount.
+"5" = "topmostSubform[0].Page1[0].f1_09[0]"  # 5. Rental real estate, royalties, partnerships, S corporations, trusts, etc. Attach Sch...
+"6" = "topmostSubform[0].Page1[0].f1_10[0]"  # 6. Farm income or (loss). Attach Schedule F.
+"7_check_here" = "topmostSubform[0].Page1[0].Line7_ReadOrder[0].c1_3[0]"  # 7. Unemployment compensation. If you repaid a 2025 overpayment (see instructions), chec...
+"7_amount_repaid" = "topmostSubform[0].Page1[0].Line7_ReadOrder[0].f1_11[0]"  # 7. and enter amount repaid:
+"7" = "topmostSubform[0].Page1[0].f1_12[0]"  # 7. Amount.
+"8a" = "topmostSubform[0].Page1[0].Line8a_ReadOrder[0].f1_13[0]"  # 8. Other income: a. Open parenthesis. Net operating loss. Close parenthesis.
+"8b" = "topmostSubform[0].Page1[0].f1_14[0]"  # 8b. Gambling.
+"8c" = "topmostSubform[0].Page1[0].f1_15[0]"  # 8c. Cancellation of debt.
+"8d" = "topmostSubform[0].Page1[0].f1_16[0]"  # 8d. Open parenthesis. Foreign earned income exclusion from Form 2555. Close parenthesis.
+"8e" = "topmostSubform[0].Page1[0].f1_17[0]"  # 8e. Income from Form 8853.
+"8f" = "topmostSubform[0].Page1[0].f1_18[0]"  # 8f. Income from Form 8889.
+"8g" = "topmostSubform[0].Page1[0].f1_19[0]"  # 8g. Alaska Permanent Fund dividends.
+"8h" = "topmostSubform[0].Page1[0].f1_20[0]"  # 8h. Jury duty pay.
+"8i" = "topmostSubform[0].Page1[0].f1_21[0]"  # 8i. Prizes and awards.
+"8j" = "topmostSubform[0].Page1[0].f1_22[0]"  # 8j. Activity not engaged in for profit income.
+"8k" = "topmostSubform[0].Page1[0].f1_23[0]"  # 8k. Stock options.
+"8l" = "topmostSubform[0].Page1[0].f1_24[0]"  # 8l. Income from the rental of personal property if you engaged in the rental for profit...
+"8m" = "topmostSubform[0].Page1[0].f1_25[0]"  # 8m. Olympic and Paralympic medals and U S O C prize money (see instructions).
+"8n" = "topmostSubform[0].Page1[0].f1_26[0]"  # 8n. Section 951(a) inclusion (see instructions).
+"8o" = "topmostSubform[0].Page1[0].f1_27[0]"  # 8o. Section 951A(a) inclusion (see instructions).
+"8p" = "topmostSubform[0].Page1[0].f1_28[0]"  # 8p. Section 461(l) excess business loss adjustment.
+"8q" = "topmostSubform[0].Page1[0].f1_29[0]"  # 8q. Taxable distributions from an A B L E account (see instructions).
+"8r" = "topmostSubform[0].Page1[0].f1_30[0]"  # 8r. Scholarship and fellowship grants not reported on Form W-2.
+"8s" = "topmostSubform[0].Page1[0].f1_31[0]"  # 8s. Open parenthesis. Nontaxable amount of Medicaid waiver payments included on Form 10...
+"8t" = "topmostSubform[0].Page1[0].f1_32[0]"  # 8t. Pension or annuity from a nonqualifed deferred compensation plan or a nongovernment...
+"8u" = "topmostSubform[0].Page1[0].f1_33[0]"  # 8u. Wages earned while incarcerated.
+"8v" = "topmostSubform[0].Page1[0].f1_34[0]"  # 8v. Digital assets received as ordinary income not reported elsewhere. See instructions.
+"8z_type" = "topmostSubform[0].Page1[0].Line8z_ReadOrder[0].f1_35[0]"  # 8z. Other income. List type.
+"8z" = "topmostSubform[0].Page1[0].f1_36[0]"  # 8z. and amount:
+"9" = "topmostSubform[0].Page1[0].f1_37[0]"  # 9. Total other income. Add lines 8a through 8z.
+"10" = "topmostSubform[0].Page1[0].f1_38[0]"  # 10. Combine lines 1 through 7 and 9. This is your additional income. Enter here and on ...
+"11" = "topmostSubform[0].Page2[0].f2_01[0]"  # Part I I. Adjustments to Income. 11. Educator expenses.
+"12" = "topmostSubform[0].Page2[0].f2_02[0]"  # 12. Certain business expenses of reservists, performing artists, and fee-basis governme...
+"13" = "topmostSubform[0].Page2[0].f2_03[0]"  # 13. Health savings account deduction. Attach Form 8889.
+"14_storage_fees" = "topmostSubform[0].Page2[0].c2_1[0]"  # 14. Moving expenses for members of the Armed Forces. Attach Form 3903. If claiming only...
+"14" = "topmostSubform[0].Page2[0].f2_04[0]"  # 14. Amount.
+"15" = "topmostSubform[0].Page2[0].f2_05[0]"  # 15. Deductible part of self-employment tax. Attach Schedule S E.
+"16" = "topmostSubform[0].Page2[0].f2_06[0]"  # 16. Self-employed S E P, S I M P L E, and qualified plans.
+"17" = "topmostSubform[0].Page2[0].f2_07[0]"  # 17. Self-employed health insurance deduction.
+"18" = "topmostSubform[0].Page2[0].f2_08[0]"  # 18. Penalty on early withdrawal of savings.
+"19a" = "topmostSubform[0].Page2[0].f2_09[0]"  # 19a. Alimony paid.
+"19b" = "topmostSubform[0].Page2[0].Line19b_CombField[0].f2_10[0]"  # 19b. Recipient's S S N.
+"19c" = "topmostSubform[0].Page2[0].f2_11[0]"  # 19c. Date of original divorce or separation agreement (see instructions):
+"20_lived_apart" = "topmostSubform[0].Page2[0].c2_2[0]"  # 20. I R A deduction. If you are married filing separately and lived apart from your spo...
+"20" = "topmostSubform[0].Page2[0].f2_12[0]"  # 20. Amount.
+"21" = "topmostSubform[0].Page2[0].f2_13[0]"  # 21. Student loan interest deduction.
+"23" = "topmostSubform[0].Page2[0].f2_15[0]"  # 23. Archer M S A deduction.
+"24a" = "topmostSubform[0].Page2[0].Line24a_ReadOrder[0].f2_16[0]"  # 24. Other adjustments: a. Jury duty pay (see instructions).
+"24b" = "topmostSubform[0].Page2[0].f2_17[0]"  # 24b. Deductible expenses related to income reported on line 8l from the rental of perso...
+"24c" = "topmostSubform[0].Page2[0].f2_18[0]"  # 24c. Nontaxable amount of the value of Olympic and Paralympic medals and U S O C prize ...
+"24d" = "topmostSubform[0].Page2[0].f2_19[0]"  # 24d. Reforestation amortization and expenses.
+"24e" = "topmostSubform[0].Page2[0].f2_20[0]"  # 24e. Repayment of supplemental unemployment benefits under the Trade Act of 1974.
+"24f" = "topmostSubform[0].Page2[0].f2_21[0]"  # 24f. Contributions to section 501(c)(18)(D) pension plans.
+"24g" = "topmostSubform[0].Page2[0].f2_22[0]"  # 24g. Contributions by certain chaplains to section 403(b) plans.
+"24h" = "topmostSubform[0].Page2[0].f2_23[0]"  # 24h. Attorney fees and court costs for actions involving certain unlawful discriminatio...
+"24i" = "topmostSubform[0].Page2[0].f2_24[0]"  # 24i. Attorney fees and court costs you paid in connection with an award from the I R S ...
+"24j" = "topmostSubform[0].Page2[0].f2_25[0]"  # 24j. Housing deduction from Form 2555.
+"24k" = "topmostSubform[0].Page2[0].f2_26[0]"  # 24k. Excess deductions of section 67(e) expenses from Schedule K-1 (Form 1041).
+"24z_type" = "topmostSubform[0].Page2[0].Line24z_ReadOrder[0].f2_27[0]"  # 24z. Other adjustments. List type.
+"24z" = "topmostSubform[0].Page2[0].f2_28[0]"  # 24z. and amount:
+"25" = "topmostSubform[0].Page2[0].f2_29[0]"  # 25. Total other adjustments. Add lines 24a through 24z.
+"26" = "topmostSubform[0].Page2[0].f2_30[0]"  # 26. Add lines 11 through 23 and 25. These are your adjustments to income. Enter here an...

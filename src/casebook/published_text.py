@@ -7,6 +7,7 @@ import io
 import json
 import logging
 import re
+from functools import lru_cache
 from html.parser import HTMLParser
 from typing import Any
 
@@ -75,8 +76,18 @@ def html_visible_text(html: str, separator: str = " ") -> str:
     return separator.join(parser.parts)
 
 
-def pdf_pages_text(data: bytes) -> list[str]:
-    return [page.extract_text() or "" for page in PdfReader(io.BytesIO(data)).pages]
+@lru_cache(maxsize=256)
+def pdf_pages_text(data: bytes) -> tuple[str, ...]:
+    """Each page's own text (field values are not page text). Extraction is slow on a full IRS form,
+    and a build reads the same file in several scans, so the last files read are kept by their bytes."""
+    return tuple(page.extract_text() or "" for page in PdfReader(io.BytesIO(data)).pages)
+
+
+@lru_cache(maxsize=256)
+def pdf_field_values(data: bytes) -> tuple[str, ...]:
+    """The text in a PDF's form fields: a filled return's names, numbers and amounts."""
+    fields = PdfReader(io.BytesIO(data)).get_fields() or {}
+    return tuple(str(field["/V"]) for field in fields.values() if field.get("/V") and field.get("/FT") == "/Tx")
 
 
 def _json_strings(value: Any) -> list[str]:
@@ -97,7 +108,8 @@ def text_of(name: str, data: bytes) -> str:
     shows on the page as a real name.
     """
     if name.endswith(".pdf"):
-        return "\n".join(pdf_pages_text(data))
+        # A filled form's values are in its fields, not its pages' text: both are read.
+        return "\n".join((*pdf_pages_text(data), *pdf_field_values(data)))
     if not name.endswith((".html", *TEXT_SUFFIXES)):
         raise UnscannableFileError(f"{name}: no way to read this file's text, so it cannot be published")
     text = data.decode("utf-8")

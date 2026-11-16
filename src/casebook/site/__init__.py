@@ -75,6 +75,50 @@ def data_root(version: str) -> str:
     return f"data/{version}"
 
 
+# The forms of a return, in the order the return files them, and how the page names each.
+RETURN_FORMS = {
+    "f1040": "Form 1040",
+    "f1040s1": "Schedule 1",
+    "f1040s1a": "Schedule 1-A",
+    "f1040s2": "Schedule 2",
+    "f1040s3": "Schedule 3",
+    "f1040sa": "Schedule A",
+    "f1040sb": "Schedule B",
+    "f1040sd": "Schedule D",
+    "f8949": "Form 8949",
+    "f8606": "Form 8606",
+    "f8960": "Form 8960",
+    "f8959": "Form 8959",
+}
+
+
+@dataclass(frozen=True)
+class ReturnForm:
+    label: str
+    path: str  # the book file, under `sealed/`
+
+
+def _return_forms(book: Path, household_id: str, names: dict[str, str]) -> list[tuple[str, list[ReturnForm]]]:
+    """Each filing unit's forms: `f8949-A-1.pdf` is Form 8949, box A, page 1; `f8606-P-1204-2.pdf` is
+    that person's Form 8606."""
+    root = book / "sealed" / household_id / "returns"
+    units: list[tuple[str, list[ReturnForm]]] = []
+    for unit in sorted(p for p in root.iterdir() if p.is_dir()) if root.is_dir() else []:
+        forms: list[tuple[int, str, ReturnForm]] = []
+        for pdf in unit.glob("*.pdf"):
+            form, _, rest = pdf.stem.partition("-")
+            label = RETURN_FORMS[form]
+            if form == "f8949":
+                box, _, page = rest.partition("-")
+                label += f", box {box}, page {page}"
+            elif form == "f8606":
+                label += f", {names[rest]}"
+            path = pdf.relative_to(book).as_posix()
+            forms.append((list(RETURN_FORMS).index(form), pdf.name, ReturnForm(label, path)))
+        units.append((unit.name, [f for _, _, f in sorted(forms, key=lambda f: (f[0], f[1]))]))
+    return units
+
+
 @dataclass(frozen=True)
 class HouseholdView:
     household_id: str
@@ -99,6 +143,7 @@ class HouseholdView:
     planted: RegistryEntry | None
 
     observations: list[tuple[str, list[str]]]
+    returns: list[tuple[str, list[ReturnForm]]]
 
     @property
     def key_events(self) -> list[dict[str, Any]]:
@@ -158,6 +203,11 @@ def load_household(
         events=events,
         planted=planted[0] if planted else None,
         observations=_observations(root, planted[0] if planted else None, key),
+        returns=_return_forms(
+            book,
+            household_id,
+            {m["person_id"]: m["name"] for m in read_json(root, PORTFOLIO_HOUSEHOLD)["household_membership"]},
+        ),
     )
 
 

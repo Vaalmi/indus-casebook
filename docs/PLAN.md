@@ -252,12 +252,12 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 
 **Depends on:** 7.
 
-- [ ] Each featured household has a filled 1040 with Schedules 1, 1-A, 2, 3, A, B and D as triggered, and Forms 8949, 8606, 8960 and 8959 as triggered; a test asserts each trigger against the tax facts
-- [ ] Fields read back from each filled PDF equal the inputs; Form 8949 totals equal the closed-lot replay
-- [ ] Every page of every filled form carries the "unreviewed" watermark and the notice; removing either from one page fails the build
-- [ ] The filled forms open with visible values in a browser PDF viewer (Playwright screenshot of one page per form)
-- [ ] Featured household pages on the site show the returns
-- [ ] The one check command passes
+- [x] Each featured household has a filled 1040 with Schedules 1, 1-A, 2, 3, A, B and D as triggered, and Forms 8949, 8606, 8960 and 8959 as triggered; a test asserts each trigger against the tax facts
+- [x] Fields read back from each filled PDF equal the inputs; Form 8949 totals equal the closed-lot replay
+- [x] Every page of every filled form carries the "unreviewed" watermark and the notice; removing either from one page fails the build
+- [x] The filled forms open with visible values in a browser PDF viewer (Playwright screenshot of one page per form)
+- [x] Featured household pages on the site show the returns
+- [x] The one check command passes
 
 ### Slice 9: Write the keys, tasks and graders for reconciliation and for tax-lot and RMD (week 9)
 

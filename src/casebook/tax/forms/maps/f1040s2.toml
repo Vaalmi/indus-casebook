@@ -1,0 +1,62 @@
+# Schedule 2 (Form 1040) 2025, Additional Taxes.
+# Each key is a line as the form prints it (the scheme is in casebook.tax.forms); its value is the
+# PDF field that holds it. The comment after each entry is the field's own label, from the form's XFA.
+#
+# Left out:
+# - the boxes on lines 1e and 1f (c1_1, c1_2), which say which line of Form 4255 an excessive payment
+#   comes from: no household has a clean-energy credit to recapture. The amounts on 1e and 1f are mapped.
+# - the exemption boxes on line 4 (c1_3 to c1_5, f1_14), Forms 4361 and 4029: no household has
+#   self-employment income.
+# - line 10 (f1_21): "Reserved for future use".
+
+[fields]
+names = "form1[0].Page1[0].f1_01[0]"  # Name(s) shown on Form 1040, 1040-S R, or 1040-N R.
+ssn = "form1[0].Page1[0].f1_02[0]"  # Your social security number.
+"1a" = "form1[0].Page1[0].Line1a_ReadOrder[0].f1_03[0]"  # Part I. Tax. 1. Additions to tax: a. Excess advance premium tax credit repayment. Attac...
+"1b" = "form1[0].Page1[0].f1_04[0]"  # 1b. Repayment of new clean vehicle credit(s) transferred to a registered dealer from Sc...
+"1c" = "form1[0].Page1[0].f1_05[0]"  # 1c. Repayment of previously owned clean vehicle credit(s) transferred to a registered d...
+"1d" = "form1[0].Page1[0].f1_06[0]"  # 1d. Recapture of net E P E from Form 4255, line 2a, column (l).
+"1e" = "form1[0].Page1[0].f1_07[0]"  # 1e. Amount.
+"1f" = "form1[0].Page1[0].f1_08[0]"  # 1f. Amount.
+"1y_type" = "form1[0].Page1[0].f1_09[0]"  # 1y. Other additions to tax (see instructions):
+"1y" = "form1[0].Page1[0].f1_10[0]"  # 1y. Amount.
+"1z" = "form1[0].Page1[0].f1_11[0]"  # 1z. Add lines 1a through 1y.
+"2" = "form1[0].Page1[0].f1_12[0]"  # 2. Alternative minimum tax. Attach Form 6251.
+"3" = "form1[0].Page1[0].f1_13[0]"  # 3. Add lines 1z and 2. Enter here and on Form 1040, 1040-S R, or 1040-N R, line 17.
+"4" = "form1[0].Page1[0].f1_15[0]"  # 4. Amount.
+"5" = "form1[0].Page1[0].f1_16[0]"  # 5. Social security and Medicare tax on unreported tip income. Attach Form 4137.
+"6" = "form1[0].Page1[0].f1_17[0]"  # 6. Uncollected social security and Medicare tax on wages. Attach Form 8919.
+"7" = "form1[0].Page1[0].f1_18[0]"  # 7. Total additional social security and Medicare tax. Add lines 5 and 6.
+"8_check_here" = "form1[0].Page1[0].Line8_ReadOrder[0].c1_6[0]"  # 8. Additional tax on I R As or other tax-favored accounts. Attach Form 5329 if required...
+"8" = "form1[0].Page1[0].f1_19[0]"  # 8. Amount.
+"9" = "form1[0].Page1[0].f1_20[0]"  # 9. Household employment taxes. Attach Schedule H.
+"11" = "form1[0].Page1[0].f1_22[0]"  # 11. Additional Medicare Tax. Attach Form 8959.
+"12" = "form1[0].Page1[0].f1_23[0]"  # 12. Net investment income tax. Attach Form 8960.
+"13" = "form1[0].Page1[0].f1_24[0]"  # 13. Uncollected social security and Medicare or R R T A tax on tips or group-term life ...
+"14" = "form1[0].Page1[0].f1_25[0]"  # 14. Interest on tax due on installment income from the sale of certain residential lots...
+"15" = "form1[0].Page1[0].f1_26[0]"  # 15. Interest on the deferred tax on gain from certain installment sales with a sales pr...
+"16" = "form1[0].Page1[0].f1_27[0]"  # 16. Recapture of low-income housing credit. Attach Form 8611.
+"17a_type" = "form1[0].Page2[0].Line17a_ReadOrder[0].Line17_ReadOrder[0].f2_01[0]"  # Part I I. Other Taxes (continued). 17. Other additional taxes: a. Recapture of other cr...
+"17a" = "form1[0].Page2[0].Line17a_ReadOrder[0].f2_02[0]"  # 17a. and amount:
+"17b" = "form1[0].Page2[0].f2_03[0]"  # 17b. Recapture of federal mortgage subsidy. If you sold your home, see instructions.
+"17c" = "form1[0].Page2[0].f2_04[0]"  # 17c. Additional tax on H S A distributions. Attach Form 8889.
+"17d" = "form1[0].Page2[0].f2_05[0]"  # 17d. Additional tax on an H S A because you didn't remain an eligible individual. Attac...
+"17e" = "form1[0].Page2[0].f2_06[0]"  # 17e. Additional tax on Archer M S A distributions. Attach Form 8853.
+"17f" = "form1[0].Page2[0].f2_07[0]"  # 17f. Additional tax on Medicare Advantage M S A distributions. Attach Form 8853.
+"17g" = "form1[0].Page2[0].f2_08[0]"  # 17g. Recapture of a charitable contribution deduction related to a fractional interest ...
+"17h" = "form1[0].Page2[0].f2_09[0]"  # 17h. Income your received from a nonqualified deferred compensation plan that fails to ...
+"17i" = "form1[0].Page2[0].f2_10[0]"  # 17i. Compensation you received from a nonqualified deferred compensation plan described...
+"17j" = "form1[0].Page2[0].f2_11[0]"  # 17j. Section 72(m)(5) excess benefits tax.
+"17k" = "form1[0].Page2[0].f2_12[0]"  # 17k. Golden parachute payments.
+"17l" = "form1[0].Page2[0].f2_13[0]"  # 17l. Tax on accumulation distribution of trusts.
+"17m" = "form1[0].Page2[0].f2_14[0]"  # 17m. Excise tax on insider stock compensation from an expatriated corporation.
+"17n" = "form1[0].Page2[0].f2_15[0]"  # 17n. Look-back interest under section 167(g) or 460(b) from Form 8697 or 8866.
+"17o" = "form1[0].Page2[0].f2_16[0]"  # 17o. Tax on non-effectively connected income for any part of the year you were a nonres...
+"17p" = "form1[0].Page2[0].f2_17[0]"  # 17p. Any interest from Form 8621, line 16f, relating to distributions from, and disposi...
+"17q" = "form1[0].Page2[0].f2_18[0]"  # 17q. Any interest from Form 8621, line 24.
+"17z_type" = "form1[0].Page2[0].Line17z_ReadOrder[0].f2_19[0]"  # 17z. Any other taxes. List type.
+"17z" = "form1[0].Page2[0].f2_20[0]"  # 17z. and amount:
+"18" = "form1[0].Page2[0].f2_21[0]"  # 18. Total additional taxes. Add lines 17a through 17z.
+"19" = "form1[0].Page2[0].f2_22[0]"  # 19. Recapture of net E P E from Form 4255, line 1d, column (l).
+"20" = "form1[0].Page2[0].f2_23[0]"  # 20. Section 965 net tax liability installment from Form 965-A.
+"21" = "form1[0].Page2[0].f2_24[0]"  # 21. Add lines 4, 7 through 16, 18, and 19. These are your total other taxes. Enter here...

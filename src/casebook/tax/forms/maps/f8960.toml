@@ -1,0 +1,37 @@
+# Form 8960 (2025), Net Investment Income Tax—Individuals, Estates, and Trusts.
+# Each key is a line as the form prints it (the scheme is in casebook.tax.forms); its value is the
+# PDF field that holds it. The comment after each entry is the field's own label, from the form's XFA.
+#
+# Left out:
+# - the three elections at the top of Part I (c1_1 to c1_3), sections 6013(g), 6013(h) and
+#   1.1411-10(g): no household has a nonresident spouse or a CFC or PFIC.
+# - lines 18a to 21 (f1_28 to f1_35), for estates and trusts: every return in the book is an individual's.
+
+[fields]
+names = "topmostSubform[0].Page1[0].f1_1[0]"  # Name(s) shown on your tax return.
+ssn = "topmostSubform[0].Page1[0].f1_2[0]"  # Your social security number or E I N.
+"1" = "topmostSubform[0].Page1[0].f1_3[0]"  # 1. Taxable interest (see instructions).
+"2" = "topmostSubform[0].Page1[0].f1_4[0]"  # 2. Ordinary dividends (see instructions).
+"3" = "topmostSubform[0].Page1[0].f1_5[0]"  # 3. Annuities (see instructions).
+"4a" = "topmostSubform[0].Page1[0].f1_6[0]"  # 4a. Rental real estate, royalties, partnerships, S corporations, trusts, trades or busi...
+"4b" = "topmostSubform[0].Page1[0].f1_7[0]"  # 4b. Adjustment for net income or loss derived in the ordinary course of a non-section 1...
+"4c" = "topmostSubform[0].Page1[0].f1_8[0]"  # 4c. Combine lines 4a and 4b.
+"5a" = "topmostSubform[0].Page1[0].f1_9[0]"  # 5a. Net gain or loss from disposition of property (see instructions).
+"5b" = "topmostSubform[0].Page1[0].f1_10[0]"  # 5b. Net gain or loss from disposition of property that is not subject to net investment...
+"5c" = "topmostSubform[0].Page1[0].f1_11[0]"  # 5c. Adjustment from disposition of partnership interest or S corporation stock (see ins...
+"5d" = "topmostSubform[0].Page1[0].f1_12[0]"  # 5d. Combine lines 5a through 5c.
+"6" = "topmostSubform[0].Page1[0].f1_13[0]"  # 6. Adjustments to investment income for certain C F Cs and P F I Cs (see instructions).
+"7" = "topmostSubform[0].Page1[0].f1_14[0]"  # 7. Other modifications to investment income (see instructions).
+"8" = "topmostSubform[0].Page1[0].f1_15[0]"  # 8. Total investment income. Combine lines 1, 2, 3, 4c, 5d, 6, and 7.
+"9a" = "topmostSubform[0].Page1[0].f1_16[0]"  # ...9a. Investment interest expenses (see instructions).
+"9b" = "topmostSubform[0].Page1[0].f1_17[0]"  # 9b. State, local, and foreign income tax (see instructions).
+"9c" = "topmostSubform[0].Page1[0].f1_18[0]"  # 9c. Miscellaneous investment expenses (see instructions).
+"9d" = "topmostSubform[0].Page1[0].f1_19[0]"  # 9d. Add lines 9a, 9b, and 9c.
+"10" = "topmostSubform[0].Page1[0].f1_20[0]"  # 10. Additional modifications (see instructions).
+"11" = "topmostSubform[0].Page1[0].f1_21[0]"  # 11. Total deductions and modifications. Add lines 9d and 10.
+"12" = "topmostSubform[0].Page1[0].f1_22[0]"  # Part I I I. Tax Computation. 12. Net investment income. Subtract Part I I, line 11, fro...
+"13" = "topmostSubform[0].Page1[0].f1_23[0]"  # Individuals: 13. Modified adjusted gross income (see instructions).
+"14" = "topmostSubform[0].Page1[0].f1_24[0]"  # 14. Threshold based on filing status (see instructions).
+"15" = "topmostSubform[0].Page1[0].f1_25[0]"  # 15. Subtract line 14 from line 13. If zero or less, enter 0.
+"16" = "topmostSubform[0].Page1[0].f1_26[0]"  # 16. Enter the smaller of line 12 or line 15.
+"17" = "topmostSubform[0].Page1[0].f1_27[0]"  # 17. Net investment income tax for individuals. Multiply line 16 by 3.8% (0.038). Enter ...

@@ -5,7 +5,7 @@ from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
-from playwright.sync_api import Browser, sync_playwright
+from playwright.sync_api import Browser, Playwright, sync_playwright
 
 from casebook.build import build_book
 from casebook.publish.site_build import build_site
@@ -108,8 +108,14 @@ def standin(standin_cli: StandIn) -> Path:
 
 
 @pytest.fixture(scope="session")
-def browser() -> Iterator[Browser]:
-    with sync_playwright() as playwright:
-        chromium = playwright.chromium.launch()
-        yield chromium
-        chromium.close()
+def playwright() -> Iterator[Playwright]:
+    """One Playwright for the whole run: its sync API allows only one at a time."""
+    with sync_playwright() as running:
+        yield running
+
+
+@pytest.fixture(scope="session")
+def browser(playwright: Playwright) -> Iterator[Browser]:
+    chromium = playwright.chromium.launch()
+    yield chromium
+    chromium.close()

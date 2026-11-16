@@ -18,6 +18,7 @@ from casebook.model.files import (
     household_dir,
 )
 from casebook.notice import NOTICE
+from casebook.published_text import text_of
 from casebook.securities.market import build_market
 from casebook.securities.master import load_master
 
@@ -99,14 +100,15 @@ def test_every_price_in_the_price_file_is_labelled_synthetic(book: Path) -> None
     assert rows and all(row["price_label"] == "synthetic" for row in rows)
 
 
-@pytest.mark.parametrize("leak", [b"Holds 40 MSFT", b"a Microsoft position", b"Vanguard Total Bond Market fund"])
-def test_a_default_build_refuses_a_real_ticker_or_name(leak: bytes) -> None:
+@pytest.mark.parametrize("leak", ["Holds 40 MSFT", "a Microsoft position", "Vanguard Total Bond Market fund"])
+def test_a_default_build_refuses_a_real_ticker_or_name(leak: str) -> None:
     with pytest.raises(BuildError, match="real ticker or security name"):
         refuse_real_identifiers({"households/HH-0001/crm/notes.txt": leak})
 
 
 def test_a_default_build_carries_aliases_only(book: Path) -> None:
-    refuse_real_identifiers({p.relative_to(book).as_posix(): p.read_bytes() for p in book.rglob("*") if p.is_file()})
+    files = {p.relative_to(book).as_posix(): p for p in book.rglob("*") if p.is_file()}
+    refuse_real_identifiers({name: text_of(name, path.read_bytes()) for name, path in files.items()})
 
 
 def test_the_whole_public_book_builds_96_households_byte_for_byte_again(full_book: Path, tmp_path: Path) -> None:

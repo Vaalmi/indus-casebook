@@ -43,6 +43,38 @@ class IraFlows:
 
 
 @dataclass(frozen=True)
+class Sale:
+    """One lot a 2025 sale closed in a taxable account: a Form 8949 row. The basis is the true one; the
+    reported basis is what the custodian's 1099-B states, which a planted error can make wrong."""
+
+    account_id: str
+    security: str  # the security's name, as the custodian's statements print it
+    units: Decimal
+    acquired: date
+    sold: date
+    proceeds: Decimal
+    basis: Decimal
+    reported_basis: Decimal
+    covered: bool  # basis reported to the IRS: Form 8949 box A or D, else B or E
+    long_term: bool
+    disallowed: Decimal  # wash-sale loss disallowed (code W), positive
+
+    @property
+    def gain(self) -> Decimal:
+        return self.proceeds - self.basis + self.disallowed
+
+
+@dataclass(frozen=True)
+class Payer:
+    """One account's 2025 dividends, as its composite 1099 states them: a Schedule B Part II row."""
+
+    account_id: str
+    ordinary_dividends: Decimal  # box 1a, qualified included
+    qualified_dividends: Decimal  # box 1b
+    exempt_interest_dividends: Decimal  # box 12
+
+
+@dataclass(frozen=True)
 class TaxUnitFacts:
     household_id: str
     tax_unit_id: str
@@ -64,6 +96,10 @@ class TaxUnitFacts:
     # the planning probe's case A itemizes, and both calculators must handle it.
     state_local_taxes: Decimal = ZERO  # income and real estate taxes paid, before the SALT cap
     mortgage_interest: Decimal = ZERO
+    # The detail behind the totals, for Form 8949 and Schedule B: the short and long gains above are these
+    # sales' gains summed, and the dividends these payers' summed.
+    sales: tuple[Sale, ...] = ()
+    payers: tuple[Payer, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -96,6 +132,19 @@ def long_term(acquired: date, sold: date) -> bool:
     year = acquired.year + 1
     anniversary = date(year, acquired.month, min(acquired.day, calendar.monthrange(year, acquired.month)[1]))
     return sold > anniversary
+
+
+# Treas. Reg. § 1.6045-1(a)(15)(i)(A), (B): stock is a covered security if acquired on or after
+# 1 January 2011; stock in a regulated investment company (a fund) on or after 1 January 2012.
+STOCK_COVERED_FROM = date(2011, 1, 1)
+FUND_COVERED_FROM = date(2012, 1, 1)
+FUND = "Fund"
+
+
+def covered(alias: str, acquired: date) -> bool:
+    """Whether a lot is a covered security, its basis reported to the IRS; the book's funds carry
+    "Fund" in their names, its stocks do not."""
+    return acquired >= (FUND_COVERED_FROM if FUND in alias else STOCK_COVERED_FROM)
 
 
 QUALIFIED, ORDINARY, EXEMPT = "qualified", "ordinary", "exempt"
@@ -152,6 +201,31 @@ def facts_to_dict(facts: TaxUnitFacts) -> dict[str, object]:
                 "year_end_value": _money(i.year_end_value),
             }
             for i in facts.iras
+        ],
+        "sales": [
+            {
+                "account_id": s.account_id,
+                "security": s.security,
+                "units": _money(s.units),
+                "acquired": s.acquired.isoformat(),
+                "sold": s.sold.isoformat(),
+                "proceeds": _money(s.proceeds),
+                "basis": _money(s.basis),
+                "reported_basis": _money(s.reported_basis),
+                "covered": s.covered,
+                "long_term": s.long_term,
+                "disallowed": _money(s.disallowed),
+            }
+            for s in facts.sales
+        ],
+        "payers": [
+            {
+                "account_id": p.account_id,
+                "ordinary_dividends": _money(p.ordinary_dividends),
+                "qualified_dividends": _money(p.qualified_dividends),
+                "exempt_interest_dividends": _money(p.exempt_interest_dividends),
+            }
+            for p in facts.payers
         ],
         **{
             name: _money(getattr(facts, name))
@@ -212,6 +286,31 @@ def parse_facts(raw: dict[str, Any]) -> TaxUnitFacts:
                 Decimal(str(i["year_end_value"])),
             )
             for i in raw["iras"]
+        ),
+        sales=tuple(
+            Sale(
+                account_id=str(s["account_id"]),
+                security=str(s["security"]),
+                units=Decimal(str(s["units"])),
+                acquired=date.fromisoformat(str(s["acquired"])),
+                sold=date.fromisoformat(str(s["sold"])),
+                proceeds=Decimal(str(s["proceeds"])),
+                basis=Decimal(str(s["basis"])),
+                reported_basis=Decimal(str(s["reported_basis"])),
+                covered=bool(s["covered"]),
+                long_term=bool(s["long_term"]),
+                disallowed=Decimal(str(s["disallowed"])),
+            )
+            for s in raw.get("sales", [])
+        ),
+        payers=tuple(
+            Payer(
+                account_id=str(p["account_id"]),
+                ordinary_dividends=Decimal(str(p["ordinary_dividends"])),
+                qualified_dividends=Decimal(str(p["qualified_dividends"])),
+                exempt_interest_dividends=Decimal(str(p["exempt_interest_dividends"])),
+            )
+            for p in raw.get("payers", [])
         ),
         **money,
     )

@@ -21,7 +21,7 @@ from casebook.model.events import (
     Withdrawal,
 )
 from casebook.model.money import parse_decimal
-from casebook.model.tax import long_term
+from casebook.model.tax import covered, long_term
 from casebook.notice import NOTICE
 from casebook.plant import plant
 from casebook.plant.common import PlantContext
@@ -35,7 +35,6 @@ from casebook.sources.tax_documents import (
     FORM_1099_R,
     FORM_SSA_1099,
     FORM_W2,
-    covered,
     emit,
     index_entries,
     reached_early_age,

@@ -5,8 +5,10 @@ range, a real ticker or name in a default build, and two sources that disagree w
 entry.
 """
 
+import dataclasses
 import hashlib
 import shutil
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -36,8 +38,10 @@ from casebook.model.files import (
     event_log_path,
     household_dir,
     json_text,
+    return_path,
     tax_summary_path,
 )
+from casebook.model.household import Household
 from casebook.model.identifiers import file_problems
 from casebook.model.ledger import LedgerError, load_ledger
 from casebook.model.money import fmt
@@ -52,7 +56,10 @@ from casebook.securities.master import Security, by_id, load_master
 from casebook.securities.scan import default_scan
 from casebook.sources import emit_household
 from casebook.sources.context import SNAPSHOT_DAYS
+from casebook.tax import forms
+from casebook.tax.engine import compute
 from casebook.tax.facts import TaxFactsError, tax_unit_facts
+from casebook.tax.forms.returns import return_forms
 from casebook.tax.summary import TaxReport, tax_report
 
 DATA_LICENCE = "CC-BY-4.0"
@@ -118,10 +125,8 @@ def refuse_held_out(scripts: list[HouseholdScript], held_out: bool) -> None:
         )
 
 
-def name_real_tickers(files: dict[str, bytes], master: tuple[Security, ...]) -> dict[str, bytes]:
-    """A real-ticker build differs from the default only in identifiers: script text that names a
-    security by its alias (a CRM record, an employer on a wages line) names it by its ticker too.
-    PDFs are drawn with the ticker already."""
+def real_names(master: tuple[Security, ...]) -> Callable[[str], str]:
+    """Text with every security alias replaced by its real ticker, the longest alias first."""
     aliases = sorted(master, key=lambda s: len(s.alias), reverse=True)
 
     def named(text: str) -> str:
@@ -129,6 +134,14 @@ def name_real_tickers(files: dict[str, bytes], master: tuple[Security, ...]) -> 
             text = text.replace(security.alias, security.real_ticker)
         return text
 
+    return named
+
+
+def name_real_tickers(files: dict[str, bytes], master: tuple[Security, ...]) -> dict[str, bytes]:
+    """A real-ticker build differs from the default only in identifiers: script text that names a
+    security by its alias (a CRM record, an employer on a wages line) names it by its ticker too.
+    PDFs are drawn with the ticker already."""
+    named = real_names(master)
     return {
         name: named(data.decode("utf-8")).encode("utf-8") if name.endswith((".csv", ".json")) else data
         for name, data in files.items()
@@ -201,7 +214,7 @@ def generate_book(
         files.update(emit_household(script, recorded, recorded_ledger, market, master, real_tickers, notes))
         # The tax facts are what happened, not what the custodian recorded.
         try:
-            facts = tax_unit_facts(script, simulation.events, replayed, market, by_id(master))
+            facts = tax_unit_facts(script, simulation.events, replayed, market, by_id(master), recorded_ledger)
         except TaxFactsError as error:
             raise BuildError(f"{script.household.household_id}: {error}") from error
         units += facts
@@ -220,6 +233,8 @@ def generate_book(
         }
         files[event_log_path(script.household.household_id)] = json_text(log).encode()
     files.update(_tax_files(units))
+    featured = {s.household.household_id: s.household for s in scripts if not s.background}
+    files.update(_returns(featured, units, real_names(master) if real_tickers else None))
     files[REGISTRY] = json_text({"entries": [e.to_dict() for e in sorted(entries, key=lambda e: e.item_id)]}).encode()
     files[SEALED_HOUSEHOLDS] = json_text({"households": [_sealed_household(s) for s in scripts]}).encode()
     files[METADATA] = json_text(
@@ -280,6 +295,36 @@ def _tax_files(units: list[TaxUnitFacts]) -> dict[str, bytes]:
     return files
 
 
+def _returns(
+    featured: dict[str, Household], units: list[TaxUnitFacts], named: Callable[[str], str] | None
+) -> dict[str, bytes]:
+    """The featured households' filled 2025 returns, each form only where the unit's facts trigger it. A
+    form whose fields do not read back as filled, or a page without the watermark and the notice, is
+    refused. `named` renames securities in a real-ticker build, as its other files are."""
+    files: dict[str, bytes] = {}
+    for unit in units:
+        household = featured.get(unit.household_id)
+        if household is None:
+            continue
+        for form in return_forms(household, unit, compute(unit)):
+            if named is not None:
+                form = dataclasses.replace(
+                    form, values={k: named(v) if isinstance(v, str) else v for k, v in form.values.items()}
+                )
+            name = return_path(unit.household_id, unit.tax_unit_id, form.file)
+            pdf = forms.fill(form.form, form.values, title=f"{TAX_YEAR} {form.file} {unit.tax_unit_id}")
+            problems = forms.stamped_problems(name, pdf)
+            try:
+                if forms.read_back(form.form, pdf) != form.values:
+                    problems.append(f"{name}: its fields do not read back as filled")
+            except forms.FormsError as error:
+                problems.append(f"{name}: {error}")
+            if problems:
+                raise BuildError("; ".join(problems))
+            files[name] = pdf
+    return files
+
+
 def _held(snapshot: Snapshot) -> tuple[object, ...]:
     accounts = sorted(snapshot.settled_cash)
     return tuple((a, snapshot.holdings(a), snapshot.settled_cash[a], snapshot.unsettled_cash.get(a)) for a in accounts)
@@ -298,16 +343,17 @@ def refuse_moved_units_or_cash(household_id: str, actual: ReplayResult, recorded
             )
 
 
-def refuse_real_identifiers(files: dict[str, bytes]) -> None:
+def refuse_real_identifiers(texts: dict[str, str]) -> None:
+    """`texts` is each file's text, by name (`text_of`)."""
     scan = default_scan()
-    leaks = [(name, hit.identifier) for name, data in sorted(files.items()) for hit in scan.find(text_of(name, data))]
+    leaks = [(name, hit.identifier) for name, text in sorted(texts.items()) for hit in scan.find(text)]
     if leaks:
         shown = "; ".join(f"{name}: {identifier}" for name, identifier in leaks[:10])
         raise BuildError(f"a default build may not contain a real ticker or security name ({shown})")
 
 
-def refuse_valid_looking_identifiers(files: dict[str, bytes]) -> None:
-    problems = [p for name, data in sorted(files.items()) for p in file_problems(name, data, text_of(name, data))]
+def refuse_valid_looking_identifiers(files: dict[str, bytes], texts: dict[str, str]) -> None:
+    problems = [p for name, data in sorted(files.items()) for p in file_problems(name, data, texts[name])]
     if problems:
         shown = "; ".join(problems[:10])
         raise BuildError(f"identifiers must use ranges that cannot be valid ({shown})")
@@ -340,9 +386,10 @@ def build_book(
     files = generate_book(
         seed, scripts_dir, real_tickers, ledger, held_out, background, extra_scripts, background_archetypes
     )
+    texts = {name: text_of(name, data) for name, data in files.items()}
     if not real_tickers:
-        refuse_real_identifiers(files)
-    refuse_valid_looking_identifiers(files)
+        refuse_real_identifiers(texts)
+    refuse_valid_looking_identifiers(files, texts)
     if out.exists():
         shutil.rmtree(out)
     for name, data in files.items():

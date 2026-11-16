@@ -2,6 +2,7 @@
 custodian recorded. Expected figures are worked by hand from the events and the emitted files."""
 
 import csv
+import re
 from datetime import date
 from decimal import Decimal
 from pathlib import Path
@@ -11,6 +12,7 @@ import pytest
 from casebook.model.events import Buy, Vest
 from casebook.model.files import event_log_path, read_json
 from casebook.model.tax import TaxUnitFacts, age_for_the_year, parse_facts
+from casebook.published_text import pdf_pages_text
 from casebook.replay import ClosedLot
 from casebook.tax.facts import TaxFactsError, disallowed_losses
 
@@ -29,6 +31,12 @@ def test_released_rsu_shares_are_taxed_on_their_true_basis_not_the_custodians_ze
     The custodian booked both releases at no cost, so its 1099-B shows a gain of 437,776.00."""
     unit = facts(book, "HH-3058")
     assert (unit.short_term_gain, unit.long_term_gain) == (D("81008.00"), D(0))
+    # Form 8949's rows: each lot at its true basis, beside the $0 the custodian reported (code B).
+    assert [(s.units, s.acquired, s.basis, s.reported_basis, s.covered, s.long_term) for s in unit.sales] == [
+        (D(800), date(2025, 2, 20), D("172848.00"), D("0.00"), True, False),
+        (D(800), date(2025, 5, 20), D("183920.00"), D("0.00"), True, False),
+    ]
+    assert sum((s.proceeds for s in unit.sales), D(0)) == D("437776.00")
     # Wages: 410,000 of salary and the four 2025 releases, 800 x (216.06 + 229.90 + 236.83 + 274.64).
     assert [(f.person_id, f.wages) for f in unit.filers] == [
         ("P-3058-1", D("1175944.00")),
@@ -52,6 +60,13 @@ def test_a_wash_sale_into_an_ira_disallows_the_replaced_share_of_the_loss(book: 
     2025-11-19. Disallowed 53,516.17 x 500 / 847 = 31,591.60; allowed 21,924.57, long-term (held since 2023)."""
     unit = facts(book, "HH-9234")
     assert (unit.short_term_gain, unit.long_term_gain) == (D(0), D("-21924.57"))
+    ((sale),) = unit.sales
+    assert (sale.disallowed, sale.basis, sale.reported_basis, sale.gain) == (
+        D("31591.60"),
+        D("278072.81"),
+        D("278072.81"),
+        D("-21924.57"),
+    )
 
 
 def year_end_value(book: Path, household: str, account: str) -> Decimal:
@@ -167,3 +182,31 @@ def test_released_rsu_shares_count_as_a_replacement() -> None:
 )
 def test_the_age_for_the_year_is_at_year_end_or_at_death(born: date, died: date | None, age: int) -> None:
     assert age_for_the_year(born, died) == age
+
+
+def test_the_sales_and_payers_add_up_to_the_totals_and_the_payers_match_the_1099s(full_book: Path) -> None:
+    """In every household, the gains are the sales' gains summed, and each payer's dividends are its
+    composite 1099's boxes 1a, 1b and 12 (as the custodian recorded them; no plant touches a dividend)."""
+    for household in sorted(p.parent.name for p in (full_book / "sealed").glob("HH-*/events.json")):
+        boxes: dict[str, tuple[Decimal, Decimal, Decimal]] = {}
+        for pdf in (full_book / "households" / household / "documents").glob("SYN-*-1099-2025.pdf"):
+            text = "\n".join(pdf_pages_text(pdf.read_bytes()))
+            boxes[pdf.name.split("-1099-")[0]] = (
+                money(text, "Box 1a Total ordinary dividends"),
+                money(text, "Box 1b Qualified dividends"),
+                money(text, "Box 12 Exempt-interest dividends"),
+            )
+        for raw in read_json(full_book, event_log_path(household))["tax_units"]:
+            unit = parse_facts(raw)
+            assert unit.short_term_gain == sum((s.gain for s in unit.sales if not s.long_term), D(0)), household
+            assert unit.long_term_gain == sum((s.gain for s in unit.sales if s.long_term), D(0)), household
+            assert unit.ordinary_dividends == sum((p.ordinary_dividends for p in unit.payers), D(0)), household
+            for payer in unit.payers:
+                expected = (payer.ordinary_dividends, payer.qualified_dividends, payer.exempt_interest_dividends)
+                assert boxes[payer.account_id] == expected, (household, payer.account_id)
+
+
+def money(text: str, label: str) -> Decimal:
+    found = re.search(re.escape(label) + r": \$([\d,]+\.\d\d)", text)
+    assert found is not None, label
+    return D(found.group(1).replace(",", ""))

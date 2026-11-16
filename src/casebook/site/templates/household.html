@@ -141,4 +141,15 @@
     </article>
   </div>
 </section>
+
+<section aria-labelledby="return-heading" data-section="return">
+  <h2 id="return-heading">2025 return</h2>
+  <p>The official IRS forms, filled from the in-house tax engine's figures for each tax unit that files. Every page is watermarked "unreviewed": no CPA or EA has checked them, and they are not for filing.</p>
+  {% for unit, forms in household.returns %}
+  <h3>{{ unit }}</h3>
+  <ul class="returns">{% for f in forms %}<li><a href="../{{ data }}/{{ f.path }}">{{ f.label }}</a></li>{% endfor %}</ul>
+  {% else %}
+  <p>No tax unit in this household files a 2025 return.</p>
+  {% endfor %}
+</section>
 {% endblock %}

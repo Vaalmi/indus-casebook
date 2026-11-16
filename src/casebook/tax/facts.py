@@ -26,12 +26,16 @@ from casebook.model.household import Household
 from casebook.model.money import cents
 from casebook.model.tax import (
     EXEMPT,
+    ORDINARY,
     QUALIFIED,
     TAX_YEAR,
     Filer,
     IraFlows,
+    Payer,
+    Sale,
     TaxUnitFacts,
     age_for_the_year,
+    covered,
     dividend_character,
     long_term,
 )
@@ -107,7 +111,11 @@ def tax_unit_facts(
     replayed: ReplayResult,
     market: Market,
     securities: dict[str, Security],
+    recorded: ReplayResult | None = None,
 ) -> list[TaxUnitFacts]:
+    """`recorded` is the custodian's own ledger (the events as it recorded them, replayed), from which the
+    basis its 1099-B reports comes; by default it is what happened."""
+    reported = {(c.event_id, c.lot_id): c for c in (recorded or replayed).closed}
     hh: Household = script.household
     owners = {o.account_id: o.owner_ids for o in hh.ownership}
     kind = {a.account_id: a.account_type for a in hh.accounts}
@@ -119,21 +127,43 @@ def tax_unit_facts(
         # An account belongs to the tax unit of its first owner (a joint account's owners file together).
         accounts = {a for a, o in owners.items() if o and o[0] in people}
         taxable = {a for a in accounts if kind[a] in TAXABLE}
-        dividends: dict[str, Decimal] = defaultdict(lambda: ZERO)
-        for e in events:
-            if isinstance(e, Dividend) and e.account_id in taxable and _in_year(e.date):
-                dividends[dividend_character(securities[e.security_id].alias)] += e.amount
+        payers: list[Payer] = []
+        for account in (a.account_id for a in hh.accounts if a.account_id in taxable):
+            paid: dict[str, Decimal] = defaultdict(lambda: ZERO)
+            for e in events:
+                if isinstance(e, Dividend) and e.account_id == account and _in_year(e.date):
+                    paid[dividend_character(securities[e.security_id].alias)] += e.amount
+            if any(paid.values()):
+                payers.append(Payer(account, paid[QUALIFIED] + paid[ORDINARY], paid[QUALIFIED], paid[EXEMPT]))
         buys = [e for e in events if isinstance(e, Buy | Vest) and e.account_id in accounts]
         disallowed = disallowed_losses(replayed.closed, buys, taxable)
-        short = long = ZERO
+        sales: list[Sale] = []
         for closed in replayed.closed:
             if closed.account_id not in taxable or not _in_year(closed.sold):
                 continue
-            gain = closed.proceeds - closed.cost + disallowed.get(f"{closed.event_id}:{closed.lot_id}", ZERO)
-            if long_term(closed.acquired, closed.sold):
-                long += gain
-            else:
-                short += gain
+            on_1099 = reported.get((closed.event_id, closed.lot_id))
+            if on_1099 is None:
+                raise TaxFactsError(
+                    f"{hh.household_id}: the custodian has no record of lot {closed.lot_id} sold in {closed.event_id}"
+                )
+            alias = securities[closed.security_id].alias
+            sales.append(
+                Sale(
+                    account_id=closed.account_id,
+                    security=alias,
+                    units=closed.units,
+                    acquired=closed.acquired,
+                    sold=closed.sold,
+                    proceeds=closed.proceeds,
+                    basis=closed.cost,
+                    reported_basis=on_1099.cost,
+                    covered=covered(alias, closed.acquired),
+                    long_term=long_term(closed.acquired, closed.sold),
+                    disallowed=disallowed.get(f"{closed.event_id}:{closed.lot_id}", ZERO),
+                )
+            )
+        short = sum((s.gain for s in sales if not s.long_term), ZERO)
+        long = sum((s.gain for s in sales if s.long_term), ZERO)
         carried = next((c for c in profile.loss_carryforwards if c.tax_unit_id == unit.tax_unit_id), None)
         basis = {b.person_id: b.basis for b in profile.ira_basis}
         iras: list[IraFlows] = []
@@ -206,9 +236,9 @@ def tax_unit_facts(
                 filing_status=unit.filing_status,
                 filers=filers,
                 taxable_interest=ZERO,
-                tax_exempt_interest=dividends[EXEMPT],
-                ordinary_dividends=dividends[QUALIFIED] + dividends["ordinary"],
-                qualified_dividends=dividends[QUALIFIED],
+                tax_exempt_interest=sum((p.exempt_interest_dividends for p in payers), ZERO),
+                ordinary_dividends=sum((p.ordinary_dividends for p in payers), ZERO),
+                qualified_dividends=sum((p.qualified_dividends for p in payers), ZERO),
                 short_term_gain=short,
                 long_term_gain=long,
                 carryforward_short=carried.short_term if carried else ZERO,
@@ -217,6 +247,8 @@ def tax_unit_facts(
                 plan_distributions=plan,
                 inherited_ira_distributions=inherited,
                 federal_withholding=withheld,
+                sales=tuple(sales),
+                payers=tuple(payers),
             )
         )
     return facts

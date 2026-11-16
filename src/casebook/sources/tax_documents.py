@@ -28,7 +28,7 @@ from casebook.model.events import (
 from casebook.model.files import SYNTHETIC
 from casebook.model.household import Household
 from casebook.model.money import fmt, usd
-from casebook.model.tax import EXEMPT, QUALIFIED, TAX_YEAR, dividend_character, long_term
+from casebook.model.tax import EXEMPT, QUALIFIED, TAX_YEAR, covered, dividend_character, long_term
 from casebook.replay import ClosedLot
 from casebook.sources import pdf
 from casebook.sources.context import EmitContext
@@ -52,11 +52,6 @@ IRA, PLAN, INHERITED = "traditional_ira", "401k", "inherited_ira"
 RETIREMENT = (IRA, PLAN, INHERITED)
 WAGES, SOCIAL_SECURITY = "wages", "social_security"
 
-# Treas. Reg. § 1.6045-1(a)(15)(i)(A), (B): stock is a covered security if acquired on or after
-# 1 January 2011; stock in a regulated investment company (a fund) on or after 1 January 2012.
-STOCK_COVERED_FROM = date(2011, 1, 1)
-FUND_COVERED_FROM = date(2012, 1, 1)
-FUND = "Fund"
 
 # Instructions for Forms 1099-R and 5498 (2025), box 7 and Table 1, Guide to Distribution Codes.
 EARLY_NO_EXCEPTION = "1"  # under 59½, no known exception
@@ -130,12 +125,6 @@ type TaxForm = Composite1099 | Form1099R | FormW2 | FormSsa1099
 
 def _in_year(day: date) -> bool:
     return YEAR_START <= day <= YEAR_END
-
-
-def covered(alias: str, acquired: date) -> bool:
-    """Whether a lot is a covered security, its basis reported to the IRS; the book's funds carry
-    "Fund" in their names, its stocks do not."""
-    return acquired >= (FUND_COVERED_FROM if FUND in alias else STOCK_COVERED_FROM)
 
 
 def reached_early_age(born: date, day: date) -> bool:

@@ -199,6 +199,11 @@ def tax_summary_path(household_id: str) -> str:
     return f"sealed/{household_id}/{TAX_SUMMARY}"
 
 
+def return_path(household_id: str, tax_unit_id: str, file: str) -> str:
+    """A filled 2025 return's PDF: sealed, so never in a run workspace, and shown on the site watermarked."""
+    return f"sealed/{household_id}/returns/{tax_unit_id}/{file}"
+
+
 def is_tax_summary(name: str) -> bool:
     return name.startswith("sealed/") and name.endswith(f"/{TAX_SUMMARY}")
 

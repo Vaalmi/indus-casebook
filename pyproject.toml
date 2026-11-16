@@ -88,6 +88,7 @@ forbidden_modules = [
   "casebook.sources",
   "casebook.tasks",
   "casebook.tax",
+  "casebook.watermark",
 ]
 
 # docs/PLAN.md, import contract 1: answer keys and graders never import the generator

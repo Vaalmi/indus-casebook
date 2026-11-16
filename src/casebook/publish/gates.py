@@ -1,4 +1,5 @@
-"""The gates on published files: the notice, the synthetic label, and no real identifier."""
+"""The gates on published files: the notice, the synthetic label, no real identifier, and the watermark
+and notice on every page of a filled return."""
 
 import csv
 import io
@@ -11,6 +12,7 @@ from casebook.model.files import METADATA, SYNTHETIC
 from casebook.notice import NOTICE, contains_notice
 from casebook.published_text import UnscannableFileError, html_visible_text, text_of
 from casebook.securities.scan import RealIdentifierScan, default_scan
+from casebook.watermark import stamped_problems
 
 PRICE_COLUMN = "price"
 PRICE_LABEL_COLUMN = "price_label"
@@ -105,5 +107,20 @@ def real_identifier_problems(site: Path, scan: RealIdentifierScan | None = None)
     return problems
 
 
+def return_problems(site: Path) -> list[str]:
+    """Every page of every filled return the site would publish carries the watermark and the notice,
+    drawn so that they show (SPEC: "Filled returns: shown ... with an 'unreviewed' watermark on every
+    page"). A return damaged after the build is caught here, before it is published."""
+    problems: list[str] = []
+    for pdf in (p for p in _files(site) if p.suffix == ".pdf" and "/returns/" in p.as_posix()):
+        problems += stamped_problems(pdf.relative_to(site).as_posix(), pdf.read_bytes())
+    return problems
+
+
 def run_gates(site: Path, readme: Path, metadata: Path) -> list[str]:
-    return notice_problems(site, readme, metadata) + synthetic_problems(site) + real_identifier_problems(site)
+    return (
+        notice_problems(site, readme, metadata)
+        + synthetic_problems(site)
+        + real_identifier_problems(site)
+        + return_problems(site)
+    )
