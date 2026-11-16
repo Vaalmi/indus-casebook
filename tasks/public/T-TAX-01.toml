@@ -1,0 +1,30 @@
+# Tax-lot and RMD review, on the trap of archetype 5's pair 1: a first-year 401(k) RMD the IRAs' distribution cannot meet. Held until the tax review.
+task_id = "T-TAX-01"
+workflow = "tax_lot_rmd"
+household_id = "HH-5271"
+cutoff = 2026-04-15
+fixtures = ["custodian", "portfolio", "crm", "documents"]
+allowed_tools = ["Read", "Glob", "Grep"]
+grader = "rmd_review"
+
+prompt = """
+You are helping an advisor at a small independent advisory firm. This folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the statements and tax forms on file (documents/).
+
+The advisor asks: was every 2025 required minimum distribution from this household's retirement accounts taken, from the right accounts, by 1 April 2026?
+
+Work only from these files. End your answer with one fenced json block with these fields:
+- "finding": "rmd_missed" if any 2025 required minimum distribution was not taken in full, from the accounts it had to come from, by its deadline; "all_rmds_met" if every one was; or "unresolved"
+- "rmds": one entry per account that owes a 2025 required minimum distribution, each as {"account_id": ..., "rmd": its 2025 required minimum distribution}
+- "missed": one entry per required minimum distribution not met, each as {"account_ids": the accounts it had to come from, "shortfall": the amount not taken}, or [] if none
+- "total_shortfall": the shortfalls added up, 0 if none, or null if unresolved
+- "figures": every figure you relied on, each as {"label": ..., "value": ..., "source": the file it came from, relative to this folder}, adding "computed": true to a figure you computed rather than read; cite a factor from the IRS life-expectancy tables with "source": "IRS Publication 590-B"
+- "explanation": two or three sentences
+"""
+
+justified_conclusion = """
+Teodoro Villanueva, born 14 March 1952, reaches 73 in 2025, his first distribution year, so his 2025 RMDs were due by 1 April 2026; each is the account's 31 December 2024 balance over the Uniform Lifetime factor for 73, 26.5: $23,535.04 and $7,937.50 for his IRAs SYN-52710002 and SYN-52710003, $31,472.54 together, and $12,729.96 for his 401(k), SYN-52710004. The $44,202.50 taken from SYN-52710002 on 4 December 2025 meets both IRAs' RMDs, since an owner's IRA RMDs may be taken from any of the owner's IRAs. A 401(k)'s RMD must be paid from the plan itself, and nothing was paid from SYN-52710004 by 1 April 2026, so its $12,729.96 RMD was missed, although the custodian's one distribution "for 2025" makes the year look complete.
+"""
+
+[expected_output]
+fields = ["finding", "rmds", "missed", "total_shortfall", "figures", "explanation"]
+findings = ["rmd_missed", "all_rmds_met", "unresolved"]

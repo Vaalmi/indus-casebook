@@ -5,8 +5,10 @@ One module per archetype. Each names the planted item type its trap carries, pla
 near miss or unresolved.
 """
 
+import dataclasses
 from types import ModuleType
 
+from casebook.model.registry import RealRange
 from casebook.plant import (
     a01_backdoor_roth,
     a02_niit,
@@ -20,6 +22,7 @@ from casebook.plant import (
     a10_fee_breakpoint,
 )
 from casebook.plant.common import PlantContext, PlantError, Planting
+from casebook.securities.real_ranges import real_ranges
 
 __all__ = ["PlantContext", "PlantError", "Planting", "plant"]
 
@@ -50,4 +53,22 @@ def plant(context: PlantContext) -> Planting:
     else:
         assert script.twin is not None
         planting = module.check_twin(context, script.twin.kind)
-    return planting
+    return _with_real_range(context, planting)
+
+
+def _with_real_range(context: PlantContext, planting: Planting) -> Planting:
+    """The household's entry carries the cited real range of the security its task turns on, if any."""
+    cited = real_ranges().get(context.script.household.household_id)
+    if cited is None:
+        return planting
+    if len(planting.entries) != 1:
+        raise PlantError(f"{context.script.household.household_id}: a cited real range needs the household's one entry")
+    real = RealRange(
+        task_id=cited.task_id,
+        security_id=cited.security_id,
+        security=context.label(cited.security_id),
+        low=cited.low,
+        high=cited.high,
+        source=cited.source,
+    )
+    return dataclasses.replace(planting, entries=[dataclasses.replace(planting.entries[0], real_range=real)])

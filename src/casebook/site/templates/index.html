@@ -32,7 +32,7 @@
         <td><a href="tasks/{{ t.task.task_id }}.html">{{ t.task.task_id }}</a></td>
         <td>{{ t.task.workflow|capitalize }}</td>
         <td>{{ t.task.household_id }}</td>
-        {% for arm in t.arms %}<td>{% if not arm.record %}not run{% elif arm.record.state == "failed" %}failed run{% else %}{{ "passed" if arm.record.grade.passed else "failed" }}, {{ arm.record.grade.score }}{% endif %}</td>{% endfor %}
+        {% for arm in t.arms %}<td>{% if not arm.record %}not run{% elif t.held %}not scored until the tax review{% elif arm.record.state == "failed" %}failed run{% elif not arm.record.grade %}not graded{% else %}{{ "passed" if arm.record.grade.passed else "failed" }}, {{ arm.record.grade.score }}{% endif %}</td>{% endfor %}
       </tr>
     {% endfor %}
     </tbody>

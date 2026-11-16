@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from casebook.tasks.task import Task, load_task
+from casebook.tasks.task import HELD_GRADERS, HELD_WORKFLOWS, Task, load_task
 
 ARM_ORDER = ("basic", "checklist", "skill")
 ARM_NAMES = {"basic": "Basic prompt", "checklist": "Checklist", "skill": "Skill"}
@@ -49,6 +49,12 @@ class TaskView:
     task: Task
     arms: tuple[ArmView, ...]
     key: dict[str, Any] | None
+
+    @property
+    def held(self) -> bool:
+        """A tax-lot and RMD task, or a reconciliation task whose key computes an RMD: its page shows
+        sources and outputs only, with no verdict, no failure marking and no conclusion, until review."""
+        return self.task.workflow in HELD_WORKFLOWS or self.task.grader in HELD_GRADERS
 
 
 def require_named(record: dict[str, Any], where: str) -> None:

@@ -1,0 +1,32 @@
+# Reconciliation and as-of, on the clean twin of archetype 6's pair 1 (T-REC-03 is its trap's task).
+task_id = "T-REC-04"
+workflow = "reconciliation"
+household_id = "HH-6590"
+cutoff = 2026-04-15
+fixtures = ["custodian", "portfolio", "crm", "documents"]
+allowed_tools = ["Read", "Glob", "Grep"]
+grader = "ira_distributions"
+
+prompt = """
+You are helping an advisor at a small independent advisory firm. This folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the statements and tax forms on file (documents/).
+
+The advisor asks: do the custodian's 2025 distributions from this household's IRAs agree with what the CRM records, and was the 2025 required minimum distribution met?
+
+Work only from these files. End your answer with one fenced json block with these fields:
+- "finding": "records_disagree" if the custodian's records and the CRM's disagree about a 2025 IRA distribution, "records_agree" if they agree, or "unresolved"
+- "qcd_amount": the total paid from the household's traditional IRAs in 2025 as qualified charitable distributions, 0 if none
+- "custodian_distributions": the total the custodian's transactions show leaving the household's traditional IRAs in 2025, distributions and QCDs together
+- "taxable_distributions": custodian_distributions minus the qualified charitable distributions
+- "rmd": the 2025 required minimum distribution from the household's traditional IRAs
+- "rmd_met": true, false, or null if unresolved
+- "figures": every figure you relied on, each as {"label": ..., "value": ..., "source": the file it came from, relative to this folder}, adding "computed": true to a figure you computed rather than read; cite a factor from the IRS life-expectancy tables with "source": "IRS Publication 590-B"
+- "explanation": two or three sentences
+"""
+
+justified_conclusion = """
+The custodian records Celestine Abara's $15,000.00 payment from IRA SYN-65900002 to the charity on 10 June 2025 as a QCD (T-6590-0010), and the charity's acknowledgment in the CRM (CA-6590-02) gives the same amount and date, so the records agree. The RMD is the IRA's 31 December 2024 balance of $547,413.85 over the Uniform Lifetime factor for age 78, 22.0, or $24,882.45, met by the QCD and the $9,882.45 distributed on 1 December 2025; $9,882.45 of the $24,882.45 that left the IRA is taxable.
+"""
+
+[expected_output]
+fields = ["finding", "qcd_amount", "custodian_distributions", "taxable_distributions", "rmd", "rmd_met", "figures", "explanation"]
+findings = ["records_disagree", "records_agree", "unresolved"]

@@ -1,0 +1,33 @@
+# Reconciliation and as-of, on the near-miss twin of archetype 10's pair 1 (T-REC-01 is its trap's task).
+task_id = "T-REC-02"
+workflow = "reconciliation"
+household_id = "HH-7350"
+cutoff = 2026-04-15
+fixtures = ["custodian", "portfolio", "crm", "documents"]
+allowed_tools = ["Read", "Glob", "Grep"]
+grader = "fee_reconciliation"
+
+prompt = """
+You are helping an advisor at a small independent advisory firm. This folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the statements on file (documents/).
+
+The advisor asks: were the advisory fees debited on 2 April 2026, for the quarter ended 31 March 2026, the right amount under this household's agreements and fee schedule?
+
+Work only from these files. End your answer with one fenced json block with these fields:
+- "finding": "fee_error", "no_fee_error" or "unresolved"
+- "debited_fee": the total fee debited on 2 April 2026 across the household's accounts
+- "correct_fee": the total fee the agreements and the schedule call for, or null if unresolved
+- "amount_misbilled": debited_fee minus correct_fee, or null if unresolved
+- "figures": every figure you relied on, each as {"label": ..., "value": ..., "source": the file it came from, relative to this folder}, adding "computed": true to a figure you computed rather than read
+- "explanation": two or three sentences
+"""
+
+justified_conclusion = """
+The portfolio system bills the joint account and Kenji's IRA as one group and Aiko's individual account as a group of its own. Aiko's account is under her own advisory agreement, AGR-7350-2, which bills it on its own, and the CRM holds no householding agreement, so the two groups are right even though the three accounts together are worth more than the schedule's $1,000,000 breakpoint. Each group's fee under the schedule, on its 31 March 2026 positions plus cash, equals what was debited on 2 April 2026: $4,297.15 in all, so the fees were right. The answer key computes both totals from the 31 March 2026 positions and cash.
+"""
+
+[expected_output]
+fields = ["finding", "debited_fee", "correct_fee", "amount_misbilled", "figures", "explanation"]
+findings = ["fee_error", "no_fee_error", "unresolved"]
+
+[grader_params]
+quarter_end = 2026-03-31

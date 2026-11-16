@@ -12,6 +12,7 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any, Literal
 
+from casebook.keys.figures import KeyFigure
 from casebook.model.dates import parse_date
 from casebook.model.files import (
     CRM_JSON,
@@ -61,12 +62,6 @@ class KeyGroup:
     portfolio_group_ids: tuple[str, ...]
     value: Decimal
     fee: Decimal
-
-
-@dataclass(frozen=True)
-class KeyFigure:
-    label: str
-    value: Decimal
 
 
 @dataclass(frozen=True)
@@ -329,3 +324,6 @@ def fee_key(household_root: Path, quarter_end: date) -> FeeKey:
         billing_groups=key_groups,
         computed_figures=tuple(figures),
     )
+
+
+__all__ = ["FeeKey", "KeyFigure", "KeyFinding", "KeyGroup", "UnsettledFeeError", "fee_key"]

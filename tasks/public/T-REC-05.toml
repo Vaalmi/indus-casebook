@@ -1,0 +1,32 @@
+# Reconciliation and as-of, over the whole book: billing groups against signed householding agreements.
+task_id = "T-REC-05"
+workflow = "reconciliation"
+household_id = "book"
+cutoff = 2026-04-15
+fixtures = ["custodian", "portfolio", "crm"]
+allowed_tools = ["Read", "Glob", "Grep"]
+grader = "billing_groups"
+
+prompt = """
+You are helping an advisor at a small independent advisory firm. This folder holds the records of every client household of the firm as they stood on 15 April 2026, one folder per household under households/<household ID>/, each with the custodian's files (custodian/), the firm's portfolio system (portfolio/) and its CRM (crm/).
+
+The advisor asks: which households are billed in groups that a signed householding agreement contradicts?
+
+Work only from these files. End your answer with one fenced json block with these fields:
+- "finding": "found" if one or more households are, "none_found" if none is, or "unresolved" if the files settle no household as found and leave some unresolved
+- "households": one entry per household that is, each as {"household_id": ..., "agreement_id": the householding agreement, "billing_group_ids": the billing groups that hold its accounts apart, "explanation": one sentence}, or [] if none
+- "unresolved": the households the files cannot settle, each as {"household_id": ..., "explanation": one sentence}, or [] if none
+- "figures": every figure you relied on, each as {"label": ..., "value": ..., "source": the file it came from, relative to this folder}, adding "computed": true to a figure you computed rather than read
+- "explanation": two or three sentences
+"""
+
+justified_conclusion = """
+Five households hold a householding agreement, signed by every account owner between July 2023 and November 2024, that joins the joint account, a parent's IRA and a child's individual account in one billing group, while the portfolio system still bills the child's account in a group of its own: HH-0274, HH-0586, HH-0592, HH-0928 and HH-4821. Five look-alikes, HH-0478, HH-0517, HH-0572, HH-0744 and HH-7350, are billed in the same two groups, but no householding agreement joins them, so their billing stands. No other household is billed in more than one group or holds a householding agreement.
+"""
+
+[expected_output]
+fields = ["finding", "households", "unresolved", "figures", "explanation"]
+findings = ["found", "none_found", "unresolved"]
+
+[grader_params]
+as_of = 2026-04-15

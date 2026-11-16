@@ -1,0 +1,30 @@
+# Tax-lot and RMD review, on the trap of archetype 9's pair 1: a loss sale replaced in a spouse's IRA. Held until the tax review.
+task_id = "T-TAX-03"
+workflow = "tax_lot_rmd"
+household_id = "HH-9234"
+cutoff = 2026-04-15
+fixtures = ["custodian", "portfolio", "crm", "documents"]
+allowed_tools = ["Read", "Glob", "Grep"]
+grader = "wash_sale_review"
+
+prompt = """
+You are helping an advisor at a small independent advisory firm. This folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the statements and tax forms on file (documents/).
+
+The advisor asks: the household harvested losses in its taxable accounts during 2025. Are those losses deductible on the 2025 return as the custodian reports them?
+
+Work only from these files. End your answer with one fenced json block with these fields:
+- "finding": "wash_sale" if a purchase disallows some of the 2025 losses, "no_wash_sale" if all of them are allowed as reported, or "unresolved"
+- "loss_reported": the total 2025 loss on the household's sales at a loss in taxable accounts, as the custodian reports it
+- "disallowed_loss": the part of that loss not allowed for 2025, 0 if none, or null if unresolved
+- "allowed_loss": loss_reported minus disallowed_loss, before any annual limit on capital losses, or null if unresolved
+- "figures": every figure you relied on, each as {"label": ..., "value": ..., "source": the file it came from, relative to this folder}, adding "computed": true to a figure you computed rather than read
+- "explanation": two or three sentences
+"""
+
+justified_conclusion = """
+On 3 November 2025 the joint account SYN-92340001 sold 847 units of fund SEC-0025 at a loss of $53,516.17, and 16 days later, on 19 November, Ingrid Halvorsen's traditional IRA SYN-92340002 bought 500 units of the same fund. A purchase of the same security by the seller or the seller's spouse, in an IRA too, within 30 days before or after a sale at a loss makes the loss on the units replaced a wash sale (26 U.S.C. § 1091(a); Rev. Rul. 2008-5), so the loss on those 500 of the 847 units, $31,591.60, is disallowed and, the replacement being in an IRA, lost for good. Only $21,924.57 is allowed, while the custodian's realized lots and its 1099-B report the whole loss.
+"""
+
+[expected_output]
+fields = ["finding", "loss_reported", "disallowed_loss", "allowed_loss", "figures", "explanation"]
+findings = ["wash_sale", "no_wash_sale", "unresolved"]

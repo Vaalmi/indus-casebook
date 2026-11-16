@@ -6,20 +6,38 @@ from pathlib import Path
 from typing import Any
 
 from casebook.graders.registry import grader
-from casebook.model.files import household_dir, json_text, read_manifest
+from casebook.model.files import json_text, read_manifest
 from casebook.publish.mapper import map_to_aliases
 from casebook.runner.config import SharedConfig
 from casebook.runner.preflight import require_book_files, require_household, require_real_tickers
 from casebook.runner.run import RunInputs, grade_record, private_root, run_task
-from casebook.tasks.task import find_task
+from casebook.tasks.task import HELD_GRADERS, HELD_WORKFLOWS, Task, find_task
+
+# Where a held workflow's keys go whatever --keys says: out/keys/, which the release script ignores.
+HELD_KEYS = Path("out/keys")
+
+
+def keys_root_for(task: Task, keys_root: Path) -> Path:
+    """A reconciliation key is published (docs/PLAN.md, Where files go); tax-lot and RMD keys, and a
+    reconciliation key that computes an RMD, are held until the tax review, out of `published/`, and
+    slice 16's release gate refuses them."""
+    return HELD_KEYS if held(task) else keys_root
+
+
+def held(task: Task) -> bool:
+    """Whether the task's key and verdict wait for the tax review: every tax-lot and RMD task, and a
+    reconciliation task whose key computes an RMD (docs/SPEC.md: their pages show "sources and outputs
+    only, with no verdict and no failure marking, until review")."""
+    return task.workflow in HELD_WORKFLOWS or task.grader in HELD_GRADERS
+
+
+def published_record(task: Task, mapped: dict[str, Any]) -> dict[str, Any]:
+    """The record as published: a held task's without its grade, which stays in the private run folder."""
+    return {**mapped, "grade": None, "verdict_held": True} if held(task) and mapped["state"] != "failed" else mapped
 
 
 def write_key(task_id: str, key: Any, keys_root: Path, version: str) -> tuple[Path, str]:
-    """The key is sealed answer material: a run's preflight refuses it in a workspace.
-
-    A reconciliation key is published (docs/PLAN.md, Where files go); tax-lot and RMD keys are
-    held until review, and slice 16's release gate refuses them.
-    """
+    """The key is sealed answer material: a run's preflight refuses it in a workspace."""
     folder = keys_root / version
     folder.mkdir(parents=True, exist_ok=True)
     text = json_text(key.to_dict())
@@ -35,8 +53,8 @@ def run_and_grade(
     require_household(book, task.household_id)
     require_book_files(book, task.household_id)
     spec = grader(task.grader)
-    key = spec.key(book / household_dir(task.household_id), task.grader_params)
-    keys, key_sha = write_key(task.task_id, key, keys_root, read_manifest(book).version)
+    key = spec.key(book, task.household_id, task.grader_params)
+    keys, key_sha = write_key(task.task_id, key, keys_root_for(task, keys_root), read_manifest(book).version)
     private = private_root()
     record = run_task(RunInputs(task, arm, book, keys, spec.sha256(), key_sha), config, private)
     folder = private / "runs" / record["run_id"]
@@ -56,11 +74,12 @@ def run_and_grade(
         mapped["state"] = "mapped"
     out = published / task.task_id
     out.mkdir(parents=True, exist_ok=True)
-    (out / f"{record['run_id']}.json").write_text(json.dumps(mapped, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    public = published_record(task, mapped)
+    (out / f"{record['run_id']}.json").write_text(json.dumps(public, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     transcript = folder / record["transcript"]["file"]
     if transcript.is_file():
         lines = [
             json.dumps(map_to_aliases(json.loads(line))) for line in transcript.read_text().splitlines() if line.strip()
         ]
         (out / f"{record['run_id']}.transcript.jsonl").write_text("\n".join(lines) + "\n", encoding="utf-8")
-    return mapped
+    return public

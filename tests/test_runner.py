@@ -165,7 +165,7 @@ def test_a_note_with_an_instruction_and_shell_characters_changes_neither_prompt_
     real_book: Path, standin: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     run_task(inputs(real_book, "basic"), FAST, private_root())
-    real = run_module.load_fixtures
+    real = run_module.load_task_fixtures
 
     def with_injection(book: Path, household: str, sets: tuple[str, ...], cutoff: date, workspace: Path) -> None:
         real(book, household, sets, cutoff, workspace)
@@ -176,20 +176,20 @@ def test_a_note_with_an_instruction_and_shell_characters_changes_neither_prompt_
         )
         crm.write_text(json.dumps(data))
 
-    monkeypatch.setattr(run_module, "load_fixtures", with_injection)
+    monkeypatch.setattr(run_module, "load_task_fixtures", with_injection)
     run_task(inputs(real_book, "basic"), FAST, private_root())
     clean, injected = calls(standin)
     assert clean["argv"] == injected["argv"]
 
 
 def plant_in_workspace(monkeypatch: pytest.MonkeyPatch, plant: Any) -> None:
-    real = run_module.load_fixtures
+    real = run_module.load_task_fixtures
 
     def planted(book: Path, household: str, sets: tuple[str, ...], cutoff: date, workspace: Path) -> None:
         real(book, household, sets, cutoff, workspace)
         plant(book, workspace)
 
-    monkeypatch.setattr(run_module, "load_fixtures", planted)
+    monkeypatch.setattr(run_module, "load_task_fixtures", planted)
 
 
 def test_the_runner_refuses_a_sealed_file_copied_into_the_workspace(

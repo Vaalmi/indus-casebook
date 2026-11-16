@@ -1,0 +1,32 @@
+# Reconciliation and as-of, over the whole book: custodian positions and cash against the portfolio system.
+task_id = "T-REC-06"
+workflow = "reconciliation"
+household_id = "book"
+cutoff = 2026-04-15
+fixtures = ["custodian", "portfolio"]
+allowed_tools = ["Read", "Glob", "Grep"]
+grader = "positions_vs_portfolio"
+
+prompt = """
+You are helping an advisor at a small independent advisory firm. This folder holds the records of every client household of the firm as they stood on 15 April 2026, one folder per household under households/<household ID>/, each with the custodian's files (custodian/) and the firm's portfolio system (portfolio/).
+
+The advisor asks: which households' custodian positions and cash disagree with the portfolio system on 15 April 2026?
+
+Work only from these files. End your answer with one fenced json block with these fields:
+- "finding": "found" if one or more households disagree, "none_found" if none does, or "unresolved" if the files settle no household as found and leave some unresolved
+- "households": one entry per household that disagrees, each as {"household_id": ..., "account_ids": the accounts that disagree, "explanation": one sentence}, or [] if none
+- "unresolved": the households the files cannot settle, each as {"household_id": ..., "explanation": one sentence}, or [] if none
+- "figures": every figure you relied on, each as {"label": ..., "value": ..., "source": the file it came from, relative to this folder}, adding "computed": true to a figure you computed rather than read
+- "explanation": two or three sentences
+"""
+
+justified_conclusion = """
+On 15 April 2026 every household's custodian positions (units, price and market value for each security in each account) and its cash, settled plus unsettled, agree line for line with the portfolio system's, in all 96 households. No household disagrees, so none is found. Earlier valuation dates in the custodian's files, such as the 31 March 2026 quarter end, are not part of the question.
+"""
+
+[expected_output]
+fields = ["finding", "households", "unresolved", "figures", "explanation"]
+findings = ["found", "none_found", "unresolved"]
+
+[grader_params]
+as_of = 2026-04-15

@@ -26,14 +26,14 @@ from casebook.runner.preflight import (
 )
 from casebook.runner.record import check_record
 from casebook.runner.transcript import Transcript, failure_reason, parse_transcript
-from casebook.tasks.fixtures import FixtureError, load_fixtures
+from casebook.tasks.fixtures import FixtureError, load_task_fixtures
 from casebook.tasks.task import Task
 
 PRIVATE_VARIABLE = "CASEBOOK_PRIVATE"
 # The instruction each arm must show as loaded, by workflow (docs/PLAN.md, Choices and why).
 ARM_SKILLS: dict[str, dict[str, str]] = {
-    "checklist": {"reconciliation": "advisor-checklist"},
-    "skill": {"reconciliation": "reconciliation-as-of"},
+    "checklist": {"reconciliation": "advisor-checklist", "tax_lot_rmd": "advisor-checklist"},
+    "skill": {"reconciliation": "reconciliation-as-of", "tax_lot_rmd": "tax-lot-rmd"},
 }
 
 
@@ -74,7 +74,7 @@ def prepare(task: Task, book: Path, workspace: Path, keys: Path | None) -> None:
     require_household(book, task.household_id)
     require_book_files(book, task.household_id)
     try:
-        load_fixtures(book, task.household_id, task.fixtures, task.cutoff, workspace)
+        load_task_fixtures(book, task.household_id, task.fixtures, task.cutoff, workspace)
     except FixtureError as error:
         raise OutsideBookError(str(error)) from error
     require_sealed(workspace, sealed_files(book, keys))

@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from casebook.model.files import METADATA, REAL_TICKERS, household_dir, read_json, read_manifest
+from casebook.tasks.task import BOOK
 
 
 class RunRefusedError(RuntimeError):
@@ -44,7 +45,12 @@ class OutsideBookError(RunRefusedError):
 
 
 def require_book_files(book: Path, household_id: str) -> None:
-    """Nothing is read from outside the book: no link on the way to the household's folder or inside it."""
+    """Nothing is read from outside the book: no link on the way to the household's folder or inside it;
+    for a book-level task, every household's."""
+    if household_id == BOOK:
+        for household in read_manifest(book).households:
+            require_book_files(book, household.household_id)
+        return
     folder = book / household_dir(household_id)
     for step in (folder.parent, folder):
         if step.is_symlink():
@@ -58,7 +64,10 @@ def require_book_files(book: Path, household_id: str) -> None:
 
 
 def require_household(book: Path, household_id: str) -> None:
-    if household_id not in {h.household_id for h in read_manifest(book).households}:
+    households = {h.household_id for h in read_manifest(book).households}
+    if household_id == BOOK and households:
+        return
+    if household_id not in households:
         raise UnknownHouseholdError(
             f"household {household_id} is not in the book manifest; runs use book households only"
         )

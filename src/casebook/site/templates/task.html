@@ -23,8 +23,16 @@
       <p>Not run yet.</p>
       {% else %}
       <p class="run-name" data-run-name>{{ arm.tool }} · model {{ arm.models or "not reported" }}{% if arm.effort %} at {{ arm.effort }} effort{% endif %} · {{ arm.date }}</p>
-      {% if arm.record.state == "failed" %}
+      {% if arm.record.state == "failed" and not view.held %}
       <p class="failed" data-outcome="failed">Run failed, not scored: {{ arm.record.failure_reason }}</p>
+      {% elif view.held %}
+      <p class="held" data-outcome="held">Not scored until the tax review: this page shows the output only.</p>
+      {% if arm.record.output %}
+      <details>
+        <summary>The output</summary>
+        <pre class="output">{{ arm.record.output }}</pre>
+      </details>
+      {% endif %}
       {% else %}
       {% set grade = arm.record.grade %}
       <p class="{{ 'passed' if grade.passed else 'failed' }}" data-outcome="{{ 'passed' if grade.passed else 'failed' }}">
@@ -51,16 +59,22 @@
   </div>
 </section>
 
+{% if not view.held %}
 <section aria-labelledby="why-heading" data-section="justified-conclusion">
   <h2 id="why-heading">Why the justified conclusion is what it is</h2>
   <p>{{ view.task.justified_conclusion }}</p>
-  {% if view.key %}
+  {% if view.key and view.key.debited_fee is defined %}
   <dl class="figures">
     <dt>Finding</dt><dd>{{ view.key.finding|replace("_", " ") }}</dd>
     <dt>Fees debited on {{ view.key.fee_date }}</dt><dd>{{ view.key.debited_fee|money }}</dd>
     <dt>Fees under the agreements</dt><dd>{{ view.key.correct_fee|money }}</dd>
     <dt>Amount misbilled</dt><dd>{{ view.key.amount_misbilled|money }}</dd>
   </dl>
+  {% elif view.key and view.key.found is defined %}
+  <dl class="figures">
+    <dt>Households found</dt><dd>{{ view.key.found|join(", ") if view.key.found else "none" }}</dd>
+  </dl>
   {% endif %}
 </section>
+{% endif %}
 {% endblock %}

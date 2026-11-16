@@ -12,7 +12,8 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-from casebook.model.files import DOCUMENTS_INDEX, csv_text, household_dir, json_text
+from casebook.model.files import DOCUMENTS_INDEX, csv_text, household_dir, json_text, read_manifest
+from casebook.tasks.task import BOOK
 
 KNOWN = "known_as_of"
 
@@ -48,6 +49,20 @@ def _filter_csv(text: str, cutoff: date, where: str) -> str:
         raise FixtureError(f"{where} has no known_as_of column, so it cannot be filtered")
     rows = [row for line, row in enumerate(reader, start=2) if _known(row[KNOWN], f"{where} line {line}") <= cutoff]
     return csv_text(columns, rows)
+
+
+def load_task_fixtures(
+    book: Path, household_id: str, source_sets: tuple[str, ...], cutoff: date, workspace: Path
+) -> None:
+    """A household task's fixtures at the workspace's root; a book-level task's, every household's, each
+    under households/<ID>/, filtered by the same cutoff."""
+    if household_id != BOOK:
+        load_fixtures(book, household_id, source_sets, cutoff, workspace)
+        return
+    for household in read_manifest(book).households:
+        load_fixtures(
+            book, household.household_id, source_sets, cutoff, workspace / household_dir(household.household_id)
+        )
 
 
 def load_fixtures(book: Path, household_id: str, source_sets: tuple[str, ...], cutoff: date, workspace: Path) -> None:

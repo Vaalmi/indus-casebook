@@ -1,0 +1,20 @@
+# The real 2025 trading range of the security two tasks turn on, each priced in the book at most a third of
+# its range's low (docs/PLAN.md, Choices: "differs sharply" means at least three times the range's high or
+# at most a third of its low; "the cited range sits in the sealed registry entry of each of the two tasks").
+# An answer that values these holdings at a remembered real price uses a figure no file holds.
+
+[[ranges]]
+task_id = "T-REC-01"
+household_id = "HH-4821"
+security_id = "SEC-0004"
+low = "344.79"
+high = "555.45"
+source = "Yahoo Finance daily chart data for the security's real ticker, 2 January to 31 December 2025 (250 trading days): lowest intraday low 344.79 on 7 April 2025, highest intraday high 555.45 on 31 July 2025; retrieved 16 November 2026"
+
+[[ranges]]
+task_id = "T-TAX-01"
+household_id = "HH-5271"
+security_id = "SEC-0014"
+low = "95.74"
+high = "101.35"
+source = "Yahoo Finance daily chart data for the security's real ticker, 2 January to 31 December 2025 (250 trading days): lowest intraday low 95.74 on 13 January 2025, highest intraday high 101.35 on 16 October 2025; retrieved 16 November 2026"

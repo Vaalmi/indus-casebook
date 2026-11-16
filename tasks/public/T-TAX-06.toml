@@ -1,0 +1,29 @@
+# Tax-lot and RMD review, over the whole book: 2025 loss sales replaced within 30 days. Held until the tax review.
+task_id = "T-TAX-06"
+workflow = "tax_lot_rmd"
+household_id = "book"
+cutoff = 2026-04-15
+fixtures = ["custodian", "portfolio"]
+allowed_tools = ["Read", "Glob", "Grep"]
+grader = "wash_sale_sweep"
+
+prompt = """
+You are helping an advisor at a small independent advisory firm. This folder holds the records of every client household of the firm as they stood on 15 April 2026, one folder per household under households/<household ID>/, each with the custodian's files (custodian/) and the firm's portfolio system (portfolio/).
+
+The advisor asks: which households sold a security at a loss in a taxable account during 2025 and acquired the same security within 30 days before or after the sale, in an account of the seller or the seller's spouse, so that some of the loss is a wash sale?
+
+Work only from these files. End your answer with one fenced json block with these fields:
+- "finding": "found" if one or more households did, "none_found" if none did, or "unresolved" if the files settle no household as found and leave some unresolved
+- "households": one entry per household that did, each as {"household_id": ..., "sale_transaction_ids": the loss sales affected, "replacement_transaction_ids": the acquisitions that replace them, "disallowed_loss": the loss disallowed, "explanation": one sentence}, or [] if none
+- "unresolved": the households the files cannot settle, each as {"household_id": ..., "explanation": one sentence}, or [] if none
+- "figures": every figure you relied on, each as {"label": ..., "value": ..., "source": the file it came from, relative to this folder}, adding "computed": true to a figure you computed rather than read
+- "explanation": two or three sentences
+"""
+
+justified_conclusion = """
+Five households sold a fund at a loss in their joint account between September and November 2025 and bought it back within 30 days in a spouse's IRA, so the loss on the units replaced is disallowed and lost for good: HH-0129 (a Roth IRA, $17,885.81 disallowed), HH-0363 ($15,037.48), HH-0507 ($15,380.22), HH-0780 ($5,706.09) and HH-9234 ($31,591.60). Five look-alikes, HH-0380, HH-0493, HH-0847, HH-0981 and HH-9571, bought the fund back in an IRA between 31 and 41 days after the sale, outside the window, and HH-0679's next RSU release came 31 days after its loss sale, so their losses stand. No other 2025 loss sale in a taxable account has an acquisition of the same security within 30 days in the seller's or the spouse's accounts.
+"""
+
+[expected_output]
+fields = ["finding", "households", "unresolved", "figures", "explanation"]
+findings = ["found", "none_found", "unresolved"]

@@ -10,6 +10,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+# A book-level task's household: it reads every household of the book.
+BOOK = "book"
+
 
 class LedgerError(ValueError):
     pass
@@ -61,7 +64,7 @@ def parse_ledger(raw: Any, source: str) -> IdLedger:
         tasks = {str(tid): LedgerTask(str(t["household_id"]), str(t["workflow"])) for tid, t in raw["tasks"].items()}
     except (KeyError, TypeError, ValueError, AttributeError) as error:
         raise LedgerError(f"{source}: malformed ({error!r})") from error
-    unknown = sorted(t.household_id for t in tasks.values() if t.household_id not in households)
+    unknown = sorted(t.household_id for t in tasks.values() if t.household_id not in {*households, BOOK})
     if unknown:
         raise LedgerError(f"{source}: a task names a household the ledger does not hold ({', '.join(unknown)})")
     return IdLedger(households, tasks)

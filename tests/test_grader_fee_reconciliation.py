@@ -1,5 +1,6 @@
 """The fee reconciliation grader: a clean control passes, defective outputs fail, a fabricated figure zeroes."""
 
+import dataclasses
 import json
 from datetime import date
 from decimal import Decimal
@@ -282,3 +283,20 @@ def test_a_text_figure_listing_several_supported_amounts_is_not_fabricated(fixtu
     assert grade(_output(figures=[figure]), FEE_ERROR_KEY, fixtures).critical_fail is None
     invented = {"label": "Fees debited", "value": "1500.00 / 1234.56", "source": "custodian/transactions.csv"}
     assert grade(_output(figures=[invented]), FEE_ERROR_KEY, fixtures).critical_fail is not None
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        {"finding": "no_fee_error"},  # the key's finding altered
+        {"amount_misbilled": Decimal("75.00")},  # its amount
+        {"correct_fee": Decimal("2675.00"), "amount_misbilled": Decimal("75.00")},  # its fee and amount together
+    ],
+    ids=["finding", "amount", "fee"],
+)
+def test_the_grader_fails_a_clean_answer_once_its_key_is_altered(fixtures: Path, change: dict[str, Any]) -> None:
+    """docs/PLAN.md, slice 9: key mutation. The clean answer that scores 100 against the true key fails
+    against a key altered in one figure or its finding."""
+    assert grade(_output(), FEE_ERROR_KEY, fixtures).passed
+    altered = dataclasses.replace(FEE_ERROR_KEY, **change)
+    assert not grade(_output(), altered, fixtures).passed

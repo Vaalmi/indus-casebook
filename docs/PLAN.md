@@ -263,15 +263,15 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 
 **Depends on:** 8.
 
-- [ ] Twelve task files exist, six per workflow; each has a prompt, fixtures, allowed tools, expected output, grader and justified conclusion (a schema test)
-- [ ] Each workflow has two book-level tasks, and each task on a trap has its matching task on the twin (a test over the task matrix)
-- [ ] The import contract passes, and fails when a key module imports `replay` (a test)
-- [ ] Every key is tested against a hand-worked reference case, and key mutation tests show each grader fails when its key is altered
-- [ ] Every grader passes its own tests: defective outputs fail and clean controls pass
-- [ ] Each result records the three counts: correct "unresolved", unnecessary refusal, false alarm
-- [ ] Two tasks hold a security priced at least three times away from its cited real range, and their graders fail an answer that uses a price absent from the files
+- [x] Twelve task files exist, six per workflow; each has a prompt, fixtures, allowed tools, expected output, grader and justified conclusion (a schema test)
+- [x] Each workflow has two book-level tasks, and each task on a trap has its matching task on the twin (a test over the task matrix)
+- [x] The import contract passes, and fails when a key module imports `replay` (a test)
+- [x] Every key is tested against a hand-worked reference case, and key mutation tests show each grader fails when its key is altered
+- [x] Every grader passes its own tests: defective outputs fail and clean controls pass
+- [x] Each result records the three counts: correct "unresolved", unnecessary refusal, false alarm
+- [x] Two tasks hold a security priced at least three times away from its cited real range, and their graders fail an answer that uses a price absent from the files
 - [ ] The tax-lot and RMD skill is drafted and approved by the owner
-- [ ] The one check command passes
+- [x] The one check command passes
 
 ### Slice 10: Add the CRM sandbox and the meeting and compliance tasks (week 10)
 

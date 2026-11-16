@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from datetime import date
+from decimal import Decimal
 from typing import Any
 
 PLANTED_KINDS = ("situation", "source_disagreement")
@@ -11,6 +12,29 @@ PLANTED_KINDS = ("situation", "source_disagreement")
 class FigureTable:
     columns: tuple[str, ...]
     rows: tuple[tuple[str, ...], ...]
+
+
+@dataclass(frozen=True)
+class RealRange:
+    """A security's real 2025 trading range, cited, which its invented price in the book differs from
+    sharply: at least three times the high or at most a third of the low (docs/PLAN.md, Choices)."""
+
+    task_id: str
+    security_id: str
+    security: str  # the name the build prints: the alias, or the ticker in a real-ticker build
+    low: Decimal
+    high: Decimal
+    source: str
+
+    def to_dict(self) -> dict[str, str]:
+        return {
+            "task_id": self.task_id,
+            "security_id": self.security_id,
+            "security": self.security,
+            "low": format(self.low, "f"),
+            "high": format(self.high, "f"),
+            "source": self.source,
+        }
 
 
 @dataclass(frozen=True)
@@ -33,6 +57,8 @@ class RegistryEntry:
     # The thresholds the situation crosses by design (a concentration above the IPS limit), which
     # the thresholds check then accepts for the records the entry names.
     crosses: tuple[str, ...] = ()
+    # Only on the entries of the two tasks whose security is priced far from any real price.
+    real_range: RealRange | None = None
 
     def __post_init__(self) -> None:
         if self.kind not in PLANTED_KINDS:
@@ -54,7 +80,7 @@ class RegistryEntry:
             "known_as_of": self.known_as_of.isoformat(),
             "references": list(self.references),
             "crosses": list(self.crosses),
-        }
+        } | ({"real_range": self.real_range.to_dict()} if self.real_range else {})
 
 
 def parse_entry(raw: dict[str, Any]) -> RegistryEntry:
@@ -75,4 +101,16 @@ def parse_entry(raw: dict[str, Any]) -> RegistryEntry:
         known_as_of=date.fromisoformat(str(raw["known_as_of"])),
         references=tuple(str(r) for r in raw.get("references", [])),
         crosses=tuple(str(c) for c in raw.get("crosses", [])),
+        real_range=_real_range(raw["real_range"]) if raw.get("real_range") else None,
+    )
+
+
+def _real_range(raw: dict[str, Any]) -> RealRange:
+    return RealRange(
+        task_id=str(raw["task_id"]),
+        security_id=str(raw["security_id"]),
+        security=str(raw["security"]),
+        low=Decimal(str(raw["low"])),
+        high=Decimal(str(raw["high"])),
+        source=str(raw["source"]),
     )

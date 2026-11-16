@@ -1,0 +1,29 @@
+# Tax-lot and RMD review, over the whole book: every 2025 RMD not met. Held until the tax review.
+task_id = "T-TAX-05"
+workflow = "tax_lot_rmd"
+household_id = "book"
+cutoff = 2026-04-15
+fixtures = ["custodian", "portfolio", "crm"]
+allowed_tools = ["Read", "Glob", "Grep"]
+grader = "rmd_sweep"
+
+prompt = """
+You are helping an advisor at a small independent advisory firm. This folder holds the records of every client household of the firm as they stood on 15 April 2026, one folder per household under households/<household ID>/, each with the custodian's files (custodian/), the firm's portfolio system (portfolio/) and its CRM (crm/).
+
+The advisor asks: which IRA owners in the book had a 2025 required minimum distribution, from any of their retirement accounts, that was not met?
+
+Work only from these files. End your answer with one fenced json block with these fields:
+- "finding": "found" if one or more owners did, "none_found" if none did, or "unresolved" if the files settle no household as found and leave some unresolved
+- "households": one entry per household with such an owner, each as {"household_id": ..., "owner_id": the owner's person ID, "account_ids": the accounts the unmet distribution had to come from, "shortfall": the amount not taken, "explanation": one sentence}, or [] if none
+- "unresolved": the households the files cannot settle, each as {"household_id": ..., "explanation": one sentence}, or [] if none
+- "figures": every figure you relied on from the files, each as {"label": ..., "value": ..., "source": the file it came from, relative to this folder}, adding "computed": true to a figure you computed from them rather than read
+- "explanation": two or three sentences
+"""
+
+justified_conclusion = """
+Nine households had a 2025 required minimum distribution that was not met. In five, HH-0120, HH-0236, HH-0371, HH-0664 and HH-5271, an owner in the first distribution year took the IRAs' RMDs from one IRA but nothing from a former employer's 401(k), whose RMD only the plan can pay. In four, HH-0466, HH-0491, HH-0607 and HH-0842, the beneficiary of an inherited IRA took nothing in 2025 although the decedent died after the required beginning date, so the ten-year rule requires an annual RMD. Look-alikes that took a first-year RMD early in 2026, by 1 April, or took all their IRAs' RMDs from one IRA, met theirs.
+"""
+
+[expected_output]
+fields = ["finding", "households", "unresolved", "figures", "explanation"]
+findings = ["found", "none_found", "unresolved"]

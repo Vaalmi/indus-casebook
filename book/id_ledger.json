@@ -99,6 +99,17 @@
     "HH-9571": { "archetype": 9, "pair": 1, "role": "twin" }
   },
   "tasks": {
-    "T-REC-01": { "household_id": "HH-4821", "workflow": "reconciliation" }
+    "T-REC-01": { "household_id": "HH-4821", "workflow": "reconciliation" },
+    "T-REC-02": { "household_id": "HH-7350", "workflow": "reconciliation" },
+    "T-REC-03": { "household_id": "HH-6047", "workflow": "reconciliation" },
+    "T-REC-04": { "household_id": "HH-6590", "workflow": "reconciliation" },
+    "T-REC-05": { "household_id": "book", "workflow": "reconciliation" },
+    "T-REC-06": { "household_id": "book", "workflow": "reconciliation" },
+    "T-TAX-01": { "household_id": "HH-5271", "workflow": "tax_lot_rmd" },
+    "T-TAX-02": { "household_id": "HH-5814", "workflow": "tax_lot_rmd" },
+    "T-TAX-03": { "household_id": "HH-9234", "workflow": "tax_lot_rmd" },
+    "T-TAX-04": { "household_id": "HH-9571", "workflow": "tax_lot_rmd" },
+    "T-TAX-05": { "household_id": "book", "workflow": "tax_lot_rmd" },
+    "T-TAX-06": { "household_id": "book", "workflow": "tax_lot_rmd" }
   }
 }

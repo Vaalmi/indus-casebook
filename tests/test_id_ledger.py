@@ -2,6 +2,7 @@
 
 import json
 import shutil
+import tomllib
 from pathlib import Path
 
 import pytest
@@ -39,7 +40,15 @@ def test_the_ledger_is_committed_with_the_published_ids() -> None:
     assert sorted((e.archetype, e.pair, e.role) for e in background.values()) == sorted(
         (a, n, role) for a in range(1, 11) for n in range(2, 6) for role in ("trap", "twin")
     )
-    assert ledger.tasks == {"T-REC-01": LedgerTask("HH-4821", "reconciliation")}
+    # The twelve reconciliation and tax-lot and RMD tasks of slice 9, placed as the task matrix places them.
+    matrix = tomllib.loads((ROOT / "tasks" / "matrix.toml").read_text())["tasks"]
+    placed = {
+        t["task_id"]: LedgerTask(t["household_id"], t["workflow"])
+        for t in matrix
+        if t["workflow"] in ("reconciliation", "tax_lot_rmd")
+    }
+    assert len(placed) == 12
+    assert ledger.tasks == placed
 
 
 def test_every_built_household_and_every_task_file_is_in_the_ledger(full_book: Path) -> None:
@@ -92,6 +101,8 @@ def test_changing_a_published_households_role_fails_the_build(tmp_path: Path) ->
 def test_a_household_not_yet_published_builds(tmp_path: Path) -> None:
     ledger = json.loads(ID_LEDGER.read_text())
     del ledger["households"]["HH-7350"]
+    # T-REC-02 is published on HH-7350: a ledger without the household cannot hold its task either.
+    ledger["tasks"] = {tid: t for tid, t in ledger["tasks"].items() if t["household_id"] != "HH-7350"}
     path = tmp_path / "id_ledger.json"
     path.write_text(json.dumps(ledger))
     assert build_book(SEED, tmp_path / "book", SCRIPTS, ledger=path).households == FEATURED
