@@ -1,6 +1,6 @@
 """Archetype 5. First-RMD retiree: the first required distribution across several IRAs and a 401(k).
 
-The trap takes one distribution from an IRA for all three accounts' RMDs, which covers the IRAs
+The trap takes one distribution from an IRA for all the accounts' RMDs, which covers the IRAs
 (their RMDs may be aggregated) but not the 401(k), whose RMD must come from the plan. The near-miss
 twin takes the IRAs' RMDs together from one IRA and the 401(k)'s from the 401(k).
 
@@ -44,6 +44,10 @@ HALF_YEAR_MONTHS = 6
 # rules table does not hold.
 JOINT_TABLE_YEARS = 10
 UNIFORM = "uniform_lifetime"
+
+
+def _count(n: int) -> str:
+    return ("zero", "one", "two", "three", "four", "five", "six")[n] if n < 7 else str(n)
 
 
 def age_in(born: date, year: int) -> int:
@@ -231,8 +235,9 @@ def plant_trap(context: PlantContext) -> Planting:
         f"{plan_list} owes {usd(sum((p.rmd for p in short), ZERO))}, which must be paid from the plan itself: an IRA "
         f"distribution cannot meet a 401(k)'s RMD. Nothing was paid from the 401(k) by {year.rbd.isoformat()} or by "
         f"{SCENARIO_DATE.isoformat()}, so its {DISTRIBUTION_YEAR} RMD of {usd(shortfall)} was missed, though the "
-        f"custodian's 'Required minimum distribution for {DISTRIBUTION_YEAR}', for the three accounts' RMDs added "
-        "together, makes the year look complete. The shortfall is subject to the excise tax of 26 U.S.C. § 4974(a), "
+        f"custodian's 'Required minimum distribution for {DISTRIBUTION_YEAR}', for the "
+        f"{_count(len(year.iras) + len(year.plans))} accounts' RMDs added together, makes the year look complete. "
+        "The shortfall is subject to the excise tax of 26 U.S.C. § 4974(a), "
         "reported on Form 5329, which is reduced if the shortfall is distributed within the correction window of "
         "§ 4974(e) and may be waived for reasonable error under § 4974(d). The plan should pay the "
         f"{usd(shortfall)} now, apart from the {DISTRIBUTION_YEAR + 1} RMD due by {DISTRIBUTION_YEAR + 1}-12-31; the "

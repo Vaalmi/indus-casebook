@@ -37,6 +37,9 @@ def _note(number: int, hh: Household, day: date, template: str, slots: dict[str,
         "date": day.isoformat(),
         "author": "template",
         "template": template,
+        # The slot values the text renders from: the note re-renders byte for byte from these and
+        # its named template (docs/SPEC.md: no model-written text).
+        "slots": dict(sorted(slots.items())),
         "text": TEMPLATES[template].format(**slots),
         "valuation_date": day.isoformat(),
         "known_as_of": day.isoformat(),
@@ -108,7 +111,12 @@ def emit(context: EmitContext) -> dict[str, bytes]:
         )
         for a in hh.agreements
     ]
-    primary = tuple(p.person_id for p in hh.members if p.relationship in ("primary", "spouse"))
+    # The review is held with the primary and the spouse still living on its date.
+    primary = tuple(
+        p.person_id
+        for p in hh.members
+        if p.relationship in ("primary", "spouse") and (p.died is None or p.died > ANNUAL_REVIEW)
+    )
     dated.append(
         (
             ANNUAL_REVIEW,

@@ -8,7 +8,7 @@ from typing import Any
 
 import pytest
 
-from .conftest import FEATURED
+from .conftest import built
 
 HOUSEHOLDS = ("HH-4821", "HH-7350")
 DATES = ("valuation_date", "known_as_of")
@@ -118,7 +118,7 @@ def source_files(book: Path) -> list[Path]:
 def test_every_observation_in_every_source_set_carries_both_dates(book: Path) -> None:
     files = [*source_files(book), book / "securities" / "prices_synthetic.csv"]
     # Per household: seven custodian CSVs, five portfolio files, the CRM and the documents index.
-    assert len(files) == 14 * len(FEATURED) + 1
+    assert len(files) == 14 * len(built(book)) + 1
     for path in files:
         records = rows(path) if path.suffix == ".csv" else observations(json.loads(path.read_text()))
         assert records or path.name in ("beneficiaries.csv", "realized_lots.csv"), path

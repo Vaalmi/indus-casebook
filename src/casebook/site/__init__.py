@@ -38,6 +38,7 @@ from casebook.notice import NOTICE, NOTICE_HEADLINE
 from casebook.site.tasks import task_views
 
 STATIC_DIR = Path(__file__).parent / "static"
+FEATURED = "featured"
 # The kinds of event that carry each archetype's item: what the events layer shows first.
 KEY_EVENTS: dict[int, tuple[str, ...]] = {
     1: ("contribution", "roth_conversion"),
@@ -208,7 +209,13 @@ def render_site(
     metadata = read_json(book, METADATA)
     sealed = {h["household_id"]: h for h in read_json(book, SEALED_HOUSEHOLDS)["households"]}
     entries = [parse_entry(e) for e in read_json(book, REGISTRY)["entries"]]
-    households = [load_household(book, h.household_id, sealed[h.household_id], entries) for h in manifest.households]
+    # The site shows the featured households (docs/SPEC.md: "a list of the 20 featured households; one
+    # page per household"); the background households are in the book's files.
+    households = [
+        load_household(book, h.household_id, sealed[h.household_id], entries)
+        for h in manifest.households
+        if sealed[h.household_id]["set"] == FEATURED
+    ]
     env = environment()
     common = {
         "notice_headline": NOTICE_HEADLINE,

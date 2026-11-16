@@ -231,6 +231,8 @@ class Ledger:
             if lot.security_id not in prices:
                 raise ReplayError(f"event {death.event_id} gives no value for {lot.security_id}")
             units = lot.units * death.share
+            if units == units.to_integral_value():
+                units = units.quantize(Decimal(1))  # half of 1,508 units is 754 units, not 754.0
             new = Lot(
                 lot.lot_id if death.share == 1 else f"{lot.lot_id}-S",
                 lot.account_id,
@@ -302,6 +304,18 @@ class ReplayResult:
     snapshots: dict[date, Snapshot]
     closed: tuple[ClosedLot, ...]
     split_units: dict[str, Decimal]
+
+
+def overdrawn(result: ReplayResult) -> list[str]:
+    """Every account whose cash, settled and unsettled together, is below zero on a snapshot day: an
+    overdraft no custodian shows, so a household that has one is refused."""
+    found: list[str] = []
+    for snapshot in (result.opening, *result.snapshots.values()):
+        for account, settled in sorted(snapshot.settled_cash.items()):
+            cash = settled + snapshot.unsettled_cash.get(account, ZERO)
+            if cash < 0:
+                found.append(f"{account} holds {cash} in cash on {snapshot.day}")
+    return found
 
 
 def replay(events: Sequence[Event], days: Iterable[date]) -> ReplayResult:

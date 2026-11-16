@@ -230,10 +230,10 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 **Depends on:** 5.
 
 - [ ] `uv run casebook build --seed 2026` builds 100 households: ten archetypes, five pairs each; the same seed and version give byte-identical files
-- [ ] Every background note re-renders byte-for-byte from its named template and slot values, and the build makes no model call (a test blocks the network and the CLIs)
-- [ ] No background household crosses a drift, RMD or concentration threshold without a registry entry (a seeded crossing fails the check)
-- [ ] All 100 households pass all nine checks; the report shows 900 passing lines
-- [ ] The one check command passes
+- [x] Every background note re-renders byte-for-byte from its named template and slot values, and the build makes no model call (a test blocks the network and the CLIs)
+- [x] No background household crosses a drift, RMD or concentration threshold without a registry entry (a seeded crossing fails the check)
+- [x] All 100 households pass all nine checks; the report shows 900 passing lines
+- [x] The one check command passes
 
 ### Slice 7: Compute 2025 tax for all 100 (week 7)
 

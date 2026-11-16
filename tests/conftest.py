@@ -15,7 +15,14 @@ SCRIPTS = ROOT / "book" / "scripted"
 README = ROOT / "README.md"
 SEED = 2026
 STANDIN = ROOT / "tests" / "standin" / "claude.py"
+
+
 # The public featured households (archetypes 7 and 8 are held out until the freeze).
+# Every household of the public book: the featured ones and the 80 drawn in the background.
+def built(book: Path) -> tuple[str, ...]:
+    return tuple(h["household_id"] for h in json.loads((book / "manifest.json").read_text())["households"])
+
+
 FEATURED = (
     "HH-1204",
     "HH-1587",
@@ -40,6 +47,15 @@ FEATURED = (
 def book(tmp_path_factory: pytest.TempPathFactory) -> Path:
     out = tmp_path_factory.mktemp("book") / "0.0.1"
     build_book(SEED, out, SCRIPTS)
+    return out
+
+
+@pytest.fixture(scope="session")
+def full_book(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    """The public book whole: the featured households and the 80 drawn in the background. Most tests
+    use `book`, the featured households alone, which builds in a fraction of the time."""
+    out = tmp_path_factory.mktemp("full") / "0.0.1"
+    build_book(SEED, out, SCRIPTS, background=True)
     return out
 
 

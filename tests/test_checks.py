@@ -7,7 +7,7 @@ import pytest
 from casebook.checks import CHECKS, check_book
 from casebook.cli import main
 
-from .conftest import FEATURED
+from .conftest import FEATURED, built
 
 HH = "HH-4821"
 
@@ -36,12 +36,17 @@ def failures(book: Path) -> dict[tuple[str, str], tuple[str, ...]]:
     return {(line.household_id, line.check): line.problems for line in check_book(book).lines if not line.passed}
 
 
-def test_the_built_book_passes_every_check_on_every_household(book: Path, capsys: pytest.CaptureFixture[str]) -> None:
-    report = check_book(book)
+def test_the_built_book_passes_every_check_on_every_household(
+    full_book: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    report = check_book(full_book)
     assert report.passed
-    assert [(line.household_id, line.check) for line in report.lines] == [(h, c) for h in FEATURED for c in CHECKS]
-    assert main(["check", "--book", str(book)]) == 0
-    assert capsys.readouterr().out.endswith("144 lines: 144 pass, 0 fail\n")
+    assert [(line.household_id, line.check) for line in report.lines] == [
+        (h, c) for h in built(full_book) for c in CHECKS
+    ]
+    assert len(built(full_book)) == 96 and set(FEATURED) < set(built(full_book))
+    assert main(["check", "--book", str(full_book)]) == 0
+    assert capsys.readouterr().out.endswith("864 lines: 864 pass, 0 fail\n")
 
 
 def test_a_unit_defect_fails_the_units_check_and_names_file_line_and_account(book_copy: Path) -> None:

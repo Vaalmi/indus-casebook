@@ -226,6 +226,8 @@ def plant_trap(context: PlantContext) -> Planting:
             *sorted(vested_on),
             *(c.activity_id for c in releases.confirmations),
         ),
+        # The employer stock above the IPS limit is part of the situation, named with the security.
+        crosses=("concentration",),
     )
     return Planting(entries=(entry,), custodian_events=recorded)
 

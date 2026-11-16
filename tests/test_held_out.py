@@ -60,7 +60,9 @@ def test_the_guard_finds_a_held_out_script_copied_anywhere(tmp_path: Path, monke
 
 def test_no_held_out_household_is_on_the_site(site: Path) -> None:
     households = json.loads(next((site / "data").rglob("sealed/households.json")).read_text())["households"]
-    assert [h["household_id"] for h in households if h["archetype"] in HELD_OUT_ARCHETYPES] == [] or frozen()
+    # Background households of archetypes 7 and 8 are public; only the featured pairs are held out.
+    featured = [h for h in households if h["set"] == "featured"]
+    assert [h["household_id"] for h in featured if h["archetype"] in HELD_OUT_ARCHETYPES] == [] or frozen()
 
 
 def held_out_scripts(tmp_path: Path) -> tuple[Path, Path]:

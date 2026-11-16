@@ -38,7 +38,7 @@ def registered(household_root: Path, *sources: str, kind: str | None = None, ref
     for entry in registry_entries(household_root):
         if (
             set(sources) <= set(entry.sources)
-            and (kind is None or kind in entry.item_type)
+            and (kind is None or kind in entry.item_type or kind in entry.crosses)
             and set(refs) <= set(entry.references)
         ):
             return True

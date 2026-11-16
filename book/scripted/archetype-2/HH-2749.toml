@@ -60,7 +60,7 @@ account_type = "traditional_ira"
 registration = "Traditional IRA, Samira Farouk"
 opened = 2002-06-03
 owners = ["P-2749-1"]
-cash = "3500.00"
+cash = "5000.00"
 holdings = [
   { lot_id = "L-27490002-01", security_id = "SEC-0013", value = "200000", acquired = 2011-04-11, basis_pct = "100" },
   { lot_id = "L-27490002-02", security_id = "SEC-0017", value = "85000", acquired = 2014-02-03, basis_pct = "100" },

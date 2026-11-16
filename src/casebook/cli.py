@@ -24,7 +24,7 @@ def _build(args: argparse.Namespace) -> int:
     from casebook.generate.script import ScriptError
 
     out = args.out or (REAL_BOOK if args.real_tickers else DEFAULT_BOOK)
-    scripts = args.scripts
+    scripts, extra = args.scripts, None
     if args.held_out:
         from casebook.runner.run import PrivateFolderError, private_root
 
@@ -33,10 +33,13 @@ def _build(args: argparse.Namespace) -> int:
         except PrivateFolderError as error:
             print(f"build failed: {error}", file=sys.stderr)
             return 1
-        scripts = args.scripts if args.scripts != DEFAULT_SCRIPTS else private / DEFAULT_SCRIPTS
+        # The whole book: the repo's scripts, the held-out pairs and the background households.
+        extra = private / DEFAULT_SCRIPTS
         out = args.out or private / out
     try:
-        result = build_book(args.seed, out, scripts, args.real_tickers, held_out=args.held_out)
+        result = build_book(
+            args.seed, out, scripts, args.real_tickers, held_out=args.held_out, background=True, extra_scripts=extra
+        )
     except (BuildError, ScriptError) as error:
         print(f"build failed: {error}", file=sys.stderr)
         return 1
@@ -109,7 +112,7 @@ def parser() -> argparse.ArgumentParser:
     build.add_argument("--real-tickers", action="store_true", help="real tickers with invented prices, for runs")
     build.add_argument("--scripts", type=Path, default=DEFAULT_SCRIPTS)
     build.add_argument(
-        "--held-out", action="store_true", help="build the held-out pairs from $CASEBOOK_PRIVATE, into it"
+        "--held-out", action="store_true", help="build the whole book, the held-out pairs too, into $CASEBOOK_PRIVATE"
     )
     build.set_defaults(run=_build)
     check = commands.add_parser("check", help="run every check on every household")

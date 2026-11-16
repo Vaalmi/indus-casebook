@@ -27,17 +27,24 @@ def test_the_ledger_is_committed_with_the_published_ids() -> None:
         9: ("HH-9234", "HH-9571"),
         10: ("HH-4821", "HH-7350"),
     }
-    assert ledger.households == {
+    featured = {hh: entry for hh, entry in ledger.households.items() if entry.pair == 1}
+    assert featured == {
         hh: LedgerHousehold(archetype=a, pair=1, role=role)
         for a, both in pairs.items()
         for hh, role in zip(both, ("trap", "twin"), strict=True)
     }
+    # And the 80 background households of slice 6, drawn from seed 2026: pairs 2 to 5 of every archetype.
+    background = {hh: entry for hh, entry in ledger.households.items() if entry.pair != 1}
+    assert len(background) == 80 and all(100 <= int(hh.removeprefix("HH-")) <= 999 for hh in background)
+    assert sorted((e.archetype, e.pair, e.role) for e in background.values()) == sorted(
+        (a, n, role) for a in range(1, 11) for n in range(2, 6) for role in ("trap", "twin")
+    )
     assert ledger.tasks == {"T-REC-01": LedgerTask("HH-4821", "reconciliation")}
 
 
-def test_every_built_household_and_every_task_file_is_in_the_ledger(book: Path) -> None:
+def test_every_built_household_and_every_task_file_is_in_the_ledger(full_book: Path) -> None:
     ledger = load_ledger(ID_LEDGER)
-    manifest = json.loads((book / "manifest.json").read_text())
+    manifest = json.loads((full_book / "manifest.json").read_text())
     assert {h["household_id"] for h in manifest["households"]} <= set(ledger.households)
     for path in sorted((ROOT / "tasks" / "public").glob("*.toml")):
         task = load_task(path)

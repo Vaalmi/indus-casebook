@@ -30,6 +30,9 @@ class RegistryEntry:
     # The records the item is about (transaction, account, agreement, security IDs): a check
     # accepts an entry only for the very records it names.
     references: tuple[str, ...] = ()
+    # The thresholds the situation crosses by design (a concentration above the IPS limit), which
+    # the thresholds check then accepts for the records the entry names.
+    crosses: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         if self.kind not in PLANTED_KINDS:
@@ -50,6 +53,7 @@ class RegistryEntry:
             "table": {"columns": list(self.table.columns), "rows": [list(r) for r in self.table.rows]},
             "known_as_of": self.known_as_of.isoformat(),
             "references": list(self.references),
+            "crosses": list(self.crosses),
         }
 
 
@@ -70,4 +74,5 @@ def parse_entry(raw: dict[str, Any]) -> RegistryEntry:
         ),
         known_as_of=date.fromisoformat(str(raw["known_as_of"])),
         references=tuple(str(r) for r in raw.get("references", [])),
+        crosses=tuple(str(c) for c in raw.get("crosses", [])),
     )

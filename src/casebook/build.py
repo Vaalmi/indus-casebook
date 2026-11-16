@@ -13,6 +13,7 @@ from typing import Any
 
 from casebook import BOOK_VERSION
 from casebook.checks.agreement import check_sources_agree
+from casebook.generate.background import BackgroundError, generate_background
 from casebook.generate.notes import NotesError, check_notes, load_notes, notes_path
 from casebook.generate.script import HouseholdScript, load_scripts
 from casebook.generate.simulate import simulate
@@ -43,7 +44,7 @@ from casebook.model.registry import RegistryEntry
 from casebook.notice import NOTICE
 from casebook.plant import PlantContext, plant
 from casebook.published_text import text_of
-from casebook.replay import ReplayResult, Snapshot, replay
+from casebook.replay import ReplayResult, Snapshot, overdrawn, replay
 from casebook.securities.market import Market, build_market
 from casebook.securities.master import Security, by_id, load_master
 from casebook.securities.scan import default_scan
@@ -94,7 +95,7 @@ def _sealed_household(script: HouseholdScript) -> dict[str, Any]:
         "archetype_name": ARCHETYPES[script.household.archetype],
         "pair": script.pair,
         "role": script.role,
-        "set": "featured",
+        "set": "background" if script.background else "featured",
         "twin_kind": script.twin.kind if script.twin else None,
         "explanation": script.twin.explanation if script.twin else None,
         "script": script.source,
@@ -103,7 +104,9 @@ def _sealed_household(script: HouseholdScript) -> dict[str, Any]:
 
 def refuse_held_out(scripts: list[HouseholdScript], held_out: bool) -> None:
     """A held-out featured pair stays out of every public build until the freeze."""
-    found = sorted(s.household.household_id for s in scripts if s.household.archetype in HELD_OUT_ARCHETYPES)
+    found = sorted(
+        s.household.household_id for s in scripts if s.household.archetype in HELD_OUT_ARCHETYPES and not s.background
+    )
     if found and not held_out and not frozen():
         raise BuildError(
             f"{', '.join(found)}: the featured pairs for archetypes 7 and 8 are held out until the freeze; "
@@ -129,14 +132,32 @@ def name_real_tickers(files: dict[str, bytes], master: tuple[Security, ...]) -> 
 
 
 def generate_book(
-    seed: int, scripts_dir: Path, real_tickers: bool = False, ledger: Path = ID_LEDGER, held_out: bool = False
+    seed: int,
+    scripts_dir: Path,
+    real_tickers: bool = False,
+    ledger: Path = ID_LEDGER,
+    held_out: bool = False,
+    background: bool = False,
+    extra_scripts: Path | None = None,
+    background_archetypes: frozenset[int] | None = None,
 ) -> dict[str, bytes]:
     master = load_master()
     market = build_market(master, seed)
-    scripts = load_scripts(scripts_dir)
-    if not scripts:
+    folders = [scripts_dir, *([extra_scripts] if extra_scripts else [])]
+    found = [(folder, script) for folder in folders for script in load_scripts(folder)]
+    if not found and not background:
         raise BuildError(f"no household scripts under {scripts_dir}")
-    refuse_held_out(scripts, held_out)
+    refuse_held_out([script for _, script in found], held_out)
+    if background:
+        try:
+            found += [(scripts_dir, script) for script in generate_background(seed, market, background_archetypes)]
+        except BackgroundError as error:
+            raise BuildError(str(error)) from error
+    found.sort(key=lambda pair: pair[1].household.household_id)
+    ids = [script.household.household_id for _, script in found]
+    if len(set(ids)) != len(ids):
+        raise BuildError("two households share an ID")
+    scripts = [script for _, script in found]
     try:
         published = load_ledger(ledger)
         for script in scripts:
@@ -146,9 +167,12 @@ def generate_book(
         raise BuildError(str(error)) from error
     files = _book_files(master, market, real_tickers)
     entries: list[RegistryEntry] = []
-    for script in scripts:
+    for folder, script in found:
         simulation = simulate(script, market)
         replayed = replay(simulation.events, SNAPSHOT_DAYS)
+        overdrafts = overdrawn(replayed)
+        if overdrafts:
+            raise BuildError(f"{script.household.household_id}: {'; '.join(overdrafts)}")
         planting = plant(
             PlantContext(script, simulation.events, replayed, simulation.quarters, market, by_id(master), real_tickers)
         )
@@ -160,10 +184,10 @@ def generate_book(
             recorded, recorded_ledger = planting.custodian_events, replay(planting.custodian_events, SNAPSHOT_DAYS)
             refuse_moved_units_or_cash(script.household.household_id, replayed, recorded_ledger)
         notes = None
-        path = notes_path(scripts_dir / script.source)
-        if path.is_file():
+        path = notes_path(folder / script.source)
+        if not script.background and path.is_file():
             try:
-                notes = load_notes(path, scripts_dir)
+                notes = load_notes(path, folder)
             except NotesError as error:
                 raise BuildError(str(error)) from error
             problems = check_notes(notes, script.household, simulation.events, planting.entries)
@@ -261,13 +285,18 @@ def build_book(
     real_tickers: bool = False,
     ledger: Path = ID_LEDGER,
     held_out: bool = False,
+    background: bool = False,
+    extra_scripts: Path | None = None,
+    background_archetypes: frozenset[int] | None = None,
 ) -> BuildResult:
     """Build the book. Real-ticker mode is for runs only: its output goes to out/real/, never published.
     A held-out build (the featured pairs kept back until the freeze) is written outside the repo only."""
     resolved = out.resolve()
     if held_out and (resolved == REPO or REPO in resolved.parents):
         raise BuildError(f"a held-out build is written outside the public repo, not to {out}")
-    files = generate_book(seed, scripts_dir, real_tickers, ledger, held_out)
+    files = generate_book(
+        seed, scripts_dir, real_tickers, ledger, held_out, background, extra_scripts, background_archetypes
+    )
     if not real_tickers:
         refuse_real_identifiers(files)
     refuse_valid_looking_identifiers(files)

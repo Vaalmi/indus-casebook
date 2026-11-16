@@ -1,6 +1,7 @@
 import csv
 import hashlib
 import json
+import shutil
 from pathlib import Path
 
 import pytest
@@ -106,3 +107,29 @@ def test_a_default_build_refuses_a_real_ticker_or_name(leak: bytes) -> None:
 
 def test_a_default_build_carries_aliases_only(book: Path) -> None:
     refuse_real_identifiers({p.relative_to(book).as_posix(): p.read_bytes() for p in book.rglob("*") if p.is_file()})
+
+
+def test_the_whole_public_book_builds_96_households_byte_for_byte_again(full_book: Path, tmp_path: Path) -> None:
+    # Slice 6: ten archetypes, five pairs each, less the four held out until the freeze (archetypes 7
+    # and 8's featured pairs), which the whole book in $CASEBOOK_PRIVATE adds back for 100.
+    manifest = json.loads((full_book / MANIFEST).read_text())
+    assert len(manifest["households"]) == 96
+    sealed = json.loads((full_book / "sealed" / "households.json").read_text())["households"]
+    pairs = {(h["archetype"], h["pair"]) for h in sealed}
+    assert len(pairs) == 48 and {p for _, p in pairs} == {1, 2, 3, 4, 5}
+    again = tmp_path / "again"
+    build_book(SEED, again, SCRIPTS, background=True)
+    assert (again / MANIFEST).read_bytes() == (full_book / MANIFEST).read_bytes()
+
+
+def test_a_household_that_overdraws_an_account_fails_the_build(tmp_path: Path) -> None:
+    # Reviewers A and B, slice 6 round 1: drawn IRAs ended below zero; so did the featured
+    # archetype-2 twin's, whose IRA cash could not cover its purchase and fees.
+    scripts = tmp_path / "scripted"
+    shutil.copytree(SCRIPTS, scripts)
+    path = scripts / "archetype-2" / "HH-2749.toml"
+    text = path.read_text()
+    assert text.count('cash = "5000.00"') == 1
+    path.write_text(text.replace('cash = "5000.00"', 'cash = "3500.00"'))
+    with pytest.raises(BuildError, match=r"HH-2749: SYN-27490002 holds -19\.78 in cash on 2026-04-15"):
+        build_book(SEED, tmp_path / "book", scripts)

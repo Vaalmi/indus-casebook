@@ -128,6 +128,9 @@ class HouseholdScript:
     activity: tuple[Activity, ...]
     planted: PlantedSpec | None
     twin: TwinSpec | None
+    # A background household, drawn from the seed rather than written by hand (docs/SPEC.md: "one
+    # of the other 80").
+    background: bool = False
 
 
 def _dec(raw: dict[str, Any], key: str) -> Decimal:
@@ -319,11 +322,12 @@ def _parse(raw: dict[str, Any], source: str) -> HouseholdScript:
         else None,
         twin=TwinSpec(str(twin["kind"]), str(twin["explanation"])) if twin else None,
     )
-    _validate(script)
+    validate_script(script)
     return script
 
 
-def _validate(script: HouseholdScript) -> None:
+def validate_script(script: HouseholdScript) -> None:
+    """Refuse a script, scripted or drawn, whose parts do not fit together."""
     hh = script.household
     if script.role not in ROLES:
         raise ScriptError(script.source, f"role {script.role!r} is not one of {ROLES}")
@@ -355,6 +359,9 @@ def _validate(script: HouseholdScript) -> None:
     if grouped != sorted(account_ids):
         raise ScriptError(script.source, "every account belongs to exactly one billing group")
     people = {p.person_id for p in hh.members}
+    names = [p.name for p in hh.members]
+    if len(set(names)) != len(names):
+        raise ScriptError(script.source, "two household members share a name, so a record naming one is ambiguous")
     for owned in hh.ownership:
         if not set(owned.owner_ids) <= people:
             raise ScriptError(script.source, f"account {owned.account_id} has an owner outside the household")

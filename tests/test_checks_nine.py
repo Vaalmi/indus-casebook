@@ -491,3 +491,35 @@ def test_a_statement_owner_that_differs_from_the_custodian_fails(book_copy: Path
         and "SYN-48210003 is owned by Ngozi Lind" in p
         for p in found
     )
+
+
+def kenji_with_two_iras(book: Path) -> Path:
+    """The twin made background, Kenji born in 1950, and Aiko's account turned into his second IRA."""
+    make_background(book, TWIN)
+    root = book / "households" / TWIN
+    edit_json(
+        root / "portfolio" / "household.json",
+        lambda d: (
+            [m.update(born="1950-01-27") for m in d["household_membership"] if m["person_id"] == "P-7350-2"],
+            [o.update(owner_ids=["P-7350-2"]) for o in d["legal_ownership"] if o["account_id"] == "SYN-73500003"],
+        ),
+    )
+    accounts = root / "custodian" / "accounts.csv"
+    edit_csv_cell(accounts, {"account_id": "SYN-73500003"}, "account_type", "traditional_ira")
+    edit_csv_cell(accounts, {"account_id": "SYN-73500003"}, "owners", "Kenji Sato")
+    return root
+
+
+def test_one_iras_distribution_meets_the_threshold_for_all_its_owners_iras(book_copy: Path) -> None:
+    # Builder, slice 6: IRA RMDs may be aggregated (26 CFR 1.408-8), so a near-miss twin that takes
+    # its IRAs' RMDs from one IRA was flagged for the other.
+    root = kenji_with_two_iras(book_copy)
+    both = problems(book_copy, "background thresholds", TWIN)
+    assert any("SYN-73500002 owes" in p for p in both) and any("SYN-73500003 owes" in p for p in both)
+    paid = (
+        "T-7350-9998,SYN-73500003,2025-12-01,2025-12-01,DISTRIBUTION,,,,,,,-15000.00,"
+        "Required minimum distribution for 2025,2025-12-01,2025-12-01\n"
+    )
+    transactions = root / "custodian" / "transactions.csv"
+    transactions.write_text(transactions.read_text() + paid)
+    assert not any("owes a 2025 distribution" in p for p in problems(book_copy, "background thresholds", TWIN))
