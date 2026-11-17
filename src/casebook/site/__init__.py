@@ -35,7 +35,17 @@ from casebook.model.files import (
 from casebook.model.money import parse_decimal, usd
 from casebook.model.registry import RegistryEntry, parse_entry
 from casebook.notice import NOTICE, NOTICE_HEADLINE
-from casebook.site.tasks import task_views
+from casebook.site.results import (
+    OUTCOME_NAMES,
+    OUTCOMES,
+    ROLE_NAMES,
+    WORKFLOW_NAMES,
+    PrivateRunSet,
+    load_private_outcomes,
+    results,
+)
+from casebook.site.tasks import ARM_NAMES, ARM_ORDER, load_records, task_views
+from casebook.tasks.task import WORKFLOWS
 
 STATIC_DIR = Path(__file__).parent / "static"
 FEATURED = "featured"
@@ -279,7 +289,11 @@ def environment() -> Environment:
 
 
 def render_site(
-    book: Path, runs: Path | None = None, tasks: Path | None = None, keys: Path | None = None
+    book: Path,
+    runs: Path | None = None,
+    tasks: Path | None = None,
+    keys: Path | None = None,
+    private_outcomes: Path | None = None,
 ) -> dict[str, str]:
     manifest = read_manifest(book)
     metadata = read_json(book, METADATA)
@@ -301,9 +315,26 @@ def render_site(
         "scenario_date": SCENARIO_DATE.isoformat(),
     }
     views = task_views(tasks, runs, keys) if runs and tasks else []
+    private: list[PrivateRunSet] = load_private_outcomes(private_outcomes) if private_outcomes else []
+    sections = results(load_records(runs) if runs and runs.is_dir() else {}, tasks, private) if tasks else []
     pages = {
-        "index.html": env.get_template("index.html").render(households=households, tasks=views, root=".", **common)
+        "index.html": env.get_template("index.html").render(
+            households=households, tasks=views, results=bool(sections), root=".", **common
+        )
     }
+    if sections:
+        pages["results.html"] = env.get_template("results.html").render(
+            sections=sections,
+            arms=ARM_ORDER,
+            arm_names=ARM_NAMES,
+            workflows=WORKFLOWS,
+            workflow_names=WORKFLOW_NAMES,
+            outcomes=OUTCOMES,
+            outcome_names=OUTCOME_NAMES,
+            roles=ROLE_NAMES,
+            root=".",
+            **common,
+        )
     for view in views:
         pages[f"tasks/{view.task.task_id}.html"] = env.get_template("task.html").render(view=view, root="..", **common)
     for household in households:

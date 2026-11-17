@@ -116,6 +116,44 @@ def _run(args: argparse.Namespace) -> int:
     return 0 if record["state"] != "failed" else 1
 
 
+def _pass(args: argparse.Namespace) -> int:
+    from casebook.runner.config import SharedConfig
+    from casebook.runner.full_pass import REPEATS, Folders, load_pass, new_pass, run_pass, status_lines
+    from casebook.runner.preflight import RunRefusedError
+    from casebook.runner.run import private_root
+
+    try:
+        if args.status:
+            print("\n".join(status_lines(load_pass(args.status))))
+            return 0
+        if args.resume:
+            run = load_pass(args.resume)
+        else:
+            private = private_root()
+            folders = Folders(
+                tasks=args.tasks,
+                private_tasks=args.private_tasks or private / "tasks",
+                book=args.book,
+                private_book=args.private_book or private / REAL_BOOK,
+                keys=args.keys,
+                runs=args.runs,
+            )
+            run = new_pass(folders, REPEATS if args.repeats is None else args.repeats, SharedConfig())
+        run_pass(run, print)
+    except RunRefusedError as error:
+        print(f"pass refused: {type(error).__name__}: {error}", file=sys.stderr)
+        return 2
+    print("\n".join(status_lines(run)))
+    if run.state == "complete":
+        # The results page shows the private set's outcome counts beside the public runs, and nothing else of it.
+        from casebook.site.results import write_private_outcomes
+
+        # Counted from the private task folder the pass ran with, which --private-tasks may have named.
+        written = write_private_outcomes(private_root() / "runs", run.folders.private_tasks, run.folders.runs.parent)
+        print(f"private outcome counts: {written}")
+    return 0 if run.state == "complete" and not any(s.state == "failed" for s in run.slots) else 1
+
+
 def _canary(args: argparse.Namespace) -> int:
     from casebook.runner.canary import run_canary
     from casebook.runner.config import SharedConfig
@@ -299,6 +337,24 @@ def parser() -> argparse.ArgumentParser:
     run.add_argument("--keys", type=Path, default=PUBLISHED_KEYS)
     run.add_argument("--runs", type=Path, default=PUBLISHED_RUNS, help="where the mapped run records go")
     run.set_defaults(run=_run)
+    about = (
+        "run every task under every arm, three repeats each (a pass); a quota stop pauses it, and "
+        "`casebook pass --resume <pass id>` starts what is left. Its state file is in $CASEBOOK_PRIVATE/passes/"
+    )
+    full = commands.add_parser("pass", help=about, description=about)
+    which = full.add_mutually_exclusive_group()
+    which.add_argument("--resume", metavar="PASS_ID", help="start the slots of a paused pass not yet completed")
+    which.add_argument("--status", metavar="PASS_ID", help="show a pass's slots and every failed run with its reason")
+    full.add_argument("--repeats", type=int, help="runs of each task under each arm (default: the spec's three)")
+    full.add_argument("--tasks", type=Path, default=Path("tasks/public"), help="the public task files")
+    full.add_argument("--private-tasks", type=Path, help="the private task files: default $CASEBOOK_PRIVATE/tasks")
+    full.add_argument("--book", type=Path, default=REAL_BOOK, help="the real-ticker build the public tasks run on")
+    full.add_argument(
+        "--private-book", type=Path, help=f"the build the private tasks run on: default $CASEBOOK_PRIVATE/{REAL_BOOK}"
+    )
+    full.add_argument("--keys", type=Path, default=PUBLISHED_KEYS)
+    full.add_argument("--runs", type=Path, default=PUBLISHED_RUNS, help="where the mapped run records go")
+    full.set_defaults(run=_pass)
     facts = commands.add_parser("facts", help="write each featured household's fact sheet, for its notes")
     facts.add_argument("--book", type=Path, default=DEFAULT_BOOK)
     facts.add_argument("--out", type=Path, default=Path("out/facts"))

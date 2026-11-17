@@ -44,8 +44,9 @@ def test_the_task_page_shows_each_arm_with_the_failure_marked_and_the_run_named(
     book: Path, runs: Path, tmp_path: Path, browser: Browser
 ) -> None:
     site = tmp_path / "site"
-    # The index, the public featured households' pages (16 before the freeze, 20 after) and the task page.
-    assert build(book, site, runs) == 1 + len(FEATURED) + 1
+    # The index, the public featured households' pages (16 before the freeze, 20 after), the task page and the
+    # results page.
+    assert build(book, site, runs) == 1 + len(FEATURED) + 2
     page, noise = visit(browser, (site / "tasks" / "T-REC-01.html").as_uri())
     arms = page.locator("[data-arm]")
     assert [arms.nth(i).get_attribute("data-arm") for i in range(3)] == ["basic", "checklist", "skill"]

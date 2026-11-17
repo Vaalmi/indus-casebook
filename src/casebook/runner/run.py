@@ -25,9 +25,9 @@ from casebook.runner.preflight import (
     require_real_tickers,
     require_sealed,
 )
-from casebook.runner.record import check_record
+from casebook.runner.record import RETRIES, SLOT, check_record
 from casebook.runner.sandbox import Sandbox, seed
-from casebook.runner.transcript import Transcript, failure_reason, parse_transcript
+from casebook.runner.transcript import QUOTA_REASON, Transcript, failure_reason, parse_transcript
 from casebook.tasks.fixtures import FixtureError, load_task_fixtures
 from casebook.tasks.task import Task
 
@@ -109,13 +109,24 @@ class RunInputs:
     keys: Path | None
     grader_sha256: str
     key_sha256: str
+    # The slot's earlier runs, each failed, when a pass resumes it (docs/PLAN.md: "a new attempt recorded under
+    # "retries" in the run record"): each as {"run_id", "failure_reason"}.
+    retries: tuple[dict[str, str], ...] = ()
+    # Given by a pass before the run starts, so the pass can record the run as running first: the run's ID, and the
+    # slot it runs for, {"pass_id", "repeat"}, which its record keeps (reviewers A and B, slice 13 round 1).
+    run_id: str | None = None
+    slot: dict[str, str | int] | None = None
+
+
+def new_run_id(task_id: str, arm: str) -> str:
+    return f"{task_id}-{arm}-{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}-{secrets.token_hex(2)}"
 
 
 def run_task(inputs: RunInputs, config: SharedConfig, private: Path) -> dict[str, Any]:
     task, arm = inputs.task, inputs.arm
     config = config.for_tools(task.allowed_tools)
     require_tools(task, config)
-    run_id = f"{task.task_id}-{arm}-{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}-{secrets.token_hex(2)}"
+    run_id = inputs.run_id or new_run_id(task.task_id, arm)
     folder = private / "runs" / run_id
     folder.mkdir(parents=True)
     attempts: list[dict[str, Any]] = []
@@ -160,7 +171,7 @@ def run_task(inputs: RunInputs, config: SharedConfig, private: Path) -> dict[str
                 errors.append(f"attempt {attempt}: {reason}")
         finally:
             shutil.rmtree(workspace, ignore_errors=True)
-        if reason is None or reason == "quota":
+        if reason is None or reason == QUOTA_REASON:
             break
     last = len(attempts)
     record: dict[str, Any] = {
@@ -194,6 +205,8 @@ def run_task(inputs: RunInputs, config: SharedConfig, private: Path) -> dict[str
         "token_use": transcript.token_use if transcript else {},
         "crm_sandbox_diff": crm.diff() if crm else None,
         "freeze": frozen_under,
+        **({RETRIES: [dict(r) for r in inputs.retries]} if inputs.retries else {}),
+        **({SLOT: dict(inputs.slot)} if inputs.slot else {}),
         "output": transcript.final_text if transcript and not reason else None,
         "grade": None,
     }

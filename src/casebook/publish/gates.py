@@ -118,6 +118,42 @@ def return_problems(site: Path) -> list[str]:
     return problems
 
 
+# A run record's states once the mapper has run on it: a graded run is mapped, then published; a failed run is
+# mapped and stays failed (docs/PLAN.md, the run's state table).
+MAPPED_STATES = ("mapped", "published", "failed")
+
+
+def unmapped_record_problems(runs: Path) -> list[str]:
+    """Every run record among the published runs that ran on real tickers and never passed the mapper: its
+    unmapped form belongs under `$CASEBOOK_PRIVATE` only (docs/SPEC.md: "Published run outputs and run records
+    show aliases"). Every record, at any depth (reviewer A, slice 13 round 1)."""
+    problems: list[str] = []
+    for path in sorted(runs.rglob("*.json")):
+        record = json.loads(path.read_text(encoding="utf-8"))
+        if (record.get("dataset") or {}).get("real_tickers") and record.get("state") not in MAPPED_STATES:
+            problems.append(
+                f"{path.relative_to(runs).as_posix()}: an unmapped run record (state {record.get('state')!r}), "
+                "which stays under $CASEBOOK_PRIVATE"
+            )
+    return problems
+
+
+# A published run's files, as `casebook run` writes them: `<task>/<run id>.json` and its transcript beside it, the
+# run ID beginning with the task's.
+_RUN_FILE = re.compile(r"(?P<task>[A-Z]-[A-Z]{3}-\d{2})/(?P=task)-[A-Za-z0-9-]+(?:\.json|\.transcript\.jsonl)")
+
+
+def run_layout_problems(runs: Path) -> list[str]:
+    """Every file under the published runs that is not a run's record or transcript where `casebook run` writes it:
+    the site copies the whole folder, so a file elsewhere would be published past the gates that read run records
+    (reviewer A, slice 13 round 1)."""
+    return [
+        f"{relative}: not <task>/<run id>.json or <task>/<run id>.transcript.jsonl"
+        for relative in (p.relative_to(runs).as_posix() for p in _files(runs))
+        if not _RUN_FILE.fullmatch(relative)
+    ]
+
+
 def run_gates(site: Path, readme: Path, metadata: Path) -> list[str]:
     return (
         notice_problems(site, readme, metadata)

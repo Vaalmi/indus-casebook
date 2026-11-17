@@ -5,6 +5,8 @@ import re
 from dataclasses import dataclass, field
 from typing import Any
 
+# The failure reason of a quota stop: a pass pauses on it, and a run stops retrying.
+QUOTA_REASON = "quota"
 QUOTA = re.compile(r"usage limit|rate limit|hit your limit|quota", re.IGNORECASE)
 
 
@@ -77,7 +79,9 @@ def failure_reason(exit_code: int | None, timed_out: bool, transcript: Transcrip
     result = transcript.result
     text = transcript.final_text + " " + stderr
     if result is None:
-        return "quota" if QUOTA.search(text) else f"no result from the CLI (exit code {exit_code})"
+        return QUOTA_REASON if QUOTA.search(text) else f"no result from the CLI (exit code {exit_code})"
     if result.get("is_error") or exit_code != 0:
-        return "quota" if QUOTA.search(text) else f"CLI error (exit code {exit_code}): {transcript.final_text[:300]}"
+        return (
+            QUOTA_REASON if QUOTA.search(text) else f"CLI error (exit code {exit_code}): {transcript.final_text[:300]}"
+        )
     return None

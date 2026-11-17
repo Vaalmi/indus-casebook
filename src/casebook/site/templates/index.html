@@ -39,6 +39,12 @@
   </table>
 </section>
 {% endif %}
+{% if results %}
+<section class="results-link" aria-labelledby="results-heading">
+  <h2 id="results-heading">Results</h2>
+  <p><a href="results.html">The results</a>: every run by task, arm and repeat, the skill against the checklist and the basic prompt on the same task and repeat, the counts per workflow beside the private set's, and how often the repeats agree.</p>
+</section>
+{% endif %}
 <section class="data" aria-labelledby="data-heading">
   <h2 id="data-heading">The book's files</h2>
   <p>Download the <a href="{{ data }}/metadata.json">book metadata</a>, the <a href="{{ data }}/manifest.json">manifest with file hashes</a>, the <a href="{{ data }}/securities/securities.csv">securities list</a> and the <a href="{{ data }}/securities/prices_synthetic.csv">synthetic price series</a>.</p>

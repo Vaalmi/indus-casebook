@@ -1,7 +1,9 @@
 """Task pages: what each arm produced on a task, graded, with the failure marked and the run named."""
 
 import json
+import re
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -68,22 +70,65 @@ class TaskView:
     def held(self) -> bool:
         """A tax-lot and RMD task, or a reconciliation task whose key computes an RMD: its page shows
         sources and outputs only, with no verdict, no failure marking and no conclusion, until review."""
-        return self.task.workflow in HELD_WORKFLOWS or self.task.grader in HELD_GRADERS
+        return is_held(self.task)
+
+
+def is_held(task: Task) -> bool:
+    """A tax-lot and RMD task, or another task whose key computes a tax figure: no verdict until review."""
+    return task.workflow in HELD_WORKFLOWS or task.grader in HELD_GRADERS
+
+
+# How the CLI names itself and its version: `claude --version` prints "2.1.304 (Claude Code)".
+_TOOL = re.compile(r"\(([^()]+)\)\s*$")
+_VERSION = re.compile(r"\d+(?:\.\d+)+(?=\s|$)")
+
+
+def cli_name(cli_version: str) -> tuple[str | None, str | None]:
+    """The tool and the version a record's `cli_version` names, each None where it names none."""
+    text = cli_version.strip()
+    tool = _TOOL.search(text)
+    version = _VERSION.match(text)
+    return (tool.group(1).strip() if tool else None, version.group(0) if version else None)
+
+
+def _dated(value: Any) -> bool:
+    try:
+        datetime.fromisoformat(str(value))
+    except ValueError:
+        return False
+    return True
+
+
+def _models_named(value: Any) -> bool:
+    """A non-empty list of models, each named: not "", not blanks (reviewers A and B, slice 13 round 1)."""
+    return (
+        isinstance(value, list) and bool(value) and all(isinstance(m, str) and m.strip() for m in value)  # pyright: ignore[reportUnknownVariableType]
+    )
 
 
 def require_named(record: dict[str, Any], where: str) -> None:
+    """docs/SPEC.md, Rules: "a result without tool, version, model and date cannot be published". A failed run
+    is no result: it is never scored, and its CLI may not have started to name itself."""
     if record.get("state") == "failed":
         return
-    missing = [f for f in ("cli_version", "models_reported", "started_utc") if not record.get(f)]
+    tool, version = cli_name(str(record.get("cli_version") or ""))
+    missing = [
+        *([] if tool else ["the tool (cli_version)"]),
+        *([] if version else ["the version (cli_version)"]),
+        *([] if _models_named(record.get("models_reported")) else ["models_reported"]),
+        *([] if _dated(record.get("started_utc")) else ["started_utc"]),
+    ]
     if missing:
         raise UnnamedResultError(f"{where} lacks {', '.join(missing)}, so it cannot be published")
 
 
 def load_records(runs: Path) -> dict[str, list[dict[str, Any]]]:
+    """Every run record under the published runs, at any depth, each named: a record outside `<task>/` is still
+    checked, as the site build would still copy it (reviewer A, slice 13 round 1)."""
     by_task: dict[str, list[dict[str, Any]]] = {}
-    for path in sorted(runs.glob("*/*.json")):
+    for path in sorted(runs.rglob("*.json")):
         record = json.loads(path.read_text(encoding="utf-8"))
-        require_named(record, path.name)
+        require_named(record, path.relative_to(runs).as_posix())
         by_task.setdefault(str(record["task_id"]), []).append(record)
     return by_task
 

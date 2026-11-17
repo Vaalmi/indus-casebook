@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Results{% endblock %}
+{% macro counts(c) %}{% for kind in outcomes %}<span data-count="{{ kind }}">{{ outcome_names[kind] }} {{ c[kind] }}</span>{% if not loop.last %} · {% endif %}{% endfor %}{% endmacro %}
+{% block main %}
+<nav class="crumbs"><a href="index.html">Households and tasks</a></nav>
+<header class="household-head">
+  <h1>Results</h1>
+  <p>Every public task runs under three arms, the basic prompt, the generic checklist and the skill, several times over. Each run's outcome is passed or failed with the grader's score out of 100, a failed run with its reason (never scored), or held. A tax-lot or RMD task, or any task whose key computes a tax figure, is held: no verdict until the tax review, as its task page shows. The skill is compared with each other arm on the same task and repeat, by passed or failed.</p>
+  <p>Runs under a different tool, version, model or freeze are shown apart and never counted together. Each workflow is counted on its own: there is no combined score. The private set's tasks are counted beside the public ones; their prompts, outputs and run records stay private.</p>
+</header>
+
+{% for s in sections %}
+<section class="run-set" data-run-set aria-labelledby="run-set-{{ loop.index }}">
+  <h2 id="run-set-{{ loop.index }}" data-run-name>{{ s.name.label }} · {{ s.name.freeze_label }} · {{ s.dates }}</h2>
+
+  <h3>Counts per workflow</h3>
+  <div class="scroll">
+  <table class="counts-table" data-section="counts">
+    <thead>
+      <tr><th rowspan="2">Workflow</th>{% for arm in arms %}<th colspan="2">{{ arm_names[arm] }}</th>{% endfor %}</tr>
+      <tr>{% for arm in arms %}<th>Public</th><th>Private</th>{% endfor %}</tr>
+    </thead>
+    <tbody>
+    {% for workflow in workflows %}
+      <tr data-workflow="{{ workflow }}">
+        <th>{{ workflow_names[workflow] }}</th>
+        {% for arm in arms %}
+        <td data-arm="{{ arm }}" data-set="public">{{ counts(s.public[workflow][arm]) }}</td>
+        <td data-arm="{{ arm }}" data-set="private">{% if s.private %}{{ counts(s.private[workflow][arm]) }}{% else %}no private runs{% endif %}</td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Outcomes by task, arm and repeat</h3>
+  {% if not s.workflows %}
+  <p>No public runs under this name.</p>
+  {% endif %}
+  {% for w in s.workflows %}
+  <section class="workflow-results" data-workflow-results="{{ w.workflow }}">
+    <h4>{{ w.name }}</h4>
+    {% for group in w.groups %}
+    <div class="pair" data-group>
+      {% for t in group %}
+      <article class="layer task-result" data-task="{{ t.task.task_id }}" data-role="{{ t.role }}">
+        <h3><a href="tasks/{{ t.task.task_id }}.html">{{ t.task.task_id }}</a> · {{ roles[t.role] }}{% if t.task.household_id != "book" %} on {{ t.task.household_id }}{% endif %}</h3>
+        {% if t.held %}<p class="held" data-held>Held: no verdict until the tax review.</p>{% endif %}
+        <table class="repeats">
+          <thead><tr><th>Arm</th>{% for heading in s.columns %}<th>{{ heading }}</th>{% endfor %}<th>Repeats agree</th></tr></thead>
+          <tbody>
+          {% for arm in t.arms %}
+            <tr data-arm="{{ arm.arm }}">
+              <th>{{ arm.name }}</th>
+              {% for o in arm.outcomes %}<td data-outcome="{{ o.kind if o else 'not_run' }}"{% if o and o.kind == "passed" %} class="passed"{% elif o and o.kind in ("failed", "failed_run") %} class="failed"{% endif %}>{{ o.text if o else "not run" }}</td>{% endfor %}
+              <td data-agreement>{{ arm.agreement }}</td>
+            </tr>
+          {% endfor %}
+          {% for c in t.comparisons %}
+            <tr class="paired" data-compare="{{ c.arm }}-{{ c.against }}">
+              <th>{{ c.label }}</th>
+              {% for v in c.verdicts %}<td data-verdict="{{ v }}">{{ v }}</td>{% endfor %}
+              <td></td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </article>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </section>
+  {% endfor %}
+</section>
+{% endfor %}
+{% endblock %}

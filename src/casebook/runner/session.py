@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
@@ -99,8 +100,18 @@ def grading(task: Task, spec: GraderSpec, key: Any, record: dict[str, Any]) -> G
 
 
 def run_and_grade(
-    task_id: str, arm: str, tasks: Path, book: Path, keys_root: Path, published: Path, config: SharedConfig
+    task_id: str,
+    arm: str,
+    tasks: Path,
+    book: Path,
+    keys_root: Path,
+    published: Path,
+    config: SharedConfig,
+    retries: Sequence[dict[str, str]] = (),
+    run_id: str | None = None,
+    slot: dict[str, str | int] | None = None,
 ) -> dict[str, Any]:
+    """`retries`, `run_id` and `slot`: a pass's, given before the run starts (`RunInputs`)."""
     task = find_task(tasks, task_id)
     secret = is_private(task, tasks)
     if not secret:
@@ -113,16 +124,35 @@ def run_and_grade(
     spec = grader(task.grader)
     key = spec.key(book, task.household_id, task.grader_params)
     private = private_root()
+    keys, key_sha = write_key(task.task_id, key, _keys_root(task, secret, keys_root), read_manifest(book).version)
+    inputs = RunInputs(task, arm, book, keys, spec.sha256(), key_sha, tuple(retries), run_id, slot)
+    record = run_task(inputs, config, private)
+    return finish_run(task, tasks, secret, spec, key, keys, record, published)
+
+
+def _keys_root(task: Task, secret: bool, keys_root: Path) -> Path:
     # A private task's key, like its unmapped record, stays in $CASEBOOK_PRIVATE.
-    root = private / "keys" if secret else keys_root_for(task, keys_root)
-    keys, key_sha = write_key(task.task_id, key, root, read_manifest(book).version)
-    record = run_task(RunInputs(task, arm, book, keys, spec.sha256(), key_sha), config, private)
-    folder = private / "runs" / record["run_id"]
+    return private_root() / "keys" if secret else keys_root_for(task, keys_root)
+
+
+def finish_run(
+    task: Task,
+    tasks: Path,
+    secret: bool,
+    spec: GraderSpec,
+    key: Any,
+    keys: Path,
+    record: dict[str, Any],
+    published: Path,
+) -> dict[str, Any]:
+    """Grade a completed run, then map and publish a public task's: what follows a run once its record is
+    written, whether straight after it or when a pass recovers a run it was interrupted in."""
+    folder = private_root() / "runs" / record["run_id"]
     if record["state"] == "completed":
         # Hashed again now, from the files: a task, key or grader that changed since the run refuses the grade.
         key_file = keys / f"{task.task_id}.json"
         hashes = {
-            "task": find_task(tasks, task_id).sha256,
+            "task": find_task(tasks, task.task_id).sha256,
             "answer": hashlib.sha256(key_file.read_bytes()).hexdigest(),
             "grader": spec.sha256(),
         }
@@ -144,3 +174,27 @@ def run_and_grade(
         ]
         (out / f"{record['run_id']}.transcript.jsonl").write_text("\n".join(lines) + "\n", encoding="utf-8")
     return public
+
+
+def recover_run(
+    task_id: str, tasks: Path, book: Path, keys_root: Path, published: Path, run_id: str
+) -> dict[str, Any] | None:
+    """A run a pass was interrupted in, finished as far as its record allows: None when it never wrote its record;
+    else its record, graded now if it had completed (reviewers A and B, slice 13 round 2), and a public task's
+    published again, record and transcript, whatever the interruption left (targeted check). A failed run comes
+    back failed, for the pass to run its slot again. A completed run is graded only against the very key it ran
+    with: the key computed now must hash as the record's answer key, or the grade is refused (targeted check)."""
+    record_file = private_root() / "runs" / run_id / "record.json"
+    if not record_file.is_file():
+        return None
+    record: dict[str, Any] = json.loads(record_file.read_text(encoding="utf-8"))
+    task = find_task(tasks, task_id)
+    secret = is_private(task, tasks)
+    spec = grader(task.grader)
+    keys = _keys_root(task, secret, keys_root) / read_manifest(book).version
+    key: Any = None
+    if record["state"] == "completed":
+        key = spec.key(book, task.household_id, task.grader_params)
+        if hashlib.sha256(json_text(key.to_dict()).encode()).hexdigest() != record["hashes"]["answer"]:
+            raise GradeRefusedError(f"run {run_id}: the answer key computed now is not the one it ran with")
+    return finish_run(task, tasks, secret, spec, key, keys, record, published)

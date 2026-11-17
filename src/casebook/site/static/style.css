@@ -67,3 +67,9 @@ details { margin-top: 0.75rem; font-size: 0.85rem; }
   .passed { color: #6fcf8e; }
   .failed, .breakdown tr.miss td { color: #ff8a80; }
 }
+.pair { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(24rem, 100%), 1fr)); margin-bottom: 1rem; }
+.repeats td, .repeats th, .counts-table td, .counts-table th { font-size: 0.8rem; }
+.repeats tr.paired th, .repeats tr.paired td { color: var(--muted); }
+.task-result .held { color: var(--muted); font-style: italic; }
+.run-set > h3 { margin-top: 1.5rem; }
+.counts-table [data-count] { white-space: nowrap; }

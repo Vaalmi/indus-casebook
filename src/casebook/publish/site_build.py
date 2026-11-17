@@ -14,9 +14,10 @@ from casebook.model.files import (
     read_json,
     read_manifest,
 )
-from casebook.publish.gates import run_gates
+from casebook.publish.gates import run_gates, run_layout_problems, unmapped_record_problems
 from casebook.publish.private_set import private_set_problems
 from casebook.site import STATIC_DIR, data_root, render_site
+from casebook.site.results import ResultsError, private_outcomes_path
 
 
 class SiteBuildError(RuntimeError):
@@ -27,8 +28,15 @@ RUNS_DATA = "data/runs"
 
 
 def build_site(
-    book: Path, out: Path, readme: Path, runs: Path | None = None, tasks: Path | None = None, keys: Path | None = None
+    book: Path,
+    out: Path,
+    readme: Path,
+    runs: Path | None = None,
+    tasks: Path | None = None,
+    keys: Path | None = None,
+    private_outcomes: Path | None = None,
 ) -> int:
+    """`private_outcomes`: the private set's published counts, by default beside the runs in `published/results/`."""
     if read_json(book, METADATA).get("securities") != ALIASES:
         raise SiteBuildError(f"{book} is not a default build; a real-ticker build is never published")
     held = sorted(
@@ -44,20 +52,32 @@ def build_site(
         raise SiteBuildError(f"households failed their checks and cannot be published: {failed}")
     # The private set is refused at the door as well as in the finished site: a private run or key among the
     # inputs would otherwise stop the build at its task page, with no word of why.
+    if private_outcomes is None and runs is not None:
+        private_outcomes = private_outcomes_path(runs)
+    summary = private_outcomes.parent if private_outcomes is not None else None
     private = [
         p
-        for folder in (runs, tasks, keys)
+        for folder in (runs, tasks, keys, summary)
         if folder is not None and folder.is_dir()
         for p in private_set_problems(folder)
     ]
     if private:
         raise SiteBuildError("the site's inputs hold the private set:\n  " + "\n  ".join(private))
+    misplaced = run_layout_problems(runs) if runs is not None and runs.is_dir() else []
+    if misplaced:
+        raise SiteBuildError("the site's inputs hold files outside the runs' layout:\n  " + "\n  ".join(misplaced))
+    unmapped = unmapped_record_problems(runs) if runs is not None and runs.is_dir() else []
+    if unmapped:
+        raise SiteBuildError("the site's inputs hold unmapped run records:\n  " + "\n  ".join(unmapped))
     manifest = read_manifest(book)
     staging = out.with_name(out.name + ".staging")
     if staging.exists():
         shutil.rmtree(staging)
     keys_dir = keys / manifest.version if keys else None
-    pages = render_site(book, runs, tasks, keys_dir)
+    try:
+        pages = render_site(book, runs, tasks, keys_dir, private_outcomes)
+    except ResultsError as error:
+        raise SiteBuildError(f"the results page cannot be built: {error}") from error
     for name, html in pages.items():
         path = staging / name
         path.parent.mkdir(parents=True, exist_ok=True)
