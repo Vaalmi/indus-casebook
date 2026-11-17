@@ -15,4 +15,6 @@
 
 **If you don't decide.** The fix stays in, and slice 12 is recorded as closed by this page with the finding fixed but unreviewed.
 
-**Decision.** <The owner's answer, with the date.>
+**Decision.** Option 2, one more targeted check of this line (the owner, 17 November 2026).
+
+**Outcome.** Both reviewers passed the second targeted check (`review/slice12-t2-a.md`, `review/slice12-t2-b.md`): their probes through the real `run_task` and task page found single-attempt and retry records carrying their producing attempt's freeze and hashes, and a mixed-freeze page refused. Slice 12's review is closed.
