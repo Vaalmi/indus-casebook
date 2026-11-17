@@ -1,4 +1,4 @@
-# Decision needed: slice 13's last fixes, accept them or check them again?
+# Decided: slice 13's last fixes, accept them or check them again?
 
 **What's stuck.** Slice 13's review (the tooling for the full pass, before any live run) spent its rounds: round 1, round 2 and the one targeted check `docs/REVIEW_PROTOCOL.md` allows. The targeted check closed the round-2 finding (an interrupted pass threw away a completed run and ran it again) but found three new defects in the recovery that fix introduced. The protocol sends them to you rather than to another round.
 
@@ -42,4 +42,4 @@ Tests (`tests/test_pass.py`) drive the real `run_and_grade` on the stand-in CLI 
 
 **If you don't decide.** The fix stays in, and the live pass waits on this and on the questions before it.
 
-**Decision.** <The owner's answer, with the date.>
+**Decision.** Option 1, accept the fix as it stands (the owner, 17 November 2026). The tooling review closes here; the whole-branch review sees these lines.
