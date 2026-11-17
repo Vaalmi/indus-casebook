@@ -157,6 +157,7 @@ def generate_book(
     background: bool = False,
     extra_scripts: Path | None = None,
     background_archetypes: frozenset[int] | None = None,
+    private_salt: str | None = None,
 ) -> dict[str, bytes]:
     master = load_master()
     market = build_market(master, seed)
@@ -167,7 +168,10 @@ def generate_book(
     refuse_held_out([script for _, script in found], held_out)
     if background:
         try:
-            found += [(scripts_dir, script) for script in generate_background(seed, market, background_archetypes)]
+            found += [
+                (scripts_dir, script)
+                for script in generate_background(seed, market, background_archetypes, private_salt)
+            ]
         except BackgroundError as error:
             raise BuildError(str(error)) from error
     found.sort(key=lambda pair: pair[1].household.household_id)
@@ -377,14 +381,24 @@ def build_book(
     background: bool = False,
     extra_scripts: Path | None = None,
     background_archetypes: frozenset[int] | None = None,
+    private_salt: str | None = None,
 ) -> BuildResult:
     """Build the book. Real-ticker mode is for runs only: its output goes to out/real/, never published.
-    A held-out build (the featured pairs kept back until the freeze) is written outside the repo only."""
+    A held-out build (the featured pairs kept back until the freeze) is written outside the repo only, and so
+    is a build with the private salt, which draws the private pairs: it is a held-out build too."""
     resolved = out.resolve()
-    if held_out and (resolved == REPO or REPO in resolved.parents):
+    if (held_out or private_salt is not None) and (resolved == REPO or REPO in resolved.parents):
         raise BuildError(f"a held-out build is written outside the public repo, not to {out}")
     files = generate_book(
-        seed, scripts_dir, real_tickers, ledger, held_out, background, extra_scripts, background_archetypes
+        seed,
+        scripts_dir,
+        real_tickers,
+        ledger,
+        held_out,
+        background,
+        extra_scripts,
+        background_archetypes,
+        private_salt,
     )
     texts = {name: text_of(name, data) for name, data in files.items()}
     if not real_tickers:

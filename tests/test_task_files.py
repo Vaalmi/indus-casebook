@@ -73,7 +73,16 @@ def test_tax_lot_and_rmd_keys_are_held_whatever_the_keys_folder() -> None:
     }
 
 
-@pytest.mark.parametrize("name", sorted(GRADERS))
+# The graders the public tasks use; the private set's own are tested on featured pairs in their own tests.
+PUBLIC_GRADERS = sorted({load_task(p).grader for p in sorted(TASKS.glob("T-*.toml"))})
+
+
+def test_every_registered_grader_is_used_or_tested() -> None:
+    for name in sorted(set(GRADERS) - set(PUBLIC_GRADERS)):
+        assert (ROOT / "tests" / f"test_grader_{name}.py").is_file(), name
+
+
+@pytest.mark.parametrize("name", PUBLIC_GRADERS)
 def test_every_grader_records_the_three_counts(name: str, book: Path, tmp_path: Path) -> None:
     """Even an answer with no json block gets a result with exactly the three counts."""
     path = next(p for p in task_files() if load_task(p).grader == name)

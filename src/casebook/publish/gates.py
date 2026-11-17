@@ -10,6 +10,7 @@ from typing import Any
 
 from casebook.model.files import METADATA, SYNTHETIC
 from casebook.notice import NOTICE, contains_notice
+from casebook.publish.private_set import private_set_problems
 from casebook.published_text import UnscannableFileError, html_visible_text, text_of
 from casebook.securities.scan import RealIdentifierScan, default_scan
 from casebook.watermark import stamped_problems
@@ -123,4 +124,5 @@ def run_gates(site: Path, readme: Path, metadata: Path) -> list[str]:
         + synthetic_problems(site)
         + real_identifier_problems(site)
         + return_problems(site)
+        + private_set_problems(site)
     )

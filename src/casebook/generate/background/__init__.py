@@ -3,7 +3,9 @@
 Each archetype's module draws a trap and its twin (`generate_pair`). A drawn pair must pass the same
 planter as the featured pair, so a draw whose situation does not hold (a sale too small to cross a
 threshold, a loss that is a gain) is drawn again from the same stream; the result depends only on
-the seed. Background households take IDs from HH-0100 to HH-0999, a range no scripted household
+the seed. The four private pairs (`PRIVATE_PAIRS`) are drawn only with the private salt, from
+$CASEBOOK_PRIVATE, on a stream of their own; a draw without it skips them, so the public book holds the
+other 72. Background households take IDs from HH-0100 to HH-0999, a range no scripted household
 uses, so no draw can collide with a featured or held-out ID.
 """
 
@@ -24,7 +26,7 @@ from casebook.generate.background import (
 from casebook.generate.background.common import PairSpec
 from casebook.generate.script import HouseholdScript, ScriptError, validate_script
 from casebook.generate.simulate import simulate
-from casebook.model.archetypes import ARCHETYPES
+from casebook.model.archetypes import ARCHETYPES, PRIVATE_PAIRS
 from casebook.model.dates import QUARTER_ENDS, SCENARIO_DATE
 from casebook.plant import PlantContext, PlantError, plant
 from casebook.replay import overdrawn, replay
@@ -73,9 +75,16 @@ def _holds(script: HouseholdScript, market: Market) -> None:
 
 
 def draw_pair(
-    seed: int, archetype: int, pair: int, trap_id: str, twin_id: str, market: Market
+    seed: int,
+    archetype: int,
+    pair: int,
+    trap_id: str,
+    twin_id: str,
+    market: Market,
+    private_salt: str | None = None,
 ) -> tuple[HouseholdScript, HouseholdScript]:
-    rng = derive_rng("background", seed, archetype, pair)
+    """A pair drawn from its own stream; a private pair's stream takes the private salt too."""
+    rng = derive_rng("background", seed, archetype, pair, *([private_salt] if private_salt is not None else []))
     item_id = f"PI-{archetype:02d}{pair:02d}"
     problems: list[str] = []
     for _ in range(ATTEMPTS):
@@ -93,13 +102,20 @@ def draw_pair(
     )
 
 
-def generate_background(seed: int, market: Market, archetypes: frozenset[int] | None = None) -> list[HouseholdScript]:
-    """Every background pair, or those of the archetypes named (IDs stay where the full draw puts them)."""
+def generate_background(
+    seed: int, market: Market, archetypes: frozenset[int] | None = None, private_salt: str | None = None
+) -> list[HouseholdScript]:
+    """Every background pair, or those of the archetypes named (IDs stay where the full draw puts them).
+    Without the private salt the private pairs are left out; with it they are drawn from the salted stream."""
     ids = iter(background_ids(seed))
     drawn: list[HouseholdScript] = []
     for archetype in sorted(ARCHETYPES):
         for pair in BACKGROUND_PAIRS:
             trap_id, twin_id = next(ids), next(ids)
-            if archetypes is None or archetype in archetypes:
+            if archetypes is not None and archetype not in archetypes:
+                continue
+            if (archetype, pair) not in PRIVATE_PAIRS:
                 drawn += draw_pair(seed, archetype, pair, trap_id, twin_id, market)
+            elif private_salt is not None:
+                drawn += draw_pair(seed, archetype, pair, trap_id, twin_id, market, private_salt)
     return drawn

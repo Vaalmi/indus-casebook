@@ -29,7 +29,8 @@ def test_background_ids_are_drawn_from_their_own_range_without_repeats() -> None
 
 @pytest.fixture(scope="module")
 def drawn(tmp_path_factory: pytest.TempPathFactory) -> Path:
-    """All 80 background households, built with every outside program blocked."""
+    """The 72 public background households (the 80 less the four private pairs, drawn only with the private
+    salt), built with every outside program blocked."""
     out = tmp_path_factory.mktemp("background") / "book"
     empty = tmp_path_factory.mktemp("no-scripts")
     with pytest.MonkeyPatch.context() as patch:
@@ -48,12 +49,18 @@ def drawn(tmp_path_factory: pytest.TempPathFactory) -> Path:
 def test_the_build_draws_background_households_with_no_model_call(drawn: Path) -> None:
     # Building under a blocked network and blocked subprocesses proves no model was called.
     sealed = json.loads((drawn / "sealed" / "households.json").read_text())["households"]
-    assert len(sealed) == 80 and {h["set"] for h in sealed} == {"background"}
+    assert len(sealed) == 72 and {h["set"] for h in sealed} == {"background"}
+    # Pairs 2 to 5 of every archetype but the private pairs: (4, 2), (6, 4), (9, 2) and (10, 3).
+    private = {(4, 2), (6, 4), (9, 2), (10, 3)}
     assert sorted((h["archetype"], h["pair"], h["role"]) for h in sealed) == sorted(
-        (a, pair, role) for a in range(1, 11) for pair in (2, 3, 4, 5) for role in ("trap", "twin")
+        (a, pair, role)
+        for a in range(1, 11)
+        for pair in (2, 3, 4, 5)
+        for role in ("trap", "twin")
+        if (a, pair) not in private
     )
     report = check_book(drawn)
-    assert report.passed and len(report.lines) == 80 * 9
+    assert report.passed and len(report.lines) == 72 * 9
 
 
 def test_every_background_note_re_renders_from_its_template_and_slots(drawn: Path) -> None:
@@ -103,9 +110,18 @@ PRIVATE = Path(os.environ.get("CASEBOOK_PRIVATE", "/nonexistent"))
 
 @pytest.mark.skipif(not (PRIVATE / "book" / "scripted").is_dir(), reason="the held-out pairs live in $CASEBOOK_PRIVATE")
 def test_the_whole_book_is_100_households_and_900_passing_lines(tmp_path: Path) -> None:
-    # Slice 6, with the four held-out households added back: built outside the repo, as the gate demands.
+    # Slice 6, with the four held-out households added back and the private pairs drawn (with a test salt,
+    # not the private one): built outside the repo, as the gate demands.
     out = tmp_path / "whole"
-    result = build_book(SEED, out, SCRIPTS, held_out=True, background=True, extra_scripts=PRIVATE / "book" / "scripted")
+    result = build_book(
+        SEED,
+        out,
+        SCRIPTS,
+        held_out=True,
+        background=True,
+        extra_scripts=PRIVATE / "book" / "scripted",
+        private_salt="test",
+    )
     assert len(result.households) == 100
     report = check_book(out)
     assert report.passed and len(report.lines) == 900
@@ -196,4 +212,5 @@ def test_no_annual_review_seats_a_person_after_their_death(full_book: Path) -> N
             reviews += 1
             late = [name for name, died in dead.items() if name in note["slots"]["parties"] and note["date"] > died]
             assert late == [], (crm_file.parent.parent.name, note["note_id"], late)
-    assert reviews == 96
+    # One annual review in each of the public book's 88 households.
+    assert reviews == 88

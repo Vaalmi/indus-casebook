@@ -15,6 +15,7 @@ from casebook.model.files import (
     read_manifest,
 )
 from casebook.publish.gates import run_gates
+from casebook.publish.private_set import private_set_problems
 from casebook.site import STATIC_DIR, data_root, render_site
 
 
@@ -41,6 +42,16 @@ def build_site(
     if not report.passed:
         failed = ", ".join(sorted(report.failed_households()))
         raise SiteBuildError(f"households failed their checks and cannot be published: {failed}")
+    # The private set is refused at the door as well as in the finished site: a private run or key among the
+    # inputs would otherwise stop the build at its task page, with no word of why.
+    private = [
+        p
+        for folder in (runs, tasks, keys)
+        if folder is not None and folder.is_dir()
+        for p in private_set_problems(folder)
+    ]
+    if private:
+        raise SiteBuildError("the site's inputs hold the private set:\n  " + "\n  ".join(private))
     manifest = read_manifest(book)
     staging = out.with_name(out.name + ".staging")
     if staging.exists():

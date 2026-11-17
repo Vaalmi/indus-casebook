@@ -19,7 +19,8 @@ STANDIN = ROOT / "tests" / "standin" / "claude.py"
 
 
 # The public featured households (archetypes 7 and 8 are held out until the freeze).
-# Every household of the public book: the featured ones and the 80 drawn in the background.
+# Every household of the public book: the featured ones and the 72 drawn in the background (the 80 less the
+# private pairs, drawn only with the private salt).
 def built(book: Path) -> tuple[str, ...]:
     return tuple(h["household_id"] for h in json.loads((book / "manifest.json").read_text())["households"])
 
@@ -53,7 +54,7 @@ def book(tmp_path_factory: pytest.TempPathFactory) -> Path:
 
 @pytest.fixture(scope="session")
 def full_book(tmp_path_factory: pytest.TempPathFactory) -> Path:
-    """The public book whole: the featured households and the 80 drawn in the background. Most tests
+    """The public book whole: the featured households and the 72 public ones drawn in the background. Most tests
     use `book`, the featured households alone, which builds in a fraction of the time."""
     out = tmp_path_factory.mktemp("full") / "0.0.1"
     build_book(SEED, out, SCRIPTS, background=True)

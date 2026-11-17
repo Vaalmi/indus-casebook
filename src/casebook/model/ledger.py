@@ -6,12 +6,20 @@ whose script contradicts its entry.
 """
 
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 # A book-level task's household: it reads every household of the book.
 BOOK = "book"
+# A private task's ID (docs/SPEC.md, Private set): X-, the workflow's three letters, two digits. The public
+# tasks are T-...; the private ones live only in $CASEBOOK_PRIVATE.
+PRIVATE_TASK_ID = re.compile(r"(?<![A-Za-z0-9])X-[A-Z]{3}-\d{2}(?!\d)")
+
+
+def is_private_task_id(task_id: str) -> bool:
+    return PRIVATE_TASK_ID.fullmatch(task_id) is not None
 
 
 class LedgerError(ValueError):

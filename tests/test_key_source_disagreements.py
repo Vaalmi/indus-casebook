@@ -19,7 +19,7 @@ def test_no_household_of_the_public_book_disagrees(full_book: Path) -> None:
     """Slice 4's build refuses an unregistered difference, and no planted item is an identifier, beneficiary or
     ownership difference: every source states each fact alike, on both builds."""
     key = source_disagreements_key(full_book)
-    assert len(key.checked) == 96
+    assert len(key.checked) == 88
     assert dict(key.found) == {}
     assert key.unresolved == () and key.computed_figures == ()
 

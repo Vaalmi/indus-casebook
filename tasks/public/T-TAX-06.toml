@@ -21,7 +21,7 @@ Work only from these files. End your answer with one fenced json block with thes
 """
 
 justified_conclusion = """
-Five households sold a fund at a loss in their joint account between September and November 2025 and bought it back within 30 days in a spouse's IRA, so the loss on the units replaced is disallowed and lost for good: HH-0129 (a Roth IRA, $17,885.81 disallowed), HH-0363 ($15,037.48), HH-0507 ($15,380.22), HH-0780 ($5,706.09) and HH-9234 ($31,591.60). Five look-alikes, HH-0380, HH-0493, HH-0847, HH-0981 and HH-9571, bought the fund back in an IRA between 31 and 41 days after the sale, outside the window, and HH-0679's next RSU release came 31 days after its loss sale, so their losses stand. No other 2025 loss sale in a taxable account has an acquisition of the same security within 30 days in the seller's or the spouse's accounts.
+Four households sold a fund at a loss in their joint account between September and November 2025 and bought it back within 30 days in a spouse's IRA, so the loss on the units replaced is disallowed and lost for good: HH-0129 (a Roth IRA, $17,885.81 disallowed), HH-0363 ($15,037.48), HH-0780 ($5,706.09) and HH-9234 ($31,591.60). Four look-alikes, HH-0380, HH-0847, HH-0981 and HH-9571, bought the fund back in an IRA between 31 and 41 days after the sale, outside the window, and HH-0679's next RSU release came 31 days after its loss sale, so their losses stand. No other 2025 loss sale in a taxable account has an acquisition of the same security within 30 days in the seller's or the spouse's accounts.
 """
 
 [expected_output]

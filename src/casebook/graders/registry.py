@@ -13,9 +13,12 @@ from casebook.graders import (
     backdoor_roth_follow_up,
     common,
     compliance_review,
+    conversion_meeting_prep,
     follow_up,
     household_list,
+    ira_taxable_distributions,
     jury,
+    loss_harvesting_review,
     meeting_follow_up,
     niit_follow_up,
     rmd_review,
@@ -34,6 +37,7 @@ from casebook.keys import figures
 from casebook.keys import ips_review as ips_keys
 from casebook.keys import ira_distributions as ira_keys
 from casebook.keys import issues as issue_keys
+from casebook.keys import loss_harvesting as harvest_keys
 from casebook.keys import niit as niit_keys
 from casebook.keys import open_follow_ups as open_follow_up_keys
 from casebook.keys import positions_vs_portfolio as positions_keys
@@ -156,7 +160,7 @@ GRADERS = {
             book / household_dir(household), int(params["year"])
         ),
         grade=conv_grader.grade,
-        sources=_sources(conv_keys, issue_keys, conv_grader, compliance_review),
+        sources=_sources(conv_keys, tax_lines_keys, issue_keys, conv_grader, compliance_review),
     ),
     "ips_sweep": GraderSpec(
         name="ips_sweep",
@@ -204,6 +208,27 @@ GRADERS = {
             wash_keys,
             household_list,
         ),
+    ),
+    # Graders only private tasks use (docs/SPEC.md, Private set); named for what they grade, tested on featured pairs.
+    "loss_harvesting_review": GraderSpec(
+        name="loss_harvesting_review",
+        key=lambda book, household, params: harvest_keys.loss_harvesting_key(book / household_dir(household)),
+        grade=loss_harvesting_review.grade,
+        sources=_sources(harvest_keys, wash_keys, cb_keys, issue_keys, loss_harvesting_review, compliance_review),
+    ),
+    "ira_taxable_distributions": GraderSpec(
+        name="ira_taxable_distributions",
+        key=lambda book, household, params: ira_keys.ira_distributions_key(book / household_dir(household)),
+        grade=ira_taxable_distributions.grade,
+        sources=_sources(ira_keys, rmd_keys, ira_taxable_distributions),
+    ),
+    "conversion_meeting_prep": GraderSpec(
+        name="conversion_meeting_prep",
+        key=lambda book, household, params: conv_keys.conversion_key(
+            book / household_dir(household), int(params["year"])
+        ),
+        grade=conversion_meeting_prep.grade,
+        sources=_sources(conv_keys, tax_lines_keys, issue_keys, conversion_meeting_prep),
     ),
 }
 

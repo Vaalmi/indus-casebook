@@ -33,6 +33,8 @@ from casebook.securities.master import load_master
 from .conftest import SCRIPTS, SEED
 
 ARCHETYPE = 6
+# Pair 4 is a private pair, drawn only with the private salt: the public book holds pairs 2, 3 and 5.
+PUBLIC_PAIRS = (2, 3, 5)
 # The Uniform Lifetime factors for the ages archetype 6 draws, 74 to 87 (IRS Publication 590-B
 # (2025), Appendix B, Table III).
 UNIFORM_LIFETIME = {
@@ -72,7 +74,11 @@ def market() -> Market:
 
 @pytest.fixture(scope="module")
 def drawn(market: Market) -> dict[int, tuple[HouseholdScript, HouseholdScript]]:
-    return {pair: draw_pair(SEED, ARCHETYPE, pair, *ids, market) for pair, ids in pair_ids(ARCHETYPE).items()}
+    return {
+        pair: draw_pair(SEED, ARCHETYPE, pair, *ids, market)
+        for pair, ids in pair_ids(ARCHETYPE).items()
+        if pair in PUBLIC_PAIRS
+    }
 
 
 @pytest.fixture(scope="module")
@@ -90,14 +96,14 @@ def balances(script: HouseholdScript, market: Market) -> set[Decimal]:
     return {opening_balance(a, market) for a in script.accounts}
 
 
-def test_the_build_draws_eight_households_and_every_check_passes(built: Path) -> None:
+def test_the_build_draws_six_public_households_and_every_check_passes(built: Path) -> None:
     sealed = json.loads((built / "sealed" / "households.json").read_text())["households"]
     assert sorted((h["archetype"], h["pair"], h["role"], h["set"]) for h in sealed) == sorted(
-        (ARCHETYPE, pair, role, "background") for pair in BACKGROUND_PAIRS for role in ("trap", "twin")
+        (ARCHETYPE, pair, role, "background") for pair in PUBLIC_PAIRS for role in ("trap", "twin")
     )
     assert {h["twin_kind"] for h in sealed if h["role"] == "twin"} == {"clean"}
     report = check_book(built)
-    assert len(report.lines) == 72
+    assert len(report.lines) == 6 * 9
     assert [line for line in report.lines if not line.passed] == []
 
 

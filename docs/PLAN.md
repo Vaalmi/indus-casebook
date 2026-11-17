@@ -290,11 +290,11 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 
 **Depends on:** 10.
 
-- [ ] Eight private tasks, two per workflow, exist on background pairs in `$CASEBOOK_PRIVATE`, with graders that pass their own tests
-- [ ] The runner loads them from the path outside the public repo and writes their unmapped run records there
-- [ ] The public repo's check fails when a private task, fixture or key is copied into it (a test), and the release script fails on the same
+- [x] Eight private tasks, two per workflow, exist on background pairs in `$CASEBOOK_PRIVATE`, with graders that pass their own tests
+- [x] The runner loads them from the path outside the public repo and writes their unmapped run records there
+- [x] The public repo's check fails when a private task, fixture or key is copied into it (a test), and the release script fails on the same
 - [ ] The private repo has a remote and a second copy; the owner confirms the backup
-- [ ] The one check command passes
+- [x] The one check command passes
 
 ### Slice 12: Support the hand audit, then freeze (week 11)
 

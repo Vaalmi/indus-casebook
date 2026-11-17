@@ -63,7 +63,8 @@ def test_every_conversion_pair_agrees_with_the_planters(full_book: Path) -> None
     """A cross-check, not the source: each trap's registry entry, and each twin the planter calls unresolved."""
     entries = json.loads((full_book / REGISTRY).read_text())["entries"]
     traps = {e["household_id"]: e for e in entries if e["type"] == "conversion_ira_basis"}
-    assert len(traps) == 5
+    # Archetype 4's featured pair and its three public background pairs; pair 2 is a private pair.
+    assert len(traps) == 4
     for household, entry in traps.items():
         figures = {f["label"]: f["value"] for f in entry["figures"]}
         key = conversion_key(full_book / household_dir(household), YEAR)
@@ -71,7 +72,7 @@ def test_every_conversion_pair_agrees_with_the_planters(full_book: Path) -> None
         assert f"${key.taxable:,}" == figures["Taxable amount (Form 8606 line 18)"], household
     sealed = json.loads((full_book / SEALED_HOUSEHOLDS).read_text())["households"]
     twins = [h["household_id"] for h in sealed if h["archetype"] == 4 and h["role"] == "twin"]
-    assert len(twins) == 5
+    assert len(twins) == 4
     assert all(conversion_key(full_book / household_dir(h), YEAR).finding == "unresolved" for h in twins)
 
 

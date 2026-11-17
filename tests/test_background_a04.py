@@ -19,6 +19,8 @@ from .conftest import SCRIPTS, SEED
 
 D = Decimal
 ARCHETYPE = 4
+# Pair 2 is a private pair, drawn only with the private salt: the public book holds pairs 3 to 5.
+PUBLIC_PAIRS = (3, 4, 5)
 YEAR_END = "2025-12-31"
 
 
@@ -72,19 +74,19 @@ def pairs(drawn: Path) -> dict[int, tuple[HouseholdScript, HouseholdScript]]:
     market = build_market(load_master(), SEED)
     ids = {(h["pair"], h["role"]): h["household_id"] for h in sealed(drawn)}
     return {
-        pair: draw_pair(SEED, ARCHETYPE, pair, ids[pair, "trap"], ids[pair, "twin"], market) for pair in (2, 3, 4, 5)
+        pair: draw_pair(SEED, ARCHETYPE, pair, ids[pair, "trap"], ids[pair, "twin"], market) for pair in PUBLIC_PAIRS
     }
 
 
-def test_the_eight_households_build_and_pass_every_check(drawn: Path) -> None:
+def test_the_six_public_households_build_and_pass_every_check(drawn: Path) -> None:
     households = sealed(drawn)
     assert sorted((h["archetype"], h["pair"], h["role"]) for h in households) == sorted(
-        (ARCHETYPE, pair, role) for pair in (2, 3, 4, 5) for role in ("trap", "twin")
+        (ARCHETYPE, pair, role) for pair in PUBLIC_PAIRS for role in ("trap", "twin")
     )
     assert {h["set"] for h in households} == {"background"}
     assert {h["twin_kind"] for h in households if h["role"] == "twin"} == {"unresolved"}
     report = check_book(drawn)
-    assert len(report.lines) == 72
+    assert len(report.lines) == 6 * 9
     assert report.passed, report.render()
 
 
@@ -115,7 +117,6 @@ def test_the_pairs_differ_from_each_other_and_from_the_featured_pair(
 HAND_WORKED = {
     "HH-0364": ("339747.25", "$1,372.70", "$24,527.30", "$18,067.30"),
     "HH-0562": ("335688.27", "$2,946.30", "$45,353.70", "$20,563.70"),
-    "HH-0687": ("297758.12", "$6,022.40", "$88,077.60", "$18,877.60"),
     "HH-0985": ("480325.36", "$1,108.80", "$24,091.20", "$20,911.20"),
 }
 
@@ -145,7 +146,6 @@ def test_each_trap_s_taxable_conversion_follows_from_the_files(drawn: Path) -> N
         # converted), to three places; nontaxable = converted x line 10; carried = basis - nontaxable:
         # HH-0364 19,440 / 365,647.25 = 0.0532 -> 0.053: 1,372.70, taxable 24,527.30, carried 18,067.30;
         # HH-0562 23,510 / 383,988.27 = 0.0612 -> 0.061: 2,946.30, 45,353.70, 20,563.70;
-        # HH-0687 24,900 / 391,858.12 = 0.0635 -> 0.064: 6,022.40, 88,077.60, 18,877.60;
         # HH-0985 22,020 / 505,525.36 = 0.0436 -> 0.044: 1,108.80, 24,091.20, 20,911.20.
         line6, nontaxable, taxable, carried = HAND_WORKED[hh_id]
         assert year_end_value(root, iras) == D(line6)

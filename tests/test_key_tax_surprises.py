@@ -16,9 +16,9 @@ from casebook.tasks.fixtures import load_task_fixtures
 from casebook.tasks.task import BOOK
 
 BACKDOOR = ("HH-0218", "HH-0347", "HH-0690", "HH-0844", "HH-1204")
-# T-TAX-05's nine and T-TAX-06's five (tests/test_key_rmd_sweep.py, tests/test_key_wash_sale_sweep.py).
+# T-TAX-05's nine and T-TAX-06's four (tests/test_key_rmd_sweep.py, tests/test_key_wash_sale_sweep.py).
 RMD = ("HH-0120", "HH-0236", "HH-0371", "HH-0466", "HH-0491", "HH-0607", "HH-0664", "HH-0842", "HH-5271")
-WASH = ("HH-0129", "HH-0363", "HH-0507", "HH-0780", "HH-9234")
+WASH = ("HH-0129", "HH-0363", "HH-0780", "HH-9234")
 
 
 @pytest.fixture(scope="module")
@@ -26,7 +26,7 @@ def key(full_book: Path) -> Any:
     return tax_surprises_key(full_book)
 
 
-def test_the_book_has_nineteen_households_to_call_each_for_one_surprise(key: Any) -> None:
+def test_the_book_has_eighteen_households_to_call_each_for_one_surprise(key: Any) -> None:
     kinds = {h: tuple(s) for h, s in key.surprises.items()}
     assert kinds == {
         **dict.fromkeys(BACKDOOR, ("backdoor_roth_taxed",)),
@@ -52,7 +52,7 @@ def _answer(households: list[dict[str, Any]]) -> str:
         "households": households,
         "unresolved": [],
         "figures": [],
-        "explanation": "Five backdoor Roths taxed pro rata, nine RMDs not met, five wash sales.",
+        "explanation": "Five backdoor Roths taxed pro rata, nine RMDs not met, four wash sales.",
     }
     return f"```json\n{json.dumps(answer)}\n```\n"
 

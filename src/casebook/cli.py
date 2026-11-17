@@ -1,6 +1,8 @@
 """The one `casebook` command."""
 
 import argparse
+import json
+import secrets
 import sys
 from collections.abc import Sequence
 from pathlib import Path
@@ -17,6 +19,18 @@ DEFAULT_SCRIPTS = Path("book/scripted")
 # as release files").
 PUBLISHED_RUNS = Path("published/runs")
 PUBLISHED_KEYS = Path("published/keys")
+# The private salt, which draws the private pairs, inside $CASEBOOK_PRIVATE; never in the repo or a built file.
+PRIVATE_SALT = Path("book") / "private_salt"
+
+
+def _private_salt(private: Path) -> str:
+    """The private salt, written once (a fresh random one) the first time a held-out build asks for it."""
+    path = private / PRIVATE_SALT
+    if not path.is_file():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(secrets.token_hex(32) + "\n", encoding="utf-8")
+        print(f"wrote a new private salt to {path}; keep it with the private set", file=sys.stderr)
+    return path.read_text(encoding="utf-8").strip()
 
 
 def _build(args: argparse.Namespace) -> int:
@@ -24,7 +38,7 @@ def _build(args: argparse.Namespace) -> int:
     from casebook.generate.script import ScriptError
 
     out = args.out or (REAL_BOOK if args.real_tickers else DEFAULT_BOOK)
-    scripts, extra = args.scripts, None
+    scripts, extra, salt = args.scripts, None, None
     if args.held_out:
         from casebook.runner.run import PrivateFolderError, private_root
 
@@ -33,12 +47,21 @@ def _build(args: argparse.Namespace) -> int:
         except PrivateFolderError as error:
             print(f"build failed: {error}", file=sys.stderr)
             return 1
-        # The whole book: the repo's scripts, the held-out pairs and the background households.
+        # The whole book: the repo's scripts, the held-out pairs and the background households, the
+        # private pairs drawn with the private salt.
         extra = private / DEFAULT_SCRIPTS
         out = args.out or private / out
+        salt = _private_salt(private)
     try:
         result = build_book(
-            args.seed, out, scripts, args.real_tickers, held_out=args.held_out, background=True, extra_scripts=extra
+            args.seed,
+            out,
+            scripts,
+            args.real_tickers,
+            held_out=args.held_out,
+            background=True,
+            extra_scripts=extra,
+            private_salt=salt,
         )
     except (BuildError, ScriptError) as error:
         print(f"build failed: {error}", file=sys.stderr)
@@ -69,12 +92,18 @@ def _site(args: argparse.Namespace) -> int:
 
 
 def _run(args: argparse.Namespace) -> int:
+    from casebook.model.ledger import is_private_task_id
     from casebook.runner.config import SharedConfig
     from casebook.runner.preflight import RunRefusedError
+    from casebook.runner.run import private_root
     from casebook.runner.session import run_and_grade
 
     try:
-        record = run_and_grade(args.task, args.arm, args.tasks, args.book, args.keys, args.runs, SharedConfig())
+        # A private task runs on a private pair, which only the held-out real-ticker build in $CASEBOOK_PRIVATE has.
+        secret = is_private_task_id(args.task)
+        tasks = args.tasks or (private_root() / "tasks" if secret else Path("tasks/public"))
+        book = args.book or (private_root() / REAL_BOOK if secret else REAL_BOOK)
+        record = run_and_grade(args.task, args.arm, tasks, book, args.keys, args.runs, SharedConfig())
     except RunRefusedError as error:
         print(f"run refused: {type(error).__name__}: {error}", file=sys.stderr)
         return 2
@@ -93,6 +122,80 @@ def _canary(args: argparse.Namespace) -> int:
     print(f"canary: {'LEAKED' if result.leaked else 'no leak'}; the CLI {result.failure or 'finished cleanly'}")
     print(result.final_text)
     return 1 if result.leaked or result.failure else 0
+
+
+def _fingerprint_private(args: argparse.Namespace) -> int:
+    import tempfile
+
+    from casebook.model.files import household_dir
+    from casebook.publish.private_set import (
+        FINGERPRINTS,
+        REPO,
+        SharedTextError,
+        fingerprints,
+        private_households,
+        private_set_problems,
+        tree_files,
+    )
+    from casebook.runner.run import PrivateFolderError, private_root
+    from casebook.tasks.fixtures import load_task_fixtures
+    from casebook.tasks.task import load_task
+
+    try:
+        private = private_root()
+    except PrivateFolderError as error:
+        print(f"fingerprints refused: {error}", file=sys.stderr)
+        return 2
+    leaks = private_set_problems(REPO, repository=True)
+    if leaks:
+        # Regenerating over a leak would fold the copied lines into the shared ones (reviewers A and B, slice 11).
+        print(
+            "fingerprints refused: the public repo holds the private set already:", *leaks, sep="\n  ", file=sys.stderr
+        )
+        return 1
+    # A private household's smallest files can be byte for byte a public one's (a header-only CSV), so the
+    # public books' files are compared too: they must be built.
+    public_books = [DEFAULT_BOOK, REAL_BOOK]
+    missing = [str(book) for book in public_books if not (book / "manifest.json").is_file()]
+    if missing:
+        print(f"fingerprints refused: build the public books first ({', '.join(missing)})", file=sys.stderr)
+        return 2
+    public_files = [path for book in public_books for path in tree_files(book)]
+    # The private pairs' built files in both private builds, and each private task's fixtures at its cutoff.
+    builds = [private / "out" / kind / BOOK_VERSION for kind in ("book", "real")]
+    pair_files = [
+        path
+        for build in builds
+        for household in sorted(private_households())
+        if (build / household_dir(household)).is_dir()
+        for path in tree_files(build / household_dir(household))
+    ]
+    with tempfile.TemporaryDirectory(prefix="casebook-fixtures-") as folder:
+        for path in sorted((private / "tasks").glob("X-*.toml")):
+            task = load_task(path)
+            load_task_fixtures(builds[1], task.household_id, task.fixtures, task.cutoff, Path(folder) / task.task_id)
+        try:
+            prints = fingerprints(
+                private,
+                REPO,
+                [*pair_files, *tree_files(Path(folder))],
+                public_builds=public_files,
+                approve_shared=args.approve_shared,
+            )
+        except SharedTextError as error:
+            print(
+                "fingerprints refused: the public repo also holds this private text, not yet approved as shared;",
+                file=sys.stderr,
+            )
+            print(
+                "if each is boilerplate the public files share (not a copy), rerun with --approve-shared:",
+                file=sys.stderr,
+            )
+            print("  " + "\n  ".join(error.overlaps), file=sys.stderr)
+            return 1
+    FINGERPRINTS.write_text(json.dumps(prints, indent=2) + "\n", encoding="utf-8")
+    print(f"{len(prints['files'])} private files and {len(prints['lines'])} lines fingerprinted into {FINGERPRINTS}")
+    return 0
 
 
 def _facts(args: argparse.Namespace) -> int:
@@ -120,7 +223,9 @@ def parser() -> argparse.ArgumentParser:
     build.add_argument("--real-tickers", action="store_true", help="real tickers with invented prices, for runs")
     build.add_argument("--scripts", type=Path, default=DEFAULT_SCRIPTS)
     build.add_argument(
-        "--held-out", action="store_true", help="build the whole book, the held-out pairs too, into $CASEBOOK_PRIVATE"
+        "--held-out",
+        action="store_true",
+        help="build the whole book, the held-out and private pairs too, into $CASEBOOK_PRIVATE",
     )
     build.set_defaults(run=_build)
     check = commands.add_parser("check", help="run every check on every household")
@@ -137,8 +242,14 @@ def parser() -> argparse.ArgumentParser:
     run = commands.add_parser("run", help="run one task under one arm on the CLI under test")
     run.add_argument("--task", required=True)
     run.add_argument("--arm", required=True, choices=("basic", "checklist", "skill"))
-    run.add_argument("--book", type=Path, default=REAL_BOOK, help="runs read the real-ticker build")
-    run.add_argument("--tasks", type=Path, default=Path("tasks/public"))
+    run.add_argument(
+        "--book",
+        type=Path,
+        help="the real-ticker build a run reads: out/real/, or $CASEBOOK_PRIVATE/out/real/ for a private (X-) task",
+    )
+    run.add_argument(
+        "--tasks", type=Path, help="the task files: tasks/public, or $CASEBOOK_PRIVATE/tasks for a private (X-) task"
+    )
     run.add_argument("--keys", type=Path, default=PUBLISHED_KEYS)
     run.add_argument("--runs", type=Path, default=PUBLISHED_RUNS, help="where the mapped run records go")
     run.set_defaults(run=_run)
@@ -149,6 +260,16 @@ def parser() -> argparse.ArgumentParser:
     tax = commands.add_parser("tax", help="compare the 2025 tax engine with Tax-Calculator and the keys, per household")
     tax.add_argument("--book", type=Path, default=DEFAULT_BOOK)
     tax.set_defaults(run=_tax)
+    prints = commands.add_parser(
+        "fingerprint-private",
+        help="fingerprint the private set (book/private_fingerprints.json), so no public file can carry it",
+    )
+    prints.add_argument(
+        "--approve-shared",
+        action="store_true",
+        help="approve, as boilerplate the public files share, private text the public repo also holds",
+    )
+    prints.set_defaults(run=_fingerprint_private)
     canary = commands.add_parser("canary", help="check a run cannot read a sealed file outside its workspace")
     canary.set_defaults(run=_canary)
     return top

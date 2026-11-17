@@ -111,14 +111,15 @@ def test_a_default_build_carries_aliases_only(book: Path) -> None:
     refuse_real_identifiers({name: text_of(name, path.read_bytes()) for name, path in files.items()})
 
 
-def test_the_whole_public_book_builds_96_households_byte_for_byte_again(full_book: Path, tmp_path: Path) -> None:
-    # Slice 6: ten archetypes, five pairs each, less the four held out until the freeze (archetypes 7
-    # and 8's featured pairs), which the whole book in $CASEBOOK_PRIVATE adds back for 100.
+def test_the_whole_public_book_builds_88_households_byte_for_byte_again(full_book: Path, tmp_path: Path) -> None:
+    # Slice 6: ten archetypes, five pairs each, less the two featured pairs held out until the freeze
+    # (archetypes 7 and 8's) and the four private pairs, which the whole book in $CASEBOOK_PRIVATE adds back
+    # for 100: 50 pairs less 6 is 44, 88 households.
     manifest = json.loads((full_book / MANIFEST).read_text())
-    assert len(manifest["households"]) == 96
+    assert len(manifest["households"]) == 88
     sealed = json.loads((full_book / "sealed" / "households.json").read_text())["households"]
     pairs = {(h["archetype"], h["pair"]) for h in sealed}
-    assert len(pairs) == 48 and {p for _, p in pairs} == {1, 2, 3, 4, 5}
+    assert len(pairs) == 44 and {p for _, p in pairs} == {1, 2, 3, 4, 5}
     again = tmp_path / "again"
     build_book(SEED, again, SCRIPTS, background=True)
     assert (again / MANIFEST).read_bytes() == (full_book / MANIFEST).read_bytes()

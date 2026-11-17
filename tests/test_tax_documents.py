@@ -67,7 +67,7 @@ def market() -> Market:
 
 @pytest.fixture(scope="module")
 def contexts(market: Market) -> dict[str, EmitContext]:
-    """Every household of the public book: the featured scripts and the 80 drawn in the background."""
+    """Every household of the public book: the featured scripts and the 72 drawn in the background."""
     scripts = [*load_scripts(SCRIPTS), *generate_background(SEED, market, None)]
     return {s.household.household_id: _context(s, market) for s in scripts}
 

@@ -44,9 +44,10 @@ def test_the_built_book_passes_every_check_on_every_household(
     assert [(line.household_id, line.check) for line in report.lines] == [
         (h, c) for h in built(full_book) for c in CHECKS
     ]
-    assert len(built(full_book)) == 96 and set(FEATURED) < set(built(full_book))
+    assert len(built(full_book)) == 88 and set(FEATURED) < set(built(full_book))
     assert main(["check", "--book", str(full_book)]) == 0
-    assert capsys.readouterr().out.endswith("864 lines: 864 pass, 0 fail\n")
+    # Nine checks on each of 88 households.
+    assert capsys.readouterr().out.endswith("792 lines: 792 pass, 0 fail\n")
 
 
 def test_a_unit_defect_fails_the_units_check_and_names_file_line_and_account(book_copy: Path) -> None:

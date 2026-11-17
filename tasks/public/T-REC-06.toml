@@ -21,7 +21,7 @@ Work only from these files. End your answer with one fenced json block with thes
 """
 
 justified_conclusion = """
-On 15 April 2026 every household's custodian positions (units, price and market value for each security in each account) and its cash, settled plus unsettled, agree line for line with the portfolio system's, in all 96 households. No household disagrees, so none is found. Earlier valuation dates in the custodian's files, such as the 31 March 2026 quarter end, are not part of the question.
+On 15 April 2026 every household's custodian positions (units, price and market value for each security in each account) and its cash, settled plus unsettled, agree line for line with the portfolio system's, in all 88 households. No household disagrees, so none is found. Earlier valuation dates in the custodian's files, such as the 31 March 2026 quarter end, are not part of the question.
 """
 
 [expected_output]

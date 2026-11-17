@@ -198,7 +198,6 @@ def test_the_key_writes_as_json_with_money_as_strings(hand_book: Path) -> None:
 FOUND_IN_THE_BOOK = {
     # Read from each household's crm/crm.json and portfolio/household.json: a householding agreement joining
     # accounts 1, 2 and 3, while the portfolio system bills account 3 in a group of its own.
-    "HH-0274": ("AGR-0274-3", "BG-0274-1", "BG-0274-2"),
     "HH-0586": ("AGR-0586-3", "BG-0586-1", "BG-0586-2"),
     "HH-0592": ("AGR-0592-3", "BG-0592-1", "BG-0592-2"),
     "HH-0928": ("AGR-0928-3", "BG-0928-1", "BG-0928-2"),
@@ -206,13 +205,14 @@ FOUND_IN_THE_BOOK = {
 }
 
 
-def test_the_whole_book_finds_the_five_households_with_an_agreement_not_applied(full_book: Path) -> None:
+def test_the_whole_book_finds_the_four_households_with_an_agreement_not_applied(full_book: Path) -> None:
+    # The public book holds no private pair, so archetype 10's pair 3 (a trap and its look-alike) is not here.
     key = billing_groups_key(full_book, AS_OF)
-    assert len(key.checked) == 96
+    assert len(key.checked) == 88
     assert dict(key.found) == FOUND_IN_THE_BOOK
-    # The five look-alikes are billed in the same two groups with no householding agreement: cleared, but priced.
+    # The four look-alikes are billed in the same two groups with no householding agreement: cleared, but priced.
     priced = {h.household_id for h in key.household_figures}
-    assert priced == set(FOUND_IN_THE_BOOK) | {"HH-0478", "HH-0517", "HH-0572", "HH-0744", "HH-7350"}
+    assert priced == set(FOUND_IN_THE_BOOK) | {"HH-0478", "HH-0517", "HH-0572", "HH-7350"}
 
 
 def test_the_trap_household_figures_hold_the_overbilling(book: Path) -> None:

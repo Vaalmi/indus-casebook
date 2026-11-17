@@ -29,7 +29,7 @@ WORKFLOWS = ("reconciliation", "meeting", "tax_lot_rmd", "compliance")
 # tax-lot and RMD task's, and any other task's whose key computes a tax-lot, RMD or other tax figure: an RMD
 # in reconciliation; a Form 8606 taxable amount, the net investment income tax or the SALT limit, or the
 # households with a tax surprise, in meeting; a released lot's basis and a sale's gain, or a conversion's
-# taxable amount, in compliance.
+# taxable amount, a loss a wash sale disallows, or the taxable part of IRA distributions, in any workflow.
 HELD_WORKFLOWS = ("tax_lot_rmd",)
 HELD_GRADERS = (
     "ira_distributions",
@@ -38,6 +38,9 @@ HELD_GRADERS = (
     "tax_surprises",
     "concentration_basis",
     "conversion_documentation",
+    "conversion_meeting_prep",
+    "loss_harvesting_review",
+    "ira_taxable_distributions",
 )
 TASK_FIELDS = (
     "task_id",

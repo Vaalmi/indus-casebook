@@ -68,15 +68,16 @@ def figure(entry: dict[str, Any], label: str) -> str:
     return next(f["value"] for f in entry["figures"] if f["label"] == label)
 
 
-def test_four_drawn_pairs_build_and_pass_every_check(drawn: Path) -> None:
+def test_the_three_public_pairs_build_and_pass_every_check(drawn: Path) -> None:
+    # Pair 2 is a private pair, drawn only with the private salt: the public book holds pairs 3 to 5.
     sealed = households(drawn)
     assert sorted((h["archetype"], h["pair"], h["role"]) for h in sealed) == sorted(
-        (ARCHETYPE, pair, role) for pair in (2, 3, 4, 5) for role in ("trap", "twin")
+        (ARCHETYPE, pair, role) for pair in (3, 4, 5) for role in ("trap", "twin")
     )
     assert {h["set"] for h in sealed} == {"background"}
     assert {h["twin_kind"] for h in sealed if h["role"] == "twin"} == {"near_miss"}
     report = check_book(drawn)
-    assert len(report.lines) == 72
+    assert len(report.lines) == 6 * 9
     assert report.passed, [(line.household_id, line.check, line.problems) for line in report.lines if not line.passed]
 
 

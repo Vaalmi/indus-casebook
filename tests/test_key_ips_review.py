@@ -76,7 +76,7 @@ SWEEP = {
 
 def test_the_sweep_finds_twelve_households_on_the_public_book(full_book: Path) -> None:
     key = ips_sweep_key(full_book, AS_OF)
-    assert len(key.checked) == 96
+    assert len(key.checked) == 88
     assert dict(key.found) == SWEEP
     assert key.unresolved == ()
 
