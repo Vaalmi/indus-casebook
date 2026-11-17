@@ -52,6 +52,9 @@ KEY_EVENTS: dict[int, tuple[str, ...]] = {
     9: ("buy", "sell"),
     10: ("fee",),
 }
+# Where an archetype's item is something that did not happen (archetype 7's trap: no distribution left the
+# inherited IRA in 2025), no kind of event carries it; the events layer shows that account's events instead.
+KEY_ACCOUNT_TYPES: dict[int, str] = {7: "inherited_ira"}
 # Where a twin's observations come from, with no registry entry to name its sources.
 TWIN_SOURCES = ("custodian/transactions.csv", "crm/crm.json")
 _DATES = ("valuation_date", "known_as_of")
@@ -147,11 +150,19 @@ class HouseholdView:
 
     @property
     def key_events(self) -> list[dict[str, Any]]:
-        return [e for e in self.events if e["type"] in KEY_EVENTS[self.archetype]]
+        return key_events(self.archetype, self.events, self.accounts)
 
     @property
     def names(self) -> dict[str, str]:
         return {m["person_id"]: m["name"] for m in self.portfolio["household_membership"]}
+
+
+def key_events(archetype: int, events: list[dict[str, Any]], accounts: list[dict[str, str]]) -> list[dict[str, Any]]:
+    """The events behind an archetype's item: those of the kinds that carry it, and, for an item that is what
+    never happened in an account, every event of that account."""
+    kind = KEY_ACCOUNT_TYPES.get(archetype)
+    held = {a["account_id"] for a in accounts if kind is not None and a["account_type"] == kind}
+    return [e for e in events if e["type"] in KEY_EVENTS[archetype] or e.get("account_id") in held]
 
 
 def _money(text: str) -> str:
@@ -180,7 +191,8 @@ def load_household(
     ]
     planted = [e for e in entries if e.household_id == household_id]
     events = read_json(book, event_log_path(household_id))["events"]
-    key = [e for e in events if e["type"] in KEY_EVENTS[int(sealed["archetype"])]]
+    accounts = read_csv(root, ACCOUNTS_CSV, ACCOUNTS_COLUMNS)
+    key = key_events(int(sealed["archetype"]), events, accounts)
     return HouseholdView(
         household_id=household_id,
         name=read_json(root, PORTFOLIO_HOUSEHOLD)["name"],
@@ -191,7 +203,7 @@ def load_household(
         twin_kind=sealed["twin_kind"],
         explanation=sealed["explanation"],
         files=_household_files(book, household_id),
-        accounts=read_csv(root, ACCOUNTS_CSV, ACCOUNTS_COLUMNS),
+        accounts=accounts,
         positions=positions,
         cash=cash,
         transactions=read_csv(root, TRANSACTIONS_CSV, TRANSACTIONS_COLUMNS),

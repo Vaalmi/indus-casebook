@@ -1,0 +1,181 @@
+# Archetype 7, pair 1, twin: a near miss (held out until the freeze). The same shape as HH-7126:
+# Theo inherited his mother Carla's traditional IRA when she died in 2023, and nothing was taken
+# in 2025. But Carla died at 69, before her required beginning date (she would have reached 73 in
+# 2026), so Theo owes no annual distributions in 2024 to 2032: only the ten-year deadline, the end
+# of 2033, applies.
+household_id = "HH-7683"
+name = "Marchetti household"
+archetype = 7
+pair = 1
+role = "twin"
+configured = 2015-05-18
+
+[[members]]
+person_id = "P-7683-1"
+name = "Theo Marchetti"
+born = 1975-08-14
+relationship = "primary"
+email = "theo.marchetti@mail.example"
+phone = "555-0149"
+tax_id = "000-76-8301"
+
+[[members]]
+person_id = "P-7683-2"
+name = "Hana Marchetti"
+born = 1977-04-25
+relationship = "spouse"
+email = "hana.marchetti@mail.example"
+phone = "555-0150"
+tax_id = "000-76-8302"
+
+[[accounts]]
+account_id = "SYN-76830001"
+account_type = "joint_taxable"
+registration = "Joint tenants with right of survivorship"
+opened = 2015-05-18
+owners = ["P-7683-1", "P-7683-2"]
+cash = "17000.00"
+holdings = [
+  { lot_id = "L-76830001-01", security_id = "SEC-0001", value = "225000", acquired = 2015-06-01, basis_pct = "52" },
+  { lot_id = "L-76830001-02", security_id = "SEC-0002", value = "75000", acquired = 2017-09-18, basis_pct = "85" },
+  { lot_id = "L-76830001-03", security_id = "SEC-0014", value = "85000", acquired = 2021-01-25, basis_pct = "103" },
+]
+
+[[accounts]]
+account_id = "SYN-76830002"
+account_type = "inherited_ira"
+registration = "Inherited IRA, Carla Marchetti, deceased 2023-02-26, FBO Theo Marchetti"
+opened = 2023-05-15
+owners = ["P-7683-1"]
+decedent = { name = "Carla Marchetti", born = 1953-04-03, died = 2023-02-26 }
+cash = "8500.00"
+holdings = [
+  { lot_id = "L-76830002-01", security_id = "SEC-0001", value = "160000", acquired = 2023-05-17, basis_pct = "100" },
+  { lot_id = "L-76830002-02", security_id = "SEC-0003", value = "140000", acquired = 2023-05-17, basis_pct = "100" },
+  { lot_id = "L-76830002-03", security_id = "SEC-0006", value = "45000", acquired = 2023-05-17, basis_pct = "100" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-7683-1"
+filing_status = "married_filing_jointly"
+person_ids = ["P-7683-1", "P-7683-2"]
+
+[[billing_groups]]
+billing_group_id = "BG-7683-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-76830001", "SYN-76830002"]
+
+[[disclosures]]
+person_id = "P-7683-1"
+account_ids = ["SYN-76830001", "SYN-76830002"]
+
+[[disclosures]]
+person_id = "P-7683-2"
+account_ids = ["SYN-76830001"]
+
+[[agreements]]
+agreement_id = "AGR-7683-1"
+kind = "advisory"
+party_ids = ["P-7683-1", "P-7683-2"]
+account_ids = ["SYN-76830001"]
+signed = 2015-05-18
+summary = "Advisory agreement for the joint account on the standard fee schedule."
+
+[[agreements]]
+agreement_id = "AGR-7683-2"
+kind = "advisory"
+party_ids = ["P-7683-1"]
+account_ids = ["SYN-76830002"]
+signed = 2023-05-15
+summary = "Advisory agreement for Theo's inherited IRA from his mother, Carla Marchetti, on the standard fee schedule, billed with the joint account."
+
+[[beneficiaries]]
+account_id = "SYN-76830002"
+designation = "primary"
+name = "Hana Marchetti"
+relationship = "spouse"
+share = "100"
+person_id = "P-7683-2"
+designated = 2023-05-15
+
+[[crm_activities]]
+activity_id = "CA-7683-01"
+date = 2023-04-03
+kind = "death_certificate"
+summary = "Certified death certificate received for Carla Marchetti, Theo's mother: born 1953-04-03, died 2023-02-26."
+
+[[crm_activities]]
+activity_id = "CA-7683-02"
+date = 2023-04-11
+kind = "beneficiary_claim"
+summary = "Beneficiary claim signed by Theo Marchetti, son and sole primary beneficiary of Carla Marchetti's traditional IRA, electing an inherited IRA in his name."
+
+[[crm_activities]]
+activity_id = "CA-7683-03"
+date = 2023-04-11
+kind = "custodian_confirmation"
+summary = "The prior custodian confirms that Carla Marchetti had not begun required minimum distributions from her traditional IRA."
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.53", band = "0.05" },
+  { asset_class = "International equity", target = "0.17", band = "0.05" },
+  { asset_class = "Fixed income", target = "0.30", band = "0.05" },
+]
+restrictions = []
+concentration_limit = "0.55"
+asset_classes = { "SEC-0001" = "US equity", "SEC-0002" = "International equity", "SEC-0003" = "Fixed income", "SEC-0006" = "International equity", "SEC-0014" = "Fixed income" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-7683-1", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [{ person_id = "P-7683-1", basis = "0.00" }]
+
+[[activity]]
+type = "contribution"
+date = 2025-04-21
+account_id = "SYN-76830001"
+amount = "12000.00"
+
+[[activity]]
+type = "buy"
+date = 2025-04-23
+account_id = "SYN-76830001"
+security_id = "SEC-0001"
+units = "35"
+
+[[activity]]
+type = "sell"
+date = 2025-09-08
+account_id = "SYN-76830002"
+security_id = "SEC-0003"
+units = "35"
+
+[[activity]]
+type = "buy"
+date = 2025-09-10
+account_id = "SYN-76830002"
+security_id = "SEC-0006"
+units = "55"
+
+[[activity]]
+type = "withdrawal"
+date = 2026-02-09
+account_id = "SYN-76830001"
+amount = "9000.00"
+
+[twin]
+kind = "near_miss"
+explanation = "A near miss. Theo inherited his mother Carla's traditional IRA in 2023 and took nothing from it in 2025, which looks like a missed annual RMD. But Carla died at 69, before her required beginning date (she would have reached 73 in 2026), so the ten-year rule applies without annual distributions: Theo need only empty the account by 31 December 2033."

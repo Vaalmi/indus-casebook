@@ -26,7 +26,7 @@ Work only from these files. End your answer with one fenced json block with thes
 """
 
 justified_conclusion = """
-On 15 April 2026 twelve households cross an IPS limit, and the CRM holds no IPS exception anywhere in the book. Five hold a single company's stock above their concentration limit, each an executive's employer stock: HH-0221 (SEC-0040), HH-0376 (SEC-0032), HH-0816 (SEC-0005), HH-0984 (SEC-0048) and HH-3058 (SEC-0028). Eight have an asset class outside its band: HH-3058, HH-3462, HH-5271, HH-5814, HH-6047, HH-6590, HH-9234 and HH-9571. A fund above a concentration limit's share, as in HH-4821 and HH-7350, is not a concentration under the policy.
+On 15 April 2026 fourteen households cross an IPS limit, and the CRM holds no IPS exception anywhere in the book. Five hold a single company's stock above their concentration limit, each an executive's employer stock: HH-0221 (SEC-0040), HH-0376 (SEC-0032), HH-0816 (SEC-0005), HH-0984 (SEC-0048) and HH-3058 (SEC-0028). Ten have an asset class outside its band: HH-3058, HH-3462, HH-5271, HH-5814, HH-6047, HH-6590, HH-8312, HH-8865, HH-9234 and HH-9571. A fund above a concentration limit's share, as in HH-4821 and HH-7350, is not a concentration under the policy.
 """
 
 [expected_output]

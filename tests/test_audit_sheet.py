@@ -22,6 +22,8 @@ from casebook.checks.audit_sheet import (
 from casebook.model.archetypes import ARCHETYPES
 from casebook.seeding import derive_rng
 
+from .conftest import FEATURED, ROOT
+
 SEED = 2026
 
 
@@ -53,17 +55,26 @@ def test_the_draw_refuses_a_private_pair(book_copy: Path) -> None:
         draw_households(book_copy, derive_rng("audit", SEED))
 
 
-def test_the_draw_refuses_a_held_out_household_before_the_freeze(
-    book_copy: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+@pytest.mark.parametrize("frozen_now", [False, True])
+def test_the_draw_is_the_audited_15_before_and_after_the_move_in(
+    full_book: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, frozen_now: bool
 ) -> None:
-    monkeypatch.setattr(casebook.model.archetypes, "FREEZE_RECORD", tmp_path / "no-freeze.json")
-    relabel(book_copy, "HH-7350", archetype=8)
-    with pytest.raises(AuditDrawError, match="HH-7350 is held out until the freeze"):
-        draw_households(book_copy, derive_rng("audit", SEED))
+    """Archetypes 7 and 8's featured pairs move in at the freeze; the draw never picks them, so it gives the 15
+    households the owner's audit log covers whether or not they are in the book."""
+    record = tmp_path / "freeze.json"
+    if frozen_now:
+        record.write_text("{}")
+    monkeypatch.setattr(casebook.model.archetypes, "FREEZE_RECORD", record)
+    drawn = draw_households(full_book, derive_rng("audit", SEED))
+    held_out = {h for h, a in archetypes(full_book).items() if a in (7, 8) and h in FEATURED}
+    assert not set(drawn) & held_out
+    with (ROOT / "published" / "audit" / "audit-log.csv").open() as handle:
+        audited = {row["household_id"] for row in csv.DictReader(handle)}
+    assert set(drawn) == audited
 
 
 def test_the_draw_refuses_a_book_without_every_archetype(book: Path) -> None:
-    # The featured households alone are eight archetypes: 7 and 8 are held out.
+    # The featured households alone: archetypes 7 and 8's are never drawn, so the book lacks them.
     with pytest.raises(AuditDrawError, match="no household of archetype 7, 8"):
         draw_households(book, derive_rng("audit", SEED))
 

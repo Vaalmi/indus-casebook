@@ -26,7 +26,7 @@ Work only from these files. End your answer with one fenced json block with thes
 """
 
 justified_conclusion = """
-Across all 88 households every account's owners read the same at the custodian, in the portfolio system, on the statements and on the tax documents; every person's name, relationship, date of death and taxpayer ID read the same in the CRM, the portfolio system and the tax documents; and every beneficiary designation agrees with the household members it names and with the CRM's records of beneficiary changes, forms sent and claims. No household's sources disagree. Records out of date in every source alike, such as a designation that still names a beneficiary who has died while the CRM records the form sent to change it, are not disagreements, though a reviewer may note them.
+Across all 92 households every account's owners read the same at the custodian, in the portfolio system, on the statements and on the tax documents; every person's name, relationship, date of death and taxpayer ID read the same in the CRM, the portfolio system and the tax documents; and every beneficiary designation agrees with the household members it names and with the CRM's records of beneficiary changes, forms sent and claims. No household's sources disagree. Records out of date in every source alike, such as a designation that still names a beneficiary who has died while the CRM records the form sent to change it, are not disagreements, though a reviewer may note them.
 """
 
 [expected_output]

@@ -1,0 +1,44 @@
+{
+  "about": "Hand-worked expected values for tests/test_plant_a07.py. Held out with the pair: the public test reads them from here so the answer stays out of the repo until the freeze.",
+  "trap": {
+    "household_id": "HH-7126",
+    "item_id": "PI-0008",
+    "account_id": "SYN-71260002",
+    "decedent": "Florence Adeyemi",
+    "beneficiary": "Samuel Adeyemi",
+    "working": [
+      "Florence Adeyemi, born 1946-02-11, reached 70 and a half on 2016-08-11, so her required beginning date was 2017-04-01 (born before 1 July 1949: age 70 and a half). She died 2023-07-19, after it.",
+      "Samuel Adeyemi, born 1974-05-30, is 50 in 2024, the year after the death: Single Life factor 36.2 (Publication 590-B, Table I), less 1 for 2025 = 35.2.",
+      "Florence was 77 on her 2023 birthday: Single Life factor 13.3, less 2 for 2025 = 11.3. The longer period is 35.2.",
+      "SYN-71260002 held $378,654.91 on 2024-12-31 (positions plus cash in the custodian's files): $378,654.91 / 35.2 = $10,757.2418, so $10,757.24.",
+      "It held $367,188.81 on 2025-12-31: / (35.2 - 1 = 34.2) = $10,736.5149, so $10,736.51 for 2026.",
+      "Ten years after a 2023 death: emptied by 2033-12-31. Nothing left the account in 2025, so $10,757.24 was missed."
+    ],
+    "balance_2024_12_31": "378654.91",
+    "balance_2025_12_31": "367188.81",
+    "death_record": "born 1946-02-11, died 2023-07-19",
+    "figures": {
+      "Decedent's required beginning date": "2017-04-01",
+      "Account to be emptied by": "2033-12-31",
+      "Distribution period": "35.2",
+      "2025 RMD": "$10,757.24",
+      "Taken in 2025": "$0.00",
+      "2025 RMD missed": "$10,757.24",
+      "2026 RMD": "$10,736.51"
+    },
+    "beneficiary_period": ["Samuel Adeyemi: less 1 for 2025", "35.2"],
+    "decedent_period": ["Florence Adeyemi: less 2 for 2025", "11.3"],
+    "a_younger_decedent_born": "1954-02-11",
+    "its_required_beginning_date": "2028-04-01"
+  },
+  "twin": {
+    "household_id": "HH-7683",
+    "account_id": "SYN-76830002",
+    "working": [
+      "Carla Marchetti, born 1953-04-03, reaches 73 in 2026 (born 1951 to 1959), so her required beginning date is 2027-04-01. She died 2023-02-26, before it, so no annual distributions are due in 2024 to 2032."
+    ],
+    "death_record": "born 1953-04-03, died 2023-02-26",
+    "an_older_decedent_born": "1945-04-03",
+    "its_required_beginning_date": "2016-04-01"
+  }
+}

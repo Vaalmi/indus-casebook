@@ -1,0 +1,185 @@
+# Archetype 8, pair 1, trap (held out until the freeze). Rafael dies in June 2025. He and
+# Eleanor held their joint account as joint tenants with right of survivorship, so half of
+# each lot steps up to its value on the day he died. The CRM records the death and the
+# request to the custodian for date-of-death values, but the custodian never booked the
+# step-up: its tax lots still show the old basis. Eleanor's own IRA still names Rafael as
+# its primary beneficiary.
+household_id = "HH-8312"
+name = "Whitfield-Mendoza household"
+archetype = 8
+pair = 1
+role = "trap"
+configured = 1998-05-11
+
+[[members]]
+person_id = "P-8312-1"
+name = "Eleanor Whitfield"
+born = 1956-08-21
+relationship = "primary"
+email = "eleanor.whitfield@mail.example"
+phone = "555-0164"
+tax_id = "000-83-1201"
+
+[[members]]
+person_id = "P-8312-2"
+name = "Rafael Mendoza"
+born = 1951-01-30
+relationship = "spouse"
+email = "rafael.mendoza@mail.example"
+phone = "555-0165"
+tax_id = "000-83-1202"
+died = 2025-06-18
+
+[[accounts]]
+account_id = "SYN-83120001"
+account_type = "joint_taxable"
+registration = "Joint tenants with right of survivorship"
+opened = 1998-05-11
+owners = ["P-8312-1", "P-8312-2"]
+cash = "35000.00"
+holdings = [
+  { lot_id = "L-83120001-01", security_id = "SEC-0001", value = "520000", acquired = 2005-03-14, basis_pct = "31" },
+  { lot_id = "L-83120001-02", security_id = "SEC-0010", value = "260000", acquired = 2009-08-03, basis_pct = "45" },
+  { lot_id = "L-83120001-03", security_id = "SEC-0049", value = "180000", acquired = 2012-11-05, basis_pct = "62" },
+  { lot_id = "L-83120001-04", security_id = "SEC-0003", value = "210000", acquired = 2017-04-10, basis_pct = "101" },
+]
+
+[[accounts]]
+account_id = "SYN-83120002"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Eleanor Whitfield"
+opened = 2001-02-20
+owners = ["P-8312-1"]
+cash = "9000.00"
+holdings = [
+  { lot_id = "L-83120002-01", security_id = "SEC-0014", value = "240000", acquired = 2014-06-02, basis_pct = "100" },
+  { lot_id = "L-83120002-02", security_id = "SEC-0013", value = "160000", acquired = 2016-03-07, basis_pct = "100" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-8312-1"
+filing_status = "married_filing_jointly"
+person_ids = ["P-8312-1", "P-8312-2"]
+
+[[billing_groups]]
+billing_group_id = "BG-8312-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-83120001", "SYN-83120002"]
+
+[[disclosures]]
+person_id = "P-8312-1"
+account_ids = ["SYN-83120001", "SYN-83120002"]
+
+[[disclosures]]
+person_id = "P-8312-2"
+account_ids = ["SYN-83120001", "SYN-83120002"]
+
+[[agreements]]
+agreement_id = "AGR-8312-1"
+kind = "advisory"
+party_ids = ["P-8312-1", "P-8312-2"]
+account_ids = ["SYN-83120001", "SYN-83120002"]
+signed = 1998-05-11
+summary = "Advisory agreement for the joint account and Eleanor's IRA, billed together as one group on the standard fee schedule."
+
+[[beneficiaries]]
+account_id = "SYN-83120002"
+designation = "primary"
+name = "Rafael Mendoza"
+relationship = "spouse"
+share = "100"
+person_id = "P-8312-2"
+designated = 2001-02-20
+
+[[beneficiaries]]
+account_id = "SYN-83120002"
+designation = "contingent"
+name = "Sofia Mendoza"
+relationship = "daughter"
+share = "50"
+designated = 2001-02-20
+
+[[beneficiaries]]
+account_id = "SYN-83120002"
+designation = "contingent"
+name = "Mateo Mendoza"
+relationship = "son"
+share = "50"
+designated = 2001-02-20
+
+[[crm_activities]]
+activity_id = "CA-8312-01"
+date = 2025-06-20
+kind = "death_notification"
+refers_to = 2025-06-18
+person_id = "P-8312-2"
+summary = "Eleanor Whitfield called to tell us that Rafael Mendoza died on 2025-06-18. A certified copy of the death certificate is on file."
+
+[[crm_activities]]
+activity_id = "CA-8312-02"
+date = 2025-06-24
+kind = "custodian_request"
+summary = "Sent the custodian the death certificate for Rafael Mendoza and asked for date-of-death values on joint account SYN-83120001, and for the basis of his half of each lot to be stepped up to its value on 2025-06-18."
+
+[[crm_activities]]
+activity_id = "CA-8312-03"
+date = 2025-07-08
+kind = "beneficiary_form_sent"
+summary = "Sent Eleanor Whitfield a beneficiary change form for her IRA SYN-83120002, which still names Rafael Mendoza as primary beneficiary. Not yet returned."
+
+# The survivor's Social Security benefits for 2025 (SSA-1099 box 5).
+[[income]]
+person_id = "P-8312-1"
+kind = "social_security"
+payer = "Social Security Administration"
+amount = "30612.00"
+year = 2025
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.55", band = "0.05" },
+  { asset_class = "Fixed income", target = "0.40", band = "0.05" },
+]
+restrictions = []
+concentration_limit = "0.35"
+asset_classes = { "SEC-0001" = "US equity", "SEC-0003" = "Fixed income", "SEC-0010" = "US equity", "SEC-0013" = "US equity", "SEC-0014" = "Fixed income", "SEC-0049" = "US equity" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-8312-1", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [{ person_id = "P-8312-1", basis = "0.00" }]
+
+[[activity]]
+type = "withdrawal"
+date = 2025-03-10
+account_id = "SYN-83120001"
+amount = "8000.00"
+
+[[activity]]
+type = "death"
+date = 2025-06-18
+account_id = "SYN-83120001"
+person_id = "P-8312-2"
+share = "0.5"
+
+[[activity]]
+type = "withdrawal"
+date = 2025-07-15
+account_id = "SYN-83120001"
+amount = "14000.00"
+
+[planted]
+item_id = "PI-0009"
+type = "step_up_lag"

@@ -18,7 +18,7 @@ from random import Random
 from pypdf import PdfReader
 
 from casebook.checks.book import book_price_rows
-from casebook.model.archetypes import ARCHETYPES, HELD_OUT_ARCHETYPES, PRIVATE_PAIRS, frozen
+from casebook.model.archetypes import ARCHETYPES, HELD_OUT_ARCHETYPES, PRIVATE_PAIRS
 from casebook.model.dates import PRIOR_YEAR_END, SCENARIO_DATE, parse_date
 from casebook.model.files import (
     BUY,
@@ -123,8 +123,10 @@ class AuditLine:
 
 
 def draw_households(book: Path, rng: Random) -> tuple[str, ...]:
-    """One household per archetype, then five more from the rest, each drawn once; refuses a book that is
-    not the public build (a private pair, or a held-out household before the freeze)."""
+    """One household per archetype, then five more from the rest, each drawn once, from the households public
+    when the audit was drawn: archetypes 7 and 8's featured pairs, which the freeze moves in afterwards, are
+    never drawn, so the audited 15 are the same before and after the move-in and the owner's log stays the
+    worksheet's. Refuses a book that holds a private pair."""
     sealed = {str(h["household_id"]): h for h in read_json(book, SEALED_HOUSEHOLDS)["households"]}
     by_archetype: dict[int, list[str]] = defaultdict(list)
     for household in read_manifest(book).households:
@@ -132,8 +134,8 @@ def draw_households(book: Path, rng: Random) -> tuple[str, ...]:
         archetype, pair = int(entry["archetype"]), int(entry["pair"])
         if entry["set"] != FEATURED and (archetype, pair) in PRIVATE_PAIRS:
             raise AuditDrawError(f"{household.household_id} is a private pair: draw from the public build")
-        if entry["set"] == FEATURED and archetype in HELD_OUT_ARCHETYPES and not frozen():
-            raise AuditDrawError(f"{household.household_id} is held out until the freeze: draw from the public build")
+        if entry["set"] == FEATURED and archetype in HELD_OUT_ARCHETYPES:
+            continue
         by_archetype[archetype].append(household.household_id)
     missing = sorted(set(ARCHETYPES) - set(by_archetype))
     if missing:

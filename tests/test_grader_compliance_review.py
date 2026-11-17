@@ -81,9 +81,10 @@ SWEEP = {
     "HH-0984": (["SEC-0048"], []),
     "HH-3058": (["SEC-0028"], ["US equity", "International equity", "Fixed income"]),
     "HH-3462": ([], ["Fixed income"]),
+    # Archetype 8's pair, public since the freeze, drifts in both classes (hand-worked in tests/test_key_ips_review.py).
     **{
         h: ([], ["US equity", "Fixed income"])
-        for h in ("HH-5271", "HH-5814", "HH-6047", "HH-6590", "HH-9234", "HH-9571")
+        for h in ("HH-5271", "HH-5814", "HH-6047", "HH-6590", "HH-8312", "HH-8865", "HH-9234", "HH-9571")
     },
 }
 
@@ -123,7 +124,7 @@ def _ips_answer(sweep: dict[str, tuple[list[str], list[str]]] = SWEEP, **fields:
                 "source": "households/HH-3058/custodian/positions.csv",
             }
         ],
-        "explanation": "Five executives hold their employer stock above the limit; eight households drift.",
+        "explanation": "Five executives hold their employer stock above the limit; ten households drift.",
     }
     answer.update(fields)
     return f"```json\n{json.dumps(answer, indent=2)}\n```\n"

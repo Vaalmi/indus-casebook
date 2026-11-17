@@ -27,6 +27,13 @@ MISSED = {
     "HH-0664": ("P-0664-1", "SYN-06640004"),
     "HH-0842": ("P-0842-1", "SYN-08420002"),
     "HH-5271": ("P-5271-1", "SYN-52710004"),
+    # Archetype 7's featured trap, public since the freeze (book/scripted/archetype-7/expected.json): Samuel
+    # Adeyemi, born 30 May 1974, inherited SYN-71260002 from Florence, born 11 February 1946, who died on 19 July
+    # 2023, after her required beginning date of 1 April 2017. Samuel is 50 in 2024: 36.2, less 1 = 35.2. On 31
+    # December 2024 the account held 169,999.61 + 149,777.00 + 49,878.30 + 9,000.00 cash = 378,654.91, / 35.2 =
+    # 10,757.24, and in 2025 it paid only fees. Its twin HH-7683 owes no annual RMD (Carla died before her
+    # required beginning date), and archetype 8's owners, born 1955 and 1956, are not yet 73.
+    "HH-7126": ("P-7126-1", "SYN-71260002"),
 }
 
 
@@ -90,7 +97,7 @@ def _output(households: list[dict[str, Any]], finding: str = "found") -> str:
                 "computed": True,
             }
         ],
-        "explanation": "Five 401(k)s paid nothing in a first distribution year; four inherited IRAs paid nothing.",
+        "explanation": "Five 401(k)s paid nothing in a first distribution year; five inherited IRAs paid nothing.",
     }
     return f"```json\n{json.dumps(answer, indent=2)}\n```\n"
 

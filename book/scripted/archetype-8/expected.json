@@ -1,0 +1,26 @@
+{
+  "about": "Hand-worked expected values for tests/test_plant_a08.py. Held out with the pair: the public test reads them from here so the answer stays out of the repo until the freeze.",
+  "trap": {
+    "household_id": "HH-8312",
+    "item_id": "PI-0009",
+    "joint_account": "SYN-83120001",
+    "died": "2025-06-18",
+    "working": [
+      "The first lot: 1,960 units of SEC-0001 at a basis of 161,141.60. Rafael's half, 980 units, steps up to 980 x 269.15 = 263,767.00 on 2025-06-18; Eleanor's half keeps 161,141.60 - 80,570.80 = 80,570.80. The correct basis is 344,337.80, understated by 183,196.20."
+    ],
+    "first_lot": "L-83120001-01",
+    "first_lot_row": ["$161,141.60", "269.15", "$527,534.00", "$344,337.80", "$183,196.20"],
+    "stale_primary": ["SYN-83120002", "Rafael Mendoza", "P-8312-2"],
+    "stale_figure": ["SYN-83120002 primary beneficiary", "Rafael Mendoza, died 2025-06-18"],
+    "new_beneficiaries": [["SYN-83120002", "Sofia Mendoza", "daughter"], ["SYN-83120002", "Mateo Mendoza", "son"]],
+    "refusals": {
+      "named_new": "still names Rafael Mendoza as primary beneficiary",
+      "no_death_record": "no death notification in the CRM names Rafael Mendoza"
+    }
+  },
+  "twin": {
+    "household_id": "HH-8865",
+    "stale": ["SYN-88650002", "Vikram Arora", "P-8865-2"],
+    "refusal": "SYN-88650002 still names Vikram Arora as a beneficiary"
+  }
+}

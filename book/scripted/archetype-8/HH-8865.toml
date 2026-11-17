@@ -1,0 +1,175 @@
+# Archetype 8, pair 1, twin: clean (held out until the freeze). Vikram dies in May 2025.
+# He and Helen held their joint account as joint tenants with right of survivorship, and
+# the custodian booked the step-up of his half of each lot on the day he died. Helen has
+# since named their children as her IRA's beneficiaries in his place.
+household_id = "HH-8865"
+name = "Arora household"
+archetype = 8
+pair = 1
+role = "twin"
+configured = 1999-10-04
+
+[[members]]
+person_id = "P-8865-1"
+name = "Helen Arora"
+born = 1955-04-12
+relationship = "primary"
+email = "helen.arora@mail.example"
+phone = "555-0168"
+tax_id = "000-88-6501"
+
+[[members]]
+person_id = "P-8865-2"
+name = "Vikram Arora"
+born = 1950-09-03
+relationship = "spouse"
+email = "vikram.arora@mail.example"
+phone = "555-0169"
+tax_id = "000-88-6502"
+died = 2025-05-28
+
+[[accounts]]
+account_id = "SYN-88650001"
+account_type = "joint_taxable"
+registration = "Joint tenants with right of survivorship"
+opened = 1999-10-04
+owners = ["P-8865-1", "P-8865-2"]
+cash = "30000.00"
+holdings = [
+  { lot_id = "L-88650001-01", security_id = "SEC-0001", value = "480000", acquired = 2006-02-13, basis_pct = "33" },
+  { lot_id = "L-88650001-02", security_id = "SEC-0010", value = "240000", acquired = 2010-05-03, basis_pct = "47" },
+  { lot_id = "L-88650001-03", security_id = "SEC-0049", value = "170000", acquired = 2013-09-09, basis_pct = "60" },
+  { lot_id = "L-88650001-04", security_id = "SEC-0003", value = "220000", acquired = 2017-06-05, basis_pct = "100" },
+]
+
+[[accounts]]
+account_id = "SYN-88650002"
+account_type = "traditional_ira"
+registration = "Traditional IRA, Helen Arora"
+opened = 2002-03-18
+owners = ["P-8865-1"]
+cash = "8000.00"
+holdings = [
+  { lot_id = "L-88650002-01", security_id = "SEC-0014", value = "230000", acquired = 2014-06-02, basis_pct = "100" },
+  { lot_id = "L-88650002-02", security_id = "SEC-0013", value = "150000", acquired = 2016-03-07, basis_pct = "100" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-8865-1"
+filing_status = "married_filing_jointly"
+person_ids = ["P-8865-1", "P-8865-2"]
+
+[[billing_groups]]
+billing_group_id = "BG-8865-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-88650001", "SYN-88650002"]
+
+[[disclosures]]
+person_id = "P-8865-1"
+account_ids = ["SYN-88650001", "SYN-88650002"]
+
+[[disclosures]]
+person_id = "P-8865-2"
+account_ids = ["SYN-88650001", "SYN-88650002"]
+
+[[agreements]]
+agreement_id = "AGR-8865-1"
+kind = "advisory"
+party_ids = ["P-8865-1", "P-8865-2"]
+account_ids = ["SYN-88650001", "SYN-88650002"]
+signed = 1999-10-04
+summary = "Advisory agreement for the joint account and Helen's IRA, billed together as one group on the standard fee schedule."
+
+# Helen's designation of 12 August 2025 replaced the one naming Vikram.
+[[beneficiaries]]
+account_id = "SYN-88650002"
+designation = "primary"
+name = "Nisha Arora"
+relationship = "daughter"
+share = "50"
+designated = 2025-08-12
+
+[[beneficiaries]]
+account_id = "SYN-88650002"
+designation = "primary"
+name = "Dev Arora"
+relationship = "son"
+share = "50"
+designated = 2025-08-12
+
+[[crm_activities]]
+activity_id = "CA-8865-01"
+date = 2025-05-30
+kind = "death_notification"
+refers_to = 2025-05-28
+person_id = "P-8865-2"
+summary = "Helen Arora called to tell us that Vikram Arora died on 2025-05-28. A certified copy of the death certificate is on file."
+
+[[crm_activities]]
+activity_id = "CA-8865-02"
+date = 2025-06-03
+kind = "custodian_request"
+summary = "Sent the custodian the death certificate for Vikram Arora and asked for date-of-death values on joint account SYN-88650001, and for the basis of his half of each lot to be stepped up to its value on 2025-05-28."
+
+[[crm_activities]]
+activity_id = "CA-8865-03"
+date = 2025-08-12
+kind = "beneficiary_form_received"
+summary = "Received Helen Arora's signed beneficiary change for her IRA SYN-88650002: Nisha Arora and Dev Arora as primary beneficiaries, 50% each, in place of Vikram Arora. The custodian confirmed it the same day."
+
+# The survivor's Social Security benefits for 2025 (SSA-1099 box 5).
+[[income]]
+person_id = "P-8865-1"
+kind = "social_security"
+payer = "Social Security Administration"
+amount = "33036.00"
+year = 2025
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.55", band = "0.05" },
+  { asset_class = "Fixed income", target = "0.40", band = "0.05" },
+]
+restrictions = []
+concentration_limit = "0.35"
+asset_classes = { "SEC-0001" = "US equity", "SEC-0003" = "Fixed income", "SEC-0010" = "US equity", "SEC-0013" = "US equity", "SEC-0014" = "Fixed income", "SEC-0049" = "US equity" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-8865-1", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [{ person_id = "P-8865-1", basis = "0.00" }]
+
+[[activity]]
+type = "withdrawal"
+date = 2025-02-10
+account_id = "SYN-88650001"
+amount = "7000.00"
+
+[[activity]]
+type = "death"
+date = 2025-05-28
+account_id = "SYN-88650001"
+person_id = "P-8865-2"
+share = "0.5"
+
+[[activity]]
+type = "withdrawal"
+date = 2025-06-23
+account_id = "SYN-88650001"
+amount = "12000.00"
+
+[twin]
+kind = "clean"
+explanation = "Clean. Like HH-8312, a spouse dies in mid-2025 and half of each lot in the couple's joint account steps up to its value on the day. Here the custodian booked the step-up, so its tax lots carry the right basis, and the survivor has replaced her late husband as her IRA's beneficiary with their children."

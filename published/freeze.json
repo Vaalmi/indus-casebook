@@ -1,0 +1,204 @@
+{
+  "hashes": {
+    "checklist": "ead7d7aeeab2ec9cbdd635f839b2c978ee7dde047260bd67e035643e2bb2fdc8",
+    "grader backdoor_roth_follow_up": "b286cb2a79c50dcdf55bde3b5f97999ac8ce9567e19ad5dd82e78e71a96c5537",
+    "grader billing_groups": "98b8cba04427876f6478bf934df173303f50ed3ca006fc05952ceaf3e70718f6",
+    "grader concentration_basis": "2446cc3086113b3ccd27c27dd168f061cab8c253f354e14053cdfc8d5636f96e",
+    "grader conversion_documentation": "0d047dcffb10552f4231e3987ec0ba1d2215afbd6bccb5b2ecebafddf7384fee",
+    "grader conversion_meeting_prep": "f70669e1c8e4d78ccda892d774f81e6ae256c64b7a902ced6a7be4e0c98bf4e1",
+    "grader fee_reconciliation": "0930cfaa6d03681f510b10fa3074814f32abbe9b690bb08168b70d5a00804208",
+    "grader ips_sweep": "f98ded23e10205a78c1ad31f8e0d5240b01b5846f1f6869c0dc703dc1374421c",
+    "grader ira_distributions": "25f6004b24aff8b6a4979d7e0f6abc67293078ee41953b8566cf1b096fa4d8b5",
+    "grader ira_taxable_distributions": "4d188819edfe6b6d2b67a428f5a66bb58a3e01f5f6ce328be334a2334f695827",
+    "grader loss_harvesting_review": "d9d3c3006fba3a997b7bb65462cf90538b958aebc09309f34f497f30550a9102",
+    "grader niit_follow_up": "ad57ec6cde78c849c7617911689fafd8b96fe53f6098100eb9a086587924a735",
+    "grader open_follow_ups": "b6171742daa51ad0347d65bfb8060493510e31376af627f48b70ced6d7759605",
+    "grader positions_vs_portfolio": "50483931048077ea201c453d0d1719f200502915ac9bb5fcabba5d39d4cd2397",
+    "grader registry": "34403a77178858c79a807f34ba625151e9d03ca0aed3cf56a44fc7c30e8eaf73",
+    "grader rmd_review": "7901fe4de76623a72f41c6b08660bb8a1e75b2c4dd691be616eb45c36fb961f9",
+    "grader rmd_sweep": "aa35241e13957b2d848c55929e6c02f6294c9231308fb391be675fd111cdbb6d",
+    "grader source_disagreements": "4057c0dff96abd02348a7400969481f72ca827c9c02c966c9aa0b19be26d15d6",
+    "grader tax_surprises": "80e938a1f304716b859e3f4d3fbefd0e6f19232951fe8c89fde3a92bd3e0944a",
+    "grader wash_sale_review": "ebfdd0bb6d1b66ee1d32d1d465ad8b7eea69953ca074327111b9b86456e863b3",
+    "grader wash_sale_sweep": "56ac7fe8efcfaae4916de4a0864c6d996e55f9a87b6ee6f0d40645cc1d9756a7",
+    "skill compliance-review": "b47b2ab0e99ff8b98fd81494310cfd28fcd079a80bb9faaeed4b4a5da5b83e34",
+    "skill meeting-follow-up": "f7a6f690fc5dc604d8f8cc76fa40acdfdaea57132800ad3780da1fcede1ae5ed",
+    "skill package": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "skill reconciliation-as-of": "60ee37766282450a87a218f6aec46f424f0751486fffb6a2dd841c27cbb10b7c",
+    "skill tax-lot-rmd": "b0204ecd49aa601ccf8d5953b531c6f8cd4bcaed21b7d9825a67c0030b5b0c31"
+  },
+  "recorded_utc": "2026-11-17T15:35:19+00:00",
+  "self_tests": {
+    "backdoor_roth_follow_up": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_backdoor_roth.py",
+        "tests/test_grader_backdoor_roth_follow_up.py"
+      ],
+      "passed": 39,
+      "result": "pass"
+    },
+    "billing_groups": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_billing_groups.py",
+        "tests/test_grader_household_list.py"
+      ],
+      "passed": 35,
+      "result": "pass"
+    },
+    "concentration_basis": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_concentration_basis.py",
+        "tests/test_grader_concentration_basis.py"
+      ],
+      "passed": 18,
+      "result": "pass"
+    },
+    "conversion_documentation": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_conversion_documentation.py",
+        "tests/test_grader_conversion_documentation.py"
+      ],
+      "passed": 16,
+      "result": "pass"
+    },
+    "conversion_meeting_prep": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_conversion_documentation.py",
+        "tests/test_grader_conversion_meeting_prep.py"
+      ],
+      "passed": 16,
+      "result": "pass"
+    },
+    "fee_reconciliation": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_fee_reconciliation.py",
+        "tests/test_grader_fee_reconciliation.py"
+      ],
+      "passed": 44,
+      "result": "pass"
+    },
+    "ips_sweep": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_ips_review.py",
+        "tests/test_grader_compliance_review.py"
+      ],
+      "passed": 30,
+      "result": "pass"
+    },
+    "ira_distributions": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_ira_distributions.py",
+        "tests/test_grader_ira_distributions.py"
+      ],
+      "passed": 23,
+      "result": "pass"
+    },
+    "ira_taxable_distributions": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_ira_distributions.py",
+        "tests/test_grader_ira_taxable_distributions.py"
+      ],
+      "passed": 16,
+      "result": "pass"
+    },
+    "loss_harvesting_review": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_loss_harvesting.py",
+        "tests/test_grader_loss_harvesting_review.py"
+      ],
+      "passed": 13,
+      "result": "pass"
+    },
+    "niit_follow_up": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_niit.py",
+        "tests/test_grader_niit_follow_up.py"
+      ],
+      "passed": 23,
+      "result": "pass"
+    },
+    "open_follow_ups": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_open_follow_ups.py",
+        "tests/test_grader_household_list.py"
+      ],
+      "passed": 38,
+      "result": "pass"
+    },
+    "positions_vs_portfolio": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_positions_vs_portfolio.py",
+        "tests/test_grader_household_list.py"
+      ],
+      "passed": 34,
+      "result": "pass"
+    },
+    "rmd_review": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_rmd.py",
+        "tests/test_grader_rmd_review.py"
+      ],
+      "passed": 48,
+      "result": "pass"
+    },
+    "rmd_sweep": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_rmd_sweep.py",
+        "tests/test_grader_household_list.py"
+      ],
+      "passed": 32,
+      "result": "pass"
+    },
+    "source_disagreements": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_source_disagreements.py",
+        "tests/test_grader_compliance_review.py"
+      ],
+      "passed": 32,
+      "result": "pass"
+    },
+    "tax_surprises": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_tax_surprises.py",
+        "tests/test_grader_household_list.py"
+      ],
+      "passed": 28,
+      "result": "pass"
+    },
+    "wash_sale_review": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_wash_sales.py",
+        "tests/test_grader_wash_sale_review.py"
+      ],
+      "passed": 47,
+      "result": "pass"
+    },
+    "wash_sale_sweep": {
+      "failed": 0,
+      "files": [
+        "tests/test_key_wash_sale_sweep.py",
+        "tests/test_grader_household_list.py"
+      ],
+      "passed": 37,
+      "result": "pass"
+    }
+  }
+}

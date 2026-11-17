@@ -94,7 +94,11 @@
     "HH-5814": { "archetype": 5, "pair": 1, "role": "twin" },
     "HH-6047": { "archetype": 6, "pair": 1, "role": "trap" },
     "HH-6590": { "archetype": 6, "pair": 1, "role": "twin" },
+    "HH-7126": { "archetype": 7, "pair": 1, "role": "trap" },
     "HH-7350": { "archetype": 10, "pair": 1, "role": "twin" },
+    "HH-7683": { "archetype": 7, "pair": 1, "role": "twin" },
+    "HH-8312": { "archetype": 8, "pair": 1, "role": "trap" },
+    "HH-8865": { "archetype": 8, "pair": 1, "role": "twin" },
     "HH-9234": { "archetype": 9, "pair": 1, "role": "trap" },
     "HH-9571": { "archetype": 9, "pair": 1, "role": "twin" }
   },

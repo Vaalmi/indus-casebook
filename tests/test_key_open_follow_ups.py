@@ -157,31 +157,40 @@ def test_a_record_the_key_cannot_read_is_refused(tmp_path: Path, activities: Any
         household_follow_ups(household(tmp_path, activities, [], notes), AS_OF)
 
 
-def test_the_whole_book_finds_four_households_with_an_open_follow_up(full_book: Path) -> None:
+def test_the_whole_book_finds_five_households_with_an_open_follow_up(full_book: Path) -> None:
     key = open_follow_ups_key(full_book, AS_OF)
-    # The four background traps of archetype 8: the custodian has booked no step-up for the deceased spouse's
-    # half of the joint account, and three of the four survivors have not returned the beneficiary form.
+    # Archetype 8's five traps, the featured HH-8312 (public since the freeze) and the four in the background: the
+    # custodian has booked no step-up for the deceased spouse's half of the joint account, and four of the five
+    # survivors have not returned the beneficiary form. HH-8312 asked for the step-up on SYN-83120001 on
+    # 2025-06-24 (CA-8312-02) and sent the form for SYN-83120002 on 2025-07-08 (CA-8312-03); its custodian files
+    # hold no STEP_UP and its CRM no later form received. Archetype 7's pair each signed a beneficiary claim
+    # (CA-7126-02, CA-7683-02) that the inherited IRAs SYN-71260002 and SYN-76830002 settle.
     assert dict(key.found) == {
         "HH-0168": ("CA-0168-02",),
         "HH-0193": ("CA-0193-02", "CA-0193-03"),
         "HH-0265": ("CA-0265-02", "CA-0265-03"),
         "HH-0611": ("CA-0611-02", "CA-0611-03"),
+        "HH-8312": ("CA-8312-02", "CA-8312-03"),
     }
-    # Their twins show the step-up booked (T-0642-0017 on the day of Olumide's death, 2025-08-01).
+    # Their twins show the step-up booked (T-0642-0017 on the day of Olumide's death, 2025-08-01; T-8865-0011 on
+    # the day of Vikram's, 2025-05-28), and HH-8865 received Helen's form on 2025-08-12 (CA-8865-03).
     (step_up,) = [f for f in key.follow_ups["HH-0642"] if f.kind == "custodian_request"]
     assert step_up.evidence == ("T-0642-0017",)
+    (step_up,) = [f for f in key.follow_ups["HH-8865"] if f.kind == "custodian_request"]
+    assert step_up.evidence == ("T-8865-0011",)
     assert key.unresolved == ()
 
 
 def test_earlier_in_the_year_two_distribution_instructions_were_still_unpaid(full_book: Path) -> None:
     # On 20 February 2026: HH-0120 signed on 2026-02-09 for 45,492.56 from SYN-01200002, paid 2026-03-03; HH-0637
     # signed on 2026-01-28 for 32,623.00 from SYN-06370002, paid 2026-03-18. HH-0371's 2025-10-24 instruction was
-    # paid on 2026-02-18, and HH-0989's on 2026-01-21, so theirs had happened.
+    # paid on 2026-02-18, and HH-0989's on 2026-01-21, so theirs had happened. With archetype 8's five traps,
+    # open since mid-2025, that is seven.
     key = open_follow_ups_key(full_book, date(2026, 2, 20))
     assert key.found["HH-0120"] == ("CA-0120-02",)
     assert key.found["HH-0637"] == ("CA-0637-03",)
     assert "HH-0371" not in key.found and "HH-0989" not in key.found
-    assert len(key.found) == 6
+    assert len(key.found) == 7
 
 
 def _answer(households: list[dict[str, Any]], finding: str = "found") -> str:
@@ -190,7 +199,7 @@ def _answer(households: list[dict[str, Any]], finding: str = "found") -> str:
         "households": households,
         "unresolved": [],
         "figures": [],
-        "explanation": "The custodian booked no step-up after the requests, and three beneficiary forms are out.",
+        "explanation": "The custodian booked no step-up after the requests, and four beneficiary forms are out.",
     }
     return f"```json\n{json.dumps(answer)}\n```\n"
 
@@ -200,6 +209,7 @@ CLEAN = [
     {"household_id": "HH-0193", "activity_ids": ["CA-0193-02", "CA-0193-03"], "explanation": "Step-up and form."},
     {"household_id": "HH-0265", "activity_ids": ["CA-0265-02", "CA-0265-03"], "explanation": "Step-up and form."},
     {"household_id": "HH-0611", "activity_ids": ["CA-0611-02", "CA-0611-03"], "explanation": "Step-up and form."},
+    {"household_id": "HH-8312", "activity_ids": ["CA-8312-02", "CA-8312-03"], "explanation": "Step-up and form."},
 ]
 
 

@@ -71,12 +71,22 @@ SWEEP = {
     "HH-5814": ("US equity", "Fixed income"),
     "HH-6047": ("US equity", "Fixed income"),
     "HH-6590": ("US equity", "Fixed income"),
+    # Archetype 8's pair, public since the freeze, holds 55 +/- 5 US equity and 40 +/- 5 fixed income with a 35%
+    # limit. HH-8312: US equity 539,862.40 + 279,324.78 + 192,897.12 + 226,690.41 = 1,238,774.71; fixed income
+    # 202,521.76 + 261,834.88 = 464,356.64; cash 8,611.43 + 7,394.61 = 16,006.04; total 1,719,137.39, so 72.06% and
+    # 27.01%. Fallowmere Utilities Group, its one stock, is 192,897.12, 11.22%.
+    "HH-8312": ("US equity", "Fixed income"),
+    # HH-8865: US equity 498,270.96 + 257,982.27 + 182,077.57 + 212,425.35 = 1,150,756.15; fixed income
+    # 212,419.44 + 250,933.08 = 463,352.52; cash 6,786.80 + 6,442.50 = 13,229.30; total 1,627,337.97, so 70.71% and
+    # 28.47%; Fallowmere 182,077.57 is 11.19%. Archetype 7's pair sits inside every band (53 +/- 5, 17 +/- 5,
+    # 30 +/- 5): HH-7126 at 52.91%, 17.38%, 27.59% of 825,120.10; HH-7683 at 52.99%, 17.14%, 27.77% of 772,441.90.
+    "HH-8865": ("US equity", "Fixed income"),
     "HH-9234": ("US equity", "Fixed income"),
     "HH-9571": ("US equity", "Fixed income"),
 }
 
 
-def test_the_sweep_finds_twelve_households_on_the_public_book(full_book: Path) -> None:
+def test_the_sweep_finds_fourteen_households_on_the_public_book(full_book: Path) -> None:
     key = ips_sweep_key(full_book, AS_OF)
     assert len(key.checked) == PUBLIC_HOUSEHOLDS
     assert dict(key.found) == SWEEP

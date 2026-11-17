@@ -21,7 +21,7 @@ Work only from these files. End your answer with one fenced json block with thes
 """
 
 justified_conclusion = """
-Nine households had a 2025 required minimum distribution that was not met. In five, HH-0120, HH-0236, HH-0371, HH-0664 and HH-5271, an owner in the first distribution year took the IRAs' RMDs from one IRA but nothing from a former employer's 401(k), whose RMD only the plan can pay. In four, HH-0466, HH-0491, HH-0607 and HH-0842, the beneficiary of an inherited IRA took nothing in 2025 although the decedent died after the required beginning date, so the ten-year rule requires an annual RMD. Look-alikes that took a first-year RMD early in 2026, by 1 April, or took all their IRAs' RMDs from one IRA, met theirs.
+Ten households had a 2025 required minimum distribution that was not met. In five, HH-0120, HH-0236, HH-0371, HH-0664 and HH-5271, an owner in the first distribution year took the IRAs' RMDs from one IRA but nothing from a former employer's 401(k), whose RMD only the plan can pay. In five, HH-0466, HH-0491, HH-0607, HH-0842 and HH-7126, the beneficiary of an inherited IRA took nothing in 2025 although the decedent died after the required beginning date, so the ten-year rule requires an annual RMD. Look-alikes that took a first-year RMD early in 2026, by 1 April, or took all their IRAs' RMDs from one IRA, met theirs, and HH-7683's decedent died before her required beginning date, so it owes no annual RMD.
 """
 
 [expected_output]

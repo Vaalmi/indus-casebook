@@ -1,0 +1,182 @@
+# Archetype 7, pair 1, trap (held out until the freeze). Samuel inherited his mother Florence's
+# traditional IRA when she died in July 2023, at 77, long after her required beginning date. As a
+# non-spouse beneficiary he must empty the account by the end of 2033, and because she died after
+# her required beginning date he must also take an RMD every year from 2024 to 2032. The waivers
+# covered 2024; from 2025 the final regulations apply. Nothing was taken in 2025.
+household_id = "HH-7126"
+name = "Adeyemi household"
+archetype = 7
+pair = 1
+role = "trap"
+configured = 2016-11-07
+
+[[members]]
+person_id = "P-7126-1"
+name = "Samuel Adeyemi"
+born = 1974-05-30
+relationship = "primary"
+email = "samuel.adeyemi@mail.example"
+phone = "555-0145"
+tax_id = "000-71-2601"
+
+[[members]]
+person_id = "P-7126-2"
+name = "Lena Adeyemi"
+born = 1976-12-03
+relationship = "spouse"
+email = "lena.adeyemi@mail.example"
+phone = "555-0146"
+tax_id = "000-71-2602"
+
+[[accounts]]
+account_id = "SYN-71260001"
+account_type = "joint_taxable"
+registration = "Joint tenants with right of survivorship"
+opened = 2016-11-07
+owners = ["P-7126-1", "P-7126-2"]
+cash = "18000.00"
+holdings = [
+  { lot_id = "L-71260001-01", security_id = "SEC-0001", value = "240000", acquired = 2016-11-21, basis_pct = "55" },
+  { lot_id = "L-71260001-02", security_id = "SEC-0002", value = "80000", acquired = 2018-04-09, basis_pct = "83" },
+  { lot_id = "L-71260001-03", security_id = "SEC-0014", value = "90000", acquired = 2020-10-05, basis_pct = "104" },
+]
+
+[[accounts]]
+account_id = "SYN-71260002"
+account_type = "inherited_ira"
+registration = "Inherited IRA, Florence Adeyemi, deceased 2023-07-19, FBO Samuel Adeyemi"
+opened = 2023-10-02
+owners = ["P-7126-1"]
+decedent = { name = "Florence Adeyemi", born = 1946-02-11, died = 2023-07-19 }
+cash = "9000.00"
+holdings = [
+  { lot_id = "L-71260002-01", security_id = "SEC-0001", value = "170000", acquired = 2023-10-04, basis_pct = "100" },
+  { lot_id = "L-71260002-02", security_id = "SEC-0003", value = "150000", acquired = 2023-10-04, basis_pct = "100" },
+  { lot_id = "L-71260002-03", security_id = "SEC-0006", value = "50000", acquired = 2023-10-04, basis_pct = "100" },
+]
+
+[[tax_units]]
+tax_unit_id = "TU-7126-1"
+filing_status = "married_filing_jointly"
+person_ids = ["P-7126-1", "P-7126-2"]
+
+[[billing_groups]]
+billing_group_id = "BG-7126-1"
+schedule_id = "FS-STD"
+account_ids = ["SYN-71260001", "SYN-71260002"]
+
+[[disclosures]]
+person_id = "P-7126-1"
+account_ids = ["SYN-71260001", "SYN-71260002"]
+
+[[disclosures]]
+person_id = "P-7126-2"
+account_ids = ["SYN-71260001"]
+
+[[agreements]]
+agreement_id = "AGR-7126-1"
+kind = "advisory"
+party_ids = ["P-7126-1", "P-7126-2"]
+account_ids = ["SYN-71260001"]
+signed = 2016-11-07
+summary = "Advisory agreement for the joint account on the standard fee schedule."
+
+[[agreements]]
+agreement_id = "AGR-7126-2"
+kind = "advisory"
+party_ids = ["P-7126-1"]
+account_ids = ["SYN-71260002"]
+signed = 2023-10-02
+summary = "Advisory agreement for Samuel's inherited IRA from his mother, Florence Adeyemi, on the standard fee schedule, billed with the joint account."
+
+# Successor beneficiary of the inherited IRA.
+[[beneficiaries]]
+account_id = "SYN-71260002"
+designation = "primary"
+name = "Lena Adeyemi"
+relationship = "spouse"
+share = "100"
+person_id = "P-7126-2"
+designated = 2023-10-02
+
+[[crm_activities]]
+activity_id = "CA-7126-01"
+date = 2023-09-12
+kind = "death_certificate"
+summary = "Certified death certificate received for Florence Adeyemi, Samuel's mother: born 1946-02-11, died 2023-07-19."
+
+[[crm_activities]]
+activity_id = "CA-7126-02"
+date = 2023-09-20
+kind = "beneficiary_claim"
+summary = "Beneficiary claim signed by Samuel Adeyemi, son and sole primary beneficiary of Florence Adeyemi's traditional IRA, electing an inherited IRA in his name."
+
+[[crm_activities]]
+activity_id = "CA-7126-03"
+date = 2023-09-20
+kind = "custodian_confirmation"
+summary = "The prior custodian confirms that Florence Adeyemi had taken required minimum distributions since 2017 and that her 2023 distribution was paid in full before her death."
+
+[fee_schedule]
+schedule_id = "FS-STD"
+basis = "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group"
+tiers = [
+  { up_to = "1000000", annual_rate = "0.0100" },
+  { up_to = "2000000", annual_rate = "0.0080" },
+  { annual_rate = "0.0060" },
+]
+
+[ips]
+targets = [
+  { asset_class = "US equity", target = "0.53", band = "0.05" },
+  { asset_class = "International equity", target = "0.17", band = "0.05" },
+  { asset_class = "Fixed income", target = "0.30", band = "0.05" },
+]
+restrictions = []
+concentration_limit = "0.55"
+asset_classes = { "SEC-0001" = "US equity", "SEC-0002" = "International equity", "SEC-0003" = "Fixed income", "SEC-0006" = "International equity", "SEC-0014" = "Fixed income" }
+
+# Carried in from the 2024 return, filed 15 April 2025.
+[tax_profile]
+known_as_of = 2025-04-15
+loss_carryforwards = [
+  { tax_unit_id = "TU-7126-1", short_term = "0.00", long_term = "0.00" },
+]
+ira_basis = [{ person_id = "P-7126-1", basis = "0.00" }]
+
+[[activity]]
+type = "contribution"
+date = 2025-03-17
+account_id = "SYN-71260001"
+amount = "15000.00"
+
+[[activity]]
+type = "buy"
+date = 2025-03-19
+account_id = "SYN-71260001"
+security_id = "SEC-0001"
+units = "40"
+
+[[activity]]
+type = "sell"
+date = 2025-08-11
+account_id = "SYN-71260002"
+security_id = "SEC-0003"
+units = "40"
+
+[[activity]]
+type = "buy"
+date = 2025-08-13
+account_id = "SYN-71260002"
+security_id = "SEC-0006"
+units = "60"
+
+[[activity]]
+type = "withdrawal"
+date = 2025-12-08
+account_id = "SYN-71260001"
+amount = "12000.00"
+
+[planted]
+item_id = "PI-0008"
+type = "inherited_ira_annual_rmd"

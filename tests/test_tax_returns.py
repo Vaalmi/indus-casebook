@@ -72,10 +72,21 @@ EXPECTED = {
     "TU-6590-1": {"f1040", "f1040s1a"},
     # Single, 46, no income.
     "TU-6590-2": set(),
+    # 51 and 49, no wages; dividends 2,545.62 (the joint account's eight 2025 payments); the only sale was in the
+    # inherited IRA, and nothing was distributed from it.
+    "TU-7126-1": {"f1040", "f1040sb"},
     # Under 65; an 8,000 nondeductible contribution; dividends 6,253.97; one sale.
     "TU-7350-1": {"f1040", "f1040sb", "f1040sd", "f8606", "f8949"},
     # Single, 30: 687.33 of dividends, nothing to file.
     "TU-7350-2": set(),
+    # 50 and 48, no wages; dividends 2,388.26; its one sale was in the inherited IRA, which paid nothing out.
+    "TU-7683-1": {"f1040", "f1040sb"},
+    # 69 and 74 (Rafael died 2025-06-18; a joint return for the year of death); dividends 7,383.19; Social
+    # Security 30,612.00, none taxable (7,383.19 + half of 30,612.00 = 22,689.19, under 32,000); no sale.
+    "TU-8312-1": {"f1040", "f1040s1a", "f1040sb"},
+    # 70 and 74 (Vikram died 2025-05-28); dividends 6,985.78; Social Security 33,036.00, none taxable
+    # (6,985.78 + 16,518.00 = 23,503.78); no sale.
+    "TU-8865-1": {"f1040", "f1040s1a", "f1040sb"},
     # Dividends 4,713.67; one sale at a loss (the wash sale), carried to 2026.
     "TU-9234-1": {"f1040", "f1040sb", "f1040sd", "f8949"},
     # Dividends 4,413.49; one sale.
