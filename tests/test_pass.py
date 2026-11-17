@@ -36,7 +36,7 @@ from casebook.runner.full_pass import (
     schedule,
 )
 from casebook.runner.record import HASH_FIELDS, RECORD_FIELDS, RunRecordError, check_record
-from casebook.runner.run import private_root
+from casebook.runner.run import GradeRefusedError, private_root
 from casebook.site.results import results
 from casebook.site.tasks import load_records
 from casebook.tasks.matrix import load_matrix
@@ -631,7 +631,8 @@ def test_a_completed_run_whose_key_changed_is_kept_ungraded_not_graded_against_a
 
     another = dataclasses.replace(spec, key=another_household_s_key)
     monkeypatch.setitem(registry.GRADERS, "fee_reconciliation", another)
-    assert main(["pass", "--resume", the_pass.pass_id]) == 0
+    # The pass completes, and exits 1: a run it has is not graded (second targeted check).
+    assert main(["pass", "--resume", the_pass.pass_id]) == 1
     assert [run_id.split("-")[3] for run_id in started] == ["basic", "checklist", "skill"]
     done = load_pass(the_pass.pass_id)
     assert [s.state for s in done.slots] == ["mapped", "completed", "mapped"]
@@ -659,3 +660,49 @@ def test_a_run_whose_transcript_was_not_yet_published_is_published_whole_on_resu
     assert main(["pass", "--resume", the_pass.pass_id]) == 0
     assert [run_id.split("-")[3] for run_id in started] == ["basic", "checklist", "skill"]
     assert transcript.is_file() and transcript.read_text().strip()
+
+
+def test_a_private_run_kept_ungraded_holds_back_the_private_counts_and_fails_the_pass_without_a_rerun(
+    tmp_path: Path,
+    real_book: Path,
+    standin_cli: StandIn,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """Reviewers A and B, slice 13 second targeted check: a private run a resume kept completed and ungraded (its
+    grade refused) reached the private summary, whose `outcome` raised an uncaught ResultsError, on this resume
+    and every later one. Now the pass completes without running the slot again, writes no private counts, says
+    why, lists the run, and exits 1."""
+    private_id = "X-" + "REC-09"
+    private = private_tasks(private_root() / "tasks", (private_id,))
+    tasks = public_tasks(tmp_path / "tasks", "T-REC-01")
+    calls, fast = fast_runs(quota_at=0)
+
+    def stops_in_the_private_checklist(*args: Any, **named: Any) -> Any:
+        record = fast(*args, **named)
+        if record["task_id"] == private_id and record["arm"] == "checklist":
+            file = private_root() / "runs" / record["run_id"] / "record.json"
+            file.write_text(json.dumps(record | {"state": "completed", "grade": None}))
+            raise Stopped  # the run completed; its grading had not begun
+        return record
+
+    def refused(*_: Any) -> Any:
+        raise GradeRefusedError("the answer key computed now is not the one it ran with")
+
+    monkeypatch.setattr(full_pass, "run_and_grade", stops_in_the_private_checklist)
+    folders = Folders(tasks, private, real_book, real_book, tmp_path / "keys", tmp_path / "published" / "runs")
+    the_pass = new_pass(folders, 1, SharedConfig(retries=0))
+    with pytest.raises(Stopped):
+        run_pass(the_pass)
+    monkeypatch.setattr(full_pass, "recover_run", refused)
+    capsys.readouterr()
+    assert main(["pass", "--resume", the_pass.pass_id]) == 1
+    assert len(calls) == 6  # the kept run's slot is not run again
+    done = load_pass(the_pass.pass_id)
+    assert done.state == "complete" and sum(s.state == "completed" for s in done.slots) == 1
+    out, err = capsys.readouterr()
+    assert "completed runs not graded: 1" in out
+    assert "private outcome counts not written" in err and "completed with no grade" in err
+    assert not (tmp_path / "published" / "results" / "private-outcomes.json").exists()
+    # Every later resume says the same, and runs nothing.
+    assert main(["pass", "--resume", the_pass.pass_id]) == 1 and len(calls) == 6

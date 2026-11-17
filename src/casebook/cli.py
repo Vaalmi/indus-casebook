@@ -118,7 +118,7 @@ def _run(args: argparse.Namespace) -> int:
 
 def _pass(args: argparse.Namespace) -> int:
     from casebook.runner.config import SharedConfig
-    from casebook.runner.full_pass import REPEATS, Folders, load_pass, new_pass, run_pass, status_lines
+    from casebook.runner.full_pass import REPEATS, Folders, load_pass, new_pass, run_pass, status_lines, ungraded_runs
     from casebook.runner.preflight import RunRefusedError
     from casebook.runner.run import private_root
 
@@ -146,12 +146,20 @@ def _pass(args: argparse.Namespace) -> int:
     print("\n".join(status_lines(run)))
     if run.state == "complete":
         # The results page shows the private set's outcome counts beside the public runs, and nothing else of it.
-        from casebook.site.results import write_private_outcomes
+        from casebook.site.results import ResultsError, write_private_outcomes
 
-        # Counted from the private task folder the pass ran with, which --private-tasks may have named.
-        written = write_private_outcomes(private_root() / "runs", run.folders.private_tasks, run.folders.runs.parent)
+        try:
+            # Counted from the private task folder the pass ran with, which --private-tasks may have named.
+            folders = run.folders
+            written = write_private_outcomes(private_root() / "runs", folders.private_tasks, folders.runs.parent)
+        except ResultsError as error:
+            # A private run kept completed and ungraded has no outcome to count: the counts wait for the owner
+            # (reviewers A and B, slice 13 second targeted check).
+            print(f"private outcome counts not written: {error}", file=sys.stderr)
+            return 1
         print(f"private outcome counts: {written}")
-    return 0 if run.state == "complete" and not any(s.state == "failed" for s in run.slots) else 1
+    settled = not any(s.state == "failed" for s in run.slots) and not ungraded_runs(run)
+    return 0 if run.state == "complete" and settled else 1
 
 
 def _canary(args: argparse.Namespace) -> int:

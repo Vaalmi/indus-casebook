@@ -342,6 +342,12 @@ def run_pass(run: Pass, progress: Callable[[str], object] = lambda _: None) -> P
     return run
 
 
+def ungraded_runs(run: Pass) -> list[tuple[SlotState, SlotRun]]:
+    """The completed runs a resume kept ungraded (their task, key or grader changed since they ran): outcomes the
+    pass has, and cannot count, until the owner settles them."""
+    return [(s, r) for s in run.slots for r in s.runs if r.state == "completed" and r.failure_reason]
+
+
 def status_lines(run: Pass) -> list[str]:
     """The pass's state, its slots by state, and every failed run with its reason."""
     counts = {state: sum(s.state == state for s in run.slots) for state in SLOT_STATES}
@@ -352,7 +358,7 @@ def status_lines(run: Pass) -> list[str]:
     for slot_state, slot_run in failed:
         now = "" if slot_state.state == "failed" else f" (retried; the slot is now {slot_state.state})"
         lines.append(f"  {slot_state.slot}: {slot_run.run_id}: {slot_run.failure_reason}{now}")
-    ungraded = [(s, r) for s in run.slots for r in s.runs if r.state == "completed" and r.failure_reason]
+    ungraded = ungraded_runs(run)
     if ungraded:
         lines.append(f"completed runs not graded: {len(ungraded)}")
         lines += [f"  {s.slot}: {r.run_id}: {r.failure_reason}" for s, r in ungraded]
