@@ -270,7 +270,7 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 - [x] Every grader passes its own tests: defective outputs fail and clean controls pass
 - [x] Each result records the three counts: correct "unresolved", unnecessary refusal, false alarm
 - [x] Two tasks hold a security priced at least three times away from its cited real range, and their graders fail an answer that uses a price absent from the files
-- [ ] The tax-lot and RMD skill is drafted and approved by the owner
+- [x] The tax-lot and RMD skill is drafted and approved by the owner
 - [x] The one check command passes
 
 ### Slice 10: Add the CRM sandbox and the meeting and compliance tasks (week 10)
@@ -282,7 +282,7 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 - [x] A write to another household scores zero, and so does an account number in an external message; each keeps its breakdown
 - [x] Each compliance task states firm capacity, audience, channel and firm policy; the compliance expected-output schema has a field for issues for reviewer attention and rejects a legal-conclusion field
 - [x] The tone score comes from three model families and each vote is stored; with stand-in CLIs a missing vote fails the grade rather than averaging two
-- [ ] The meeting and compliance skills are drafted and approved by the owner
+- [x] The meeting and compliance skills are drafted and approved by the owner
 - [x] Runs in the real delivery environment: one follow-up task, three live runs, shows the CRM sandbox reached from the real CLI and one live jury vote from each family
 - [x] The one check command passes
 
