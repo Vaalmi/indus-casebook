@@ -17,7 +17,7 @@ from casebook.generate.background import background_ids
 from casebook.model.files import ACCOUNTS_COLUMNS, ACCOUNTS_CSV, TransactionRow, read_csv, read_transactions
 from casebook.sources.crm import TEMPLATES
 
-from .conftest import SCRIPTS, SEED
+from .conftest import PUBLIC_HOUSEHOLDS, SCRIPTS, SEED
 
 
 def test_background_ids_are_drawn_from_their_own_range_without_repeats() -> None:
@@ -212,5 +212,5 @@ def test_no_annual_review_seats_a_person_after_their_death(full_book: Path) -> N
             reviews += 1
             late = [name for name, died in dead.items() if name in note["slots"]["parties"] and note["date"] > died]
             assert late == [], (crm_file.parent.parent.name, note["note_id"], late)
-    # One annual review in each of the public book's 88 households.
-    assert reviews == 88
+    # One annual review in each of the public book's households (88 before the freeze, 92 after).
+    assert reviews == PUBLIC_HOUSEHOLDS

@@ -14,6 +14,7 @@ from casebook.model.ledger import is_private_task_id
 from casebook.publish.mapper import map_to_aliases
 from casebook.publish.private_set import private_households
 from casebook.runner.config import SharedConfig
+from casebook.runner.freeze import require_freeze
 from casebook.runner.preflight import RunRefusedError, require_book_files, require_household, require_real_tickers
 from casebook.runner.run import Grader, GradeRefusedError, RunInputs, grade_record, private_root, run_task
 from casebook.tasks.task import HELD_GRADERS, HELD_WORKFLOWS, Task, find_task
@@ -107,6 +108,8 @@ def run_and_grade(
     require_real_tickers(book)
     require_household(book, task.household_id)
     require_book_files(book, task.household_id)
+    # Freeze before held-out runs: refused before the key is computed, so no held-out key is written either.
+    require_freeze(task, book)
     spec = grader(task.grader)
     key = spec.key(book, task.household_id, task.grader_params)
     private = private_root()

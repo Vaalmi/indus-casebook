@@ -22,7 +22,7 @@ from casebook.published_text import text_of
 from casebook.securities.market import build_market
 from casebook.securities.master import load_master
 
-from .conftest import FEATURED, SCRIPTS, SEED
+from .conftest import FEATURED, PUBLIC_HOUSEHOLDS, SCRIPTS, SEED, held_out_featured
 
 HOUSEHOLDS = FEATURED
 
@@ -41,7 +41,10 @@ def test_the_pair_has_four_source_sets_an_event_log_and_one_registry_entry(book:
         log = json.loads((book / event_log_path(household)).read_text())
         assert log["events"][0]["type"] == "opening"
     entries = json.loads((book / REGISTRY).read_text())["entries"]
-    assert [(e["item_id"], e["household_id"], e["type"]) for e in entries] == [
+    # Archetypes 7 and 8's traps add one entry each once the freeze moves them in.
+    held = held_out_featured()
+    assert len([e for e in entries if e["household_id"] in held]) == len(held) // 2
+    assert [(e["item_id"], e["household_id"], e["type"]) for e in entries if e["household_id"] not in held] == [
         ("PI-0001", "HH-4821", "missed_fee_breakpoint"),
         ("PI-0002", "HH-1204", "backdoor_roth_pro_rata"),
         ("PI-0003", "HH-2316", "niit_threshold"),
@@ -111,15 +114,15 @@ def test_a_default_build_carries_aliases_only(book: Path) -> None:
     refuse_real_identifiers({name: text_of(name, path.read_bytes()) for name, path in files.items()})
 
 
-def test_the_whole_public_book_builds_88_households_byte_for_byte_again(full_book: Path, tmp_path: Path) -> None:
+def test_the_whole_public_book_builds_its_households_byte_for_byte_again(full_book: Path, tmp_path: Path) -> None:
     # Slice 6: ten archetypes, five pairs each, less the two featured pairs held out until the freeze
     # (archetypes 7 and 8's) and the four private pairs, which the whole book in $CASEBOOK_PRIVATE adds back
-    # for 100: 50 pairs less 6 is 44, 88 households.
+    # for 100: 50 pairs less 6 is 44, 88 households. Once the freeze moves the featured pairs in, 46 and 92.
     manifest = json.loads((full_book / MANIFEST).read_text())
-    assert len(manifest["households"]) == 88
+    assert len(manifest["households"]) == PUBLIC_HOUSEHOLDS
     sealed = json.loads((full_book / "sealed" / "households.json").read_text())["households"]
     pairs = {(h["archetype"], h["pair"]) for h in sealed}
-    assert len(pairs) == 44 and {p for _, p in pairs} == {1, 2, 3, 4, 5}
+    assert len(pairs) == PUBLIC_HOUSEHOLDS // 2 and {p for _, p in pairs} == {1, 2, 3, 4, 5}
     again = tmp_path / "again"
     build_book(SEED, again, SCRIPTS, background=True)
     assert (again / MANIFEST).read_bytes() == (full_book / MANIFEST).read_bytes()

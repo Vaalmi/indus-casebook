@@ -300,12 +300,12 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 
 **Depends on:** 11.
 
-- [ ] `uv run casebook audit-sheet` writes a line-by-line worksheet for 15 households chosen by a seeded draw across all ten archetypes
+- [x] `uv run casebook audit-sheet` writes a line-by-line worksheet for 15 households chosen by a seeded draw across all ten archetypes
 - [ ] The owner has audited all 15 by hand; the audit log records each line checked and each defect, and shows zero arithmetic defects open. Any fix ships as a new book version
-- [ ] `uv run casebook freeze` records the hashes of every skill, the checklist and every grader, and refuses while any grader self-test fails
-- [ ] The runner refuses held-out fixtures with no freeze, and after any skill or grader byte changes (a test for each)
+- [x] `uv run casebook freeze` records the hashes of every skill, the checklist and every grader, and refuses while any grader self-test fails
+- [x] The runner refuses held-out fixtures with no freeze, and after any skill or grader byte changes (a test for each)
 - [ ] Once the freeze is recorded, the held-out pairs move into the repo and the site, and the slice 5 test now passes with them present
-- [ ] The one check command passes
+- [x] The one check command passes
 
 ### Slice 13: Run the full pass and publish named results (week 12)
 

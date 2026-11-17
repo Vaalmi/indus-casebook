@@ -49,6 +49,13 @@ def test_no_held_out_pair_is_anywhere_in_the_repo() -> None:
     assert found == [] or frozen(), "archetypes 7 and 8 live in $CASEBOOK_PRIVATE until the freeze"
 
 
+@pytest.fixture
+def unfrozen(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """No freeze recorded, as before slice 12's: these tests show the refusal the freeze lifts."""
+    monkeypatch.setattr(casebook.model.archetypes, "FREEZE_RECORD", tmp_path / "no-freeze.json")
+
+
+@pytest.mark.usefixtures("unfrozen")
 def test_the_guard_finds_a_held_out_script_copied_anywhere(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     copy = tmp_path / "tests" / "fixtures" / "held-out"
     copy.mkdir(parents=True)
@@ -68,7 +75,8 @@ def test_no_held_out_household_is_on_the_site(site: Path) -> None:
 def held_out_scripts(tmp_path: Path) -> tuple[Path, Path]:
     """The trap's script, relabelled archetype 7, with a ledger that has not published it."""
     scripts = tmp_path / "scripted"
-    shutil.copytree(SCRIPTS, scripts)
+    # Without archetypes 7 and 8's own pairs, which the freeze moves in.
+    shutil.copytree(SCRIPTS, scripts, ignore=lambda folder, names: [f"archetype-{a}" for a in HELD_OUT_ARCHETYPES])
     path = scripts / "archetype-10" / "HH-4821.toml"
     path.write_text(path.read_text().replace("archetype = 10\n", "archetype = 7\n", 1))
     ledger = json.loads(ID_LEDGER.read_text())
@@ -79,6 +87,7 @@ def held_out_scripts(tmp_path: Path) -> tuple[Path, Path]:
     return scripts, ledger_path
 
 
+@pytest.mark.usefixtures("unfrozen")
 def test_a_public_build_refuses_a_held_out_pair(tmp_path: Path) -> None:
     scripts, ledger = held_out_scripts(tmp_path)
     with pytest.raises(BuildError, match="HH-4821: the featured pairs for archetypes 7 and 8 are held out"):
@@ -103,12 +112,13 @@ def test_the_freeze_lifts_the_refusal(tmp_path: Path, monkeypatch: pytest.Monkey
         build_book(SEED, tmp_path / "book", scripts, ledger=ledger)
 
 
+@pytest.mark.usefixtures("unfrozen")
 def test_the_site_refuses_a_held_out_household(book_copy: Path, tmp_path: Path) -> None:
     path = book_copy / "sealed" / "households.json"
     data = json.loads(path.read_text())
     next(h for h in data["households"] if h["household_id"] == "HH-7350")["archetype"] = 8
     path.write_text(json.dumps(data))
-    with pytest.raises(SiteBuildError, match="HH-7350: held out until the freeze"):
+    with pytest.raises(SiteBuildError, match=r"HH-7350\b.*: held out until the freeze"):
         build_site(book_copy, tmp_path / "site", README)
 
 

@@ -14,12 +14,14 @@ import pytest
 from casebook.keys.source_disagreements import household_disagreements, source_disagreements_key
 from casebook.model.files import ACCOUNTS_COLUMNS, BENEFICIARIES_COLUMNS, csv_text, household_dir
 
+from .conftest import PUBLIC_HOUSEHOLDS
+
 
 def test_no_household_of_the_public_book_disagrees(full_book: Path) -> None:
     """Slice 4's build refuses an unregistered difference, and no planted item is an identifier, beneficiary or
     ownership difference: every source states each fact alike, on both builds."""
     key = source_disagreements_key(full_book)
-    assert len(key.checked) == 88
+    assert len(key.checked) == PUBLIC_HOUSEHOLDS
     assert dict(key.found) == {}
     assert key.unresolved == () and key.computed_figures == ()
 

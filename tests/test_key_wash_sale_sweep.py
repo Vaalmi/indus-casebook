@@ -15,6 +15,8 @@ from casebook.graders.household_list import grade
 from casebook.keys.wash_sale_sweep import WashSaleSweepKey, wash_sale_sweep_key
 from casebook.tasks.fixtures import load_task_fixtures
 
+from .conftest import PUBLIC_HOUSEHOLDS
+
 # Each of the four, worked from its custodian files: the loss on the joint account's sale, the units an
 # IRA of a spouse bought back within 30 days, and loss x replaced / sold, rounded to the cent.
 WASH_SALES = {
@@ -46,7 +48,7 @@ def workspace(full_book: Path, tmp_path_factory: pytest.TempPathFactory) -> Path
 
 
 def test_the_key_finds_the_four_wash_sales_with_their_transactions(key: WashSaleSweepKey) -> None:
-    assert len(key.checked) == 88
+    assert len(key.checked) == PUBLIC_HOUSEHOLDS
     assert dict(key.found) == {h: (sale, bought) for h, (sale, bought, *_) in WASH_SALES.items()}
     assert key.unresolved == ()
 
@@ -63,8 +65,8 @@ def test_each_found_household_carries_its_hand_worked_figures(key: WashSaleSweep
 def test_the_look_alikes_are_cleared(key: WashSaleSweepKey) -> None:
     cleared = key.to_dict()["cleared"]
     assert set(LOOK_ALIKES) <= set(cleared)
-    # The 88 households less the four found.
-    assert len(cleared) == 84
+    # The public book's households less the four found.
+    assert len(cleared) == PUBLIC_HOUSEHOLDS - 4
 
 
 def _entry(household: str) -> dict[str, Any]:

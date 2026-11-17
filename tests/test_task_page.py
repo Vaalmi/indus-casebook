@@ -12,7 +12,7 @@ from casebook.cli import main
 from casebook.publish.site_build import SiteBuildError, build_site
 from casebook.site.tasks import UnnamedResultError
 
-from .conftest import README, ROOT, StandIn
+from .conftest import FEATURED, README, ROOT, StandIn
 from .test_run_session import answer_for
 from .test_site_browser import visit
 
@@ -44,8 +44,8 @@ def test_the_task_page_shows_each_arm_with_the_failure_marked_and_the_run_named(
     book: Path, runs: Path, tmp_path: Path, browser: Browser
 ) -> None:
     site = tmp_path / "site"
-    # The index, the 16 public featured households' pages and the task page.
-    assert build(book, site, runs) == 1 + 16 + 1
+    # The index, the public featured households' pages (16 before the freeze, 20 after) and the task page.
+    assert build(book, site, runs) == 1 + len(FEATURED) + 1
     page, noise = visit(browser, (site / "tasks" / "T-REC-01.html").as_uri())
     arms = page.locator("[data-arm]")
     assert [arms.nth(i).get_attribute("data-arm") for i in range(3)] == ["basic", "checklist", "skill"]
@@ -85,6 +85,6 @@ def test_a_result_without_its_model_cannot_be_published(book: Path, runs: Path, 
 
 def test_without_runs_the_site_has_no_task_pages(book: Path, tmp_path: Path) -> None:
     empty = tmp_path / "none"
-    assert build_site(book, tmp_path / "site", README, empty, TASKS, None) == 1 + 16
+    assert build_site(book, tmp_path / "site", README, empty, TASKS, None) == 1 + len(FEATURED)
     assert not (tmp_path / "site" / "tasks").exists()
     shutil.rmtree(tmp_path / "site")

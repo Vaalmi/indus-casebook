@@ -32,6 +32,8 @@ from casebook.model.files import (
 from casebook.tasks.fixtures import load_task_fixtures
 from casebook.tasks.task import BOOK
 
+from .conftest import PUBLIC_HOUSEHOLDS
+
 AS_OF = date(2026, 4, 15)
 QUARTER_END = "2026-03-31"
 SCHEDULE = {
@@ -208,7 +210,7 @@ FOUND_IN_THE_BOOK = {
 def test_the_whole_book_finds_the_four_households_with_an_agreement_not_applied(full_book: Path) -> None:
     # The public book holds no private pair, so archetype 10's pair 3 (a trap and its look-alike) is not here.
     key = billing_groups_key(full_book, AS_OF)
-    assert len(key.checked) == 88
+    assert len(key.checked) == PUBLIC_HOUSEHOLDS
     assert dict(key.found) == FOUND_IN_THE_BOOK
     # The four look-alikes are billed in the same two groups with no householding agreement: cleared, but priced.
     priced = {h.household_id for h in key.household_figures}

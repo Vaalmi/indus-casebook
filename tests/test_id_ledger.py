@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from casebook.build import ID_LEDGER, BuildError, build_book
+from casebook.model.archetypes import HELD_OUT_ARCHETYPES, frozen
 from casebook.model.ledger import LedgerError, LedgerHousehold, LedgerTask, load_ledger, parse_ledger
 from casebook.tasks.task import load_task
 
@@ -17,7 +18,7 @@ from .conftest import FEATURED, ROOT, SCRIPTS, SEED
 def test_the_ledger_is_committed_with_the_published_ids() -> None:
     ledger = load_ledger(ROOT / "book" / "id_ledger.json")
     assert ID_LEDGER == ROOT / "book" / "id_ledger.json"
-    # The 16 public featured households, published with slice 5; archetypes 7 and 8 are held out.
+    # The 16 public featured households, published with slice 5; archetypes 7 and 8 are held out until the freeze.
     pairs = {
         1: ("HH-1204", "HH-1587"),
         2: ("HH-2316", "HH-2749"),
@@ -29,11 +30,15 @@ def test_the_ledger_is_committed_with_the_published_ids() -> None:
         10: ("HH-4821", "HH-7350"),
     }
     featured = {hh: entry for hh, entry in ledger.households.items() if entry.pair == 1}
-    assert featured == {
+    public = {hh: entry for hh, entry in featured.items() if entry.archetype not in HELD_OUT_ARCHETYPES}
+    assert public == {
         hh: LedgerHousehold(archetype=a, pair=1, role=role)
         for a, both in pairs.items()
         for hh, role in zip(both, ("trap", "twin"), strict=True)
     }
+    # Slice 12: none of archetypes 7 and 8's before the freeze; a trap and a twin of each once it moves them in.
+    held = sorted((e.archetype, e.role) for hh, e in featured.items() if hh not in public)
+    assert held == ([(7, "trap"), (7, "twin"), (8, "trap"), (8, "twin")] if frozen() else [])
     # And the 80 background households of slice 6, drawn from seed 2026: pairs 2 to 5 of every archetype.
     background = {hh: entry for hh, entry in ledger.households.items() if entry.pair != 1}
     assert len(background) == 80 and all(100 <= int(hh.removeprefix("HH-")) <= 999 for hh in background)

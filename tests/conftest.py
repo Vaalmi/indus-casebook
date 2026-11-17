@@ -9,6 +9,7 @@ from playwright.sync_api import Browser, Playwright, sync_playwright
 
 from casebook.build import build_book
 from casebook.graders.jury import VARIABLES as JURY_VARIABLES
+from casebook.model.archetypes import HELD_OUT_ARCHETYPES
 from casebook.publish.site_build import build_site
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,31 +19,46 @@ SEED = 2026
 STANDIN = ROOT / "tests" / "standin" / "claude.py"
 
 
-# The public featured households (archetypes 7 and 8 are held out until the freeze).
 # Every household of the public book: the featured ones and the 72 drawn in the background (the 80 less the
 # private pairs, drawn only with the private salt).
 def built(book: Path) -> tuple[str, ...]:
     return tuple(h["household_id"] for h in json.loads((book / "manifest.json").read_text())["households"])
 
 
-FEATURED = (
-    "HH-1204",
-    "HH-1587",
-    "HH-2316",
-    "HH-2749",
-    "HH-3058",
-    "HH-3462",
-    "HH-4105",
-    "HH-4633",
-    "HH-4821",
-    "HH-5271",
-    "HH-5814",
-    "HH-6047",
-    "HH-6590",
-    "HH-7350",
-    "HH-9234",
-    "HH-9571",
+def held_out_featured() -> tuple[str, ...]:
+    """Archetypes 7 and 8's featured pairs, which the public ledger names only once the freeze is recorded and
+    `casebook freeze --move-in` has moved them in (slice 12)."""
+    ledger = json.loads((ROOT / "book" / "id_ledger.json").read_text())["households"]
+    return tuple(h for h, e in ledger.items() if e["archetype"] in HELD_OUT_ARCHETYPES and e["pair"] == 1)
+
+
+# The public featured households: 16 before the freeze (archetypes 7 and 8 are held out), 20 after it.
+FEATURED = tuple(
+    sorted(
+        (
+            "HH-1204",
+            "HH-1587",
+            "HH-2316",
+            "HH-2749",
+            "HH-3058",
+            "HH-3462",
+            "HH-4105",
+            "HH-4633",
+            "HH-4821",
+            "HH-5271",
+            "HH-5814",
+            "HH-6047",
+            "HH-6590",
+            "HH-7350",
+            "HH-9234",
+            "HH-9571",
+            *held_out_featured(),
+        )
+    )
 )
+# The public book: the featured households and the 72 public background ones; 88 before the freeze, 92 after.
+BACKGROUND = 72
+PUBLIC_HOUSEHOLDS = len(FEATURED) + BACKGROUND
 
 
 @pytest.fixture(scope="session")

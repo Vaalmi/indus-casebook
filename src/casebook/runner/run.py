@@ -15,6 +15,7 @@ from typing import Any
 from casebook.model.files import METADATA, REAL_TICKERS, read_json, read_manifest
 from casebook.runner.cli import arguments, cli_version, run_environment, start
 from casebook.runner.config import INSTRUCTIONS, LOADING_TOOL, REPO, SharedConfig, tree_sha256
+from casebook.runner.freeze import freeze_identity, require_freeze
 from casebook.runner.preflight import (
     OutsideBookError,
     RunRefusedError,
@@ -80,6 +81,7 @@ def prepare(task: Task, book: Path, workspace: Path, keys: Path | None) -> None:
     require_real_tickers(book)
     require_household(book, task.household_id)
     require_book_files(book, task.household_id)
+    require_freeze(task, book)
     try:
         load_task_fixtures(book, task.household_id, task.fixtures, task.cutoff, workspace)
     except FixtureError as error:
@@ -122,6 +124,8 @@ def run_task(inputs: RunInputs, config: SharedConfig, private: Path) -> dict[str
     reason: str | None = None
     loaded = False
     started = _now()
+    hashes: dict[str, str | None] = {}
+    frozen_under: str | None = None
     version = cli_version()
     args: list[str] = []
     crm: Sandbox | None = None
@@ -129,6 +133,11 @@ def run_task(inputs: RunInputs, config: SharedConfig, private: Path) -> dict[str
         workspace = Path(tempfile.mkdtemp(prefix="casebook-workspace-"))
         try:
             prepare(task, inputs.book, workspace, inputs.keys)
+            # What the attempt runs under is taken as it starts, not read back after the CLI ends; the record keeps
+            # the last attempt's, whose output it is. A skill, the checklist, the book or the freeze changed while
+            # an attempt ran, or between attempts, never relabels output (reviewers A and B, slice 12).
+            hashes = _inputs_hashes(inputs, config)
+            frozen_under = freeze_identity()
             # A fresh sandbox per attempt, in the run folder, never the workspace.
             crm = seed(inputs.book, task.cutoff, folder / f"crm-{attempt}") if config.crm_tools else None
             args = arguments(task.prompt, arm, config, crm.mcp_config if crm else None)
@@ -166,15 +175,7 @@ def run_task(inputs: RunInputs, config: SharedConfig, private: Path) -> dict[str
             "household_id": task.household_id,
             "real_tickers": read_json(inputs.book, METADATA).get("securities") == REAL_TICKERS,
         },
-        "hashes": {
-            "dataset": _manifest_sha(inputs.book),
-            "task": task.sha256,
-            "skill": tree_sha256(INSTRUCTIONS["skill"]),
-            "checklist": tree_sha256(INSTRUCTIONS["checklist"]),
-            "grader": inputs.grader_sha256,
-            "answer": inputs.key_sha256,
-            "config": config.sha256(),
-        },
+        "hashes": hashes,
         "cli_version": version,
         "model_requested": config.model,
         "models_reported": transcript.reported_models if transcript else [],
@@ -192,12 +193,25 @@ def run_task(inputs: RunInputs, config: SharedConfig, private: Path) -> dict[str
         "errors": errors,
         "token_use": transcript.token_use if transcript else {},
         "crm_sandbox_diff": crm.diff() if crm else None,
+        "freeze": frozen_under,
         "output": transcript.final_text if transcript and not reason else None,
         "grade": None,
     }
     check_record(record)
     (folder / "record.json").write_text(json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return record
+
+
+def _inputs_hashes(inputs: RunInputs, config: SharedConfig) -> dict[str, str | None]:
+    return {
+        "dataset": _manifest_sha(inputs.book),
+        "task": inputs.task.sha256,
+        "skill": tree_sha256(INSTRUCTIONS["skill"]),
+        "checklist": tree_sha256(INSTRUCTIONS["checklist"]),
+        "grader": inputs.grader_sha256,
+        "answer": inputs.key_sha256,
+        "config": config.sha256(),
+    }
 
 
 def _manifest_sha(book: Path) -> str:

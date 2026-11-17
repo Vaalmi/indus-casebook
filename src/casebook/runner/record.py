@@ -26,6 +26,8 @@ RECORD_FIELDS = (
     "errors",
     "token_use",
     "crm_sandbox_diff",
+    # The freeze the run ran under (its record's sha256), or None before any freeze.
+    "freeze",
     "output",
     "grade",
 )

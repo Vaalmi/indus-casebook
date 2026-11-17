@@ -19,7 +19,7 @@ from casebook.model.ledger import load_ledger
 from casebook.securities.market import Market, build_market
 from casebook.securities.master import load_master
 
-from .conftest import ROOT, SEED
+from .conftest import PUBLIC_HOUSEHOLDS, ROOT, SEED
 
 # docs/SPEC.md, Private set, and the owner's decision of 16 November 2026: (archetype, pair).
 PRIVATE = {(10, 3), (4, 2), (6, 4), (9, 2)}
@@ -137,12 +137,12 @@ def test_the_cli_writes_the_salt_once_and_reuses_it(
     private = tmp_path / "private"
     monkeypatch.setenv("CASEBOOK_PRIVATE", str(private))
     # The private tasks run on this build: the real tickers, into $CASEBOOK_PRIVATE. The folder here holds no
-    # held-out scripts, so the build is the public 88 and the eight private households.
+    # held-out scripts, so the build is the public book (88, or 92 after the freeze) and the eight private households.
     assert main(["build", "--seed", "2026", "--held-out", "--real-tickers"]) == 0
     out, err = capsys.readouterr()
     salt_file = private / "book" / "private_salt"
     assert "wrote a new private salt" in err and str(salt_file) in err
-    assert "built 96 households, " in out and str(private / "out" / "real" / "0.0.1") in out
+    assert f"built {PUBLIC_HOUSEHOLDS + 8} households, " in out and str(private / "out" / "real" / "0.0.1") in out
     salt = salt_file.read_text().strip()
     assert len(salt) == 64 and int(salt, 16) >= 0
     book = private / "out" / "real" / "0.0.1"

@@ -88,6 +88,10 @@ def load_records(runs: Path) -> dict[str, list[dict[str, Any]]]:
     return by_task
 
 
+class MixedFreezeError(UnnamedResultError):
+    """A page whose arms ran under different freezes."""
+
+
 def task_views(tasks: Path, runs: Path, keys: Path | None) -> list[TaskView]:
     if not runs.is_dir():
         return []
@@ -99,6 +103,14 @@ def task_views(tasks: Path, runs: Path, keys: Path | None) -> list[TaskView]:
         for arm in ARM_ORDER:
             mine = sorted((r for r in records[task_id] if r["arm"] == arm), key=lambda r: str(r["started_utc"]))
             arms.append(ArmView(arm, ARM_NAMES[arm], mine[-1] if mine else None, len(mine)))
+        # Results from two freezes are never shown side by side (docs/PLAN.md, the freeze's state table;
+        # reviewers A and B, slice 12 round 1): a page's arms ran under one freeze, or before any.
+        freezes = {a.record.get("freeze") for a in arms if a.record is not None}
+        if len(freezes) > 1:
+            shown = ", ".join(sorted(str(f)[:12] if f else "none" for f in freezes))
+            raise MixedFreezeError(
+                f"task {task_id}'s latest runs ran under different freezes ({shown}); rerun every arm"
+            )
         key_file = keys / f"{task_id}.json" if keys else None
         key = json.loads(key_file.read_text(encoding="utf-8")) if key_file and key_file.is_file() else None
         views.append(TaskView(task, tuple(arms), key))

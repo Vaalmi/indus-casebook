@@ -19,6 +19,9 @@ DEFAULT_SCRIPTS = Path("book/scripted")
 # as release files").
 PUBLISHED_RUNS = Path("published/runs")
 PUBLISHED_KEYS = Path("published/keys")
+# The hand audit: its worksheet (out/, rebuilt from the book) and the owner's log (published with the preview).
+DEFAULT_AUDIT = Path("out/audit")
+AUDIT_LOG = Path("published/audit/audit-log.csv")
 # The private salt, which draws the private pairs, inside $CASEBOOK_PRIVATE; never in the repo or a built file.
 PRIVATE_SALT = Path("book") / "private_salt"
 
@@ -214,6 +217,49 @@ def _tax(args: argparse.Namespace) -> int:
     return 0 if report.agrees else 1
 
 
+def _freeze(args: argparse.Namespace) -> int:
+    from casebook.runner.freeze import FreezeRefusedError, MoveInError, move_in, record_freeze
+
+    if args.move_in:
+        from casebook.runner.run import PrivateFolderError, private_root
+
+        try:
+            moved = move_in(private_root())
+        except (MoveInError, PrivateFolderError) as error:
+            print(f"move-in refused: {error}", file=sys.stderr)
+            return 1
+        print(f"moved the held-out pairs into {DEFAULT_SCRIPTS} and the ID ledger: {', '.join(moved)}")
+        print("next: uv run casebook build --seed 2026, then casebook check and casebook site")
+        return 0
+    try:
+        record = record_freeze()
+    except FreezeRefusedError as error:
+        print(f"freeze refused: {error}", file=sys.stderr)
+        return 1
+    hashes, tests = len(record["hashes"]), len(record["self_tests"])
+    print(f"freeze recorded at {record['recorded_utc']}: {hashes} hashes; {tests} grader self-tests pass")
+    return 0
+
+
+def _audit_sheet(args: argparse.Namespace) -> int:
+    from casebook.checks.audit_sheet import write_audit_sheet
+    from casebook.seeding import derive_rng
+
+    written = write_audit_sheet(args.book, args.out, derive_rng("audit", args.seed))
+    print(f"wrote {len(written)} files into {args.out}")
+    return 0
+
+
+def _audit_log(args: argparse.Namespace) -> int:
+    from casebook.checks.audit_log import audit_log_problems
+
+    problems = audit_log_problems(args.log, args.worksheet)
+    for problem in problems:
+        print(problem, file=sys.stderr)
+    print(f"{args.log}: {len(problems)} problems")
+    return 1 if problems else 0
+
+
 def parser() -> argparse.ArgumentParser:
     top = argparse.ArgumentParser(prog="casebook", description="The Indus Casebook")
     commands = top.add_subparsers(dest="command", required=True)
@@ -270,6 +316,29 @@ def parser() -> argparse.ArgumentParser:
         help="approve, as boilerplate the public files share, private text the public repo also holds",
     )
     prints.set_defaults(run=_fingerprint_private)
+    about = (
+        "record the freeze: the hashes of every skill, the checklist and every grader, refused while a grader's "
+        "self-test (tests/test_grader_<name>.py) fails. Held-out runs are refused unless it matches. Then "
+        "`casebook freeze --move-in` moves the held-out pairs into the repo"
+    )
+    freeze = commands.add_parser("freeze", help=about, description=about)
+    freeze.add_argument(
+        "--move-in",
+        action="store_true",
+        help="once the freeze is recorded, move the held-out pairs from $CASEBOOK_PRIVATE into book/scripted/ "
+        "and the ID ledger",
+    )
+    freeze.set_defaults(run=_freeze)
+    sheet = commands.add_parser("audit-sheet", help="write the hand audit's line-by-line worksheet")
+    sheet.add_argument("--book", type=Path, default=DEFAULT_BOOK)
+    sheet.add_argument("--out", type=Path, default=DEFAULT_AUDIT)
+    sheet.add_argument("--seed", type=int, default=DEFAULT_SEED, help="the seed of the draw of households")
+    sheet.set_defaults(run=_audit_sheet)
+    log = commands.add_parser("audit-log", help="check the hand audit's log against its worksheet")
+    log.add_argument("--check", action="store_true", required=True, help="exit 1 naming each problem")
+    log.add_argument("--log", type=Path, default=AUDIT_LOG)
+    log.add_argument("--worksheet", type=Path, default=DEFAULT_AUDIT / BOOK_VERSION / "worksheet.csv")
+    log.set_defaults(run=_audit_log)
     canary = commands.add_parser("canary", help="check a run cannot read a sealed file outside its workspace")
     canary.set_defaults(run=_canary)
     return top

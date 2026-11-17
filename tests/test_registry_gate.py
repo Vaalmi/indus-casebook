@@ -17,20 +17,23 @@ from casebook.plant import PlantContext, Planting
 from casebook.sources.context import EmitContext
 from casebook.sources.transactions import TransactionRow
 
-from .conftest import FEATURED, SCRIPTS, SEED
+from .conftest import FEATURED, SCRIPTS, SEED, held_out_featured
 
 REQUIRED = ("item_id", "type", "sources", "justified_conclusion")
 
 
 def test_every_planted_item_has_a_registry_entry_with_id_type_sources_and_conclusion(book: Path) -> None:
-    planted = {
-        tomllib.loads(p.read_text())["planted"]["item_id"]
-        for p in sorted(SCRIPTS.rglob("*.toml"))
-        if "planted" in tomllib.loads(p.read_text())
+    scripts = {p: tomllib.loads(p.read_text()) for p in sorted(SCRIPTS.rglob("*.toml"))}
+    planted = {raw["planted"]["item_id"] for raw in scripts.values() if "planted" in raw}
+    held = {
+        raw["planted"]["item_id"]
+        for raw in scripts.values()
+        if "planted" in raw and raw.get("household_id") in held_out_featured()
     }
     entries = {e["item_id"]: e for e in json.loads((book / "sealed" / "registry.json").read_text())["entries"]}
-    # One per public trap: archetypes 1 to 6, 9 and 10 (7 and 8 are held out).
-    assert planted == {"PI-0001", "PI-0002", "PI-0003", "PI-0004", "PI-0005", "PI-0006", "PI-0007", "PI-0010"}
+    # One per public trap: archetypes 1 to 6, 9 and 10; and 7 and 8 once the freeze moves them in.
+    assert planted - held == {"PI-0001", "PI-0002", "PI-0003", "PI-0004", "PI-0005", "PI-0006", "PI-0007", "PI-0010"}
+    assert len(held) == len(held_out_featured()) // 2
     assert planted <= set(entries)
     for item_id in planted:
         entry = entries[item_id]

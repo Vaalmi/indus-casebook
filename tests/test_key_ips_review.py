@@ -12,6 +12,8 @@ import pytest
 from casebook.keys.ips_review import UnsettledIpsError, ips_review, ips_sweep_key, single_stocks
 from casebook.model.files import REGISTRY, household_dir
 
+from .conftest import PUBLIC_HOUSEHOLDS
+
 AS_OF = date(2026, 4, 15)
 
 
@@ -76,7 +78,7 @@ SWEEP = {
 
 def test_the_sweep_finds_twelve_households_on_the_public_book(full_book: Path) -> None:
     key = ips_sweep_key(full_book, AS_OF)
-    assert len(key.checked) == 88
+    assert len(key.checked) == PUBLIC_HOUSEHOLDS
     assert dict(key.found) == SWEEP
     assert key.unresolved == ()
 

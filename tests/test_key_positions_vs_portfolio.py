@@ -27,6 +27,8 @@ from casebook.model.files import (
 from casebook.tasks.fixtures import load_task_fixtures
 from casebook.tasks.task import BOOK
 
+from .conftest import PUBLIC_HOUSEHOLDS
+
 AS_OF = date(2026, 4, 15)
 DAY = "2026-04-15"
 A, B = "SYN-00010001", "SYN-00010002"
@@ -189,7 +191,7 @@ def test_the_key_writes_as_json_with_money_as_strings(hand_book: Path) -> None:
 def test_no_household_in_the_whole_book_disagrees_on_the_scenario_date(full_book: Path) -> None:
     # The book plants no positions or cash disagreement on 15 April 2026 (sealed/registry.json): a clean book.
     key = positions_key(full_book, AS_OF)
-    assert len(key.checked) == 88
+    assert len(key.checked) == PUBLIC_HOUSEHOLDS
     assert (dict(key.found), key.unresolved) == ({}, ())
 
 
