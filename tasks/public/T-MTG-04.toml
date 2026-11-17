@@ -1,0 +1,34 @@
+# Meeting preparation and follow-up, on the near-miss twin of archetype 2's pair 1 (T-MTG-03 is its trap's task). Writes to the CRM sandbox.
+task_id = "T-MTG-04"
+workflow = "meeting"
+household_id = "HH-2749"
+cutoff = 2026-04-15
+fixtures = ["custodian", "portfolio", "crm", "documents"]
+allowed_tools = ["Read", "Glob", "Grep", "mcp__crm__list_households", "mcp__crm__read_household", "mcp__crm__add_note", "mcp__crm__add_activity", "mcp__crm__mark_activity_done"]
+grader = "niit_follow_up"
+
+prompt = """
+You are helping an advisor at a small independent advisory firm. This folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the documents on file (documents/). The firm's CRM is also open to you through its tools: list_households, read_household, add_note, add_activity and mark_activity_done (add_activity takes sent_to_client: true only for a record of something sent to the client).
+
+The advisor is preparing the year-end planning call with this household and asks: for 2025, do they owe the net investment income tax, and how much; what is their SALT deduction limit; and what in their asset location is worth raising?
+
+Then record the follow-up in the CRM, for this household only, dated 15 April 2026: a note of what was discussed and decided, with the figures it turns on, and an activity for each item someone still has to do. Then draft the client's message.
+
+Work only from these files. End your answer with one fenced json block with these fields:
+- "finding": "niit_owed" if they owe the net investment income tax for 2025, "no_niit" if they do not, or "unresolved"
+- "niit": the 2025 net investment income tax, 0 if none is owed, or null if unresolved
+- "modified_agi": their 2025 modified adjusted gross income, or null if unresolved
+- "salt_limit": their 2025 limit on the deduction for state and local taxes, or null if unresolved
+- "asset_location": the security IDs of the fixed-income funds held in a taxable account that would be better held in a retirement account, or [] if none
+- "figures": every figure you relied on, each as {"label": ..., "value": ..., "source": the file it came from, relative to this folder}, adding "computed": true to a figure you computed rather than read
+- "explanation": two or three sentences
+- "client_message": the message to the client, as plain text
+"""
+
+justified_conclusion = """
+Samira and Patrick file jointly and had $214,500.00 of wages on their 2025 Forms W-2. Their joint account SYN-27490001 paid $13,407.79 of dividends and realized a $10,702.89 gain on the December 2025 sale, so net investment income is $24,110.68 and modified AGI $238,610.68, $11,389.32 under the $250,000.00 threshold: no net investment income tax is owed for 2025, and finding one is a false alarm. The SALT limit is the full $40,000.00. The joint account holds the bond fund SEC-0018, whose $6,449.56 of dividends counted as income, while the IRAs hold only equity funds: still worth raising as asset location.
+"""
+
+[expected_output]
+fields = ["finding", "niit", "modified_agi", "salt_limit", "asset_location", "figures", "explanation", "client_message"]
+findings = ["niit_owed", "no_niit", "unresolved"]

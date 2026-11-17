@@ -10,6 +10,7 @@ from typing import Any
 from casebook.model.dates import parse_date
 from casebook.model.files import SOURCE_SETS
 from casebook.model.ledger import BOOK
+from casebook.tasks.schemas import compliance_prompt_problems, compliance_schema_problems
 
 __all__ = [
     "BOOK",
@@ -25,9 +26,19 @@ __all__ = [
 
 WORKFLOWS = ("reconciliation", "meeting", "tax_lot_rmd", "compliance")
 # Tax-lot and RMD keys and verdicts are held until the tax review (docs/PLAN.md, Choices): every
-# tax-lot and RMD task's, and a reconciliation task's whose key computes an RMD.
+# tax-lot and RMD task's, and any other task's whose key computes a tax-lot, RMD or other tax figure: an RMD
+# in reconciliation; a Form 8606 taxable amount, the net investment income tax or the SALT limit, or the
+# households with a tax surprise, in meeting; a released lot's basis and a sale's gain, or a conversion's
+# taxable amount, in compliance.
 HELD_WORKFLOWS = ("tax_lot_rmd",)
-HELD_GRADERS = ("ira_distributions",)
+HELD_GRADERS = (
+    "ira_distributions",
+    "backdoor_roth_follow_up",
+    "niit_follow_up",
+    "tax_surprises",
+    "concentration_basis",
+    "conversion_documentation",
+)
 TASK_FIELDS = (
     "task_id",
     "workflow",
@@ -80,6 +91,11 @@ def parse_task(raw: dict[str, Any], digest: str, source: str) -> Task:
         raise TaskFormatError(f"{source}: fixtures are source sets, some of {SOURCE_SETS}")
     cutoff = raw["cutoff"]
     expected = raw["expected_output"]
+    if workflow == "compliance":
+        problems = compliance_schema_problems(str(f) for f in expected["fields"])
+        problems += compliance_prompt_problems(str(raw["prompt"]))
+        if problems:
+            raise TaskFormatError(f"{source}: a compliance task's {'; '.join(problems)}")
     return Task(
         task_id=str(raw["task_id"]),
         workflow=workflow,

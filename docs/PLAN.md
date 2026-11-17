@@ -277,14 +277,14 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 
 **Depends on:** 9.
 
-- [ ] Twelve more task files exist, six per workflow, with the same schema and twin tests as slice 9
-- [ ] Follow-up tasks are graded on the CRM sandbox's final state; the run record holds the sandbox diff
-- [ ] A write to another household scores zero, and so does an account number in an external message; each keeps its breakdown
-- [ ] Each compliance task states firm capacity, audience, channel and firm policy; the compliance expected-output schema has a field for issues for reviewer attention and rejects a legal-conclusion field
-- [ ] The tone score comes from three model families and each vote is stored; with stand-in CLIs a missing vote fails the grade rather than averaging two
+- [x] Twelve more task files exist, six per workflow, with the same schema and twin tests as slice 9
+- [x] Follow-up tasks are graded on the CRM sandbox's final state; the run record holds the sandbox diff
+- [x] A write to another household scores zero, and so does an account number in an external message; each keeps its breakdown
+- [x] Each compliance task states firm capacity, audience, channel and firm policy; the compliance expected-output schema has a field for issues for reviewer attention and rejects a legal-conclusion field
+- [x] The tone score comes from three model families and each vote is stored; with stand-in CLIs a missing vote fails the grade rather than averaging two
 - [ ] The meeting and compliance skills are drafted and approved by the owner
-- [ ] Runs in the real delivery environment: one follow-up task, three live runs, shows the CRM sandbox reached from the real CLI and one live jury vote from each family
-- [ ] The one check command passes
+- [x] Runs in the real delivery environment: one follow-up task, three live runs, shows the CRM sandbox reached from the real CLI and one live jury vote from each family
+- [x] The one check command passes
 
 ### Slice 11: Keep the private set private (week 10)
 

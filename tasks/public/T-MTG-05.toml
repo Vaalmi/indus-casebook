@@ -1,0 +1,34 @@
+# Meeting follow-up over the whole book: every follow-up recorded in the CRM that has not happened. Read-only.
+task_id = "T-MTG-05"
+workflow = "meeting"
+household_id = "book"
+cutoff = 2026-04-15
+fixtures = ["custodian", "crm"]
+allowed_tools = ["Read", "Glob", "Grep"]
+grader = "open_follow_ups"
+
+prompt = """
+You are helping an advisor at a small independent advisory firm. This folder holds the records of every client household of the firm as they stood on 15 April 2026, one folder per household under households/<household ID>/, each with the custodian's files (custodian/) and the firm's CRM (crm/).
+
+The advisor asks: which households have a follow-up recorded in the CRM that has not happened by 15 April 2026?
+
+A follow-up is a step a CRM activity commits someone to: a contribution, conversion or sale agreed at a meeting or on a call; a QCD request or a distribution instruction to be paid; a request to the custodian, such as stepping up a deceased owner's basis; a form sent to a client to sign and return; a beneficiary claim that opens an inherited IRA. It has happened when the custodian's files (the transaction, the account) or a later CRM activity (the signed form received) record that step by 15 April 2026. Notes of signed agreements and of annual reviews with no change requested, and activities that record something already done, are not follow-ups.
+
+Work only from these files. End your answer with one fenced json block with these fields:
+- "finding": "found" if one or more households have such a follow-up, "none_found" if none do, or "unresolved" if the files settle no household as found and leave some unresolved
+- "households": one entry per household with such a follow-up, each as {"household_id": ..., "activity_ids": the CRM activities whose follow-up has not happened, "explanation": one sentence}, or [] if none
+- "unresolved": the households the files cannot settle, each as {"household_id": ..., "explanation": one sentence}, or [] if none
+- "figures": every figure you relied on, each as {"label": ..., "value": ..., "source": the file it came from, relative to this folder}, or [] if none
+- "explanation": two or three sentences
+"""
+
+justified_conclusion = """
+Four households have a follow-up that has not happened by 15 April 2026. In HH-0168, HH-0193, HH-0265 and HH-0611, after a spouse's death the firm asked the custodian (CA-0168-02, CA-0193-02, CA-0265-02, CA-0611-02) to step up the deceased spouse's half of each lot in the joint account, and the custodian has booked no step-up; in HH-0193, HH-0265 and HH-0611 the beneficiary change form sent to the survivor (CA-0193-03, CA-0265-03, CA-0611-03) has not come back. The look-alikes HH-0642, HH-0737, HH-0796 and HH-0829 show the step-up booked. Every contribution, conversion and sale agreed at a meeting or on a call, every QCD request and distribution instruction, and every beneficiary claim in the book's CRM has its transaction or account in the custodian's files by 15 April 2026.
+"""
+
+[expected_output]
+fields = ["finding", "households", "unresolved", "figures", "explanation"]
+findings = ["found", "none_found", "unresolved"]
+
+[grader_params]
+as_of = 2026-04-15

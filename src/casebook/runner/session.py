@@ -5,12 +5,15 @@ import json
 from pathlib import Path
 from typing import Any
 
-from casebook.graders.registry import grader
+from casebook.graders.follow_up import FollowUp, client_message, tone_context
+from casebook.graders.jury import tone
+from casebook.graders.registry import GraderSpec, grader
+from casebook.model.crm import parse_crm_diff
 from casebook.model.files import json_text, read_manifest
 from casebook.publish.mapper import map_to_aliases
 from casebook.runner.config import SharedConfig
 from casebook.runner.preflight import require_book_files, require_household, require_real_tickers
-from casebook.runner.run import RunInputs, grade_record, private_root, run_task
+from casebook.runner.run import Grader, GradeRefusedError, RunInputs, grade_record, private_root, run_task
 from casebook.tasks.task import HELD_GRADERS, HELD_WORKFLOWS, Task, find_task
 
 # Where a held workflow's keys go whatever --keys says: out/keys/, which the release script ignores.
@@ -45,6 +48,25 @@ def write_key(task_id: str, key: Any, keys_root: Path, version: str) -> tuple[Pa
     return folder, hashlib.sha256(text.encode()).hexdigest()
 
 
+def grading(task: Task, spec: GraderSpec, key: Any, record: dict[str, Any]) -> Grader:
+    """How a run is graded: on its output and fixtures; a follow-up task's also on its CRM sandbox diff and on
+    the tone jury's votes on its client message, every one of which the grade keeps."""
+    if not spec.follow_up:
+        return lambda output, workspace: spec.grade(output, key, workspace).to_dict()
+
+    def grade(output: str, workspace: Path) -> dict[str, Any]:
+        stored = record["crm_sandbox_diff"]
+        if stored is None:
+            raise GradeRefusedError(f"run {record['run_id']} of follow-up task {task.task_id} has no CRM sandbox diff")
+        message = client_message(output)
+        votes = tone(message, tone_context(task.justified_conclusion)) if message is not None else None
+        follow_up = FollowUp(task.household_id, parse_crm_diff(stored), votes)
+        graded: dict[str, Any] = spec.grade(output, key, workspace, follow_up).to_dict()
+        return graded | {"tone": votes.to_dict() if votes else None}
+
+    return grade
+
+
 def run_and_grade(
     task_id: str, arm: str, tasks: Path, book: Path, keys_root: Path, published: Path, config: SharedConfig
 ) -> dict[str, Any]:
@@ -66,9 +88,7 @@ def run_and_grade(
             "answer": hashlib.sha256(key_file.read_bytes()).hexdigest(),
             "grader": spec.sha256(),
         }
-        record = grade_record(
-            record, folder, lambda output, workspace: spec.grade(output, key, workspace).to_dict(), hashes
-        )
+        record = grade_record(record, folder, grading(task, spec, key, record), hashes)
     mapped = map_to_aliases(record)
     if mapped["state"] == "graded":
         mapped["state"] = "mapped"

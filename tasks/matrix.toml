@@ -63,7 +63,7 @@ workflow = "meeting"
 role = "trap"
 household_id = "HH-1204"
 pair_task = "T-MTG-02"
-asks = "Prepare the 2025 review: what will the backdoor Roth conversion cost in tax, and why?"
+asks = "Prepare the 2025 review: what will the backdoor Roth conversion cost in tax, and why? Then record the follow-up in the CRM and draft the client's message."
 
 [[tasks]]
 task_id = "T-MTG-02"
@@ -71,7 +71,7 @@ workflow = "meeting"
 role = "twin"
 household_id = "HH-1587"
 pair_task = "T-MTG-01"
-asks = "The same preparation on the near-miss twin, whose pre-tax money is in a 401(k)."
+asks = "The same preparation and follow-up on the near-miss twin, whose pre-tax money is in a 401(k)."
 
 [[tasks]]
 task_id = "T-MTG-03"
@@ -79,7 +79,7 @@ workflow = "meeting"
 role = "trap"
 household_id = "HH-2316"
 pair_task = "T-MTG-04"
-asks = "Prepare the year-end planning call: net investment income tax, the SALT limit and asset location."
+asks = "Prepare the year-end planning call: net investment income tax, the SALT limit and asset location. Then record the follow-up in the CRM and draft the client's message."
 
 [[tasks]]
 task_id = "T-MTG-04"
@@ -87,7 +87,7 @@ workflow = "meeting"
 role = "twin"
 household_id = "HH-2749"
 pair_task = "T-MTG-03"
-asks = "The same call on the near-miss twin, which stays under the threshold."
+asks = "The same call and follow-up on the near-miss twin, which stays under the threshold."
 
 [[tasks]]
 task_id = "T-MTG-05"

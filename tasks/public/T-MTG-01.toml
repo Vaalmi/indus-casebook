@@ -1,0 +1,32 @@
+# Meeting preparation and follow-up, on the trap of archetype 1's pair 1. Writes to the CRM sandbox.
+task_id = "T-MTG-01"
+workflow = "meeting"
+household_id = "HH-1204"
+cutoff = 2026-04-15
+fixtures = ["custodian", "portfolio", "crm", "documents"]
+allowed_tools = ["Read", "Glob", "Grep", "mcp__crm__list_households", "mcp__crm__read_household", "mcp__crm__add_note", "mcp__crm__add_activity", "mcp__crm__mark_activity_done"]
+grader = "backdoor_roth_follow_up"
+
+prompt = """
+You are helping an advisor at a small independent advisory firm. This folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the documents on file (documents/). The firm's CRM is also open to you through its tools: list_households, read_household, add_note, add_activity and mark_activity_done (add_activity takes sent_to_client: true only for a record of something sent to the client).
+
+The advisor is preparing the 2025 review with this household and asks: what will the 2025 backdoor Roth conversion cost in tax, that is, how much of it is taxable income for 2025, and why? Answer in taxable income, not in tax dollars: the firm does not prepare returns.
+
+Then record the follow-up in the CRM, for this household only, dated 15 April 2026: a note of what was discussed and decided, with the figures it turns on, and an activity for each item someone still has to do. Then draft the client's message.
+
+Work only from these files. End your answer with one fenced json block with these fields:
+- "finding": "pro_rata_tax" if part of the conversion is taxable under the pro-rata rule, "no_pro_rata_tax" if none of it is, or "unresolved"
+- "taxable_amount": the taxable amount of the conversion for 2025 (Form 8606 line 18), or null if unresolved
+- "basis_carried": the basis in traditional IRAs carried to 2026 (Form 8606 line 14), or null if unresolved
+- "figures": every figure you relied on, each as {"label": ..., "value": ..., "source": the file it came from, relative to this folder}, adding "computed": true to a figure you computed rather than read
+- "explanation": two or three sentences
+- "client_message": the message to the client, as plain text
+"""
+
+justified_conclusion = """
+Luka Kovac contributed $7,000.00 to the new traditional IRA SYN-12040003 on 10 February 2025, nondeductible as the CRM records, and converted $7,000.00 to his Roth IRA SYN-12040004 on 13 February 2025. The pro-rata rule counts every traditional IRA he owned on 31 December 2025, and his rollover IRA SYN-12040002 held $187,544.92 of pre-tax money that day, so Form 8606 line 10 is 0.036: $252.00 of the conversion is nontaxable and $6,748.00 is taxable income for 2025. The other $6,748.00 of basis is not lost; it carries to 2026. The answer key works Form 8606 from the custodian's year-end positions and cash.
+"""
+
+[expected_output]
+fields = ["finding", "taxable_amount", "basis_carried", "figures", "explanation", "client_message"]
+findings = ["pro_rata_tax", "no_pro_rata_tax", "unresolved"]

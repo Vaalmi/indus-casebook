@@ -40,14 +40,10 @@ def test_the_ledger_is_committed_with_the_published_ids() -> None:
     assert sorted((e.archetype, e.pair, e.role) for e in background.values()) == sorted(
         (a, n, role) for a in range(1, 11) for n in range(2, 6) for role in ("trap", "twin")
     )
-    # The twelve reconciliation and tax-lot and RMD tasks of slice 9, placed as the task matrix places them.
+    # The 24 public tasks of slices 9 and 10, six per workflow, placed as the task matrix places them.
     matrix = tomllib.loads((ROOT / "tasks" / "matrix.toml").read_text())["tasks"]
-    placed = {
-        t["task_id"]: LedgerTask(t["household_id"], t["workflow"])
-        for t in matrix
-        if t["workflow"] in ("reconciliation", "tax_lot_rmd")
-    }
-    assert len(placed) == 12
+    placed = {t["task_id"]: LedgerTask(t["household_id"], t["workflow"]) for t in matrix}
+    assert len(placed) == 24
     assert ledger.tasks == placed
 
 

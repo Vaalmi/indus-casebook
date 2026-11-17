@@ -1,6 +1,23 @@
 {% extends "base.html" %}
 {% block title %}{{ view.task.task_id }}{% endblock %}
 {% block main %}
+{% macro crm_changes(record) %}
+{% if record.crm_sandbox_diff is defined and record.crm_sandbox_diff is not none %}
+<details data-section="crm-diff">
+  <summary>What the run wrote to the CRM sandbox</summary>
+  {% for household, kinds in record.crm_sandbox_diff.households.items() %}
+  <h4>{{ household }}</h4>
+  <ul>
+  {% for kind in ("added", "changed", "removed") %}{% for c in kinds[kind] %}{% set r = c.after or c.before %}
+    <li data-crm-change="{{ kind }}">{{ kind|capitalize }}, {{ c.collection }} {{ c.record_id }}{% if r.get("date") %}, dated {{ r.date }}{% endif %}: {{ r.get("text") or r.get("summary") or "" }}{% if r.get("sent_to_client") %} (sent to the client){% endif %}{% if r.get("done") %} (done {{ r.done }}){% endif %}</li>
+  {% endfor %}{% endfor %}
+  </ul>
+  {% else %}
+  <p>Nothing: the run wrote no CRM record.</p>
+  {% endfor %}
+</details>
+{% endif %}
+{% endmacro %}
 <nav class="crumbs"><a href="../index.html">Households and tasks</a></nav>
 <header class="household-head">
   <h1>{{ view.task.task_id }}: {{ view.task.workflow|capitalize }}</h1>
@@ -10,7 +27,7 @@
 <section aria-labelledby="task-heading" data-section="task">
   <h2 id="task-heading">The task</h2>
   <pre class="prompt">{{ view.task.prompt }}</pre>
-  <p>The AI under test gets the household's four source sets as they stood on {{ view.task.cutoff }}, read on real tickers with invented prices. It has the tools {{ view.task.allowed_tools|join(", ") }}, and Skill, by which the checklist and skill arms load their instruction; nothing that runs code or reaches the web. Its output is shown here under aliases.</p>
+  <p>The AI under test gets the household's four source sets as they stood on {{ view.task.cutoff }}, read on real tickers with invented prices. It has the tools {{ view.file_tools|join(", ") }}, and Skill, by which the checklist and skill arms load their instruction{% if view.crm_tools %}, and the CRM sandbox's {{ view.crm_tools|join(", ") }}, which read and write a copy of the firm's CRM made for the run{% endif %}; nothing that runs code or reaches the web. Its output is shown here under aliases.</p>
 </section>
 
 <section aria-labelledby="arms-heading">
@@ -33,6 +50,7 @@
         <pre class="output">{{ arm.record.output }}</pre>
       </details>
       {% endif %}
+      {{ crm_changes(arm.record) }}
       {% else %}
       {% set grade = arm.record.grade %}
       <p class="{{ 'passed' if grade.passed else 'failed' }}" data-outcome="{{ 'passed' if grade.passed else 'failed' }}">
@@ -47,10 +65,22 @@
         </tbody>
       </table>
       <p class="counts">Correct "unresolved": {{ grade.counts.correct_unresolved }} · unnecessary refusal: {{ grade.counts.unnecessary_refusal }} · false alarm: {{ grade.counts.false_alarm }}</p>
+      {% if grade.tone is defined and grade.tone %}
+      <table class="breakdown" data-section="tone-votes">
+        <caption>Tone of the client message: {% if grade.tone.score is not none %}median {{ grade.tone.score }} of 5{% else %}a vote is missing, so no tone score and no pass{% endif %}</caption>
+        <thead><tr><th>Juror</th><th class="num">Vote</th><th>Reason</th></tr></thead>
+        <tbody>
+        {% for v in grade.tone.votes %}
+          <tr data-juror="{{ v.family }}"><td>{{ v.name }} at {{ v.effort }} effort</td><td class="num">{{ v.score if v.score is not none else "none" }}</td><td>{{ v.reason if v.score is not none else "No vote: " ~ v.error }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
       <details>
         <summary>The output</summary>
         <pre class="output">{{ arm.record.output }}</pre>
       </details>
+      {{ crm_changes(arm.record) }}
       {% endif %}
       <p class="files">{{ arm.runs }} run{{ "s" if arm.runs != 1 }} under this arm; latest <a href="../data/runs/{{ view.task.task_id }}/{{ arm.record.run_id }}.json">run record</a>{% if arm.record.state != "failed" %}, <a href="../data/runs/{{ view.task.task_id }}/{{ arm.record.run_id }}.transcript.jsonl">transcript</a>{% endif %}.</p>
       {% endif %}

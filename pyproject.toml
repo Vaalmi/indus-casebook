@@ -10,6 +10,7 @@ requires-python = ">=3.13,<3.14"
 license = "Apache-2.0"
 dependencies = [
   "jinja2==3.1.6",
+  "mcp==2.3.0",
   "pandas==3.1.1",
   "pypdf==7.1.0",
   "reportlab==5.1.0",
@@ -72,6 +73,7 @@ source_modules = ["casebook.checks"]
 forbidden_modules = [
   "casebook.build",
   "casebook.cli",
+  "casebook.crm",
   "casebook.generate",
   "casebook.graders",
   "casebook.keys",
@@ -90,6 +92,41 @@ forbidden_modules = [
   "casebook.tax",
   "casebook.watermark",
 ]
+
+# docs/PLAN.md, the module table: the CRM sandbox imports only model; a follow-up grader reads the sandbox's
+# diff from the run record, through model, and never imports the sandbox.
+[[tool.importlinter.contracts]]
+name = "crm imports only model"
+type = "forbidden"
+source_modules = ["casebook.crm"]
+forbidden_modules = [
+  "casebook.build",
+  "casebook.checks",
+  "casebook.cli",
+  "casebook.generate",
+  "casebook.graders",
+  "casebook.keys",
+  "casebook.notice",
+  "casebook.plant",
+  "casebook.publish",
+  "casebook.published_text",
+  "casebook.replay",
+  "casebook.rules",
+  "casebook.runner",
+  "casebook.securities",
+  "casebook.seeding",
+  "casebook.site",
+  "casebook.sources",
+  "casebook.tasks",
+  "casebook.tax",
+  "casebook.watermark",
+]
+
+[[tool.importlinter.contracts]]
+name = "graders never import the CRM sandbox"
+type = "forbidden"
+source_modules = ["casebook.graders", "casebook.keys"]
+forbidden_modules = ["casebook.crm"]
 
 # docs/PLAN.md, import contract 1: answer keys and graders never import the generator
 # (docs/SPEC.md, Rules: "Independent keys").

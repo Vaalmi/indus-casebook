@@ -22,7 +22,9 @@ _PHONE = re.compile(r"(?<![\w.-])(?:\(\d{3}\) ?|\d{3}[-. ])?(\d{3})-(\d{4})(?![\
 # A full stop may end the sentence after one; a dot or hyphen followed by a digit continues the number.
 _PHONE_SPLIT = re.compile(r"(?<![\w.-])\(?\d{3}\)?[. ](\d{3})[. ](\d{4})(?!\w|[.-]\d)")
 _EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*)")
-_ACCOUNT = re.compile(r"SYN-\d{8}")
+# An account number written out whole: SYN- and eight digits, not inside a longer word or number. A masked one
+# ("the account ending 0001") is not one.
+ACCOUNT_NUMBER = re.compile(r"(?<![A-Za-z0-9])SYN-\d{8}(?!\d)")
 ACCOUNT_FIELDS = ("account_id", "account_ids")
 # The whole value of an identifier field must have its invalid shape; the prose scan alone would
 # miss a number written in a form it does not look for.
@@ -35,6 +37,11 @@ NEVER_ISSUED_AREA = "000"
 FICTIONAL_EXCHANGE = "555"
 FICTIONAL_LINES = range(100, 200)
 EMAIL_DOMAIN = ".example"
+
+
+def account_numbers(text: str) -> list[str]:
+    """Every whole account number in `text`, each once, in the order it first appears."""
+    return list(dict.fromkeys(ACCOUNT_NUMBER.findall(text)))
 
 
 def text_problems(text: str) -> list[str]:
@@ -86,7 +93,7 @@ def file_problems(name: str, data: bytes, text: str) -> list[str]:
     or JSON key gives whose whole value lacks its invalid shape."""
     problems = text_problems(text)
     for field, value in _fields(name, data):
-        if field in ACCOUNT_FIELDS and not _ACCOUNT.fullmatch(value):
+        if field in ACCOUNT_FIELDS and not ACCOUNT_NUMBER.fullmatch(value):
             problems.append(f"account number {value} is not SYN- and eight digits")
         elif field in FIELD_SHAPES and not FIELD_SHAPES[field][0].fullmatch(value):
             problems.append(f"{field} {value} is not {FIELD_SHAPES[field][1]}")

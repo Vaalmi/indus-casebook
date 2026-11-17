@@ -1,0 +1,38 @@
+# Compliance review, on the trap of archetype 4's pair 1: is the 2025 Roth conversion documented well enough to report its taxable amount.
+task_id = "T-CMP-03"
+workflow = "compliance"
+household_id = "HH-4105"
+cutoff = 2026-04-15
+fixtures = ["custodian", "portfolio", "crm", "documents"]
+allowed_tools = ["Read", "Glob", "Grep"]
+grader = "conversion_documentation"
+
+prompt = """
+You are helping the compliance function of a small independent advisory firm. The firm is an SEC-registered investment adviser acting as a fiduciary; not a broker-dealer, law firm or CPA firm. Your answer goes to the firm's chief compliance officer as an internal compliance memo: raise what a reviewer should look at, from the records, and draw no legal conclusion.
+
+The firm's policy: "A tax figure the firm reports or gives a client must rest on documents on file. A Roth conversion's taxable amount rests on the Form 1099-R and, where the owner has after-tax basis in traditional IRAs, on the prior year's Form 8606 or the return that carries it. A basis the client claims with no Form 8606 or return behind it is not documented, and is neither assumed nor ruled out."
+
+This folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the documents on file (documents/).
+
+The chief compliance officer asks: is this household's 2025 Roth conversion documented well enough to report its taxable amount, and if it is, what is the taxable amount?
+
+Work only from these files. End your answer with one fenced json block with these fields:
+- "finding": "documented" if the records on file settle the conversion's taxable amount, or "unresolved" if they do not
+- "converted": the amount converted to a Roth IRA in 2025
+- "basis_on_file": the after-tax basis in the owner's traditional IRAs carried from 2024 (Form 8606 line 2) that the records document, or null if unresolved
+- "taxable_amount": the taxable part of the conversion, or null if unresolved
+- "issues_for_reviewer": one entry per issue a reviewer should look at, each as {"issue": a short title, "records": the IDs of the records it rests on (account, security, lot, transaction, CRM activity or document IDs), "what_the_records_show": one or two sentences, "why_the_reviewer_should_look": one sentence}, or [] if none
+- "figures": every figure you relied on, each as {"label": ..., "value": ..., "source": the file it came from, relative to this folder}, adding "computed": true to a figure you computed rather than read
+- "explanation": two or three sentences
+"""
+
+justified_conclusion = """
+Rosalind Achterberg converted $60,000.00 from her traditional IRA SYN-41050002 to her Roth IRA SYN-41050003 on 6 November 2025 (T-4105-0028). Her 2024 Form 8606, recorded as received in the CRM (CA-4105-01), carries $38,500.00 of basis, so under the pro-rata rule of Form 8606 Part I the basis is spread over her traditional IRA's value on 31 December 2025, $392,711.36, plus the conversion: $5,100.00 is nontaxable and $54,900.00 taxable. The Form 1099-R reports the whole $60,000.00 as taxable, with the taxable amount not determined, so the return needs the 2025 Form 8606 to report $54,900.00.
+"""
+
+[expected_output]
+fields = ["finding", "converted", "basis_on_file", "taxable_amount", "issues_for_reviewer", "figures", "explanation"]
+findings = ["documented", "unresolved"]
+
+[grader_params]
+year = 2025

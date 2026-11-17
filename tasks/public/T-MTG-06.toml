@@ -1,0 +1,35 @@
+# Meeting preparation over the whole book: the households to call about a 2025 tax or distribution surprise.
+# Read-only. Held until the tax review: its key computes Form 8606, RMDs and wash sales.
+task_id = "T-MTG-06"
+workflow = "meeting"
+household_id = "book"
+cutoff = 2026-04-15
+fixtures = ["custodian", "portfolio", "crm"]
+allowed_tools = ["Read", "Glob", "Grep"]
+grader = "tax_surprises"
+
+prompt = """
+You are helping an advisor at a small independent advisory firm. This folder holds the records of every client household of the firm as they stood on 15 April 2026, one folder per household under households/<household ID>/, each with the custodian's files (custodian/), the firm's portfolio system (portfolio/) and its CRM (crm/).
+
+The advisor asks: which households should we call before 15 April 2026 about a 2025 tax or distribution surprise, and why?
+
+Count three kinds of surprise, and no other:
+- "backdoor_roth_taxed": a 2025 contribution to a traditional IRA converted to a Roth IRA in 2025, part of which is taxable under the pro-rata rule because the person's traditional IRAs held pre-tax money on 31 December 2025;
+- "rmd_not_met": a 2025 required minimum distribution, from any retirement account, that was not met;
+- "wash_sale": a 2025 sale at a loss in a taxable account, with the same security acquired within 30 days before or after it in an account of the seller or the seller's spouse, so that some of the loss is a wash sale.
+
+Work only from these files. End your answer with one fenced json block with these fields:
+- "finding": "found" if one or more households had such a surprise, "none_found" if none did, or "unresolved" if the files settle no household as found and leave some unresolved
+- "households": one entry per household to call, each as {"household_id": ..., "surprises": the kinds above that apply, "person_ids": the person each surprise concerns (who converted, whose RMD was not met), "account_ids": the accounts an unmet RMD had to come from, "transaction_ids": the backdoor Roth's conversion, and the wash sale's loss sales and the acquisitions that replace them, "explanation": one sentence}, or [] if none
+- "unresolved": the households the files cannot settle, each as {"household_id": ..., "explanation": one sentence}, or [] if none
+- "figures": every figure you relied on from the files, each as {"label": ..., "value": ..., "source": the file it came from, relative to this folder}, adding "computed": true to a figure you computed from them rather than read
+- "explanation": two or three sentences
+"""
+
+justified_conclusion = """
+Nineteen households have a 2025 surprise to call about. Five made a backdoor Roth while a rollover IRA held pre-tax money on 31 December 2025, so part of the conversion is taxable: HH-0218 ($6,783.00 taxable), HH-0347 ($6,797.00), HH-0690 ($7,672.00), HH-0844 ($6,692.00) and HH-1204 ($6,748.00); the look-alikes whose pre-tax money sits in a 401(k) owe nothing on theirs. Nine had a 2025 required minimum distribution not met: HH-0120, HH-0236, HH-0371, HH-0664 and HH-5271 took nothing from a former employer's 401(k) in the first distribution year, and HH-0466, HH-0491, HH-0607 and HH-0842 took nothing from an inherited IRA that owes annual distributions under the ten-year rule. Five sold a fund at a loss and bought it back within 30 days in a spouse's IRA, a wash sale: HH-0129, HH-0363, HH-0507, HH-0780 and HH-9234.
+"""
+
+[expected_output]
+fields = ["finding", "households", "unresolved", "figures", "explanation"]
+findings = ["found", "none_found", "unresolved"]

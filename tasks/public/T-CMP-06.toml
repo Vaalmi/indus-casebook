@@ -1,0 +1,34 @@
+# Compliance review, over the whole book: identifier, beneficiary and ownership facts two sources state differently.
+task_id = "T-CMP-06"
+workflow = "compliance"
+household_id = "book"
+cutoff = 2026-04-15
+fixtures = ["custodian", "portfolio", "crm", "documents"]
+allowed_tools = ["Read", "Glob", "Grep"]
+grader = "source_disagreements"
+
+prompt = """
+You are helping the compliance function of a small independent advisory firm. The firm is an SEC-registered investment adviser acting as a fiduciary; not a broker-dealer, law firm or CPA firm. Your answer goes to the firm's chief compliance officer as an internal compliance memo: raise what a reviewer should look at, from the records, and draw no legal conclusion.
+
+The firm's policy: "A fact about who owns an account, who its beneficiaries are, or who a person is (name, relationship, date of death, taxpayer ID) must read the same in every record that states it: the custodian's, the portfolio system's, the CRM's and the documents on file. Where two records state it differently, the record is held for review. A record that is out of date in every source alike is not a disagreement, though a reviewer may note it."
+
+This folder holds the records of every client household of the firm as they stood on 15 April 2026, one folder per household under households/<household ID>/, each with the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the documents on file (documents/).
+
+The chief compliance officer asks: which households' records hold an identifier, beneficiary or ownership fact that two sources state differently?
+
+Work only from these files. End your answer with one fenced json block with these fields:
+- "finding": "found" if one or more households do, "none_found" if none does, or "unresolved" if the files settle no household as found and leave some unresolved
+- "households": one entry per household that does, each as {"household_id": ..., "records": the account or person IDs whose facts disagree, "explanation": one sentence}, or [] if none
+- "unresolved": the households the files cannot settle, each as {"household_id": ..., "explanation": one sentence}, or [] if none
+- "issues_for_reviewer": one entry per issue a reviewer should look at, each as {"issue": a short title, "records": the IDs of the records it rests on (account, security, lot, transaction, CRM activity or document IDs), "what_the_records_show": one or two sentences, "why_the_reviewer_should_look": one sentence}, or [] if none
+- "figures": every figure you relied on, each as {"label": ..., "value": ..., "source": the file it came from, relative to this folder}, adding "computed": true to a figure you computed rather than read
+- "explanation": two or three sentences
+"""
+
+justified_conclusion = """
+Across all 96 households every account's owners read the same at the custodian, in the portfolio system, on the statements and on the tax documents; every person's name, relationship, date of death and taxpayer ID read the same in the CRM, the portfolio system and the tax documents; and every beneficiary designation agrees with the household members it names and with the CRM's records of beneficiary changes, forms sent and claims. No household's sources disagree. Records out of date in every source alike, such as a designation that still names a beneficiary who has died while the CRM records the form sent to change it, are not disagreements, though a reviewer may note them.
+"""
+
+[expected_output]
+fields = ["finding", "households", "unresolved", "issues_for_reviewer", "figures", "explanation"]
+findings = ["found", "none_found", "unresolved"]

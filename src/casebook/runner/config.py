@@ -2,7 +2,7 @@
 
 import hashlib
 import json
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 
 ARMS = ("basic", "checklist", "skill")
@@ -13,6 +13,12 @@ INSTRUCTIONS: dict[str, Path | None] = {
     "skill": REPO / "skills" / "indus-advisor",
 }
 LOADING_TOOL = "Skill"
+# The CRM sandbox's MCP server, and its tools as the CLI names them: a follow-up task allows them.
+CRM_SERVER = "crm"
+CRM_TOOLS = tuple(
+    f"mcp__{CRM_SERVER}__{tool}"
+    for tool in ("list_households", "read_household", "add_note", "add_activity", "mark_activity_done")
+)
 # The environment a run sees: enough for the CLI to find itself and its sign-in, nothing more.
 ENVIRONMENT_KEYS = ("HOME", "LANG", "LOGNAME", "PATH", "TMPDIR", "USER")
 
@@ -25,6 +31,8 @@ class SharedConfig:
     # The task's file tools, plus Skill: the route a user's installed skill or checklist loads by.
     # Every arm has it; only the basic arm has nothing of ours to load with it.
     tools: tuple[str, ...] = ("Read", "Glob", "Grep", "Skill")
+    # The CRM sandbox's tools a follow-up task allows, pre-approved with --allowedTools; none for any other task.
+    crm_tools: tuple[str, ...] = ()
     max_turns: int = 40
     timeout_seconds: int = 900
     retries: int = 3
@@ -40,6 +48,10 @@ class SharedConfig:
         "stream-json",
         "--verbose",
     )
+
+    def for_tools(self, allowed: tuple[str, ...]) -> "SharedConfig":
+        """The configuration for a task that allows these tools: the CRM sandbox's, if it allows any of them."""
+        return replace(self, crm_tools=tuple(t for t in CRM_TOOLS if t in allowed))
 
     def as_dict(self) -> dict[str, object]:
         """As it is stored in a run record: plain JSON, tuples as lists."""

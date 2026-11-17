@@ -8,6 +8,7 @@ import pytest
 from playwright.sync_api import Browser, Playwright, sync_playwright
 
 from casebook.build import build_book
+from casebook.graders.jury import VARIABLES as JURY_VARIABLES
 from casebook.publish.site_build import build_site
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -90,8 +91,18 @@ class StandIn:
         self.answer.write_text('The fee was right.\n```json\n{"finding": "no_fee_error"}\n```\n')
         self.set()
 
-    def set(self, mode: str = "answer") -> None:
-        self.config.write_text(json.dumps({"mode": mode, "log": str(self.log), "answer": str(self.answer)}))
+    def set(self, mode: str = "answer", skill: str = "reconciliation-as-of") -> None:
+        """`skill` is the one the skill arm loads (the tests' runs are T-REC-01's); the checklist has only its own."""
+        settings = {"mode": mode, "log": str(self.log), "answer": str(self.answer), "skill": skill}
+        self.config.write_text(json.dumps(settings))
+
+
+@pytest.fixture(autouse=True)
+def no_live_juror(monkeypatch: pytest.MonkeyPatch) -> None:
+    """No test reaches a real juror (rule 13): each jury CLI is a command that does not exist, so a vote asked
+    for by mistake is missing, until a test sets the stand-in jury (tests/jury_fixtures.py)."""
+    for variable in JURY_VARIABLES.values():
+        monkeypatch.setenv(variable, "casebook-no-live-juror")
 
 
 @pytest.fixture

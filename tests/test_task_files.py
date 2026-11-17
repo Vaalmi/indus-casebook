@@ -1,5 +1,5 @@
-"""docs/PLAN.md, slice 9: twelve task files, six per workflow, each with a prompt, fixtures, allowed tools,
-expected output, grader and justified conclusion; book-level fixtures; held tax-lot and RMD keys; and the
+"""docs/PLAN.md, slices 9 and 10: twenty-four task files, six per workflow, each with a prompt, fixtures,
+allowed tools, expected output, grader and justified conclusion; book-level fixtures; held tax keys; and the
 three counts in every result."""
 
 from datetime import date
@@ -8,33 +8,37 @@ from pathlib import Path
 import pytest
 
 from casebook.graders.common import COUNTS
+from casebook.graders.follow_up import FollowUp
 from casebook.graders.registry import GRADERS
+from casebook.model.crm import CrmDiff
 from casebook.model.files import read_manifest
+from casebook.runner.config import CRM_TOOLS
 from casebook.runner.session import HELD_KEYS, keys_root_for
 from casebook.tasks.fixtures import load_task_fixtures
-from casebook.tasks.task import BOOK, TASK_FIELDS, load_task
+from casebook.tasks.task import BOOK, TASK_FIELDS, WORKFLOWS, load_task
 
 from .conftest import ROOT
 
 TASKS = ROOT / "tasks" / "public"
-SLICE_9 = ("reconciliation", "tax_lot_rmd")
+FILE_TOOLS = {"Read", "Glob", "Grep"}
 
 
 def task_files() -> list[Path]:
     return sorted(TASKS.glob("T-*.toml"))
 
 
-def test_twelve_task_files_six_per_workflow_each_with_every_field() -> None:
+def test_twenty_four_task_files_six_per_workflow_each_with_every_field() -> None:
     tasks = [load_task(path) for path in task_files()]
-    by_workflow = {w: [t.task_id for t in tasks if t.workflow == w] for w in SLICE_9}
-    assert {w: len(ids) for w, ids in by_workflow.items()} == {"reconciliation": 6, "tax_lot_rmd": 6}
+    assert {w: sum(t.workflow == w for t in tasks) for w in WORKFLOWS} == dict.fromkeys(WORKFLOWS, 6)
     for path, task in zip(task_files(), tasks, strict=True):
         assert path.stem == task.task_id
         raw = path.read_text()
         for field in TASK_FIELDS:
             assert f"{field} =" in raw or f"[{field}]" in raw, (task.task_id, field)
         assert task.prompt.strip() and task.justified_conclusion.strip(), task.task_id
-        assert task.fixtures and set(task.allowed_tools) == {"Read", "Glob", "Grep"}, task.task_id
+        # A follow-up task also has the CRM sandbox's tools, all of them; no other task has any.
+        follow_up = GRADERS[task.grader].follow_up
+        assert task.fixtures and set(task.allowed_tools) == FILE_TOOLS | (set(CRM_TOOLS) if follow_up else set())
         assert "unresolved" in task.expected_output.findings, task.task_id
         assert task.grader in GRADERS, task.task_id
         # The prompt asks for the closing json block's every field by name.
@@ -55,12 +59,18 @@ def test_a_book_level_task_reads_every_household_each_in_its_own_folder(book: Pa
 
 
 def test_tax_lot_and_rmd_keys_are_held_whatever_the_keys_folder() -> None:
-    """Every tax-lot and RMD task's key, and a reconciliation task's whose key computes an RMD (T-REC-03
-    and T-REC-04), goes to out/keys/; the other reconciliation keys are published."""
+    """Every tax-lot and RMD task's key, and any other task's whose key computes a tax figure, goes to
+    out/keys/: an RMD (T-REC-03, 04); a Form 8606 taxable amount, the NIIT or the tax surprises (T-MTG-01 to
+    04, 06); a released lot's basis or a conversion's taxable amount (T-CMP-01 to 04). The rest are published."""
     published = Path("published/keys")
     held = {load_task(p).task_id for p in task_files() if keys_root_for(load_task(p), published) == HELD_KEYS}
     assert Path("out/keys") == HELD_KEYS
-    assert held == {"T-REC-03", "T-REC-04", "T-TAX-01", "T-TAX-02", "T-TAX-03", "T-TAX-04", "T-TAX-05", "T-TAX-06"}
+    assert held == {
+        *("T-REC-03", "T-REC-04"),
+        *(f"T-TAX-0{n}" for n in range(1, 7)),
+        *("T-MTG-01", "T-MTG-02", "T-MTG-03", "T-MTG-04", "T-MTG-06"),
+        *("T-CMP-01", "T-CMP-02", "T-CMP-03", "T-CMP-04"),
+    }
 
 
 @pytest.mark.parametrize("name", sorted(GRADERS))
@@ -69,6 +79,8 @@ def test_every_grader_records_the_three_counts(name: str, book: Path, tmp_path: 
     path = next(p for p in task_files() if load_task(p).grader == name)
     task = load_task(path)
     key = GRADERS[name].key(book, task.household_id, task.grader_params)
-    result = GRADERS[name].grade("no answer here", key, tmp_path).to_dict()
+    spec = GRADERS[name]
+    nothing = (FollowUp(task.household_id, CrmDiff(()), None),) if spec.follow_up else ()
+    result = spec.grade("no answer here", key, tmp_path, *nothing).to_dict()
     assert set(result["counts"]) == set(COUNTS)
     assert result["score"] == 0 or result["critical_fail"] is not None or not result["passed"]

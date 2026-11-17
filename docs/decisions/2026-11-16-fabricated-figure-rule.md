@@ -4,6 +4,8 @@
 
 **Evidence.** `review/slice2-r3-b.md`: `prose_amounts("The joint account held 48 thousand in cash.")` returns `[]`. The grader already zeroes `$48,113.27`, `USD 48,113.27`, `48,113.27 dollars`, `$50 million` and `4944.13` (`tests/test_grader_fee_reconciliation.py`). Each tightening so far also zeroed an honest live answer until the answer key listed that derivation: an account's value at another quarter end, the correct fee shared across accounts, three amounts in one figure. Seven real answers are now regression tests, all scoring 100.
 
+**New evidence, slice 10 (16 November 2026).** The live run of T-MTG-01 under the skill arm (`published/runs/T-MTG-01/T-MTG-01-skill-20261117T002107Z-45b3.json`) found the right taxable amount, $6,748.13 (within a dollar of the key's $6,748.00), and recorded a correct follow-up. It scored 0 because it also said the couple's joint wages were $398,000 (212,000 + 186,000, both stated in the CRM's record of the W-2s received), a sum the key does not list. Under option 1 the key would list the household's total wages, and T-MTG-01's three live runs would be redone: 3 runs and 9 jury calls on your CLIs. I have not widened the key to fit an answer already seen.
+
 **Options.**
 
 1. **Strict, as now, plus bare multipliers.** Treat "48 thousand" and "50 million" as amounts too (a small change, ready to apply), and keep widening each task's key as live runs show honest derivations. Consequence: invented amounts in prose are caught in every form but spelled-out words ("forty-eight thousand"); an honest derivation the key does not list zeroes a run until the key is widened, and each widening changes the grader's hash, so that task's live runs are redone (about two minutes for three runs).

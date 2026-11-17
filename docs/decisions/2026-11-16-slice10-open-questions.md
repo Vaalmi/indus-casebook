@@ -23,4 +23,4 @@
 
 **If you don't decide.** Slice 10 waits. Nothing else does: slices 11 onward don't depend on these answers, but the plan builds them after 10.
 
-**Decision.** <The owner's answer, with the date.>
+**Decision.** Accepted, all five as recommended (the owner, 16 November 2026).

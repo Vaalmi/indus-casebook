@@ -6,7 +6,7 @@ import pytest
 
 from .conftest import ROOT
 
-ALLOWED = {"src/casebook/runner/cli.py"}
+ALLOWED = {"src/casebook/runner/cli.py", "src/casebook/graders/jury.py"}
 PROCESS_MODULES = {"subprocess", "pty", "multiprocessing"}
 PROCESS_CALLS = {"system", "popen", "spawnl", "spawnv", "execv", "execve", "execvp", "fork", "create_subprocess_exec"}
 

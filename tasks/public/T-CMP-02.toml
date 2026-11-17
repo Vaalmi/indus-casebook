@@ -1,0 +1,40 @@
+# Compliance review, on the clean twin of archetype 3's pair 1: the same review.
+task_id = "T-CMP-02"
+workflow = "compliance"
+household_id = "HH-3462"
+cutoff = 2026-04-15
+fixtures = ["custodian", "portfolio", "crm", "documents"]
+allowed_tools = ["Read", "Glob", "Grep"]
+grader = "concentration_basis"
+
+prompt = """
+You are helping the compliance function of a small independent advisory firm. The firm is an SEC-registered investment adviser acting as a fiduciary; not a broker-dealer, law firm or CPA firm. Your answer goes to the firm's chief compliance officer as an internal compliance memo: raise what a reviewer should look at, from the records, and draw no legal conclusion.
+
+The firm's policy: "A single company's stock (a fund is not one) worth more of a household than its IPS concentration limit allows, as a share of the household's total value, positions plus cash, needs a documented, client-signed exception recorded in the CRM. The cost basis the firm reports from must agree with the records behind it: for shares released from restricted stock units, the release confirmation's value on the release date."
+
+This folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the documents on file (documents/).
+
+The chief compliance officer asks: on 15 April 2026, is any single company's stock in this household above its IPS concentration limit with no documented exception, and can the custodian's cost basis for the shares released from restricted stock units, those still held and those sold in 2025, be relied on?
+
+Work only from these files. End your answer with one fenced json block with these fields:
+- "finding": "issues_found" if a single company's stock is above the limit with no documented exception or the basis cannot be relied on, "no_issues" if neither, or "unresolved" if the files cannot settle it
+- "above_concentration_limit": one entry per single company's stock above the limit on 15 April 2026, each as {"security_id": ..., "value": its value across the household's accounts, "share_of_household": a percentage}, or [] if none
+- "basis_reliable": true if the custodian's basis for every released share agrees with its release confirmation, false if not, or null if unresolved
+- "basis_understated": the total by which the custodian's tax lots still held on 15 April 2026 understate the basis the release confirmations support (0 if none)
+- "gain_overstated": the total by which the custodian's realized lots overstate the gains on released shares sold in 2025 (0 if none)
+- "issues_for_reviewer": one entry per issue a reviewer should look at, each as {"issue": a short title, "records": the IDs of the records it rests on (account, security, lot, transaction, CRM activity or document IDs), "what_the_records_show": one or two sentences, "why_the_reviewer_should_look": one sentence}, or [] if none
+- "figures": every figure you relied on, each as {"label": ..., "value": ..., "source": the file it came from, relative to this folder}, adding "computed": true to a figure you computed rather than read
+- "explanation": two or three sentences
+"""
+
+justified_conclusion = """
+On 15 April 2026 the household's only single company's stock, Ellisar Search Holdings (SEC-0030), is $250,692.00 of the household's $3,777,189.92, 6.64%, within the IPS concentration limit of 15%; its funds are not concentrations under the policy. The custodian booked each of the four restricted stock unit releases into SYN-34620002 at its release value, so its lots still held and its realized lots for the sale on 12 December 2025 carry the basis the release confirmations (CA-3462-01 to CA-3462-04) support. Neither question raises an issue.
+"""
+
+[expected_output]
+fields = ["finding", "above_concentration_limit", "basis_reliable", "basis_understated", "gain_overstated", "issues_for_reviewer", "figures", "explanation"]
+findings = ["issues_found", "no_issues", "unresolved"]
+
+[grader_params]
+as_of = 2026-04-15
+tax_year = 2025

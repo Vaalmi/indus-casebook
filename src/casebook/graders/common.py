@@ -106,16 +106,27 @@ class Grade:
         }
 
 
+def _earned(name: str, points: int, met: bool | int) -> int:
+    if isinstance(met, bool):
+        return points if met else 0
+    if not 0 <= met <= points:
+        raise ValueError(f"criterion {name} earns {met} of {points} points")
+    return met
+
+
 def grade_from(
-    results: Iterable[tuple[str, int, bool, str]],
+    results: Iterable[tuple[str, int, bool | int, str]],
     critical: str | None,
     counts: dict[str, int],
     essential: Iterable[str],
 ) -> Grade:
-    """A grade from each criterion's name, points, whether it was met, and why; zero on a critical fail."""
+    """A grade from each criterion's name, points, whether it was met (or the points it earned, for one scored
+    in part, such as tone), and why; zero on a critical fail."""
     if set(counts) != set(COUNTS):
         raise ValueError(f"a result records exactly the three counts {', '.join(COUNTS)}, not {sorted(counts)}")
-    breakdown = tuple(Criterion(name, points, points if ok else 0, detail) for name, points, ok, detail in results)
+    breakdown = tuple(
+        Criterion(name, points, _earned(name, points, met), detail) for name, points, met, detail in results
+    )
     score = 0 if critical else sum(c.earned for c in breakdown)
     return Grade(score, breakdown, critical, dict(counts), frozenset(essential))
 

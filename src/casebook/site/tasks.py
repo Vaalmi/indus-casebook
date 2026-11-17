@@ -44,11 +44,25 @@ class ArmView:
         return str((self.record or {}).get("started_utc", ""))[:10]
 
 
+# How the CLI names an MCP server's tools, and the CRM sandbox's.
+MCP_PREFIX = "mcp__"
+CRM_PREFIX = "mcp__crm__"
+
+
 @dataclass(frozen=True)
 class TaskView:
     task: Task
     arms: tuple[ArmView, ...]
     key: dict[str, Any] | None
+
+    @property
+    def file_tools(self) -> tuple[str, ...]:
+        return tuple(t for t in self.task.allowed_tools if not t.startswith(MCP_PREFIX))
+
+    @property
+    def crm_tools(self) -> tuple[str, ...]:
+        """The CRM sandbox's tools the task allows, by the names the sandbox gives them."""
+        return tuple(t.removeprefix(CRM_PREFIX) for t in self.task.allowed_tools if t.startswith(CRM_PREFIX))
 
     @property
     def held(self) -> bool:

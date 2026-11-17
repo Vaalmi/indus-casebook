@@ -1,0 +1,37 @@
+# Compliance review, over the whole book: IPS concentration limits and drift bands crossed with no documented exception.
+task_id = "T-CMP-05"
+workflow = "compliance"
+household_id = "book"
+cutoff = 2026-04-15
+fixtures = ["custodian", "portfolio", "crm"]
+allowed_tools = ["Read", "Glob", "Grep"]
+grader = "ips_sweep"
+
+prompt = """
+You are helping the compliance function of a small independent advisory firm. The firm is an SEC-registered investment adviser acting as a fiduciary; not a broker-dealer, law firm or CPA firm. Your answer goes to the firm's chief compliance officer as an internal compliance memo: raise what a reviewer should look at, from the records, and draw no legal conclusion.
+
+The firm's policy: "A single company's stock (a fund is not one) worth more of a household than its IPS concentration limit allows, or an asset class further from its IPS target than its band allows, each as a share of the household's total value, positions plus cash, needs a documented, client-signed exception recorded in the CRM."
+
+This folder holds the records of every client household of the firm as they stood on 15 April 2026, one folder per household under households/<household ID>/, each with the custodian's files (custodian/), the firm's portfolio system (portfolio/) and its CRM (crm/).
+
+The chief compliance officer asks: which households, on 15 April 2026, have a single company's stock above their IPS concentration limit, or an asset class outside its IPS band, with no documented exception?
+
+Work only from these files. End your answer with one fenced json block with these fields:
+- "finding": "found" if one or more households do, "none_found" if none does, or "unresolved" if the files settle no household as found and leave some unresolved
+- "households": one entry per household that does, each as {"household_id": ..., "above_concentration_limit": the security IDs of the stocks above the limit, "outside_band": the asset classes outside their bands, named as the IPS names them, "explanation": one sentence}, or [] if none
+- "unresolved": the households the files cannot settle, each as {"household_id": ..., "explanation": one sentence}, or [] if none
+- "issues_for_reviewer": one entry per issue a reviewer should look at, each as {"issue": a short title, "records": the IDs of the records it rests on (account, security, lot, transaction, CRM activity or document IDs), "what_the_records_show": one or two sentences, "why_the_reviewer_should_look": one sentence}, or [] if none
+- "figures": every figure you relied on, each as {"label": ..., "value": ..., "source": the file it came from, relative to this folder}, adding "computed": true to a figure you computed rather than read
+- "explanation": two or three sentences
+"""
+
+justified_conclusion = """
+On 15 April 2026 twelve households cross an IPS limit, and the CRM holds no IPS exception anywhere in the book. Five hold a single company's stock above their concentration limit, each an executive's employer stock: HH-0221 (SEC-0040), HH-0376 (SEC-0032), HH-0816 (SEC-0005), HH-0984 (SEC-0048) and HH-3058 (SEC-0028). Eight have an asset class outside its band: HH-3058, HH-3462, HH-5271, HH-5814, HH-6047, HH-6590, HH-9234 and HH-9571. A fund above a concentration limit's share, as in HH-4821 and HH-7350, is not a concentration under the policy.
+"""
+
+[expected_output]
+fields = ["finding", "households", "unresolved", "issues_for_reviewer", "figures", "explanation"]
+findings = ["found", "none_found", "unresolved"]
+
+[grader_params]
+as_of = 2026-04-15

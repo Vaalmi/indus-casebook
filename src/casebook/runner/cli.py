@@ -21,8 +21,9 @@ def run_environment() -> dict[str, str]:
     return {key: os.environ[key] for key in ENVIRONMENT_KEYS if key in os.environ}
 
 
-def arguments(prompt: str, arm: str, config: SharedConfig) -> list[str]:
-    """The full command line. The prompt is one argument; nothing from a fixture enters it."""
+def arguments(prompt: str, arm: str, config: SharedConfig, mcp_config: Path | None = None) -> list[str]:
+    """The full command line. The prompt is one argument; nothing from a fixture enters it. A follow-up task's
+    run also gets the CRM sandbox's server, the only one (--strict-mcp-config), with its tools pre-approved."""
     args = [*cli_command(), "-p", prompt, *config.flags]
     args += [
         "--model",
@@ -34,6 +35,10 @@ def arguments(prompt: str, arm: str, config: SharedConfig) -> list[str]:
         "--max-turns",
         str(config.max_turns),
     ]
+    if config.crm_tools:
+        if mcp_config is None:
+            raise ValueError("a run that allows the CRM sandbox's tools needs the sandbox's MCP config")
+        args += ["--mcp-config", str(mcp_config), "--allowedTools", ",".join(config.crm_tools)]
     instruction = INSTRUCTIONS[arm]
     if instruction is not None:
         args += ["--plugin-dir", str(instruction)]

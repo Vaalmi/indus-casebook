@@ -25,6 +25,7 @@ from casebook.runner.preflight import (
     require_sealed,
 )
 from casebook.runner.record import check_record
+from casebook.runner.sandbox import Sandbox, seed
 from casebook.runner.transcript import Transcript, failure_reason, parse_transcript
 from casebook.tasks.fixtures import FixtureError, load_task_fixtures
 from casebook.tasks.task import Task
@@ -32,8 +33,13 @@ from casebook.tasks.task import Task
 PRIVATE_VARIABLE = "CASEBOOK_PRIVATE"
 # The instruction each arm must show as loaded, by workflow (docs/PLAN.md, Choices and why).
 ARM_SKILLS: dict[str, dict[str, str]] = {
-    "checklist": {"reconciliation": "advisor-checklist", "tax_lot_rmd": "advisor-checklist"},
-    "skill": {"reconciliation": "reconciliation-as-of", "tax_lot_rmd": "tax-lot-rmd"},
+    "checklist": {w: "advisor-checklist" for w in ("reconciliation", "tax_lot_rmd", "meeting", "compliance")},
+    "skill": {
+        "reconciliation": "reconciliation-as-of",
+        "tax_lot_rmd": "tax-lot-rmd",
+        "meeting": "meeting-follow-up",
+        "compliance": "compliance-review",
+    },
 }
 
 
@@ -63,9 +69,10 @@ class ToolsMismatchError(RunRefusedError):
 
 
 def require_tools(task: Task, config: SharedConfig) -> None:
-    if set(task.allowed_tools) | {LOADING_TOOL} != set(config.tools):
+    if set(task.allowed_tools) | {LOADING_TOOL} != set(config.tools) | set(config.crm_tools):
         raise ToolsMismatchError(
             f"task {task.task_id} allows {task.allowed_tools}; the shared config has {config.tools}"
+            + (f" and the CRM sandbox's {config.crm_tools}" if config.crm_tools else "")
         )
 
 
@@ -104,6 +111,7 @@ class RunInputs:
 
 def run_task(inputs: RunInputs, config: SharedConfig, private: Path) -> dict[str, Any]:
     task, arm = inputs.task, inputs.arm
+    config = config.for_tools(task.allowed_tools)
     require_tools(task, config)
     run_id = f"{task.task_id}-{arm}-{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}-{secrets.token_hex(2)}"
     folder = private / "runs" / run_id
@@ -116,11 +124,14 @@ def run_task(inputs: RunInputs, config: SharedConfig, private: Path) -> dict[str
     started = _now()
     version = cli_version()
     args: list[str] = []
+    crm: Sandbox | None = None
     for attempt in range(1, config.retries + 2):
         workspace = Path(tempfile.mkdtemp(prefix="casebook-workspace-"))
         try:
             prepare(task, inputs.book, workspace, inputs.keys)
-            args = arguments(task.prompt, arm, config)
+            # A fresh sandbox per attempt, in the run folder, never the workspace.
+            crm = seed(inputs.book, task.cutoff, folder / f"crm-{attempt}") if config.crm_tools else None
+            args = arguments(task.prompt, arm, config, crm.mcp_config if crm else None)
             attempt_started = _now()
             completed = start(args, workspace, config)
             transcript = parse_transcript(completed.stdout)
@@ -180,7 +191,7 @@ def run_task(inputs: RunInputs, config: SharedConfig, private: Path) -> dict[str
         "attempts": attempts,
         "errors": errors,
         "token_use": transcript.token_use if transcript else {},
-        "crm_sandbox_diff": None,
+        "crm_sandbox_diff": crm.diff() if crm else None,
         "output": transcript.final_text if transcript and not reason else None,
         "grade": None,
     }

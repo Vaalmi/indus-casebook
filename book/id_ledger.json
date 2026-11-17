@@ -110,6 +110,18 @@
     "T-TAX-03": { "household_id": "HH-9234", "workflow": "tax_lot_rmd" },
     "T-TAX-04": { "household_id": "HH-9571", "workflow": "tax_lot_rmd" },
     "T-TAX-05": { "household_id": "book", "workflow": "tax_lot_rmd" },
-    "T-TAX-06": { "household_id": "book", "workflow": "tax_lot_rmd" }
+    "T-TAX-06": { "household_id": "book", "workflow": "tax_lot_rmd" },
+    "T-CMP-01": { "household_id": "HH-3058", "workflow": "compliance" },
+    "T-CMP-02": { "household_id": "HH-3462", "workflow": "compliance" },
+    "T-CMP-03": { "household_id": "HH-4105", "workflow": "compliance" },
+    "T-CMP-04": { "household_id": "HH-4633", "workflow": "compliance" },
+    "T-CMP-05": { "household_id": "book", "workflow": "compliance" },
+    "T-CMP-06": { "household_id": "book", "workflow": "compliance" },
+    "T-MTG-01": { "household_id": "HH-1204", "workflow": "meeting" },
+    "T-MTG-02": { "household_id": "HH-1587", "workflow": "meeting" },
+    "T-MTG-03": { "household_id": "HH-2316", "workflow": "meeting" },
+    "T-MTG-04": { "household_id": "HH-2749", "workflow": "meeting" },
+    "T-MTG-05": { "household_id": "book", "workflow": "meeting" },
+    "T-MTG-06": { "household_id": "book", "workflow": "meeting" }
   }
 }
