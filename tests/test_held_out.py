@@ -150,3 +150,16 @@ def test_no_public_file_names_a_held_out_household_person_account_or_item() -> N
         if name in p.read_text(encoding="utf-8", errors="ignore")
     )
     assert found == [] or frozen()
+
+
+def test_a_moved_in_pair_s_private_copy_is_one_household(tmp_path: Path) -> None:
+    """After the move-in the held-out pairs are in book/scripted and their private copies stay behind: the whole
+    book builds them once. A private script that differs from its public copy is refused."""
+    private = tmp_path / "private"
+    shutil.copytree(SCRIPTS / "archetype-10", private / "archetype-10")
+    result = build_book(SEED, tmp_path / "book", SCRIPTS, held_out=True, extra_scripts=private)
+    assert sorted(result.households).count("HH-4821") == 1
+    script = private / "archetype-10" / "HH-4821.toml"
+    script.write_text(script.read_text().replace('name = "Ngozi Lind"', 'name = "Nkechi Lind"', 1))
+    with pytest.raises(BuildError, match=r"HH-4821 is scripted in both .* differently"):
+        build_book(SEED, tmp_path / "book2", SCRIPTS, held_out=True, extra_scripts=private)

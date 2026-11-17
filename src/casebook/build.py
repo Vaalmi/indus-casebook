@@ -161,8 +161,20 @@ def generate_book(
 ) -> dict[str, bytes]:
     master = load_master()
     market = build_market(master, seed)
-    folders = [scripts_dir, *([extra_scripts] if extra_scripts else [])]
-    found = [(folder, script) for folder in folders for script in load_scripts(folder)]
+    found = [(scripts_dir, script) for script in load_scripts(scripts_dir)]
+    public = {script.household.household_id: script for _, script in found}
+    # A held-out pair moved in at the freeze leaves its private copy behind: the same script in both places is
+    # one household; two different scripts for one household are refused.
+    if extra_scripts is not None:
+        for script in load_scripts(extra_scripts):
+            same = public.get(script.household.household_id)
+            if same is None:
+                found.append((extra_scripts, script))
+            elif same != script:
+                raise BuildError(
+                    f"{script.household.household_id} is scripted in both {scripts_dir} and {extra_scripts}, "
+                    "differently"
+                )
     if not found and not background:
         raise BuildError(f"no household scripts under {scripts_dir}")
     refuse_held_out([script for _, script in found], held_out)
