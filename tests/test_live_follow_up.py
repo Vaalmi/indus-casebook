@@ -26,9 +26,16 @@ RUNS = ROOT / "published" / "runs" / "T-MTG-01"
 MET = ("output_parses", "finding", "taxable_amount", "basis_carried", "follow_up")
 
 
+# Slice 10's three runs, by name: the full pass adds runs beside them.
+SLICE_10 = {
+    "basic": "T-MTG-01-basic-20261117T000725Z-aa75",
+    "checklist": "T-MTG-01-checklist-20261117T001534Z-de31",
+    "skill": "T-MTG-01-skill-20261117T002107Z-45b3",
+}
+
+
 def published(arm: str) -> dict[str, Any]:
-    (path,) = sorted(RUNS.glob(f"T-MTG-01-{arm}-*[0-9a-f].json"))
-    return json.loads(path.read_text())
+    return json.loads((RUNS / f"{SLICE_10[arm]}.json").read_text())
 
 
 def regrade(book: Path, tmp_path: Path, record: dict[str, Any]) -> dict[str, Any]:

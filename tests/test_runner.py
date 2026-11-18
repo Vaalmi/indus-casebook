@@ -21,17 +21,20 @@ from casebook.runner.preflight import (
     OutsideBookError,
     SealedFileReachableError,
     UnknownHouseholdError,
+    require_cutoff,
 )
 from casebook.runner.record import RECORD_FIELDS, RunRecordError, check_record
 from casebook.runner.run import (
+    ARM_PACKAGES,
     GradeRefusedError,
     PrivateFolderError,
     RunInputs,
     grade_record,
+    instruction_loaded,
     private_root,
     run_task,
 )
-from casebook.runner.transcript import parse_transcript
+from casebook.runner.transcript import failure_reason, parse_transcript
 from casebook.tasks.fixtures import load_fixtures
 from casebook.tasks.task import Task, TaskFormatError, find_task, parse_task
 
@@ -145,6 +148,82 @@ def test_a_transcript_with_no_instruction_loaded_fails_the_run(real_book: Path, 
     assert record["grade"] is None and record["output"] is None
 
 
+def test_a_skill_arm_run_that_loads_another_skill_of_its_package_completes_and_names_it(
+    real_book: Path, standin_cli: StandIn
+) -> None:
+    """The owner, 18 November 2026: the live pass failed T-REC-03's skill arm on every attempt because the model
+    loaded indus-advisor:tax-lot-rmd for an RMD question in the reconciliation workflow. Any skill of the arm's own
+    package is its instruction loaded; the record says which one."""
+    standin_cli.set(skill="tax-lot-rmd")
+    record = run_task(inputs(real_book, "skill"), SharedConfig(retries=0), private_root())
+    assert (record["state"], record["failure_reason"]) == ("completed", None)
+    assert record["instruction_loaded"] is True
+    assert record["skills_loaded"] == ["indus-advisor:tax-lot-rmd"]
+    check_record(record)
+
+
+def _skill_transcript(*names: str) -> Any:
+    events: list[dict[str, Any]] = []
+    for n, name in enumerate(names):
+        call = {"type": "tool_use", "id": f"t{n}", "name": "Skill", "input": {"skill": name}}
+        events.append({"type": "assistant", "message": {"content": [call]}})
+        result = {"type": "tool_result", "tool_use_id": f"t{n}", "content": "loaded"}
+        events.append({"type": "user", "message": {"content": [result]}})
+    events.append({"type": "result", "is_error": False, "result": "done"})
+    return parse_transcript("\n".join(json.dumps(e) for e in events))
+
+
+@pytest.mark.parametrize(
+    ("arm", "names", "loaded"),
+    [
+        ("skill", ["indus-advisor:compliance-review"], True),
+        ("skill", ["deep-research", "indus-advisor:meeting-follow-up"], True),
+        ("skill", ["tax-lot-rmd"], False),  # no plugin: a user's own skill of the same short name
+        ("skill", ["someone-else:tax-lot-rmd"], False),
+        ("skill", ["indus-checklist:advisor-checklist"], False),  # the other arm's instruction
+        ("skill", ["deep-research"], False),
+        ("checklist", ["indus-checklist:advisor-checklist"], True),
+        ("checklist", ["indus-advisor:reconciliation-as-of"], False),
+        ("basic", [], True),
+    ],
+)
+def test_only_a_skill_of_the_arm_s_own_package_counts_as_its_instruction_loaded(
+    arm: str, names: list[str], loaded: bool
+) -> None:
+    assert instruction_loaded(arm, _skill_transcript(*names)) is loaded
+
+
+@pytest.mark.parametrize("arm", sorted(ARM_PACKAGES))
+def test_each_arm_s_package_is_the_plugin_its_instruction_folder_holds(arm: str) -> None:
+    folder = run_module.INSTRUCTIONS[arm]
+    assert folder is not None
+    package, held = ARM_PACKAGES[arm]
+    assert json.loads((folder / ".claude-plugin" / "plugin.json").read_text())["name"] == package
+    assert held == {p.name for p in (folder / "skills").iterdir() if (p / "SKILL.md").is_file()}
+
+
+def test_a_run_stopped_by_the_turn_limit_says_so() -> None:
+    """The live pass recorded the whole-book tasks' turn limit as "CLI error (exit code 1): " and nothing after it:
+    a run that ends on an error has no final text, so the CLI's own errors give the reason."""
+    events = [
+        {
+            "type": "result",
+            "is_error": True,
+            "subtype": "error_max_turns",
+            "errors": ["Reached maximum number of turns (40)"],
+        }
+    ]
+    transcript = parse_transcript("\n".join(json.dumps(e) for e in events))
+    assert failure_reason(1, False, transcript, "") == "CLI error (exit code 1): Reached maximum number of turns (40)"
+
+
+def test_a_record_s_skills_loaded_must_be_skill_names(real_book: Path, standin: Path) -> None:
+    record = run_task(inputs(real_book), FAST, private_root())
+    record["skills_loaded"] = "indus-advisor:tax-lot-rmd"
+    with pytest.raises(RunRecordError, match="skills loaded"):
+        check_record(record)
+
+
 @pytest.mark.parametrize(
     ("mode", "reason", "attempts"),
     [("error", "CLI error (exit code 1): API Error: overloaded", 4), ("quota", "quota", 1), ("timeout", "timeout", 4)],
@@ -240,6 +319,34 @@ def test_the_runner_refuses_a_document_it_cannot_date(
     plant_in_workspace(monkeypatch, undated_letter)
     with pytest.raises(FutureEvidenceError, match=re.escape("letter.pdf is not in the document index")):
         run_task(inputs(real_book), FAST, private_root())
+
+
+def book_workspace(tmp_path: Path, listed: dict[str, list[str]], files: dict[str, list[str]]) -> Path:
+    """A whole-book workspace: households/<id>/documents/, each with its own index and PDFs."""
+    for household in sorted(set(listed) | set(files)):
+        documents = tmp_path / "households" / household / "documents"
+        documents.mkdir(parents=True)
+        entries = [
+            {"file": f, "known_as_of": "2026-01-31", "valuation_date": "2025-12-31"} for f in listed.get(household, [])
+        ]
+        (documents / "index.json").write_text(json.dumps({"documents": entries}))
+        for name in files.get(household, []):
+            (documents / name).write_bytes(b"%PDF-1.4")
+    return tmp_path
+
+
+def test_a_whole_book_workspace_s_documents_are_dated_by_their_own_household_s_index(tmp_path: Path) -> None:
+    """The live pass, 18 November 2026: T-CMP-06, over the whole book, was refused because the check looked for
+    the index at the workspace's top (documents/index.json), as in a one-household workspace, and so found every
+    household's PDF undated."""
+    workspace = book_workspace(tmp_path, {"HH-0120": ["ssa.pdf"]}, {"HH-0120": ["ssa.pdf"]})
+    require_cutoff(workspace, date(2026, 4, 15))
+
+
+def test_a_whole_book_document_listed_only_in_another_household_s_index_is_refused(tmp_path: Path) -> None:
+    workspace = book_workspace(tmp_path, {"HH-0120": ["ssa.pdf"]}, {"HH-0130": ["ssa.pdf"]})
+    with pytest.raises(FutureEvidenceError, match=re.escape("households/HH-0130/documents/ssa.pdf is not in")):
+        require_cutoff(workspace, date(2026, 4, 15))
 
 
 def test_the_runner_refuses_a_household_absent_from_the_manifest(real_book: Path, standin: Path) -> None:

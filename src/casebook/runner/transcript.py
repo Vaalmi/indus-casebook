@@ -81,7 +81,7 @@ def failure_reason(exit_code: int | None, timed_out: bool, transcript: Transcrip
     if result is None:
         return QUOTA_REASON if QUOTA.search(text) else f"no result from the CLI (exit code {exit_code})"
     if result.get("is_error") or exit_code != 0:
-        return (
-            QUOTA_REASON if QUOTA.search(text) else f"CLI error (exit code {exit_code}): {transcript.final_text[:300]}"
-        )
+        # A run that ends on an error has no final text; the CLI's own errors say why, such as the turn limit.
+        detail = transcript.final_text or "; ".join(str(e) for e in result.get("errors") or [])
+        return QUOTA_REASON if QUOTA.search(text) else f"CLI error (exit code {exit_code}): {detail[:300]}"
     return None

@@ -312,21 +312,31 @@ def run_pass(run: Pass, progress: Callable[[str], object] = lambda _: None) -> P
         retries = [{"run_id": r.run_id, "failure_reason": r.failure_reason or ""} for r in slot_state.runs]
         # The run is named in the state file before it starts, so a stop at any point leaves it known by its slot.
         run_id = new_run_id(slot.task_id, slot.arm)
+        before = slot_state.state
         slot_state.runs.append(SlotRun(run_id, RUNNING, None, 0))
         slot_state.state = RUNNING
         run.save()
-        record = run_and_grade(
-            slot.task_id,
-            slot.arm,
-            tasks,
-            book,
-            run.folders.keys,
-            run.folders.runs,
-            run.config,
-            retries,
-            run_id=run_id,
-            slot={"pass_id": run.pass_id, "repeat": slot.repeat},
-        )
+        try:
+            record = run_and_grade(
+                slot.task_id,
+                slot.arm,
+                tasks,
+                book,
+                run.folders.keys,
+                run.folders.runs,
+                run.config,
+                retries,
+                run_id=run_id,
+                slot={"pass_id": run.pass_id, "repeat": slot.repeat},
+            )
+        except RunRefusedError:
+            # Refused before its CLI ever ran (no attempt finished, and none was running when this was raised):
+            # no run happened, so the slot is as it was, not a "running" run a resume would close as failed.
+            if not any((private_root() / "runs" / run_id).glob("attempt-*.jsonl")):
+                slot_state.runs.pop()
+                slot_state.state = before
+            run.save()
+            raise
         slot_state.runs[-1] = SlotRun(
             record["run_id"], record["state"], record["failure_reason"], len(record["attempts"])
         )

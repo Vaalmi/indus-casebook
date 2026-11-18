@@ -24,9 +24,8 @@ from .conftest import README, ROOT
 from .test_site_browser import visit
 
 TASKS = ROOT / "tasks" / "public"
-BASE = json.loads(
-    sorted((ROOT / "published" / "runs" / "T-REC-01").glob("T-REC-01-skill-*[0-9a-f].json"))[-1].read_text()
-)
+# Slice 2's skill run, by name: the full pass adds runs beside it.
+BASE = json.loads((ROOT / "published" / "runs" / "T-REC-01" / "T-REC-01-skill-20261116T135933Z-4321.json").read_text())
 FREEZE = "f" * 64
 OPUS = "claude-opus-5-5"
 FABLE = "claude-fable-5-1"

@@ -35,6 +35,7 @@ from casebook.runner.full_pass import (
     run_pass,
     schedule,
 )
+from casebook.runner.preflight import FutureEvidenceError
 from casebook.runner.record import HASH_FIELDS, RECORD_FIELDS, RunRecordError, check_record
 from casebook.runner.run import GradeRefusedError, private_root
 from casebook.site.results import results
@@ -706,3 +707,35 @@ def test_a_private_run_kept_ungraded_holds_back_the_private_counts_and_fails_the
     assert not (tmp_path / "published" / "results" / "private-outcomes.json").exists()
     # Every later resume says the same, and runs nothing.
     assert main(["pass", "--resume", the_pass.pass_id]) == 1 and len(calls) == 6
+
+
+def test_a_run_refused_before_its_cli_started_leaves_its_slot_as_it_was(
+    tmp_path: Path, real_book: Path, standin_cli: StandIn, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The live pass, 18 November 2026: a preflight refusal (T-CMP-06's) left its run "running" in the state
+    file, for a resume to close as a failed, interrupted run though no CLI had started. Now the refused run is
+    taken back out, the slot is as it was, and a resume runs it once, with no failure listed."""
+    tasks = public_tasks(tmp_path / "tasks", "T-REC-01")
+    private_tasks(private_root() / "tasks", ())
+    calls, fast = fast_runs(quota_at=0)
+    refuse = [True]
+
+    def refused_second(*args: Any, **named: Any) -> Any:
+        if len(calls) == 1 and refuse[0]:
+            refuse[0] = False
+            raise FutureEvidenceError("households/HH-0120/documents/x.pdf is not in the document index")
+        return fast(*args, **named)
+
+    monkeypatch.setattr(full_pass, "run_and_grade", refused_second)
+    folders = Folders(
+        tasks, private_root() / "tasks", real_book, real_book, tmp_path / "keys", tmp_path / "published" / "runs"
+    )
+    the_pass = new_pass(folders, 1, SharedConfig(retries=0))
+    with pytest.raises(FutureEvidenceError):
+        run_pass(the_pass)
+    stopped = load_pass(the_pass.pass_id)
+    assert [s.state for s in stopped.slots] == ["mapped", "ready", "ready"] and stopped.slots[1].runs == []
+    assert main(["pass", "--resume", the_pass.pass_id]) == 0
+    done = load_pass(the_pass.pass_id)
+    assert [s.state for s in done.slots] == ["mapped"] * 3 and not done.failed_runs()
+    assert [len(s.runs) for s in done.slots] == [1, 1, 1] and len(calls) == 3

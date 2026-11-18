@@ -122,7 +122,9 @@ def require_cutoff(workspace: Path, cutoff: date) -> None:
             if found:
                 raise FutureEvidenceError(f"{found} is known after the cutoff {cutoff}")
         elif path.suffix == ".pdf":
-            index = workspace / "documents" / "index.json"
+            # The index beside the document: a household's documents/index.json, whether the workspace is one
+            # household or the whole book (households/<id>/documents/; the live pass, 18 November 2026).
+            index = path.parent / "index.json"
             listed = json.loads(index.read_text(encoding="utf-8"))["documents"] if index.is_file() else []
             if path.name not in {d["file"] for d in listed}:
                 raise FutureEvidenceError(f"{relative} is not in the document index, so its date is unknown")

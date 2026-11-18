@@ -24,7 +24,7 @@ PUBLISHED = ROOT / "published" / "runs" / "T-REC-01"
 
 def a_graded_record(task_id: str) -> dict[str, Any]:
     """A published T-REC-01 skill record, graded 100, recast as a run of another task."""
-    path = sorted(PUBLISHED.glob("T-REC-01-skill-*.json"))[-1]
+    path = PUBLISHED / "T-REC-01-skill-20261116T135933Z-4321.json"  # slice 2's, by name: the pass adds runs
     record = json.loads(path.read_text())
     assert record["grade"]["passed"]
     run_id = record["run_id"].replace("T-REC-01", task_id)

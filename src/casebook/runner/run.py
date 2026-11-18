@@ -25,22 +25,22 @@ from casebook.runner.preflight import (
     require_real_tickers,
     require_sealed,
 )
-from casebook.runner.record import RETRIES, SLOT, check_record
+from casebook.runner.record import RETRIES, SKILLS_LOADED, SLOT, check_record
 from casebook.runner.sandbox import Sandbox, seed
 from casebook.runner.transcript import QUOTA_REASON, Transcript, failure_reason, parse_transcript
 from casebook.tasks.fixtures import FixtureError, load_task_fixtures
 from casebook.tasks.task import Task
 
 PRIVATE_VARIABLE = "CASEBOOK_PRIVATE"
-# The instruction each arm must show as loaded, by workflow (docs/PLAN.md, Choices and why).
-ARM_SKILLS: dict[str, dict[str, str]] = {
-    "checklist": {w: "advisor-checklist" for w in ("reconciliation", "tax_lot_rmd", "meeting", "compliance")},
-    "skill": {
-        "reconciliation": "reconciliation-as-of",
-        "tax_lot_rmd": "tax-lot-rmd",
-        "meeting": "meeting-follow-up",
-        "compliance": "compliance-review",
-    },
+# Each arm's instruction package as `--plugin-dir` loads it: the plugin's name and the skills it holds. A run's
+# instruction counts as loaded when the transcript shows any skill of its arm's own package loaded, whichever one the
+# model chose for the task (the owner, 18 November 2026; docs/PLAN.md, Choices and why).
+ARM_PACKAGES: dict[str, tuple[str, frozenset[str]]] = {
+    "checklist": ("indus-checklist", frozenset({"advisor-checklist"})),
+    "skill": (
+        "indus-advisor",
+        frozenset({"reconciliation-as-of", "tax-lot-rmd", "meeting-follow-up", "compliance-review"}),
+    ),
 }
 
 
@@ -90,11 +90,22 @@ def prepare(task: Task, book: Path, workspace: Path, keys: Path | None) -> None:
     require_cutoff(workspace, task.cutoff)
 
 
-def instruction_loaded(arm: str, workflow: str, transcript: Transcript) -> bool:
-    if arm == "basic":
-        return True
-    wanted = ARM_SKILLS[arm].get(workflow)
-    return wanted is not None and any(s.split(":")[-1] == wanted for s in transcript.skills_invoked)
+def skills_loaded(arm: str, transcript: Transcript) -> list[str]:
+    """The skills of the arm's own package the transcript shows loaded, in order; none for the basic arm. A skill of
+    another plugin, or the user's own, never counts, even under the same short name."""
+    if arm not in ARM_PACKAGES:
+        return []
+    package, held = ARM_PACKAGES[arm]
+    loaded: list[str] = []
+    for name in transcript.skills_invoked:
+        prefix, _, short = name.rpartition(":")
+        if prefix == package and short in held:
+            loaded.append(name)
+    return loaded
+
+
+def instruction_loaded(arm: str, transcript: Transcript) -> bool:
+    return arm == "basic" or bool(skills_loaded(arm, transcript))
 
 
 def _now() -> str:
@@ -158,7 +169,7 @@ def run_task(inputs: RunInputs, config: SharedConfig, private: Path) -> dict[str
             reason = failure_reason(completed.exit_code, completed.timed_out, transcript, completed.stderr)
             if completed.launch_error:
                 reason = f"the CLI could not start: {completed.launch_error}"
-            loaded = instruction_loaded(arm, task.workflow, transcript)
+            loaded = instruction_loaded(arm, transcript)
             if reason is None and not loaded:
                 reason = "the transcript shows no instruction loaded"
             (folder / f"attempt-{attempt}.jsonl").write_text(completed.stdout, encoding="utf-8")
@@ -199,6 +210,8 @@ def run_task(inputs: RunInputs, config: SharedConfig, private: Path) -> dict[str
             "instruction": None if INSTRUCTIONS[arm] is None else INSTRUCTIONS[arm].name,  # type: ignore[union-attr]
         },
         "instruction_loaded": loaded,
+        # Which of the arm's own skills the last attempt loaded, so a result can say which one the model chose.
+        SKILLS_LOADED: skills_loaded(arm, transcript) if transcript else [],
         "transcript": {"file": f"attempt-{last}.jsonl", "events": len(transcript.events) if transcript else 0},
         "attempts": attempts,
         "errors": errors,

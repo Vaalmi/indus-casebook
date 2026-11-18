@@ -42,6 +42,8 @@ RETRY_FIELDS = ("run_id", "failure_reason")
 # stopped between the run and the pass's state file) is still known by its slot (reviewers A and B, slice 13
 # round 1); a run outside a pass has no such field.
 SLOT = "slot"
+# The skills of the arm's own package a run loaded (the owner, 18 November 2026); records written before that lack it.
+SKILLS_LOADED = "skills_loaded"
 SLOT_FIELDS = ("pass_id", "repeat")
 
 
@@ -65,6 +67,9 @@ def check_record(record: dict[str, Any]) -> dict[str, Any]:
         not isinstance(r, dict) or sorted(r) != sorted(RETRY_FIELDS) or not r["failure_reason"] for r in retries
     ):
         raise RunRecordError(f"run record {record['run_id']}: each retry names an earlier run and why it failed")
+    loaded = record.get(SKILLS_LOADED, [])
+    if not isinstance(loaded, list) or not all(isinstance(s, str) for s in loaded):  # pyright: ignore[reportUnknownVariableType]
+        raise RunRecordError(f"run record {record['run_id']}: its skills loaded are a list of skill names")
     if SLOT in record and not is_slot(record[SLOT]):
         raise RunRecordError(f"run record {record['run_id']}: its slot names a pass and a repeat from 1")
     return record

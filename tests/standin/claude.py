@@ -92,7 +92,10 @@ def main(argv: list[str]) -> int:
         held = sorted(p.name for p in (plugin / "skills").iterdir() if p.is_dir())
         # One settings file serves every arm, so a named skill the plugin lacks (the checklist's) falls back too.
         skill = settings.get("skill") if settings.get("skill") in held else next(iter(held), "none")
-        name = f"{plugin.name}:{skill}"
+        # As the real CLI does, a plugin's skills go by the name in its manifest, not its folder's.
+        manifest = plugin / ".claude-plugin" / "plugin.json"
+        package = json.loads(manifest.read_text())["name"] if manifest.is_file() else plugin.name
+        name = f"{package}:{skill}"
         emit(
             {
                 "type": "assistant",
