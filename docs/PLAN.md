@@ -316,7 +316,7 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 - [x] The results page shows paired outcomes per task, counts per workflow, consistency across repeats, public and private outcomes side by side for each arm, and the tool, version, model and date. It shows no combined score, and tax-lot and RMD outcomes appear as held
 - [x] A result with tool, version, model or date missing cannot be published (a test)
 - [x] Published run records show aliases only; unmapped records exist only under `$CASEBOOK_PRIVATE`; no prompt, output or run record of a private task is in the published files (a test)
-- [ ] Runs in the real delivery environment: the 288 live runs on Claude Code and their jury votes, on the subscriptions, with every failed run listed with its reason
+- [x] Runs in the real delivery environment: the 288 live runs on Claude Code and their jury votes, on the subscriptions, with every failed run listed with its reason
 - [x] The one check command passes
 
 ### Slice 14: Finish the site (week 13)
