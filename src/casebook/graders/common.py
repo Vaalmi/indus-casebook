@@ -40,8 +40,8 @@ UNRESOLVED = "unresolved"
 _JSON_BLOCK = re.compile(r"```json[ \t]*\n(.*?)```", re.DOTALL)
 # A grouped number (1,234.56) or a plain one (1234.56); the sign is left off on purpose.
 _NUMBER = re.compile(r"\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?")
-# An amount in prose: marked as money ($, US$, USD, dollars, optionally with a multiplier), or
-# written as money is (grouped thousands, or exactly two decimals). A percentage is a rate, not one.
+# An amount in prose: marked as money ($, US$, USD, dollars, optionally with a multiplier), written as money
+# is (grouped thousands, or exactly two decimals), or a number with a multiplier word. A percentage is a rate.
 _FIGURE = r"\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?"
 _SCALE = {"thousand": 3, "k": 3, "million": 6, "m": 6, "mn": 6, "billion": 9, "bn": 9}
 _SCALE_WORDS = r"(?:\s*(thousand|million|billion|mn|bn|k|m)\b)?"
@@ -55,7 +55,12 @@ _AMOUNT = re.compile(
     + r")"
     + _SCALE_WORDS
     + r"\s*(?:dollars|USD)\b"
-    + r"|(?<![\d.,])(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+\.\d{2})(?![\d%]|\.\d)",
+    + r"|(?<![\d.,])(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+\.\d{2})(?![\d%]|\.\d)"
+    # A bare number with a multiplier word, "48 thousand", "50 million" (the owner's fabricated-figure rule,
+    # option 1, 18 November 2026). Only the words: "401k" is an account type, "5m" anything.
+    + r"|(?<![\d.,])("
+    + _FIGURE
+    + r")\s*(thousand|million|billion)\b",
     re.IGNORECASE,
 )
 
@@ -64,8 +69,8 @@ def prose_amounts(text: str) -> list[tuple[str, Decimal]]:
     """Every amount the text states as money, scaled by any multiplier, with the words that state it."""
     found: list[tuple[str, Decimal]] = []
     for match in _AMOUNT.finditer(text):
-        number = match.group(1) or match.group(3) or match.group(5)
-        scale = (match.group(2) or match.group(4) or "").lower()
+        number = match.group(1) or match.group(3) or match.group(5) or match.group(6)
+        scale = (match.group(2) or match.group(4) or match.group(7) or "").lower()
         value = parse_decimal(number.replace(",", "")) * (Decimal(10) ** _SCALE.get(scale, 0))
         found.append((match.group(0).strip(), value))
     return found

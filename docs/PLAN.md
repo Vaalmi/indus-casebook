@@ -182,7 +182,7 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 - [x] A fixture note containing an instruction and shell characters changes neither the prompt nor the arguments (a test)
 - [x] A stand-in CLI that errors, times out or reports a quota stop yields a `failed` record with the reason and no score
 - [x] The grader passes its own tests: three defective outputs fail, a clean control passes, and a fabricated figure scores zero while keeping its breakdown
-- [ ] The first skill (reconciliation and as-of) and the checklist are drafted and the owner has approved them
+- [x] The first skill (reconciliation and as-of) and the checklist are drafted and the owner has approved them
 - [x] The task page shows what each arm produced with the failure marked, and names tool, version, model and date; published outputs contain no real ticker (the gate from slice 1, now on run outputs)
 - [x] Runs in the real delivery environment: three live runs on the signed-in `claude` CLI, one per arm, with up to three retries, on the subscription
 - [x] The one check command passes

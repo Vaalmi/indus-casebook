@@ -13,16 +13,13 @@ funds (the IPS's asset classes) the taxable accounts hold on 31 December 2025, a
 when the retirement accounts hold none.
 """
 
-import re
 from dataclasses import dataclass, replace
 from datetime import date
 from decimal import Decimal
 from pathlib import Path
 from typing import Any, Literal
 
-from pypdf import PdfReader
-
-from casebook.keys.figures import KeyFigure
+from casebook.keys.figures import KeyFigure, w2_wages
 from casebook.model.files import (
     ACCOUNTS_COLUMNS,
     ACCOUNTS_CSV,
@@ -51,7 +48,7 @@ YEAR_START, YEAR_END = date(YEAR, 1, 1), date(YEAR, 12, 31)
 TAXABLE = ("joint_taxable", "individual_taxable")
 RETIREMENT = ("traditional_ira", "roth_ira", "401k", "inherited_ira")
 FIXED_INCOME = "Fixed income"
-W2, FORM_1099_R, SSA_1099 = "form_w2", "form_1099_r", "form_ssa_1099"
+FORM_1099_R, SSA_1099 = "form_1099_r", "form_ssa_1099"
 MARRIED_FILING_SEPARATELY = "married_filing_separately"
 NIIT_THRESHOLD = {
     "married_filing_jointly": "niit_threshold_mfj",
@@ -59,8 +56,6 @@ NIIT_THRESHOLD = {
     "single": "niit_threshold_single",
     "head_of_household": "niit_threshold_hoh",
 }
-# Form W-2 box 1, as the custodian's copy on file prints it.
-_BOX_1 = re.compile(r"Box 1 Wages, tips, other compensation: \$([\d,]+\.\d{2})")
 ZERO = Decimal(0)
 
 
@@ -155,16 +150,12 @@ class NiitKey:
 
 def _wages(root: Path, person_ids: tuple[str, ...]) -> tuple[tuple[str, Decimal], ...]:
     found: list[tuple[str, Decimal]] = []
-    for doc in read_json(root, DOCUMENTS_INDEX)["documents"]:
-        if doc["kind"] != W2 or str(doc["valuation_date"]) != YEAR_END.isoformat():
-            continue
-        if str(doc["person_id"]) not in person_ids:
-            raise UnsettledNiitError(f"{doc['file']} is for {doc['person_id']}, who is not in the tax unit")
-        text = "\n".join(page.extract_text() or "" for page in PdfReader(root / "documents" / str(doc["file"])).pages)
-        box = _BOX_1.search(text)
-        if box is None:
-            raise UnsettledNiitError(f"{doc['file']} shows no box 1 wages")
-        found.append((str(doc["person_id"]), parse_decimal(box.group(1).replace(",", ""))))
+    for form in w2_wages(root, YEAR_END):
+        if form.person_id not in person_ids:
+            raise UnsettledNiitError(f"{form.file} is for {form.person_id}, who is not in the tax unit")
+        if form.box_1 is None:
+            raise UnsettledNiitError(f"{form.file} shows no box 1 wages")
+        found.append((form.person_id, form.box_1))
     return tuple(found)
 
 

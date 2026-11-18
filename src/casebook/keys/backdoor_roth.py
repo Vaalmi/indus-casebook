@@ -20,7 +20,7 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any, Literal
 
-from casebook.keys.figures import KeyFigure
+from casebook.keys.figures import KeyFigure, w2_wages
 from casebook.keys.tax_lines import Form8606Lines, form_8606
 from casebook.model.files import (
     ACCOUNTS_COLUMNS,
@@ -211,5 +211,13 @@ def backdoor_roth_key(household_root: Path) -> BackdoorRothKey:
         household_id=household_id,
         finding=PRO_RATA_TAX if backdoor.taxable > ZERO else NO_PRO_RATA_TAX,
         backdoor=backdoor,
-        computed_figures=backdoor.figures(),
+        computed_figures=(*backdoor.figures(), *_household_wages(household_root)),
     )
+
+
+def _household_wages(household_root: Path) -> tuple[KeyFigure, ...]:
+    """The household's 2025 wages in all, a sum of its Forms W-2 box 1 an answer may honestly state. The owner's
+    fabricated-figure rule (option 1, 18 November 2026) has the key list each honest derivation a live run shows;
+    T-MTG-01's skill run stated a couple's joint wages."""
+    boxes = [form.box_1 for form in w2_wages(household_root, YEAR_END) if form.box_1 is not None]
+    return (KeyFigure("the household's 2025 wages, Forms W-2 box 1", sum(boxes, ZERO)),) if len(boxes) > 1 else ()

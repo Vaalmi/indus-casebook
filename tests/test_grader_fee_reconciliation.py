@@ -263,6 +263,9 @@ def test_the_published_live_answers_are_correct_against_the_current_book(book: P
         "The joint account also held 48,113.27 dollars in cash.",
         "The household is worth $50 million.",
         "The fee was 4944.13 for the quarter.",
+        # Reviewer B, slice 2 round 3, S1; the owner's fabricated-figure rule, option 1 (18 November 2026).
+        "The joint account held 48 thousand in cash.",
+        "The household is worth 50 million.",
     ],
 )
 def test_an_invented_amount_in_any_money_form_is_fabricated(fixtures: Path, prose: str) -> None:

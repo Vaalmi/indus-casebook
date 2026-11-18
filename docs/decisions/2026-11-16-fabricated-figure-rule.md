@@ -1,4 +1,4 @@
-# Decision needed: how strictly the grader counts a "fabricated figure"
+# Decided: how strictly the grader counts a "fabricated figure"
 
 **What's stuck.** Slice 2's review, finding S1 (reviewer_b; reviewer_a closed it). The spec: "A critical fail scores zero and keeps its breakdown: fabricated figure". After round 2 and the one targeted check, reviewer_b still holds S1: an answer that adds "The joint account held 48 thousand in cash" or "The household is worth 50 million" (a number with a multiplier word, no currency word) scores 100.
 
@@ -16,4 +16,4 @@
 
 **If you don't decide.** The grader stays as reviewer_a passed it (strict, without bare multipliers). Slice 2 is committed with S1 recorded as open; slices that do not touch the grader go on. Slice 9's ten more graders follow whichever rule you choose.
 
-**Decision.** <The owner's answer, with the date.>
+**Decision.** Option 1, the builder's recommendation (the owner, 18 November 2026). Bare multipliers ("48 thousand", "50 million") are amounts; the backdoor Roth key (T-MTG-01, T-MTG-02) lists the household's 2025 wages in all, the sum T-MTG-01's skill run stated. T-MTG-01 runs again in the full pass under the new grader, so it needs no separate rerun.
