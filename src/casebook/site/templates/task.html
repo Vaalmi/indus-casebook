@@ -40,6 +40,10 @@
       <p>Not run yet.</p>
       {% else %}
       <p class="run-name" data-run-name>{{ arm.tool }} · model {{ arm.models or "not reported" }}{% if arm.effort %} at {{ arm.effort }} effort{% endif %} · {{ arm.date }}</p>
+      {% set regraded = arm.record.regraded if arm.record.regraded is defined else none %}
+      {% if regraded %}
+      <p class="regraded" data-regraded>Graded again on {{ regraded.utc[:10] }}, with no new run, under the fabricated-figure rule as the owner widened it on 18 November 2026 (it now accepts figures that follow from the files){% if regraded.grade_before and not view.held %}; first graded {{ regraded.grade_before.score }} of 100{% if regraded.grade_before.critical_fail %} ({{ regraded.grade_before.critical_fail }}){% endif %}{% endif %}.</p>
+      {% endif %}
       {% if arm.record.state == "failed" and not view.held %}
       <p class="failed" data-outcome="failed">Run failed, not scored: {{ arm.record.failure_reason }}</p>
       {% elif view.held %}

@@ -200,13 +200,14 @@ def inventory_problems(folders: Folders) -> list[str]:
     return problems
 
 
-def new_pass(folders: Folders, repeats: int, config: SharedConfig) -> Pass:
-    """A pass of every task the matrices place, not yet started or saved; refused unless each has its file and
-    nothing else is there."""
+def new_pass(folders: Folders, repeats: int, config: SharedConfig, private_only: bool = False) -> Pass:
+    """A pass of every task the matrices place, or of the private set's alone (`private_only`: the owner's option
+    1a of 18 November 2026 runs the private set again under a new freeze), not yet started or saved; refused
+    unless each task has its file and nothing else is there."""
     problems = inventory_problems(folders)
     if problems:
         raise PassRefusedError("the pass's tasks are not the matrices' tasks:\n" + "\n".join(problems))
-    task_ids = folders.task_ids()
+    task_ids = [t for t in folders.task_ids() if is_private_task_id(t) or not private_only]
     pass_id = f"pass-{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}-{secrets.token_hex(2)}"
     slots = [SlotState(slot) for slot in schedule(task_ids, repeats)]
     absolute = Folders(**{name: path.resolve() for name, path in vars(folders).items()})
@@ -350,6 +351,11 @@ def run_pass(run: Pass, progress: Callable[[str], object] = lambda _: None) -> P
     run.state = "complete"
     run.save()
     return run
+
+
+def run_ids(run: Pass) -> list[str]:
+    """Every run the pass started, a retried slot's earlier runs too."""
+    return [r.run_id for s in run.slots for r in s.runs]
 
 
 def ungraded_runs(run: Pass) -> list[tuple[SlotState, SlotRun]]:

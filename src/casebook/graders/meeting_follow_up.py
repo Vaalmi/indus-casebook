@@ -174,7 +174,7 @@ def _critical(
     if fabricated is not None:
         return fabricated
     for where, text in _texts(follow_up):
-        in_crm = support.first_fabrication(text, (), ())
+        in_crm = support.first_fabrication(text, (), (), answer=(output_text, answer.figures))
         if in_crm is not None:
             return f"in the CRM, {where}: {in_crm}"
     return None

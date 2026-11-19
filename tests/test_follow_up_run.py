@@ -21,6 +21,7 @@ from casebook.tasks.task import Task, find_task
 
 from .conftest import ROOT, StandIn
 from .jury_fixtures import use_standin_jury
+from .test_pass import freeze_record, frozen
 
 TASKS = ROOT / "tasks" / "public"
 FAST = SharedConfig(timeout_seconds=30, retries=0)
@@ -53,7 +54,12 @@ def value(args: list[str], flag: str) -> str:
     return args[args.index(flag) + 1]
 
 
-def test_a_follow_up_run_reaches_the_sandbox_and_records_its_diff(real_book: Path, standin_cli: StandIn) -> None:
+__all__ = ["freeze_record", "frozen"]  # fixtures: a freeze recorded on today's bytes, never the published one
+
+
+def test_a_follow_up_run_reaches_the_sandbox_and_records_its_diff(
+    real_book: Path, standin_cli: StandIn, frozen: Path
+) -> None:
     use_follow_up(standin_cli, WRITES)
     record = run(real_book, follow_up_task())
     assert record["state"] == "completed", record["errors"]
@@ -71,7 +77,7 @@ def test_a_follow_up_run_reaches_the_sandbox_and_records_its_diff(real_book: Pat
 
 
 def test_the_sandbox_holds_every_household_as_of_the_cutoff_outside_the_workspace(
-    real_book: Path, standin_cli: StandIn
+    real_book: Path, standin_cli: StandIn, frozen: Path
 ) -> None:
     use_follow_up(standin_cli, [])
     record = run(real_book, follow_up_task())

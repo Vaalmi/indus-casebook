@@ -274,10 +274,12 @@ def test_an_invented_amount_in_any_money_form_is_fabricated(fixtures: Path, pros
     assert result.score == 0 and result.critical_fail is not None
 
 
-def test_a_date_that_is_not_in_its_source_is_fabricated(fixtures: Path) -> None:
+def test_a_date_that_is_not_in_its_source_is_no_fabricated_figure(fixtures: Path) -> None:
+    # A value that is not a number is never a fabricated figure (the owner, 18 November 2026, option 1 of
+    # docs/decisions/2026-11-18-fabricated-figure-false-zeros.md); until then a date not in its source was one.
     figure = {"label": "Householding letter signed", "value": "2023-01-05", "source": "crm/crm.json"}
     result = grade(_output(figures=[figure]), FEE_ERROR_KEY, fixtures)
-    assert result.critical_fail == "fabricated figure: Householding letter signed = 2023-01-05 (cited crm/crm.json)"
+    assert result.critical_fail is None
 
 
 def test_a_text_figure_listing_several_supported_amounts_is_not_fabricated(fixtures: Path) -> None:

@@ -1,13 +1,16 @@
 """What every grader shares: reading an answer's closing json block, the score and its breakdown, the three
 counts, and the fabricated-figure rule.
 
-A figure the answer cites must appear in the source file it names inside the fixtures, or sit within a
-dollar of a figure the key computes (marked computed or not: a true figure is not fabricated for want of
-the flag). A figure given as text, such as a date, must appear in its source as written, or every number
-in it must be supported that way. The answer's headline amounts, and every amount anywhere in the answer
-stated as money, prose included, must appear in some fixture file or sit within a dollar of a key figure.
-The key lists the figures its task invites an answer to derive; a derivation it does not list counts as
-fabricated. A fabricated figure is a critical fail: the score is zero and the breakdown is kept.
+A number the answer cites, states as a headline amount, or writes as money anywhere, prose included, is
+fabricated only when it is in no fixture file, is not within a dollar of a figure the key computes (marked
+computed or not), and does not follow from the files in one of the ways `graders.derivations` names: arithmetic
+the answer shows, a sum or difference over the cited household's files, an age from a birth date, a count of
+what the cited path holds, a parameter of the rules table, or, for an amount in prose, a rounding of a figure
+the answer cites or the key computes (the owner's decision of 18 November 2026,
+`docs/decisions/2026-11-18-fabricated-figure-false-zeros.md`). A cited number must be in the file it names, or
+follow so. A price is read, never derived. A value that is not a number is never a fabricated figure; an amount
+written as money inside one is judged as an amount in prose. A fabricated figure is a critical fail: the score
+is zero and the breakdown is kept.
 """
 
 import csv
@@ -23,7 +26,21 @@ from typing import Any
 
 from pypdf import PdfReader
 
-from casebook.model.money import MoneyFormatError, fmt, parse_decimal
+from casebook.graders.derivations import (
+    SMALL_OPERAND,
+    Cited,
+    Derivations,
+    Expression,
+    expressions,
+    is_age,
+    is_count,
+    matches,
+    resolve,
+    rounding_unit,
+    rounds,
+    rules_parameters,
+)
+from casebook.model.money import CENT, MoneyFormatError, fmt, parse_decimal
 
 logging.getLogger("pypdf").setLevel(logging.ERROR)
 
@@ -259,17 +276,20 @@ _AS_MONEY = re.compile(r"\$|\bUSD\b|dollars", re.IGNORECASE)
 
 
 class Support:
-    """Whether a figure is in the fixtures or follows from the key: the fabricated-figure rule.
+    """Whether a figure is in the fixtures or follows from them or from the key: the fabricated-figure rule.
 
     `table` holds the IRS table lookups the key itself uses (life-expectancy factors), which an answer may
-    state anywhere, in any decimal form."""
+    state anywhere, in any decimal form. What follows from the files is `graders.derivations`' (a) to (e)."""
 
     def __init__(self, fixtures: Path, computed: Sequence[Decimal], table: Sequence[Decimal] = ()) -> None:
         self.root = fixtures.resolve()
         self.computed = tuple(abs(v) for v in computed)
-        self.table = frozenset(table)
+        self.table = frozenset(abs(v) for v in table)
         self._numbers: dict[Path, set[Decimal]] = {}
         self._texts: dict[Path, str] = {}
+        self._cited: dict[str, Cited | None] = {}
+        self._pools: dict[tuple[Path, ...], Derivations] = {}
+        self._files: list[Path] | None = None
 
     def _text(self, path: Path) -> str:
         if path not in self._texts:
@@ -285,54 +305,172 @@ class Support:
         return any(close(abs(value), c) for c in self.computed)
 
     def in_files(self, value: Decimal) -> bool:
+        if self._files is None:
+            self._files = sorted(p for p in self.root.rglob("*") if p.is_file())
+        return any(abs(value) in self._numbers_in(path) for path in self._files)
+
+    def cited(self, source: str) -> Cited | None:
+        """What a cited source names; None when it names nothing in the fixtures."""
+        if source not in self._cited:
+            self._cited[source] = resolve(self.root, source)
+        return self._cited[source]
+
+    def pool(self, files: Iterable[Path]) -> Derivations:
+        """The sums and differences (b) over a household's files, computed once per set of files."""
+        key = tuple(sorted(set(files)))
+        if key not in self._pools:
+            self._pools[key] = Derivations(self.root, key)
+        return self._pools[key]
+
+    def _constant(self, value: Decimal, as_money: bool = False) -> bool:
+        """The key's figures, the table factors it uses (where the amount is not written as money), and the
+        rules table's parameters (e)."""
+        number = abs(value)
+        return self._from_key(number) or (not as_money and number in self.table) or number in rules_parameters()
+
+    def _operand(self, value: Decimal, context: "_Context", pool: Derivations | None) -> bool:
+        """An operand of arithmetic shown (a): supported itself, or a small whole number (100, 12, 4, 1)."""
+        number = abs(value)
+        if number == 0 or (number <= SMALL_OPERAND and number == number.to_integral_value()):
+            return True
+        if self._constant(number) or context.accepts(number) or self.in_files(number):
+            return True
+        return pool is not None and pool.has(number)
+
+    def _shown(
+        self, shown: Iterable[Expression], value: Decimal, percent: bool, context: "_Context", pool: Derivations | None
+    ) -> bool:
         return any(
-            abs(value) in self._numbers_in(path) for path in sorted(p for p in self.root.rglob("*") if p.is_file())
+            matches(value, e.result, percent) and all(self._operand(o, context, pool) for o in e.operands)
+            for e in shown
         )
 
-    def fabricated(self, figure: Figure) -> bool:
-        path = (self.root / figure.source).resolve()
-        if not path.is_relative_to(self.root) or not path.is_file():
-            return True
+    def fabricated(self, figure: Figure, context: "_Context | None" = None) -> bool:
+        """Whether a cited figure is in no file and follows from neither the key nor the files: a text value is
+        judged by the amounts it writes as money, a number by its cited files, the key and (a) to (e)."""
+        context = context or _Context()
+        cited = self.cited(figure.source)
         if figure.value is None:
-            # Text, such as a date or several amounts in one: as written in the source, or every number in it supported.
-            if figure.text in self._text(path):
-                return False
-            numbers = [parse_decimal(n.replace(",", "")) for n in _NUMBER.findall(figure.text)]
-            price = bool(_PRICE_LABEL.search(figure.label))
-            return not numbers or not all(
-                n in self._numbers_in(path) or (not price and self._from_key(n)) for n in numbers
-            )
-        if abs(figure.value) in self._numbers_in(path):
+            return self._text_fabricated(figure, cited, context)
+        value = figure.value
+        if value == 0:  # "nothing found" claims no figure
+            return False
+        if cited is None:
+            return True
+        if any(abs(value) in self._numbers_in(path) for path in cited.files):
             return False
         if _PRICE_LABEL.search(figure.label):
-            return True  # a price no file holds is not made good by a key figure of the same size
-        return not self._from_key(figure.value)
+            return True  # a price is read, never derived: a key figure or a sum of the same size does not make it good
+        if self._constant(value) or context.accepts(value):
+            return False
+        pool = self.pool(cited.household)
+        percent = bool(_PERCENT.search(figure.label))
+        shown = [*expressions(figure.label), *context.shown]  # its own label's working, or the answer's
+        if self._shown(shown, value, percent, context, pool) or pool.has(value):
+            return False
+        if is_age(figure.label, value, lambda: (self._text(p) for p in cited.files)):
+            return False
+        return not is_count(value, cited.records())
 
-    def anywhere(self, value: Decimal, as_money: bool = True) -> bool:
-        """Whether an amount is in the fixtures or follows from the key; a table factor counts only where
-        the amount is not written as money (`as_money` false)."""
+    def _text_fabricated(self, figure: Figure, cited: Cited | None, context: "_Context") -> bool:
+        amounts = prose_amounts(figure.text)
+        if _PRICE_LABEL.search(figure.label) and amounts:
+            # A price is read, never derived: each amount a price's text writes as money must be in its cited file.
+            # Text with none ("not available", a date the price was last reviewed) is no figure (reviewer A, round 2).
+            if cited is None:
+                return True
+            return not all(any(abs(v) in self._numbers_in(p) for p in cited.files) for _, v in amounts)
+        # Any other text is no figure, but an amount it writes as money is one, judged as an amount in prose.
+        shown = [*expressions(f"{figure.label} {figure.text}"), *context.shown]
+        pool = self.pool(cited.household) if cited else context.pool
+        return any(
+            not self.anywhere(value, bool(_AS_MONEY.search(words)), context, pool, shown, words)
+            for words, value in prose_amounts(figure.text)
+        )
+
+    def anywhere(
+        self,
+        value: Decimal,
+        as_money: bool = True,
+        context: "_Context | None" = None,
+        pool: Derivations | None = None,
+        shown: Sequence[Expression] = (),
+        words: str = "",
+    ) -> bool:
+        """Whether an amount is in the fixtures, follows from the key, or follows from the files: equal to a
+        cited figure the rule accepts, a sum or difference over the cited households' files, arithmetic shown,
+        or, for an amount in prose (its `words`), a rounding of a figure the answer cites or the key computes (f).
+        A table factor counts only where the amount is not written as money (`as_money` false)."""
+        context = context or _Context()
         if value == 0:  # "nothing owed" claims no figure
             return True
-        if self._from_key(value) or (not as_money and abs(value) in self.table):
+        if self._constant(value, as_money) or context.accepts(value) or self.in_files(value):
             return True
-        return self.in_files(value)
+        if pool is not None and pool.has(value):
+            return True
+        if self._shown(shown, value, False, context, pool):
+            return True
+        unit = rounding_unit(words) if words else None
+        return unit is not None and rounds(value, unit, (*self.computed, *context.accepted))
+
+    def _context(self, cited: Sequence[Figure], shown: Sequence[Expression] = ()) -> "_Context":
+        """The answer's cited figures the rule accepts, settled until none more is (one may stand on another,
+        "(380,605.02 + 207,075.11) = 587680.13"), the sums and counts over every file the answer cites, and the
+        arithmetic the answer shows anywhere, which a cited figure may stand on as well as its own label's."""
+        context = _Context(shown=tuple(shown))
+        named = [c for f in cited if (c := self.cited(f.source)) is not None]
+        context.pool = self.pool(p for c in named for p in c.household) if named else None
+        settled = False
+        while not settled:
+            settled = True
+            for figure in cited:
+                pending = figure.value is not None and figure.value not in context.accepted
+                if pending and figure.value is not None and not self.fabricated(figure, context):
+                    context.accepted.add(figure.value)
+                    settled = False
+        return context
 
     def first_fabrication(
-        self, output_text: str, cited: Sequence[Figure], headline: Sequence[tuple[str, Decimal | None]]
+        self,
+        output_text: str,
+        cited: Sequence[Figure],
+        headline: Sequence[tuple[str, Decimal | None]],
+        answer: tuple[str, Sequence[Figure]] | None = None,
     ) -> str | None:
         """The first figure the answer cites, states as a headline amount, or writes as money in prose that
-        is in no file and follows from none."""
+        is in no file and follows from none. `answer`, the answer's text and cited figures, when the text judged
+        is not the answer's own (a CRM note the run wrote), which may repeat what the answer derived."""
+        context_text, context_figures = answer or (output_text, cited)
+        shown = expressions(context_text) + (expressions(output_text) if answer else [])
+        context = self._context(context_figures, shown)
         for figure in cited:
-            if self.fabricated(figure):
+            if self.fabricated(figure, context):
                 return f"fabricated figure: {figure.label} = {figure.shown} (cited {figure.source})"
         for name, value in headline:
-            if value is not None and not self.anywhere(value):
+            if value is not None and not self.anywhere(value, True, context, context.pool, shown):
                 return f"fabricated figure: {name} = {fmt(value)} is in no file and follows from none"
         for match in _PROSE_PRICE.finditer(output_text):
             price = parse_decimal((match.group(1) or match.group(2)).replace(",", ""))
             if not self.in_files(price):
                 return f"fabricated figure: the price {match.group(0).strip()!r} in the answer is in no file"
         for words, value in prose_amounts(output_text):
-            if not self.anywhere(value, as_money=bool(_AS_MONEY.search(words))):
+            as_money = bool(_AS_MONEY.search(words))
+            if not self.anywhere(value, as_money, context, context.pool, shown, words):
                 return f"fabricated figure: {words!r} in the answer is in no file and follows from none"
         return None
+
+
+_PERCENT = re.compile(r"%|\bper\s?cent\b", re.IGNORECASE)
+
+
+@dataclass
+class _Context:
+    """What an answer has already shown to follow: the values of its cited figures the rule accepts, and the
+    sums and counts over every file it cites (for an amount in prose or a headline amount, which cites none)."""
+
+    accepted: set[Decimal] = field(default_factory=set[Decimal])
+    pool: Derivations | None = None
+    shown: tuple[Expression, ...] = ()
+
+    def accepts(self, value: Decimal) -> bool:
+        return any(abs(abs(value) - abs(a)) <= CENT for a in self.accepted)

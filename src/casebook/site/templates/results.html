@@ -12,6 +12,7 @@
 {% for s in sections %}
 <section class="run-set" data-run-set aria-labelledby="run-set-{{ loop.index }}">
   <h2 id="run-set-{{ loop.index }}" data-run-name>{{ s.name.label }} · {{ s.name.freeze_label }} · {{ s.dates }}</h2>
+  {% if s.regraded_from %}<p class="regraded" data-regraded>{{ s.regraded_label }} (the owner's decision of 18 November 2026 on the fabricated-figure rule).</p>{% endif %}
 
   <h3>Counts per workflow</h3>
   <div class="scroll">

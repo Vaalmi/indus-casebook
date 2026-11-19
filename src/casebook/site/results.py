@@ -27,7 +27,7 @@ from casebook.model.files import json_text
 from casebook.model.ledger import PRIVATE_TASK_ID, is_private_task_id
 from casebook.notice import NOTICE
 from casebook.publish.private_set import private_set_problems
-from casebook.runner.record import SLOT
+from casebook.runner.record import REGRADED, SLOT
 from casebook.site.tasks import ARM_NAMES, ARM_ORDER, cli_name, is_held, require_named
 from casebook.tasks.matrix import BOOK, load_matrix
 from casebook.tasks.task import HELD_WORKFLOWS, WORKFLOWS, Task, find_task, load_task
@@ -71,6 +71,9 @@ class RunName:
     version: str
     models: tuple[str, ...]
     effort: str
+    # The freeze the run's grade stands under: the one it ran under, or, for a run graded again after it ran
+    # (`casebook regrade`, refused unless its skill, checklist and config are that freeze's), the one it was
+    # graded again under (the owner, 18 November 2026). Its section names the earlier freeze too.
     freeze: str | None
 
     @property
@@ -102,8 +105,14 @@ def run_name(record: dict[str, Any]) -> RunName:
         version=version or "unknown version",
         models=models,
         effort=str((record.get("settings") or {}).get("effort") or ""),
-        freeze=record.get("freeze"),
+        freeze=(record.get(REGRADED) or {}).get("freeze", record.get("freeze")),
     )
+
+
+def ran_under(record: dict[str, Any]) -> str | None:
+    """The freeze a regraded run ran under, before it was graded again; None for a run graded as it ran."""
+    regraded = record.get(REGRADED)
+    return record.get("freeze") if regraded and record.get("freeze") != regraded.get("freeze") else None
 
 
 @dataclass(frozen=True)
@@ -276,6 +285,16 @@ class RunSetResult:
     workflows: tuple[WorkflowResult, ...]
     public: dict[str, dict[str, dict[str, int]]]  # workflow, arm, outcome
     private: dict[str, dict[str, dict[str, int]]] | None
+    # The freezes the section's regraded public runs ran under, and how many ran under each, shown by its name.
+    regraded_from: tuple[tuple[str, int], ...] = ()
+
+    @property
+    def regraded_label(self) -> str:
+        return "; ".join(
+            f"{n} public run{'s' if n != 1 else ''} ran under freeze {f[:12]} and {'were' if n != 1 else 'was'} "
+            "graded again under this one, with no new run"
+            for f, n in self.regraded_from
+        )
 
     @property
     def dates(self) -> str:
@@ -365,6 +384,13 @@ def results(
         if held_problems:
             raise ResultsError("; ".join(held_problems))
         dates = [_date(r) for arms in by_task.values() for placed in arms.values() for r in placed.values()]
+        earlier = Counter(
+            f
+            for arms in by_task.values()
+            for placed in arms.values()
+            for r in placed.values()
+            if (f := ran_under(r)) is not None
+        )
         mine = private_by_name.get(name)
         dates += [mine.first_date, mine.last_date] if mine else []
         sections.append(
@@ -376,18 +402,23 @@ def results(
                 workflows=tuple(workflows),
                 public=public,
                 private=mine.counts if mine else None,
+                regraded_from=tuple(sorted(earlier.items())),
             )
         )
     return sorted(sections, key=lambda s: (s.first_date, s.last_date, s.name.label, s.name.freeze or ""))
 
 
-def private_outcomes(private_runs: Path, private_tasks: Path) -> dict[str, Any]:
+def private_outcomes(private_runs: Path, private_tasks: Path, run_ids: Iterable[str] | None = None) -> dict[str, Any]:
     """The private set's outcome counts, per run name, workflow and arm, from its unmapped run records
     (`$CASEBOOK_PRIVATE/runs/<run id>/record.json`, which also holds the public runs' unmapped records), with the
     private task files they ran (by default `$CASEBOOK_PRIVATE/tasks/`; a pass's own, reviewer B, slice 13 round 1).
-    No task ID, prompt, output, household or figure."""
+    No task ID, prompt, output, household or figure. `run_ids`, when given, are the only runs counted: a pass's own,
+    so a pass run again under a new freeze (the owner's option 1a, 18 November 2026) replaces the earlier one."""
     records: dict[str, list[dict[str, Any]]] = {}
+    chosen = None if run_ids is None else set(run_ids)
     for path in sorted(private_runs.glob(f"*/{RECORD}")):
+        if chosen is not None and path.parent.name not in chosen:
+            continue
         record = json.loads(path.read_text(encoding="utf-8"))
         if is_private_task_id(str(record["task_id"])):
             require_named(record, f"private run {path.parent.name}")
@@ -495,10 +526,12 @@ def load_private_outcomes(path: Path) -> list[PrivateRunSet]:
     ]
 
 
-def write_private_outcomes(private_runs: Path, private_tasks: Path, published: Path) -> Path:
+def write_private_outcomes(
+    private_runs: Path, private_tasks: Path, published: Path, run_ids: Iterable[str] | None = None
+) -> Path:
     """Write the private set's counts to `published/results/private-outcomes.json`, refused unless the summary
     and the private set's own gate (`private_set_problems`) find nothing else of the private set in it."""
-    text = json_text(private_outcomes(private_runs, private_tasks))
+    text = json_text(private_outcomes(private_runs, private_tasks, run_ids))
     problems = private_outcomes_problems(text)
     with tempfile.TemporaryDirectory() as staging:
         (Path(staging) / PRIVATE_OUTCOMES).write_text(text, encoding="utf-8")

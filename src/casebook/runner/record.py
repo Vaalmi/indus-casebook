@@ -45,6 +45,10 @@ SLOT = "slot"
 # The skills of the arm's own package a run loaded (the owner, 18 November 2026); records written before that lack it.
 SKILLS_LOADED = "skills_loaded"
 SLOT_FIELDS = ("pass_id", "repeat")
+# A run graded again after it ran, with no new run (`casebook regrade`; the owner, 18 November 2026): when, under
+# which freeze and decision, and the grader and grade it had before. A run never regraded has no such field.
+REGRADED = "regraded"
+REGRADED_FIELDS = ("utc", "freeze", "decision", "grader_before", "grade_before")
 
 
 class RunRecordError(ValueError):
@@ -70,6 +74,11 @@ def check_record(record: dict[str, Any]) -> dict[str, Any]:
     loaded = record.get(SKILLS_LOADED, [])
     if not isinstance(loaded, list) or not all(isinstance(s, str) for s in loaded):  # pyright: ignore[reportUnknownVariableType]
         raise RunRecordError(f"run record {record['run_id']}: its skills loaded are a list of skill names")
+    regraded = record.get(REGRADED)
+    if regraded is not None and (not isinstance(regraded, dict) or sorted(regraded) != sorted(REGRADED_FIELDS)):  # pyright: ignore[reportUnknownArgumentType]
+        raise RunRecordError(f"run record {record['run_id']}: a regrade names {', '.join(REGRADED_FIELDS)}")
+    if regraded is not None and record["state"] == "failed":
+        raise RunRecordError(f"run record {record['run_id']}: a failed run is never graded, so never regraded")
     if SLOT in record and not is_slot(record[SLOT]):
         raise RunRecordError(f"run record {record['run_id']}: its slot names a pass and a repeat from 1")
     return record

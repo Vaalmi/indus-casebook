@@ -17,6 +17,7 @@ from casebook.publish.private_set import private_households
 from casebook.runner.config import SharedConfig
 from casebook.runner.freeze import require_freeze
 from casebook.runner.preflight import RunRefusedError, require_book_files, require_household, require_real_tickers
+from casebook.runner.record import REGRADED
 from casebook.runner.run import Grader, GradeRefusedError, RunInputs, grade_record, private_root, run_task
 from casebook.tasks.task import HELD_GRADERS, HELD_WORKFLOWS, Task, find_task
 
@@ -67,8 +68,12 @@ def held(task: Task) -> bool:
 
 
 def published_record(task: Task, mapped: dict[str, Any]) -> dict[str, Any]:
-    """The record as published: a held task's without its grade, which stays in the private run folder."""
-    return {**mapped, "grade": None, "verdict_held": True} if held(task) and mapped["state"] != "failed" else mapped
+    """The record as published: a held task's without its grade, or the grade a regrade replaced, which stay in
+    the private run folder."""
+    if not held(task) or mapped["state"] == "failed":
+        return mapped
+    regraded = {REGRADED: {**mapped[REGRADED], "grade_before": None}} if mapped.get(REGRADED) else {}
+    return {**mapped, "grade": None, "verdict_held": True, **regraded}
 
 
 def write_key(task_id: str, key: Any, keys_root: Path, version: str) -> tuple[Path, str]:

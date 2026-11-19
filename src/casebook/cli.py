@@ -118,10 +118,22 @@ def _run(args: argparse.Namespace) -> int:
 
 def _pass(args: argparse.Namespace) -> int:
     from casebook.runner.config import SharedConfig
-    from casebook.runner.full_pass import REPEATS, Folders, load_pass, new_pass, run_pass, status_lines, ungraded_runs
+    from casebook.runner.full_pass import (
+        REPEATS,
+        Folders,
+        load_pass,
+        new_pass,
+        run_ids,
+        run_pass,
+        status_lines,
+        ungraded_runs,
+    )
     from casebook.runner.preflight import RunRefusedError
     from casebook.runner.run import private_root
 
+    if args.private and (args.status or args.resume):
+        print("pass refused: --private starts a new pass of the private set alone", file=sys.stderr)
+        return 2
     try:
         if args.status:
             print("\n".join(status_lines(load_pass(args.status))))
@@ -138,7 +150,8 @@ def _pass(args: argparse.Namespace) -> int:
                 keys=args.keys,
                 runs=args.runs,
             )
-            run = new_pass(folders, REPEATS if args.repeats is None else args.repeats, SharedConfig())
+            repeats = REPEATS if args.repeats is None else args.repeats
+            run = new_pass(folders, repeats, SharedConfig(), private_only=args.private)
         run_pass(run, print)
     except RunRefusedError as error:
         print(f"pass refused: {type(error).__name__}: {error}", file=sys.stderr)
@@ -151,7 +164,9 @@ def _pass(args: argparse.Namespace) -> int:
         try:
             # Counted from the private task folder the pass ran with, which --private-tasks may have named.
             folders = run.folders
-            written = write_private_outcomes(private_root() / "runs", folders.private_tasks, folders.runs.parent)
+            # The pass's own private runs: a private pass run again under a new freeze replaces the counts.
+            runs = private_root() / "runs"
+            written = write_private_outcomes(runs, folders.private_tasks, folders.runs.parent, run_ids(run))
         except ResultsError as error:
             # A private run kept completed and ungraded has no outcome to count: the counts wait for the owner
             # (reviewers A and B, slice 13 second targeted check).
@@ -160,6 +175,21 @@ def _pass(args: argparse.Namespace) -> int:
         print(f"private outcome counts: {written}")
     settled = not any(s.state == "failed" for s in run.slots) and not ungraded_runs(run)
     return 0 if run.state == "complete" and settled else 1
+
+
+def _regrade(args: argparse.Namespace) -> int:
+    from casebook.runner.full_pass import load_pass
+    from casebook.runner.preflight import RunRefusedError
+    from casebook.runner.regrade import regrade_pass
+
+    try:
+        done = regrade_pass(load_pass(args.pass_id), print)
+    except RunRefusedError as error:
+        print(f"regrade refused: {type(error).__name__}: {error}", file=sys.stderr)
+        return 2
+    moved = sum(r.before != r.after for r in done)
+    print(f"regraded {len(done)} runs of pass {args.pass_id}; {moved} grades changed")
+    return 0
 
 
 def _canary(args: argparse.Namespace) -> int:
@@ -354,6 +384,11 @@ def parser() -> argparse.ArgumentParser:
     which.add_argument("--resume", metavar="PASS_ID", help="start the slots of a paused pass not yet completed")
     which.add_argument("--status", metavar="PASS_ID", help="show a pass's slots and every failed run with its reason")
     full.add_argument("--repeats", type=int, help="runs of each task under each arm (default: the spec's three)")
+    full.add_argument(
+        "--private",
+        action="store_true",
+        help="a new pass of the private set alone, under today's freeze (the owner's option 1a, 18 November 2026)",
+    )
     full.add_argument("--tasks", type=Path, default=Path("tasks/public"), help="the public task files")
     full.add_argument("--private-tasks", type=Path, help="the private task files: default $CASEBOOK_PRIVATE/tasks")
     full.add_argument("--book", type=Path, default=REAL_BOOK, help="the real-ticker build the public tasks run on")
@@ -363,6 +398,13 @@ def parser() -> argparse.ArgumentParser:
     full.add_argument("--keys", type=Path, default=PUBLISHED_KEYS)
     full.add_argument("--runs", type=Path, default=PUBLISHED_RUNS, help="where the mapped run records go")
     full.set_defaults(run=_pass)
+    about = (
+        "grade a pass's public answers again under today's graders, with no new run and the jury's stored votes, "
+        "keeping each run's earlier grade under `regraded`; refused unless the freeze matches today's hashes"
+    )
+    regrade = commands.add_parser("regrade", help=about, description=about)
+    regrade.add_argument("pass_id", metavar="PASS_ID")
+    regrade.set_defaults(run=_regrade)
     facts = commands.add_parser("facts", help="write each featured household's fact sheet, for its notes")
     facts.add_argument("--book", type=Path, default=DEFAULT_BOOK)
     facts.add_argument("--out", type=Path, default=Path("out/facts"))

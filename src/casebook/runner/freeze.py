@@ -235,14 +235,18 @@ def freeze_problems(task: Task, book: Path, record: Path | None = None) -> list[
     held = held_out_fixtures(task, book)
     if not held:
         return []
+    return [f"task {task.task_id} reads held-out fixtures ({', '.join(held)}){p}" for p in drift(record)]
+
+
+def drift(record: Path | None = None) -> list[str]:
+    """How today's skills, checklist and graders differ from the recorded freeze: none when every hash matches."""
     record = record or archetypes.FREEZE_RECORD
-    where = f"task {task.task_id} reads held-out fixtures ({', '.join(held)})"
     if not record.is_file():
-        return [f"{where} and no freeze is recorded ({record}): the owner runs `casebook freeze` first"]
+        return [f" and no freeze is recorded ({record}): the owner runs `casebook freeze` first"]
     recorded: dict[str, str] = json.loads(record.read_text(encoding="utf-8")).get("hashes", {})
     now = current_hashes()
-    problems = [f"{where}: {name} differs from the freeze" for name in sorted(now) if recorded.get(name) != now[name]]
-    problems += [f"{where}: {name} is in the freeze but no longer exists" for name in sorted(set(recorded) - set(now))]
+    problems = [f": {name} differs from the freeze" for name in sorted(now) if recorded.get(name) != now[name]]
+    problems += [f": {name} is in the freeze but no longer exists" for name in sorted(set(recorded) - set(now))]
     return problems
 
 

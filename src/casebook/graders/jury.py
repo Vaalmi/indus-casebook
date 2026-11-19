@@ -128,6 +128,30 @@ class ToneResult:
         scores = sorted(v.score for v in self.votes if v.score is not None)
         return scores[len(scores) // 2]
 
+    @classmethod
+    def from_dict(cls, stored: dict[str, Any]) -> "ToneResult":
+        """The votes a grade stored, read back so a run is graded again without calling the jury again; refused
+        unless they read back exactly as stored."""
+        votes = tuple(
+            Vote(
+                family=str(v["family"]),
+                name=str(v["name"]),
+                model=str(v["model"]),
+                effort=str(v["effort"]),
+                command=tuple(str(c) for c in v["command"]),
+                score=v["score"],
+                reason=v["reason"],
+                error=v["error"],
+                raw=str(v["raw"]),
+                log=str(v["log"]),
+            )
+            for v in stored["votes"]
+        )
+        result = cls(str(stored["prompt"]), votes)
+        if result.to_dict() != stored:
+            raise ValueError("the stored tone votes do not read back as they were stored")
+        return result
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "score": self.score,

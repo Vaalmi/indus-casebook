@@ -1,4 +1,4 @@
-# To decide: the fabricated-figure rule zeroes most honest answers
+# Decided: the fabricated-figure rule zeroes most honest answers
 
 **What's stuck.** Slice 13's named results. The full pass (`pass-20261118T080940Z-4471`) finished on 18 November 2026 at 23:22 UTC: 288 slots, 283 runs completed, 5 slots failed on the CLI's 40-turn limit (all whole-book tasks: T-CMP-05 once, T-CMP-06 four times), and all 36 follow-up runs have three jury votes. The runs are sound. Their grades are not fit to publish: the fabricated-figure rule, strict as decided on 18 November (option 1 of `2026-11-16-fabricated-figure-rule.md`), zeroes most of them.
 
@@ -31,4 +31,18 @@ For the private set under option 1 there is a second choice. The freeze exists s
 
 **My recommendation.** Option 1, with 1a for the private set.
 
-**If you don't decide.** Nothing is published. The pass's records stay uncommitted on disk (`published/runs/`, `published/results/private-outcomes.json`, and the private run folders); slice 14 can start on what does not read the results.
+**Decision.** Option 1, with 1a for the private set (the owner, 18 November 2026). Built to (a) to (e) as written, the rule still zeroed 62 of the 211 public answers. Two widenings, each asked with its count, the owner accepted the same day:
+
+- **(b) adds up across the cited household's files, not only the cited ones.** An answer often cites one file and adds from two (a household total cited to `positions.csv` that counts `cash.csv`). It moved the public zeros from 62 to 54. An invented amount passed it by chance at most 0.8% of the time over all of one household's files (0.4% over the cited ones), measured on 2,000 random amounts per range.
+- **(f) a rounding in prose.** An amount in prose counts when it rounds a figure the answer cites and the rule accepts, or one the key computes, to the places it is written to ("$1,062" for 1,061.56; "$440k", to ten thousand, for 437,776). It is never a rounding of any other number in the files. It moved the zeros from 54 to 38.
+
+**As built** (`src/casebook/graders/derivations.py`, applied by `graders.common.Support`):
+
+- (a) An operand of arithmetic shown may be in any of the task's files, a figure the key computes, a rules-table parameter, another of the answer's figures the rule accepts, a sum under (b), or a whole number up to 100 (a percentage's 100, "1 - x", "minus 3"). The decision named "the files it cites": answers show "7000 x (1 - 7000/228659.62)" citing `positions.csv` while 7000 sits in `transactions.csv`.
+- (b) A record's two values added or subtracted; a field's total over the records of one table that share up to two values (an account, a date, a symbol, the year, quarter or month of a date); and two such totals under the same values added or subtracted, in one file or two. Always to the cent. A price is still read, never derived.
+- (c) A whole number the label calls an age, equal to a year it names (or a year of the files' dates) less the year of a date in the cited files, or one less.
+- (d) A whole number no larger than the files, the folders, or the rows and records at the cited path. A placeholder in a path (`households/<household ID>/...`) reads as any folder.
+- (e) The parameters of the 2025 rules table, not its life-expectancy tables (whose hundreds of entries would make every small number a constant). A life-expectancy factor the key itself uses was already accepted when cited to IRS Publication 590-B; it is now accepted cited to any file.
+- A text value is no figure; an amount written as money inside one is judged as an amount in prose. A run's CRM note may repeat what its answer derived.
+
+**What it changes.** On the 211 stored public answers: 38 zeroed (from 146), 25 of them with full marks otherwise. What still zeroes them is figures worked out without the working shown (a conversion's taxable part, a hypothetical household fee), sums over some of a household's accounts, or a rounding of an uncited figure. Each zero names its figure. No key and no task changed. Every grader's hash changed, so the freeze is recorded again, then the public answers are regraded (`casebook regrade`) and the private set runs again (`casebook pass --private`).

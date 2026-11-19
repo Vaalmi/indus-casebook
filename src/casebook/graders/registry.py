@@ -14,6 +14,7 @@ from casebook.graders import (
     common,
     compliance_review,
     conversion_meeting_prep,
+    derivations,
     follow_up,
     household_list,
     ira_taxable_distributions,
@@ -87,7 +88,7 @@ def _date(params: dict[str, Any], name: str) -> date:
 def _sources(*modules: ModuleType) -> tuple[Path, ...]:
     """The files a grader's hash covers: its key's and grader's own, the shared base every key and grader
     stands on, and the 2025 rules table the keys read, so a change to any of them changes the hash."""
-    return (*(Path(m.__file__ or "") for m in (*modules, common, figures)), RULES_2025)
+    return (*(Path(m.__file__ or "") for m in (*modules, common, derivations, figures)), RULES_2025)
 
 
 def _follow_up_sources(*modules: ModuleType) -> tuple[Path, ...]:

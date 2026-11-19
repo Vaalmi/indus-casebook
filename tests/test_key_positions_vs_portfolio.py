@@ -259,7 +259,10 @@ def test_a_key_that_leaves_a_household_unresolved_fails_the_clean_answer(book: P
     assert not result.passed
 
 
-def test_an_altered_figure_fails_the_clean_answer_as_fabricated(book: Path, workspace: Path) -> None:
+def test_a_cited_total_stands_on_the_files_whatever_the_key_says(book: Path, workspace: Path) -> None:
+    # The clean answer's figure is the household's files added up (positions and cash on 2026-04-15), which the
+    # fabricated-figure rule accepts on its own since the owner's decision of 18 November 2026 (option 1, (b)):
+    # altering the key's copy of it no longer fails the answer, and a total the files do not give still does.
     key = positions_key(book, AS_OF)
     figures = tuple(
         dataclasses.replace(
@@ -270,6 +273,14 @@ def test_an_altered_figure_fails_the_clean_answer_as_fabricated(book: Path, work
         )
         for h in key.household_figures
     )
-    result = grade(_answer(), dataclasses.replace(key, household_figures=figures), workspace)
-    assert result.critical_fail is not None and "1912862.47" in result.critical_fail
+    altered = dataclasses.replace(key, household_figures=figures)
+    assert grade(_answer(), altered, workspace).critical_fail is None
+    figure = {
+        "label": "HH-4821 custodian total value on 2026-04-15",
+        "value": "1,912,962.47",
+        "source": "households/HH-4821/custodian/positions.csv",
+    }
+    invented = {**CLEAN, "figures": [figure]}
+    result = grade(f"No household disagrees.\n\n```json\n{json.dumps(invented)}\n```\n", key, workspace)
+    assert result.critical_fail is not None and "1912962.47" in result.critical_fail
     assert (result.score, result.passed) == (0, False)
