@@ -1,0 +1,105 @@
+{
+  "notice": "UNVALIDATED SYNTHETIC RESEARCH PREVIEW. Household data, prices, transactions and document contents are invented. Securities appear under invented names by default; an optional mode uses real ticker identifiers with invented prices. Tax calculations, answer keys and workflow judgments have not been independently reviewed by qualified practitioners. This is not tax, investment or compliance advice and is unsuitable for filing, trading or client decisions. No performance claims are established.",
+  "run_sets": [
+    {
+      "counts": {
+        "compliance": {
+          "basic": {
+            "failed": 0,
+            "failed_run": 0,
+            "held": 6,
+            "passed": 0
+          },
+          "checklist": {
+            "failed": 0,
+            "failed_run": 0,
+            "held": 6,
+            "passed": 0
+          },
+          "skill": {
+            "failed": 0,
+            "failed_run": 0,
+            "held": 6,
+            "passed": 0
+          }
+        },
+        "meeting": {
+          "basic": {
+            "failed": 0,
+            "failed_run": 0,
+            "held": 6,
+            "passed": 0
+          },
+          "checklist": {
+            "failed": 0,
+            "failed_run": 0,
+            "held": 6,
+            "passed": 0
+          },
+          "skill": {
+            "failed": 0,
+            "failed_run": 0,
+            "held": 6,
+            "passed": 0
+          }
+        },
+        "reconciliation": {
+          "basic": {
+            "failed": 1,
+            "failed_run": 0,
+            "held": 0,
+            "passed": 5
+          },
+          "checklist": {
+            "failed": 6,
+            "failed_run": 0,
+            "held": 0,
+            "passed": 0
+          },
+          "skill": {
+            "failed": 2,
+            "failed_run": 0,
+            "held": 0,
+            "passed": 4
+          }
+        },
+        "tax_lot_rmd": {
+          "basic": {
+            "failed": 0,
+            "failed_run": 0,
+            "held": 6,
+            "passed": 0
+          },
+          "checklist": {
+            "failed": 0,
+            "failed_run": 0,
+            "held": 6,
+            "passed": 0
+          },
+          "skill": {
+            "failed": 0,
+            "failed_run": 0,
+            "held": 6,
+            "passed": 0
+          }
+        }
+      },
+      "effort": "high",
+      "first_date": "2026-11-19",
+      "freeze": "fb6e130a602266d84b2f6324e4cd8ae4c1c2feb56ec0f7caf4e29545739cde69",
+      "last_date": "2026-11-19",
+      "models": [
+        "claude-opus-5-5"
+      ],
+      "regraded_from": [
+        {
+          "failed": 0,
+          "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+          "graded": 72
+        }
+      ],
+      "tool": "Claude Code",
+      "version": "2.1.304"
+    }
+  ]
+}

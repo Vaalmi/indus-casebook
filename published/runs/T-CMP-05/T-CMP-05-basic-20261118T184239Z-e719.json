@@ -49,7 +49,7 @@
     "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
     "config": "81b01875655e303fd5ce4e19a657d4bb5397adb8b49d98efb2fe282a700997a6",
     "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
-    "grader": "344945997a8be4affa2058dd21f5cb910d69c089bebf238bfe2796565b92b4ac",
+    "grader": "78e20b8608ede69bbc97d22e6574b2073b1399cc696835a925b8ba68fa8f7307",
     "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
     "task": "a8c71d9735bd77a9fe387d30d74a78581e0d6382a3f9c2cdf3ac82a1ed8ea428"
   },
@@ -61,11 +61,11 @@
   "notice": "UNVALIDATED SYNTHETIC RESEARCH PREVIEW. Household data, prices, transactions and document contents are invented. Securities appear under invented names by default; an optional mode uses real ticker identifiers with invented prices. Tax calculations, answer keys and workflow judgments have not been independently reviewed by qualified practitioners. This is not tax, investment or compliance advice and is unsuitable for filing, trading or client decisions. No performance claims are established.",
   "output": null,
   "regraded": {
-    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
-    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "decision": "docs/decisions/2026-11-19-billing-group-totals.md",
+    "freeze": "fb6e130a602266d84b2f6324e4cd8ae4c1c2feb56ec0f7caf4e29545739cde69",
     "grade_before": null,
     "grader_before": "edc3746f1a014c504dc8ed80812854fad1734e49eb84062fb591fab16e7375fb",
-    "utc": "2026-11-19T15:40:56+00:00"
+    "utc": "2026-11-19T19:39:42+00:00"
   },
   "run_id": "T-CMP-05-basic-20261118T184239Z-e719",
   "settings": {
