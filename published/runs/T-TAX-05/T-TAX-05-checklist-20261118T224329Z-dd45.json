@@ -1,0 +1,129 @@
+{
+  "arm": "checklist",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T22:47:53+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T22:43:30+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": null,
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "book",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T22:47:54+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": null,
+  "hashes": {
+    "answer": "65a87554ebb375b844c68dd07a002fd767fb9a3c0550bb3a2f8d455ce57f9aa4",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "81b01875655e303fd5ce4e19a657d4bb5397adb8b49d98efb2fe282a700997a6",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "eb609e7044cc33cac482944b3e4603471f863fee835444ce7b0dd26d9e2172bf",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "5c9c74ffc16d605e2fd4087c7a9ed328c3327aec7da9df1b54f9cf84f6216e24"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "**Ten IRA owners missed part or all of their 2025 required minimum distribution (RMD), out of the roughly 30 who had one.** They fall into two groups.\n\n**1. Five owners left their 401(k) RMD untaken.** HH-0120, HH-0236, HH-0371, HH-0664 and HH-5271 each signed one distribution form covering all of the owner's retirement accounts, including a former employer's 401(k). The whole amount was paid from one IRA. The IRS lets you add IRA RMDs together and take them from any one IRA, but a 401(k)'s RMD has to be paid from that 401(k). Each payment matches, to within a cent, the combined 31 Dec 2024 balance of the two IRAs and the 401(k) divided by 26.5, the IRS factor for age 73. So the IRAs are covered (overpaid, in fact). But nothing came out of any of the five 401(k)s, and the excess paid from the IRA doesn't count toward them. All five owners turned 73 in 2025, so the deadline was 1 April 2026, and it had passed by the 15 April record date. The CRM shows all five had retired, so the still-working exception doesn't apply.\n\n**2. Five inherited IRAs had no 2025 distribution at all.** These are HH-0466, HH-0607, HH-7126, HH-0491 and HH-0842. In each, the previous custodian confirms the parent had already started RMDs before dying. The heir is an adult child well over 10 years younger than the parent. Under the final IRS rules, such an heir must take yearly RMDs during the 10-year payout period, starting in 2025. The custodian shows only dividends, fees and trades in these accounts.\n\n**Points to check:**\n- The life-expectancy and age factors aren't in the files. I used the standard IRS tables, so every RMD and shortfall figure is my own calculation.\n- The inherited-IRA findings assume none of the heirs is disabled or chronically ill (which would change the rules). Nothing in the files says either way, so it's worth confirming.\n- The records stop at 15 April 2026, so they won't show any catch-up distributions or late-RMD penalty relief requests since then.\n\n**Checked and fine:** 18 other owners aged 73 or over took their full RMD, including those who paid part of it as a qualified charitable distribution (a payment straight to a charity). Owners whose 401(k) RMD was paid by the plan separately also met it. The four inherited IRAs whose original owners had not started RMDs owed nothing for 2025. The spouses who died in 2025 owned none of the IRAs.\n\nI didn't do the fee, allocation and statement-reconciliation checks from the advisor checklist, because they don't bear on this question.\n\n```json\n{\n  \"finding\": \"found\",\n  \"households\": [\n    {\"household_id\": \"HH-0120\", \"owner_id\": \"P-0120-1\", \"account_ids\": [\"SYN-01200004\"], \"shortfall\": 12582.44, \"explanation\": \"The single $45,492.56 IRA payment included the Dunholt 401(k)'s RMD, which cannot be met from an IRA, and nothing was paid from the 401(k) by the 1 April 2026 deadline.\"},\n    {\"household_id\": \"HH-0236\", \"owner_id\": \"P-0236-1\", \"account_ids\": [\"SYN-02360004\"], \"shortfall\": 10955.88, \"explanation\": \"The single $40,687.96 IRA payment included the Brightwater 401(k)'s RMD, which cannot be met from an IRA, and nothing was paid from the 401(k).\"},\n    {\"household_id\": \"HH-0371\", \"owner_id\": \"P-0371-1\", \"account_ids\": [\"SYN-03710004\"], \"shortfall\": 15164.26, \"explanation\": \"The single $46,029.07 IRA payment included the Glenrock 401(k)'s RMD, which cannot be met from an IRA, and nothing was paid from the 401(k).\"},\n    {\"household_id\": \"HH-0664\", \"owner_id\": \"P-0664-1\", \"account_ids\": [\"SYN-06640004\"], \"shortfall\": 11019.74, \"explanation\": \"The single $37,447.15 IRA payment included the Calderon Freight 401(k)'s RMD, which cannot be met from an IRA, and nothing was paid from the 401(k).\"},\n    {\"household_id\": \"HH-5271\", \"owner_id\": \"P-5271-1\", \"account_ids\": [\"SYN-52710004\"], \"shortfall\": 12729.96, \"explanation\": \"The single $44,202.50 IRA payment equals all three accounts' RMDs combined, so it included the Calloway 401(k)'s RMD, which cannot be met from an IRA, and nothing was paid from the 401(k).\"},\n    {\"household_id\": \"HH-0466\", \"owner_id\": \"P-0466-1\", \"account_ids\": [\"SYN-04660002\"], \"shortfall\": 15068.66, \"explanation\": \"Inherited IRA from a mother who had started RMDs; the daughter, a non-eligible beneficiary, owed a 2025 annual RMD under the 10-year rule and took nothing.\"},\n    {\"household_id\": \"HH-0607\", \"owner_id\": \"P-0607-1\", \"account_ids\": [\"SYN-06070002\"], \"shortfall\": 11760.82, \"explanation\": \"Inherited IRA from a parent who had started RMDs; the beneficiary owed a 2025 annual RMD under the 10-year rule and took nothing.\"},\n    {\"household_id\": \"HH-7126\", \"owner_id\": \"P-7126-1\", \"account_ids\": [\"SYN-71260002\"], \"shortfall\": 10757.24, \"explanation\": \"Inherited IRA from a mother who had started RMDs; the son owed a 2025 annual RMD under the 10-year rule and took nothing.\"},\n    {\"household_id\": \"HH-0491\", \"owner_id\": \"P-0491-1\", \"account_ids\": [\"SYN-04910002\"], \"shortfall\": 14976.93, \"explanation\": \"Inherited IRA from a mother who had started RMDs; the daughter owed a 2025 annual RMD under the 10-year rule and took nothing.\"},\n    {\"household_id\": \"HH-0842\", \"owner_id\": \"P-0842-1\", \"account_ids\": [\"SYN-08420002\"], \"shortfall\": 7090.19, \"explanation\": \"Inherited IRA from a father who had started RMDs and died in 2024; the beneficiary's first annual RMD was due in 2025 and nothing was taken.\"}\n  ],\n  \"unresolved\": [],\n  \"figures\": [\n    {\"label\": \"HH-0120 401(k) SYN-01200004 positions 2024-12-31 (Brackwater Inflation-Protected Bond Fund 176,223.60 + Ridgeholm Equal Weight Fund 150,210.99)\", \"value\": 326434.59, \"source\": \"households/HH-0120/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0120 401(k) SYN-01200004 cash 2024-12-31\", \"value\": 7000.00, \"source\": \"households/HH-0120/custodian/cash.csv\"},\n    {\"label\": \"HH-0120 IRA SYN-01200002 balance 2024-12-31 incl. cash\", \"value\": 668964.50, \"source\": \"households/HH-0120/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0120 IRA SYN-01200003 balance 2024-12-31 incl. cash\", \"value\": 203153.72, \"source\": \"households/HH-0120/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0120 combined 2025 RMD paid from SYN-01200002\", \"value\": 45492.56, \"source\": \"households/HH-0120/custodian/transactions.csv\"},\n    {\"label\": \"HH-0120 aggregated-RMD instruction covering all three accounts\", \"value\": 45492.56, \"source\": \"households/HH-0120/crm/crm.json\"},\n    {\"label\": \"HH-0120 401(k) 2025 RMD (333,434.59 / 26.5)\", \"value\": 12582.44, \"source\": \"households/HH-0120/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0120 Laila Udeh date of birth\", \"value\": \"1952-07-15\", \"source\": \"households/HH-0120/portfolio/household.json\"},\n    {\"label\": \"HH-0236 401(k) SYN-02360004 balance 2024-12-31 incl. 6,000 cash\", \"value\": 290330.91, \"source\": \"households/HH-0236/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0236 combined 2025 RMD paid from SYN-02360002\", \"value\": 40687.96, \"source\": \"households/HH-0236/custodian/transactions.csv\"},\n    {\"label\": \"HH-0236 401(k) 2025 RMD (/26.5)\", \"value\": 10955.88, \"source\": \"households/HH-0236/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0236 Xavier Santangelo date of birth\", \"value\": \"1952-03-05\", \"source\": \"households/HH-0236/portfolio/household.json\"},\n    {\"label\": \"HH-0371 401(k) SYN-03710004 balance 2024-12-31 incl. 11,500 cash\", \"value\": 401852.77, \"source\": \"households/HH-0371/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0371 combined 2025 RMD paid from SYN-03710002\", \"value\": 46029.07, \"source\": \"households/HH-0371/custodian/transactions.csv\"},\n    {\"label\": \"HH-0371 401(k) 2025 RMD (/26.5)\", \"value\": 15164.26, \"source\": \"households/HH-0371/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0371 Rosa Tamura date of birth\", \"value\": \"1952-09-16\", \"source\": \"households/HH-0371/portfolio/household.json\"},\n    {\"label\": \"HH-0664 401(k) SYN-06640004 balance 2024-12-31 incl. 8,250 cash\", \"value\": 292023.18, \"source\": \"households/HH-0664/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0664 combined 2025 RMD paid from SYN-06640002\", \"value\": 37447.15, \"source\": \"households/HH-0664/custodian/transactions.csv\"},\n    {\"label\": \"HH-0664 401(k) 2025 RMD (/26.5)\", \"value\": 11019.74, \"source\": \"households/HH-0664/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0664 Freya Chaudhry date of birth\", \"value\": \"1952-10-01\", \"source\": \"households/HH-0664/portfolio/household.json\"},\n    {\"label\": \"HH-5271 401(k) SYN-52710004 balance 2024-12-31 incl. 7,500 cash\", \"value\": 337343.96, \"source\": \"households/HH-5271/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-5271 IRAs SYN-52710002 + SYN-52710003 balance 2024-12-31 incl. cash\", \"value\": 834022.36, \"source\": \"households/HH-5271/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-5271 2025 RMD paid from SYN-52710002\", \"value\": 44202.50, \"source\": \"households/HH-5271/custodian/transactions.csv\"},\n    {\"label\": \"HH-5271 401(k) 2025 RMD (/26.5)\", \"value\": 12729.96, \"source\": \"households/HH-5271/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-5271 Teodoro Villanueva date of birth\", \"value\": \"1952-03-14\", \"source\": \"households/HH-5271/portfolio/household.json\"},\n    {\"label\": \"HH-0466 inherited IRA SYN-04660002 balance 2024-12-31 incl. 8,750 cash\", \"value\": 459594.11, \"source\": \"households/HH-0466/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0466 2025 RMD (single life factor 32.5 at age 54 in 2023, less 2 = 30.5)\", \"value\": 15068.66, \"source\": \"households/HH-0466/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0466 decedent died; beneficiary born\", \"value\": \"2022-01-15; 1969-11-04\", \"source\": \"households/HH-0466/custodian/accounts.csv\"},\n    {\"label\": \"HH-0607 inherited IRA SYN-06070002 balance 2024-12-31 incl. 6,750 cash\", \"value\": 368113.78, \"source\": \"households/HH-0607/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0607 2025 RMD (factor 34.3 at age 52 in 2022, less 3 = 31.3)\", \"value\": 11760.82, \"source\": \"households/HH-0607/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0607 decedent died; beneficiary born\", \"value\": \"2021-05-26; 1970-08-05\", \"source\": \"households/HH-0607/custodian/accounts.csv\"},\n    {\"label\": \"HH-7126 inherited IRA SYN-71260002 balance 2024-12-31 incl. 9,000 cash\", \"value\": 378654.91, \"source\": \"households/HH-7126/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-7126 2025 RMD (factor 36.2 at age 50 in 2024, less 1 = 35.2)\", \"value\": 10757.24, \"source\": \"households/HH-7126/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-7126 decedent died; beneficiary born\", \"value\": \"2023-07-19; 1974-05-30\", \"source\": \"households/HH-7126/custodian/accounts.csv\"},\n    {\"label\": \"HH-0491 inherited IRA SYN-04910002 balance 2024-12-31 incl. 6,750 cash\", \"value\": 324999.36, \"source\": \"households/HH-0491/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0491 2025 RMD (factor 23.7 at age 64 in 2023, less 2 = 21.7)\", \"value\": 14976.93, \"source\": \"households/HH-0491/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0491 decedent died; beneficiary born\", \"value\": \"2022-08-29; 1959-11-23\", \"source\": \"households/HH-0491/custodian/accounts.csv\"},\n    {\"label\": \"HH-0842 inherited IRA SYN-08420002 balance 2024-12-31 incl. 9,000 cash\", \"value\": 324021.87, \"source\": \"households/HH-0842/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0842 2025 RMD (factor 45.7 at age 40 in 2025)\", \"value\": 7090.19, \"source\": \"households/HH-0842/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0842 decedent died; beneficiary born\", \"value\": \"2024-07-07; 1985-10-03\", \"source\": \"households/HH-0842/custodian/accounts.csv\"},\n    {\"label\": \"Distributions from the five inherited IRAs in 2025\", \"value\": 0, \"source\": \"households/HH-0466/custodian/transactions.csv\", \"computed\": true}\n  ],\n  \"explanation\": \"Five owners who turned 73 in 2025 had a single IRA payment cover their former employer's 401(k) RMD as well, but a 401(k) RMD can only be paid from the plan, so each 401(k)'s RMD remained unpaid when the 1 April 2026 deadline passed. Five beneficiaries of inherited IRAs whose parents had already started RMDs took no 2025 annual distribution, which the 10-year rule now requires. Every other owner with a 2025 RMD took at least the required amount, including those who paid part of it as a qualified charitable distribution, and the RMD and life-expectancy factors are IRS figures I applied, not values in the files.\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": null,
+    "grader_before": "07f7bb089d25e3202639b1d6c244619799c55cef3870099de74c7f8825286501",
+    "utc": "2026-11-19T14:08:30+00:00"
+  },
+  "run_id": "T-TAX-05-checklist-20261118T224329Z-dd45",
+  "settings": {
+    "crm_tools": [],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "skills_loaded": [
+    "indus-checklist:advisor-checklist"
+  ],
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 3
+  },
+  "started_utc": "2026-11-18T22:43:30+00:00",
+  "state": "mapped",
+  "task_id": "T-TAX-05",
+  "token_use": {
+    "cache_creation_input_tokens": 112782,
+    "cache_read_input_tokens": 1060676,
+    "input_tokens": 42,
+    "output_tokens": 27251
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping an advisor at a small independent advisory firm. This folder holds the records of every client household of the firm as they stood on 15 April 2026, one folder per household under households/<household ID>/, each with the custodian's files (custodian/), the firm's portfolio system (portfolio/) and its CRM (crm/).\n\nThe advisor asks: which IRA owners in the book had a 2025 required minimum distribution, from any of their retirement accounts, that was not met?\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"found\" if one or more owners did, \"none_found\" if none did, or \"unresolved\" if the files settle no household as found and leave some unresolved\n- \"households\": one entry per household with such an owner, each as {\"household_id\": ..., \"owner_id\": the owner's person ID, \"account_ids\": the accounts the unmet distribution had to come from, \"shortfall\": the amount not taken, \"explanation\": one sentence}, or [] if none\n- \"unresolved\": the households the files cannot settle, each as {\"household_id\": ..., \"explanation\": one sentence}, or [] if none\n- \"figures\": every figure you relied on from the files, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed from them rather than read\n- \"explanation\": two or three sentences",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40",
+      "--plugin-dir",
+      "checklist/indus-checklist"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": "indus-checklist"
+  },
+  "transcript": {
+    "events": 207,
+    "file": "attempt-1.jsonl"
+  },
+  "verdict_held": true
+}

@@ -1,0 +1,212 @@
+{
+  "arm": "checklist",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T16:38:42+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T16:36:44+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": {
+    "households": {
+      "HH-2749": {
+        "added": [
+          {
+            "after": {
+              "date": "2026-04-15",
+              "note_id": "SB-2749-01",
+              "text": "Year-end planning review for Samira Farouk and Patrick Delaney, married filing jointly (TU-2749-1), covering accounts SYN-27490001 (joint), SYN-27490002 (Samira's IRA) and SYN-27490003 (Patrick's IRA).\n\n2025 NIIT: none owed. Modified AGI is $238,610.68: wages $131,000.00 (Samira's W-2) + $83,500.00 (Patrick's W-2) + ordinary dividends $13,407.79 (1099-DIV box 1a, of which $6,958.23 qualified) + long-term gain $10,702.89 (60 Brackwater Broad Market Fund sold 2025-12-09, proceeds $15,354.60, basis $4,651.71). No IRA distributions, no interest, and per the 2026-02-11 record no other income. That is $11,389.32 under the $250,000 MFJ threshold, so NIIT is $0 even though net investment income is $24,110.68. The Brackwater Broad Market Fund lot is noncovered, so the preparer must report the $4,651.71 basis (it matches the custodian lot record).\n\n2025 SALT limit: $40,000. MAGI is below $500,000, so there is no phase-down. Whether itemizing beats the $31,500 standard deduction depends on state and property taxes paid, which are not on file.\n\nAsset location: Fernhollow Corporate Bond Fund (SEC-0018, the only fixed-income fund, $258,560.16 on 2026-04-15) is in the taxable joint account. It produced $6,449.56 of non-qualified dividends in 2025, taxed at ordinary rates and counted in NII/MAGI. Both IRAs hold only equities ($587,680.13 combined incl. cash), so they have room for it. Proposal: sell Fernhollow Corporate Bond Fund in the joint account (basis $257,498.60, unrealized LT gain about $1,061.56 at 4/15 prices) and buy equity there. In the IRAs, sell an equal amount of equity and buy Fernhollow Corporate Bond Fund. Overall allocation stays the same. If Fernhollow Corporate Bond Fund is at a loss on the trade date, do not buy it in an IRA within 30 days (wash sale). Decision pending client approval.\n\nOther checks: Q1-2025 to Q1-2026 fees agree with FS-STD. Q1 2026 statements agree with custodian and portfolio records. Allocation on 2026-04-15 is within IPS bands: US equity 67.8%, international 11.3%, fixed income 19.4%. Largest holding is Fernhollow Large Cap Index Fund at 21.2%, under the 25% limit. Open items: Patrick's IRA SYN-27490003 has no contingent beneficiary on file. Larkspur Total Market Fund in SYN-27490003 shows no dividends for all of 2025 or Q1 2026; query the custodian. Headroom under the NIIT threshold is only $11,389.32, and the joint Brackwater Broad Market Fund lot carries a large embedded gain (978 units, basis $75,822.87 vs $258,475.62). Plan any 2026 sales around the threshold."
+            },
+            "collection": "notes",
+            "record_id": "SB-2749-01"
+          },
+          {
+            "after": {
+              "activity_id": "SB-2749-02",
+              "date": "2026-04-15",
+              "kind": "task",
+              "sent_to_client": false,
+              "summary": "Advisor: present the Fernhollow Corporate Bond Fund (SEC-0018) relocation to Samira and Patrick and get their approval. Sell Fernhollow Corporate Bond Fund in joint SYN-27490001 (~$258,560, est. LT gain ~$1,062) and buy equity there; sell matching equity in the IRAs and buy Fernhollow Corporate Bond Fund there. Check for wash sale if Fernhollow Corporate Bond Fund is at a loss on the trade date."
+            },
+            "collection": "activities",
+            "record_id": "SB-2749-02"
+          },
+          {
+            "after": {
+              "activity_id": "SB-2749-03",
+              "date": "2026-04-15",
+              "kind": "task",
+              "sent_to_client": false,
+              "summary": "Patrick: name a contingent beneficiary on his IRA SYN-27490003 (only primary, Samira, on file). Advisor to send the custodian beneficiary form."
+            },
+            "collection": "activities",
+            "record_id": "SB-2749-03"
+          },
+          {
+            "after": {
+              "activity_id": "SB-2749-04",
+              "date": "2026-04-15",
+              "kind": "task",
+              "sent_to_client": false,
+              "summary": "Ops: ask the custodian why Larkspur Total Market Fund (527 units) in SYN-27490003 shows no dividends for any quarter of 2025 or Q1 2026, while every other holding paid quarterly."
+            },
+            "collection": "activities",
+            "record_id": "SB-2749-04"
+          },
+          {
+            "after": {
+              "activity_id": "SB-2749-05",
+              "date": "2026-04-15",
+              "kind": "task",
+              "sent_to_client": false,
+              "summary": "Advisor: send the tax preparer the 2025 summary: MAGI $238,610.68, no NIIT, SALT limit $40,000. Point out that the 60 Brackwater Broad Market Fund sold 2025-12-09 are noncovered, with basis $4,651.71. Ask for the state and property taxes paid to see if itemizing beats the standard deduction."
+            },
+            "collection": "activities",
+            "record_id": "SB-2749-05"
+          },
+          {
+            "after": {
+              "activity_id": "SB-2749-06",
+              "date": "2026-04-15",
+              "kind": "task",
+              "sent_to_client": false,
+              "summary": "Advisor: review and send Samira and Patrick the drafted summary message (NIIT, SALT limit, Fernhollow Corporate Bond Fund relocation proposal, contingent beneficiary)."
+            },
+            "collection": "activities",
+            "record_id": "SB-2749-06"
+          }
+        ],
+        "changed": [],
+        "removed": []
+      }
+    }
+  },
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "HH-2749",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T16:38:42+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": null,
+  "hashes": {
+    "answer": "218841597a154e68144b73866b52704ff97de8792cff8ebe8372d78bf22ef877",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "491bf142a9b8b5eaf738aaecd97652876f3902279c46aa486140057c953b53d9",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "340f371fc8094c8f813a80d279e9e6739b13579371e7acd797a5accda9baca8d",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "841175e4c88cf6967f2066b51998b73314f2b01418df506c07cb4b20f34d1a36"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "The Farouk-Delaney household (HH-2749) owes no net investment income tax for 2025. Their 2025 limit on deducting state and local taxes (SALT) is $40,000. The one asset-location point worth raising is the corporate bond fund Fernhollow Corporate Bond Fund, which sits in the taxable joint account.\n\n**Net investment income tax (NIIT): $0.** Their modified adjusted gross income (MAGI) is $238,610.68:\n- Samira's wages: $131,000.00\n- Patrick's wages: $83,500.00\n- Dividends from the joint account: $13,407.79\n- Long-term gain on the 60 Brackwater Broad Market Fund shares sold in December: $10,702.89\n\nThere were no IRA withdrawals and no other income. That leaves them $11,389.32 under the $250,000 threshold for joint filers, so they owe nothing even with $24,110.68 of investment income. Two things to mention on the call:\n- **Little room left.** The remaining Brackwater Broad Market Fund shares in the joint account have about $182,650 of unrealized gain, so any sales in 2026 should be planned around the threshold.\n- **Cost basis for the tax preparer.** The Brackwater Broad Market Fund shares sold are \"noncovered\", meaning the custodian didn't report their cost to the IRS. The preparer needs the $4,651.71 cost, which matches the custodian's records.\n\n**SALT limit: $40,000.** That is the 2025 cap for joint filers, and it only starts shrinking above $500,000 of MAGI. We don't have their state income or property tax figures, so whether they should itemize instead of taking the $31,500 standard deduction is still open.\n\n**Asset location:** Fernhollow Corporate Bond Fund (SEC-0018) is their only bond fund, worth $258,560.16, and it's in the joint account. It paid $6,449.56 in 2025, all taxed at ordinary income rates, and that income also counts toward the NIIT threshold. The two IRAs hold only stock funds, worth $587,680 together. The proposal is to swap: sell Fernhollow Corporate Bond Fund in the joint account and buy stock funds there, then sell the same dollar amount of stock funds in the IRAs and buy Fernhollow Corporate Bond Fund there. Their overall mix stays the same. Selling Fernhollow Corporate Bond Fund would realise only about $1,062 of gain at 15 April prices. If Fernhollow Corporate Bond Fund is below cost on the trade date, it shouldn't be bought in an IRA within 30 days, or the loss would be permanently disallowed.\n\n**Other checks:**\n- **Checks that passed:**\n  - Fees for all five quarters match the fee schedule.\n  - The Q1 2026 statements match the custodian and portfolio records.\n  - The mix is within the investment policy ranges: 67.8% US stocks, 11.3% international, 19.4% bonds.\n  - No single holding is over the 25% limit.\n- **Problems found:**\n  - Patrick's IRA has no contingent (backup) beneficiary.\n  - Larkspur Total Market Fund in Patrick's IRA shows no dividends at all for 2025 or Q1 2026, which needs a question to the custodian.\n\n**CRM (HH-2749 only, dated 2026-04-15):** I added one note (SB-2749-01) with these figures. The swap is recorded as a proposal waiting for the clients' approval, since the call hasn't happened yet. I also added five to-do activities:\n- SB-2749-02: present the swap and get approval\n- SB-2749-03: Patrick to name a contingent beneficiary\n- SB-2749-04: ask the custodian about the Larkspur Total Market Fund dividends\n- SB-2749-05: send the 2025 summary to the tax preparer\n- SB-2749-06: review and send the client message\n\nNone of them is marked as sent to the client. The message below is a draft for you to review.\n\n```json\n{\n  \"finding\": \"no_niit\",\n  \"niit\": 0,\n  \"modified_agi\": 238610.68,\n  \"salt_limit\": 40000,\n  \"asset_location\": [\"SEC-0018\"],\n  \"figures\": [\n    {\"label\": \"Samira Farouk 2025 wages (W-2 box 1)\", \"value\": 131000.00, \"source\": \"documents/P-2749-1-W2-1-2025.pdf\"},\n    {\"label\": \"Patrick Delaney 2025 wages (W-2 box 1)\", \"value\": 83500.00, \"source\": \"documents/P-2749-2-W2-1-2025.pdf\"},\n    {\"label\": \"No other income outside the accounts\", \"value\": 0, \"source\": \"crm/crm.json\"},\n    {\"label\": \"2025 total ordinary dividends, joint account (1099-DIV box 1a)\", \"value\": 13407.79, \"source\": \"documents/SYN-27490001-1099-2025.pdf\"},\n    {\"label\": \"2025 qualified dividends (1099-DIV box 1b)\", \"value\": 6958.23, \"source\": \"documents/SYN-27490001-1099-2025.pdf\"},\n    {\"label\": \"2025 Fernhollow Corporate Bond Fund non-qualified dividends\", \"value\": 6449.56, \"source\": \"documents/SYN-27490001-1099-2025.pdf\"},\n    {\"label\": \"2025 interest income (1099-INT box 1)\", \"value\": 0.00, \"source\": \"documents/SYN-27490001-1099-2025.pdf\"},\n    {\"label\": \"Brackwater Broad Market Fund sale proceeds, 60 units 2025-12-09\", \"value\": 15354.60, \"source\": \"documents/SYN-27490001-1099-2025.pdf\"},\n    {\"label\": \"Brackwater Broad Market Fund sale cost basis (noncovered)\", \"value\": 4651.71, \"source\": \"custodian/realized_lots.csv\"},\n    {\"label\": \"2025 long-term capital gain\", \"value\": 10702.89, \"source\": \"documents/SYN-27490001-1099-2025.pdf\"},\n    {\"label\": \"Filing status married filing jointly\", \"value\": \"married_filing_jointly\", \"source\": \"portfolio/household.json\"},\n    {\"label\": \"2025 net investment income\", \"value\": 24110.68, \"source\": \"documents/SYN-27490001-1099-2025.pdf\", \"computed\": true},\n    {\"label\": \"2025 modified adjusted gross income\", \"value\": 238610.68, \"source\": \"documents/SYN-27490001-1099-2025.pdf\", \"computed\": true},\n    {\"label\": \"NIIT threshold, married filing jointly\", \"value\": 250000, \"source\": \"portfolio/household.json\"},\n    {\"label\": \"MAGI headroom below NIIT threshold\", \"value\": 11389.32, \"source\": \"documents/SYN-27490001-1099-2025.pdf\", \"computed\": true},\n    {\"label\": \"2025 NIIT\", \"value\": 0, \"source\": \"documents/SYN-27490001-1099-2025.pdf\", \"computed\": true},\n    {\"label\": \"2025 SALT deduction limit\", \"value\": 40000, \"source\": \"portfolio/household.json\", \"computed\": true},\n    {\"label\": \"Fernhollow Corporate Bond Fund market value 2026-04-15 (joint taxable)\", \"value\": 258560.16, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"Fernhollow Corporate Bond Fund cost basis\", \"value\": 257498.60, \"source\": \"custodian/tax_lots.csv\"},\n    {\"label\": \"Fernhollow Corporate Bond Fund unrealized long-term gain 2026-04-15\", \"value\": 1061.56, \"source\": \"custodian/tax_lots.csv\", \"computed\": true},\n    {\"label\": \"Fernhollow Corporate Bond Fund asset class fixed income\", \"value\": \"Fixed income\", \"source\": \"portfolio/ips.json\"},\n    {\"label\": \"Combined IRA value incl. cash 2026-04-15\", \"value\": 587680.13, \"source\": \"portfolio/positions.json\", \"computed\": true},\n    {\"label\": \"Remaining Brackwater Broad Market Fund cost basis, joint account\", \"value\": 75822.87, \"source\": \"custodian/tax_lots.csv\"},\n    {\"label\": \"Remaining Brackwater Broad Market Fund market value 2026-04-15\", \"value\": 258475.62, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"Household total value 2026-04-15\", \"value\": 1335876.24, \"source\": \"portfolio/positions.json\", \"computed\": true},\n    {\"label\": \"Fixed income share of household 2026-04-15\", \"value\": 0.194, \"source\": \"portfolio/positions.json\", \"computed\": true},\n    {\"label\": \"Q1 2026 advisory fee, household\", \"value\": 3169.30, \"source\": \"custodian/transactions.csv\"}\n  ],\n  \"explanation\": \"Their 2025 modified AGI is $238,610.68 (wages $214,500.00 plus $13,407.79 of dividends and a $10,702.89 long-term gain). That is below the $250,000 joint-filer threshold, so no net investment income tax is owed, and far below $500,000, so their SALT limit is the full $40,000. Their only bond fund, Fernhollow Corporate Bond Fund (SEC-0018, $258,560), sits in the taxable joint account and paid $6,449.56 taxed at ordinary rates. Swapping it into the all-equity IRAs would shelter that income at a cost of only about $1,062 of realized gain.\",\n  \"client_message\": \"Dear Samira and Patrick,\\n\\nAhead of our planning call, here is where things stand for 2025.\\n\\nNet investment income tax: you do not owe it for 2025. Your modified adjusted gross income was about $238,611: your two salaries, plus $13,408 of dividends and a $10,703 gain from the Brackwater Broad Market Fund shares we sold in December for the car. That is about $11,400 below the $250,000 level where the tax starts for married couples. Since that margin is small, we will plan any sales in 2026 with it in mind.\\n\\nState and local tax deduction: your limit for 2025 is $40,000. Whether itemizing beats the standard deduction depends on the state income and property taxes you paid. Please send us or your tax preparer those totals if you haven't already. We will also remind your preparer that the cost of the Brackwater Broad Market Fund shares sold ($4,651.71) has to be entered by hand, because the custodian did not report it to the IRS.\\n\\nAn idea to discuss: your bond fund, Fernhollow Corporate Bond Fund (about $258,600), is in your joint account. Its income is taxed every year at your full income-tax rate. We suggest moving it into your IRAs, where that income would not be taxed until you withdraw it, and holding stock funds in the joint account instead. Your overall mix of stocks and bonds would stay the same, and at today's prices the switch would create only about $1,060 of taxable gain. We won't make any trades until you have agreed.\\n\\nOne small housekeeping item: Patrick, your IRA has Samira as primary beneficiary but no backup (contingent) beneficiary. We will send you the form to add one.\\n\\nWe look forward to talking it through on the call.\\n\\nBest regards\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": null,
+    "grader_before": "63e94c2edc1f1243c79460691e64fb1e05f322ae3a9a8f824ca87f9e62cf41ed",
+    "utc": "2026-11-19T14:07:02+00:00"
+  },
+  "run_id": "T-MTG-04-checklist-20261118T163644Z-924b",
+  "settings": {
+    "crm_tools": [
+      "mcp__crm__list_households",
+      "mcp__crm__read_household",
+      "mcp__crm__add_note",
+      "mcp__crm__add_activity",
+      "mcp__crm__mark_activity_done"
+    ],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "skills_loaded": [
+    "indus-checklist:advisor-checklist"
+  ],
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 2
+  },
+  "started_utc": "2026-11-18T16:36:44+00:00",
+  "state": "mapped",
+  "task_id": "T-MTG-04",
+  "token_use": {
+    "cache_creation_input_tokens": 46264,
+    "cache_read_input_tokens": 200670,
+    "input_tokens": 18,
+    "output_tokens": 13102
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping an advisor at a small independent advisory firm. This folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the documents on file (documents/). The firm's CRM is also open to you through its tools: list_households, read_household, add_note, add_activity and mark_activity_done (add_activity takes sent_to_client: true only for a record of something sent to the client).\n\nThe advisor is preparing the year-end planning call with this household and asks: for 2025, do they owe the net investment income tax, and how much; what is their SALT deduction limit; and what in their asset location is worth raising?\n\nThen record the follow-up in the CRM, for this household only, dated 15 April 2026: a note of what was discussed and decided, with the figures it turns on, and an activity for each item someone still has to do. Then draft the client's message.\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"niit_owed\" if they owe the net investment income tax for 2025, \"no_niit\" if they do not, or \"unresolved\"\n- \"niit\": the 2025 net investment income tax, 0 if none is owed, or null if unresolved\n- \"modified_agi\": their 2025 modified adjusted gross income, or null if unresolved\n- \"salt_limit\": their 2025 limit on the deduction for state and local taxes, or null if unresolved\n- \"asset_location\": the security IDs of the fixed-income funds held in a taxable account that would be better held in a retirement account, or [] if none\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed rather than read\n- \"explanation\": two or three sentences\n- \"client_message\": the message to the client, as plain text",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40",
+      "--mcp-config",
+      "<private>/runs/T-MTG-04-checklist-20261118T163644Z-924b/crm-1/mcp.json",
+      "--allowedTools",
+      "mcp__crm__list_households,mcp__crm__read_household,mcp__crm__add_note,mcp__crm__add_activity,mcp__crm__mark_activity_done",
+      "--plugin-dir",
+      "checklist/indus-checklist"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": "indus-checklist"
+  },
+  "transcript": {
+    "events": 111,
+    "file": "attempt-1.jsonl"
+  },
+  "verdict_held": true
+}

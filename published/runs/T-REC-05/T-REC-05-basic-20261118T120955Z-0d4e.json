@@ -1,0 +1,193 @@
+{
+  "arm": "basic",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T12:11:01+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T12:09:55+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": null,
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "book",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T12:11:01+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": {
+    "breakdown": [
+      {
+        "detail": "every required field present",
+        "earned": 10,
+        "name": "output_parses",
+        "points": 10
+      },
+      {
+        "detail": "missed none (key finds HH-0586, HH-0592, HH-0928, HH-4821, leaves unresolved none)",
+        "earned": 35,
+        "name": "none_missed",
+        "points": 35
+      },
+      {
+        "detail": "wrongly named none (answer names HH-0586, HH-0592, HH-0928, HH-4821, unresolved none)",
+        "earned": 35,
+        "name": "none_wrongly_named",
+        "points": 35
+      },
+      {
+        "detail": "every household the key finds is named with its evidence",
+        "earned": 20,
+        "name": "evidence",
+        "points": 20
+      }
+    ],
+    "counts": {
+      "correct_unresolved": 0,
+      "false_alarm": 0,
+      "unnecessary_refusal": 0
+    },
+    "critical_fail": null,
+    "passed": true,
+    "score": 100
+  },
+  "hashes": {
+    "answer": "0b59d1824a406a677e50468ac07b36df0aa0c9f39238d6467c31e1f611b3fdb0",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "81b01875655e303fd5ce4e19a657d4bb5397adb8b49d98efb2fe282a700997a6",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "152dd5453e02c8123a52c5b0f9d28f8401060bb1bc65d9dc567f934604387b42",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "81d04bba2037823279aa8f7773696c1febd74ec8d4eab303943bf108d49a923a"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "**Four households are billed in groups that their signed householding agreements contradict:** HH-0592, HH-0586, HH-0928 and HH-4821. All four look the same:\n\n- **What the agreement says:** a signed householding letter (`kind: \"householding\"` in `crm/crm.json`) says the joint account, the spouse's IRA and the adult child's individual account \"are billed together as one group from the next billing cycle.\"\n- **What billing does:** `portfolio/household.json` as of 15 April 2026 still bills them as two groups. The joint account and the IRA are in one group, and the child's account is in another.\n- **Why it was never fixed:** both billing groups were last changed in 2021, before each agreement was signed. Every agreement was signed between October 2023 and November 2024, so its \"next billing cycle\" passed long ago. The custodian's quarterly fee debits show the accounts kept being charged separately through the quarter to 31 March 2026.\n- **The fee schedule applies per group:** `billing.json` charges \"per billing group,\" and the rate drops above $1,000,000. Billing the accounts apart therefore stops the household's assets from being combined to reach the lower rates, as the agreement intends. I did not work out how much each household was overcharged.\n\nSix other households (HH-3058, HH-3462, HH-8312, HH-8865, HH-9234, HH-9571) mention billing accounts \"together as one group\" only inside advisory agreements, not householding agreements. I left them out, and none of the households is unresolved.\n\n```json\n{\n  \"finding\": \"found\",\n  \"households\": [\n    {\n      \"household_id\": \"HH-0592\",\n      \"agreement_id\": \"AGR-0592-3\",\n      \"billing_group_ids\": [\"BG-0592-1\", \"BG-0592-2\"],\n      \"explanation\": \"The householding letter signed 2023-10-20 puts SYN-05920001, SYN-05920002 and SYN-05920003 in one billing group, but billing still splits them into BG-0592-1 (0001, 0002) and BG-0592-2 (0003), both last changed 2021-09-01.\"\n    },\n    {\n      \"household_id\": \"HH-0586\",\n      \"agreement_id\": \"AGR-0586-3\",\n      \"billing_group_ids\": [\"BG-0586-1\", \"BG-0586-2\"],\n      \"explanation\": \"The householding letter signed 2024-06-07 puts SYN-05860001, SYN-05860002 and SYN-05860003 in one billing group, but billing still splits them into BG-0586-1 (0001, 0002) and BG-0586-2 (0003), both last changed 2021-09-01.\"\n    },\n    {\n      \"household_id\": \"HH-0928\",\n      \"agreement_id\": \"AGR-0928-3\",\n      \"billing_group_ids\": [\"BG-0928-1\", \"BG-0928-2\"],\n      \"explanation\": \"The householding letter signed 2024-03-05 puts SYN-09280001, SYN-09280002 and SYN-09280003 in one billing group, but billing still splits them into BG-0928-1 (0001, 0002) and BG-0928-2 (0003), both last changed 2021-09-01.\"\n    },\n    {\n      \"household_id\": \"HH-4821\",\n      \"agreement_id\": \"AGR-4821-3\",\n      \"billing_group_ids\": [\"BG-4821-1\", \"BG-4821-2\"],\n      \"explanation\": \"The householding letter signed 2024-11-18 puts SYN-48210001, SYN-48210002 and SYN-48210003 in one billing group, but billing still splits them into BG-4821-1 (0001, 0002) and BG-4821-2 (0003), both last changed 2021-09-14.\"\n    }\n  ],\n  \"unresolved\": [],\n  \"figures\": [\n    {\"label\": \"AGR-0592-3 signed date\", \"value\": \"2023-10-20\", \"source\": \"households/HH-0592/crm/crm.json\"},\n    {\"label\": \"BG-0592-1 and BG-0592-2 last_changed\", \"value\": \"2021-09-01\", \"source\": \"households/HH-0592/portfolio/household.json\"},\n    {\"label\": \"HH-0592 billing groups covering the agreement's accounts\", \"value\": 2, \"source\": \"households/HH-0592/portfolio/household.json\", \"computed\": true},\n    {\"label\": \"AGR-0586-3 signed date\", \"value\": \"2024-06-07\", \"source\": \"households/HH-0586/crm/crm.json\"},\n    {\"label\": \"BG-0586-1 and BG-0586-2 last_changed\", \"value\": \"2021-09-01\", \"source\": \"households/HH-0586/portfolio/household.json\"},\n    {\"label\": \"HH-0586 billing groups covering the agreement's accounts\", \"value\": 2, \"source\": \"households/HH-0586/portfolio/household.json\", \"computed\": true},\n    {\"label\": \"AGR-0928-3 signed date\", \"value\": \"2024-03-05\", \"source\": \"households/HH-0928/crm/crm.json\"},\n    {\"label\": \"BG-0928-1 and BG-0928-2 last_changed\", \"value\": \"2021-09-01\", \"source\": \"households/HH-0928/portfolio/household.json\"},\n    {\"label\": \"HH-0928 billing groups covering the agreement's accounts\", \"value\": 2, \"source\": \"households/HH-0928/portfolio/household.json\", \"computed\": true},\n    {\"label\": \"AGR-4821-3 signed date\", \"value\": \"2024-11-18\", \"source\": \"households/HH-4821/crm/crm.json\"},\n    {\"label\": \"BG-4821-1 and BG-4821-2 last_changed\", \"value\": \"2021-09-14\", \"source\": \"households/HH-4821/portfolio/household.json\"},\n    {\"label\": \"HH-4821 billing groups covering the agreement's accounts\", \"value\": 2, \"source\": \"households/HH-4821/portfolio/household.json\", \"computed\": true},\n    {\"label\": \"FS-STD first-tier breakpoint (per billing group)\", \"value\": \"1000000\", \"source\": \"households/HH-4821/portfolio/billing.json\"}\n  ],\n  \"explanation\": \"Four households (HH-0592, HH-0586, HH-0928, HH-4821) each have a signed householding agreement saying their joint account, spouse's IRA and child's individual account are billed together as one group from the next billing cycle. As of 15 April 2026 the portfolio system still bills each of them as two groups last changed in 2021, before the agreements were signed. No other household has a householding agreement, so none is unresolved.\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": {
+      "breakdown": [
+        {
+          "detail": "every required field present",
+          "earned": 10,
+          "name": "output_parses",
+          "points": 10
+        },
+        {
+          "detail": "missed none (key finds HH-0586, HH-0592, HH-0928, HH-4821, leaves unresolved none)",
+          "earned": 35,
+          "name": "none_missed",
+          "points": 35
+        },
+        {
+          "detail": "wrongly named none (answer names HH-0586, HH-0592, HH-0928, HH-4821, unresolved none)",
+          "earned": 35,
+          "name": "none_wrongly_named",
+          "points": 35
+        },
+        {
+          "detail": "every household the key finds is named with its evidence",
+          "earned": 20,
+          "name": "evidence",
+          "points": 20
+        }
+      ],
+      "counts": {
+        "correct_unresolved": 0,
+        "false_alarm": 0,
+        "unnecessary_refusal": 0
+      },
+      "critical_fail": null,
+      "passed": true,
+      "score": 100
+    },
+    "grader_before": "ec252b54c58d88236860955db0167851f011ae49357a5772b74bd52bb3c8a02b",
+    "utc": "2026-11-19T14:05:58+00:00"
+  },
+  "run_id": "T-REC-05-basic-20261118T120955Z-0d4e",
+  "settings": {
+    "crm_tools": [],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 1
+  },
+  "started_utc": "2026-11-18T12:09:55+00:00",
+  "state": "mapped",
+  "task_id": "T-REC-05",
+  "token_use": {
+    "cache_creation_input_tokens": 42743,
+    "cache_read_input_tokens": 257738,
+    "input_tokens": 26,
+    "output_tokens": 5938
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping an advisor at a small independent advisory firm. This folder holds the records of every client household of the firm as they stood on 15 April 2026, one folder per household under households/<household ID>/, each with the custodian's files (custodian/), the firm's portfolio system (portfolio/) and its CRM (crm/).\n\nThe advisor asks: which households are billed in groups that a signed householding agreement contradicts?\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"found\" if one or more households are, \"none_found\" if none is, or \"unresolved\" if the files settle no household as found and leave some unresolved\n- \"households\": one entry per household that is, each as {\"household_id\": ..., \"agreement_id\": the householding agreement, \"billing_group_ids\": the billing groups that hold its accounts apart, \"explanation\": one sentence}, or [] if none\n- \"unresolved\": the households the files cannot settle, each as {\"household_id\": ..., \"explanation\": one sentence}, or [] if none\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed rather than read\n- \"explanation\": two or three sentences",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": null
+  },
+  "transcript": {
+    "events": 80,
+    "file": "attempt-1.jsonl"
+  }
+}

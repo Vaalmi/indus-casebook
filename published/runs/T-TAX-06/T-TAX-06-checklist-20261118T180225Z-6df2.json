@@ -1,0 +1,129 @@
+{
+  "arm": "checklist",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T18:05:30+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T18:02:26+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": null,
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "book",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T18:05:30+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": null,
+  "hashes": {
+    "answer": "e744eee619742399f5b39d53b8ff49d0dc2e74ae4890f78c6e82022ccccedcd6",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "81b01875655e303fd5ce4e19a657d4bb5397adb8b49d98efb2fe282a700997a6",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "5551543fec13c7119c68585b62dc05e30dff051b6b65e5368c08cf8cbbbd0d71",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "e5edd1ee0eed4f6abf0620f55f831f8accc173023c5c1795d6dab578277cff25"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "I found four households with a wash sale in 2025, and a fifth that the files can't settle.\n\n**Method.** I took every 2025 sale with a loss from each household's `custodian/realized_lots.csv`. For each one I looked for any purchase or RSU vest of the same security from 30 days before to 30 days after the sale. I counted only accounts owned by the seller or the seller's spouse, using `accounts.csv` and `portfolio/household.json`. There are no dividend reinvestments in the files. The disallowed amount is the loss times replacement shares divided by shares sold.\n\n**Wash sales found.** All four are sales from a joint taxable account, with the shares bought back in the spouse's IRA:\n\n| Household | Loss sale | Replacement | Days after sale | Loss | Disallowed |\n|---|---|---|---|---|---|\n| HH-0129 | T-0129-0035: 642 Wexcombe Mid Cap Fund, 2025-10-03 | T-0129-0037: 360 Wexcombe Mid Cap Fund, Jun Thorne's Roth IRA, 2025-10-15 | 12 | 31,896.36 | 17,885.81 |\n| HH-0363 | T-0363-0035: 3,192 Brackwater Dividend Equity Fund, 2025-10-21 | T-0363-0037: 1,340 Brackwater Dividend Equity Fund, Anika Nwachukwu's IRA, 2025-11-03 | 13 | 35,820.62 | 15,037.48 |\n| HH-0780 | T-0780-0022: 879 Larkspur Developed Markets Fund, 2025-09-04 | T-0780-0031: 390 Larkspur Developed Markets Fund, Nadia Zelinski's IRA, 2025-10-02 | 28 | 12,860.65 | 5,706.09 |\n| HH-9234 | T-9234-0035: 847 Wexcombe Mid Cap Fund, 2025-11-03 | T-9234-0037: 500 Wexcombe Mid Cap Fund, Ingrid Halvorsen's IRA, 2025-11-19 | 16 | 53,516.17 | 31,591.60 |\n\nThe total disallowed is $70,220.98. Because the replacement shares sit in IRAs, the disallowed loss is generally lost for good rather than added to the new shares' cost (Rev. Rul. 2008-5). Your tax preparer should confirm that.\n\n**Can't be settled: HH-3058.** On 2025-12-12 Priya Raghunathan sold 1,600 Bramwell Devices Group from her taxable stock-plan account (T-3058-0048). An RSU vest of 800 Bramwell Devices Group landed in the same account on 2025-11-20 (T-3058-0047), 22 days before the sale. The sold shares came from vests with no cost basis on file; the custodian shows $0.00, which isn't their real basis. Without the share price on the vest dates, the files can't show whether the sale was a loss.\n\n**Near misses (repurchase just outside 30 days):**\n- HH-9571: Wexcombe Mid Cap Fund bought back on day 31.\n- HH-0679: Ashvane Bank Group vest on day 31.\n- HH-0380: day 35.\n- HH-0981: day 37.\n- HH-0847: day 41.\n- HH-0420, HH-0514: RSU vests 41 to 55 days from the sale.\n\nThe other 2025 losses had no same-security purchase in the window. Most of them were Larkspur Core Bond Fund sales.\n\nI didn't do the general review items (cash reconciliation, fees, IPS allocation) because they don't bear on this question.\n\n```json\n{\n  \"finding\": \"found\",\n  \"households\": [\n    {\n      \"household_id\": \"HH-0129\",\n      \"sale_transaction_ids\": [\"T-0129-0035\"],\n      \"replacement_transaction_ids\": [\"T-0129-0037\"],\n      \"disallowed_loss\": 17885.81,\n      \"explanation\": \"642 Wexcombe Mid Cap Fund sold at a 31,896.36 loss in the joint taxable account on 2025-10-03 and 360 Wexcombe Mid Cap Fund bought 12 days later in spouse Jun Thorne's Roth IRA, disallowing 360/642 of the loss.\"\n    },\n    {\n      \"household_id\": \"HH-0363\",\n      \"sale_transaction_ids\": [\"T-0363-0035\"],\n      \"replacement_transaction_ids\": [\"T-0363-0037\"],\n      \"disallowed_loss\": 15037.48,\n      \"explanation\": \"3,192 Brackwater Dividend Equity Fund sold at a 35,820.62 loss in the joint taxable account on 2025-10-21 and 1,340 Brackwater Dividend Equity Fund bought 13 days later in spouse Anika Nwachukwu's traditional IRA, disallowing 1,340/3,192 of the loss.\"\n    },\n    {\n      \"household_id\": \"HH-0780\",\n      \"sale_transaction_ids\": [\"T-0780-0022\"],\n      \"replacement_transaction_ids\": [\"T-0780-0031\"],\n      \"disallowed_loss\": 5706.09,\n      \"explanation\": \"879 Larkspur Developed Markets Fund sold at a 12,860.65 loss in the joint taxable account on 2025-09-04 and 390 Larkspur Developed Markets Fund bought 28 days later in spouse Nadia Zelinski's traditional IRA, disallowing 390/879 of the loss.\"\n    },\n    {\n      \"household_id\": \"HH-9234\",\n      \"sale_transaction_ids\": [\"T-9234-0035\"],\n      \"replacement_transaction_ids\": [\"T-9234-0037\"],\n      \"disallowed_loss\": 31591.60,\n      \"explanation\": \"847 Wexcombe Mid Cap Fund sold at a 53,516.17 loss in the joint taxable account on 2025-11-03 and 500 Wexcombe Mid Cap Fund bought 16 days later in spouse Ingrid Halvorsen's traditional IRA, disallowing 500/847 of the loss.\"\n    }\n  ],\n  \"unresolved\": [\n    {\n      \"household_id\": \"HH-3058\",\n      \"explanation\": \"The 2025-12-12 sale of 1,600 Bramwell Devices Group (T-3058-0048) in a taxable account had an 800-share RSU vest 22 days earlier (T-3058-0047), but the sold lots carry no cost basis on file (0.00), so the files cannot show whether the sale was a loss.\"\n    }\n  ],\n  \"figures\": [\n    {\"label\": \"HH-0129 Wexcombe Mid Cap Fund loss on T-0129-0035\", \"value\": -31896.36, \"source\": \"households/HH-0129/custodian/realized_lots.csv\"},\n    {\"label\": \"HH-0129 Wexcombe Mid Cap Fund units sold 2025-10-03\", \"value\": 642, \"source\": \"households/HH-0129/custodian/transactions.csv\"},\n    {\"label\": \"HH-0129 Wexcombe Mid Cap Fund units bought 2025-10-15 in Roth IRA SYN-01290002 (T-0129-0037)\", \"value\": 360, \"source\": \"households/HH-0129/custodian/transactions.csv\"},\n    {\"label\": \"HH-0129 SYN-01290001 account type\", \"value\": \"joint_taxable\", \"source\": \"households/HH-0129/custodian/accounts.csv\"},\n    {\"label\": \"HH-0129 Jun Thorne relationship\", \"value\": \"spouse\", \"source\": \"households/HH-0129/portfolio/household.json\"},\n    {\"label\": \"HH-0129 disallowed loss\", \"value\": 17885.81, \"source\": \"households/HH-0129/custodian/realized_lots.csv\", \"computed\": true},\n    {\"label\": \"HH-0363 Brackwater Dividend Equity Fund loss on T-0363-0035\", \"value\": -35820.62, \"source\": \"households/HH-0363/custodian/realized_lots.csv\"},\n    {\"label\": \"HH-0363 Brackwater Dividend Equity Fund units sold 2025-10-21\", \"value\": 3192, \"source\": \"households/HH-0363/custodian/transactions.csv\"},\n    {\"label\": \"HH-0363 Brackwater Dividend Equity Fund units bought 2025-11-03 in IRA SYN-03630002 (T-0363-0037)\", \"value\": 1340, \"source\": \"households/HH-0363/custodian/transactions.csv\"},\n    {\"label\": \"HH-0363 SYN-03630001 account type\", \"value\": \"joint_taxable\", \"source\": \"households/HH-0363/custodian/accounts.csv\"},\n    {\"label\": \"HH-0363 Anika Nwachukwu relationship\", \"value\": \"spouse\", \"source\": \"households/HH-0363/portfolio/household.json\"},\n    {\"label\": \"HH-0363 disallowed loss\", \"value\": 15037.48, \"source\": \"households/HH-0363/custodian/realized_lots.csv\", \"computed\": true},\n    {\"label\": \"HH-0780 Larkspur Developed Markets Fund loss on T-0780-0022\", \"value\": -12860.65, \"source\": \"households/HH-0780/custodian/realized_lots.csv\"},\n    {\"label\": \"HH-0780 Larkspur Developed Markets Fund units sold 2025-09-04\", \"value\": 879, \"source\": \"households/HH-0780/custodian/transactions.csv\"},\n    {\"label\": \"HH-0780 Larkspur Developed Markets Fund units bought 2025-10-02 in IRA SYN-07800002 (T-0780-0031)\", \"value\": 390, \"source\": \"households/HH-0780/custodian/transactions.csv\"},\n    {\"label\": \"HH-0780 SYN-07800001 account type\", \"value\": \"joint_taxable\", \"source\": \"households/HH-0780/custodian/accounts.csv\"},\n    {\"label\": \"HH-0780 Nadia Zelinski relationship\", \"value\": \"spouse\", \"source\": \"households/HH-0780/portfolio/household.json\"},\n    {\"label\": \"HH-0780 disallowed loss\", \"value\": 5706.09, \"source\": \"households/HH-0780/custodian/realized_lots.csv\", \"computed\": true},\n    {\"label\": \"HH-9234 Wexcombe Mid Cap Fund loss on T-9234-0035\", \"value\": -53516.17, \"source\": \"households/HH-9234/custodian/realized_lots.csv\"},\n    {\"label\": \"HH-9234 Wexcombe Mid Cap Fund units sold 2025-11-03\", \"value\": 847, \"source\": \"households/HH-9234/custodian/transactions.csv\"},\n    {\"label\": \"HH-9234 Wexcombe Mid Cap Fund units bought 2025-11-19 in IRA SYN-92340002 (T-9234-0037)\", \"value\": 500, \"source\": \"households/HH-9234/custodian/transactions.csv\"},\n    {\"label\": \"HH-9234 SYN-92340001 account type\", \"value\": \"joint_taxable\", \"source\": \"households/HH-9234/custodian/accounts.csv\"},\n    {\"label\": \"HH-9234 Ingrid Halvorsen relationship\", \"value\": \"spouse\", \"source\": \"households/HH-9234/portfolio/household.json\"},\n    {\"label\": \"HH-9234 disallowed loss\", \"value\": 31591.60, \"source\": \"households/HH-9234/custodian/realized_lots.csv\", \"computed\": true},\n    {\"label\": \"Total disallowed loss across found households\", \"value\": 70220.98, \"source\": \"households/*/custodian/realized_lots.csv\", \"computed\": true},\n    {\"label\": \"HH-3058 Bramwell Devices Group units sold 2025-12-12 (T-3058-0048)\", \"value\": 1600, \"source\": \"households/HH-3058/custodian/transactions.csv\"},\n    {\"label\": \"HH-3058 recorded cost basis of sold Bramwell Devices Group lots\", \"value\": 0.00, \"source\": \"households/HH-3058/custodian/realized_lots.csv\"},\n    {\"label\": \"HH-3058 Bramwell Devices Group RSU vest 2025-11-20 (T-3058-0047) units\", \"value\": 800, \"source\": \"households/HH-3058/custodian/transactions.csv\"},\n    {\"label\": \"HH-3058 SYN-30580002 account type\", \"value\": \"individual_taxable\", \"source\": \"households/HH-3058/custodian/accounts.csv\"},\n    {\"label\": \"HH-9571 days from Wexcombe Mid Cap Fund loss sale 2025-11-03 to Wexcombe Mid Cap Fund buy 2025-12-04\", \"value\": 31, \"source\": \"households/HH-9571/custodian/transactions.csv\", \"computed\": true},\n    {\"label\": \"HH-0679 days from Ashvane Bank Group loss sale 2025-09-19 to Ashvane Bank Group vest 2025-10-20\", \"value\": 31, \"source\": \"households/HH-0679/custodian/transactions.csv\", \"computed\": true},\n    {\"label\": \"HH-0380 days from Wexcombe Mid Cap Fund loss sale 2025-10-30 to Wexcombe Mid Cap Fund buy 2025-12-04\", \"value\": 35, \"source\": \"households/HH-0380/custodian/transactions.csv\", \"computed\": true},\n    {\"label\": \"HH-0981 days from Larkspur Total Market Fund loss sale 2025-11-18 to Larkspur Total Market Fund buy 2025-12-25\", \"value\": 37, \"source\": \"households/HH-0981/custodian/transactions.csv\", \"computed\": true},\n    {\"label\": \"HH-0847 days from Wexcombe Mid Cap Fund loss sale 2025-11-13 to Wexcombe Mid Cap Fund buy 2025-12-24\", \"value\": 41, \"source\": \"households/HH-0847/custodian/transactions.csv\", \"computed\": true}\n  ],\n  \"explanation\": \"Four households sold a security at a loss in a joint taxable account in 2025 and bought it back within 30 days in a spouse's IRA, disallowing 70,220.98 of losses in total, pro rata to the shares replaced. HH-3058 is unresolved because its December Bramwell Devices Group sale had an RSU vest 22 days earlier but the sold lots have no cost basis on file, so the files cannot show whether it was a loss. All other 2025 losses had no same-security acquisition by the seller or spouse within the window, including several repurchases just outside 30 days.\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": null,
+    "grader_before": "783bf74b82e962b076389b2a6862eeb96ed9aaa6bab166077d24326b996901ab",
+    "utc": "2026-11-19T14:07:36+00:00"
+  },
+  "run_id": "T-TAX-06-checklist-20261118T180225Z-6df2",
+  "settings": {
+    "crm_tools": [],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "skills_loaded": [
+    "indus-checklist:advisor-checklist"
+  ],
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 2
+  },
+  "started_utc": "2026-11-18T18:02:26+00:00",
+  "state": "mapped",
+  "task_id": "T-TAX-06",
+  "token_use": {
+    "cache_creation_input_tokens": 95725,
+    "cache_read_input_tokens": 932506,
+    "input_tokens": 40,
+    "output_tokens": 17910
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping an advisor at a small independent advisory firm. This folder holds the records of every client household of the firm as they stood on 15 April 2026, one folder per household under households/<household ID>/, each with the custodian's files (custodian/) and the firm's portfolio system (portfolio/).\n\nThe advisor asks: which households sold a security at a loss in a taxable account during 2025 and acquired the same security within 30 days before or after the sale, in an account of the seller or the seller's spouse, so that some of the loss is a wash sale?\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"found\" if one or more households did, \"none_found\" if none did, or \"unresolved\" if the files settle no household as found and leave some unresolved\n- \"households\": one entry per household that did, each as {\"household_id\": ..., \"sale_transaction_ids\": the loss sales affected, \"replacement_transaction_ids\": the acquisitions that replace them, \"disallowed_loss\": the loss disallowed, \"explanation\": one sentence}, or [] if none\n- \"unresolved\": the households the files cannot settle, each as {\"household_id\": ..., \"explanation\": one sentence}, or [] if none\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed rather than read\n- \"explanation\": two or three sentences",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40",
+      "--plugin-dir",
+      "checklist/indus-checklist"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": "indus-checklist"
+  },
+  "transcript": {
+    "events": 178,
+    "file": "attempt-1.jsonl"
+  },
+  "verdict_held": true
+}

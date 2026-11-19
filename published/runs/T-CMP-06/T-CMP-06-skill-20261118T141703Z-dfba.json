@@ -1,0 +1,204 @@
+{
+  "arm": "skill",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T14:21:31+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T14:17:05+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": null,
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "book",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T14:21:32+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": {
+    "breakdown": [
+      {
+        "detail": "every required field present",
+        "earned": 10,
+        "name": "output_parses",
+        "points": 10
+      },
+      {
+        "detail": "missed none (key finds none, leaves unresolved none)",
+        "earned": 35,
+        "name": "none_missed",
+        "points": 35
+      },
+      {
+        "detail": "wrongly named none (answer names none, unresolved none)",
+        "earned": 35,
+        "name": "none_wrongly_named",
+        "points": 35
+      },
+      {
+        "detail": "every household the key finds is named with its evidence",
+        "earned": 20,
+        "name": "evidence",
+        "points": 20
+      }
+    ],
+    "counts": {
+      "correct_unresolved": 0,
+      "false_alarm": 0,
+      "unnecessary_refusal": 0
+    },
+    "critical_fail": null,
+    "passed": true,
+    "score": 100
+  },
+  "hashes": {
+    "answer": "259258f76ea672fdc00605cb15f5d619c32c95e0f32e4416061de198f41ab283",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "81b01875655e303fd5ce4e19a657d4bb5397adb8b49d98efb2fe282a700997a6",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "574eb60c2fe4679693960b60f74b02f7770e16a1f364b31ded230993d216047b",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "c1a060abd69ee907beb7ff4e28155d299336ed8a6d98324851662088bc38cc05"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "I found no household where two sources state an identifier, beneficiary or ownership fact differently. One limit: I read only about 30 of the roughly 520 PDF documents on file, so this rests on the structured records plus a targeted sample of documents.\n\n**What was compared, for all 92 households:**\n- **Names and relationships:** the portfolio system's household members match the CRM contacts, the custodian's owner names and every beneficiary row that carries a person ID.\n- **Taxpayer IDs:** each one appears once in the CRM. Every tax form I opened shows the same TIN as the CRM.\n- **Ownership:** for each account, the owners in the portfolio system match the custodian's owner list.\n- **Dates of death:**\n  - The ten deaths of a joint owner (HH-0168, 0193, 0265, 0611, 0642, 0737, 0796, 0829, 8312, 8865) carry the same date in the portfolio system and the CRM.\n  - For the ten inherited IRAs, the decedent's birth and death dates match across the custodian file, the CRM's death-certificate note and the Q1 statement.\n- **Beneficiaries:** each change the CRM records as confirmed (HH-0642, 0737, 0796, 0829, 8865) appears at the custodian with the same names, shares and date.\n- **Review date:** no record anywhere is dated after 15 April 2026.\n\n**What a reviewer may still want to look at.** These records are out of date in every source alike, so under the policy they are not disagreements:\n1. **Retirement accounts still naming a deceased spouse as primary beneficiary.**\n   - In HH-0193, 0265, 0611 and 8312 the CRM shows a change form was sent in 2025 and not returned.\n   - In HH-0168 (SYN-01680002, SYN-01680003, Jasper Zelinski, died 2025-07-29) the CRM has no beneficiary-form entry at all.\n2. **Joint accounts still registered to both spouses after one died.** The custodian file and the portfolio system both still list the deceased owner in all ten households. The five Q1 statements I read (HH-0168, 0193, 0265, 0737, 8312) do too.\n3. **Documents not read.** A reviewer who needs certainty on the documents should check the remaining tax forms and statements against the CRM tax IDs and the custodian registrations.\n\n```json\n{\n  \"finding\": \"none_found\",\n  \"households\": [],\n  \"unresolved\": [],\n  \"issues_for_reviewer\": [\n    {\n      \"issue\": \"Primary beneficiary is a deceased spouse, with no beneficiary form recorded\",\n      \"records\": [\"SYN-01680002\", \"SYN-01680003\", \"CA-0168-01\", \"CA-0168-02\"],\n      \"what_the_records_show\": \"The custodian names Jasper Zelinski (P-0168-1) as 100% primary beneficiary of both of Aryan Zelinski's IRAs; the portfolio system and the CRM record Jasper's death on 2025-07-29. The CRM shows the death notice and a custodian request for the joint account but no beneficiary change form sent or received.\",\n      \"why_the_reviewer_should_look\": \"Every source agrees, so the policy does not hold it for review, but the designation names a person every source records as deceased and no follow-up is on file.\"\n    },\n    {\n      \"issue\": \"Primary beneficiary is a deceased spouse; change form sent but not returned\",\n      \"records\": [\"SYN-01930002\", \"SYN-01930003\", \"CA-0193-03\", \"SYN-02650002\", \"CA-0265-03\", \"SYN-06110002\", \"CA-0611-03\", \"SYN-83120002\", \"CA-8312-03\"],\n      \"what_the_records_show\": \"The custodian still names the deceased spouse (Omar Wainwright, Signe Bakshi, Chidi Vinterberg, Rafael Mendoza) as 100% primary beneficiary. The CRM says the same and records a change form sent between 2025-07-01 and 2025-10-01, not yet returned.\",\n      \"why_the_reviewer_should_look\": \"This is out of date in every source alike rather than a disagreement, and the forms were still outstanding on 15 April 2026.\"\n    },\n    {\n      \"issue\": \"Joint accounts still registered to a deceased joint owner\",\n      \"records\": [\"SYN-01680001\", \"SYN-01930001\", \"SYN-02650001\", \"SYN-06110001\", \"SYN-06420001\", \"SYN-07370001\", \"SYN-07960001\", \"SYN-08290001\", \"SYN-83120001\", \"SYN-88650001\", \"D-SYN-01680001-2026Q1\", \"D-SYN-01930001-2026Q1\", \"D-SYN-02650001-2026Q1\", \"D-SYN-07370001-2026Q1\", \"D-SYN-83120001-2026Q1\"],\n      \"what_the_records_show\": \"For all ten accounts, the custodian owner list and the portfolio system's legal ownership both still include the joint owner who died in 2025. The five Q1 2026 statements read list both owners as well.\",\n      \"why_the_reviewer_should_look\": \"The sources agree with each other, but all of them describe ownership as it was before the death.\"\n    },\n    {\n      \"issue\": \"Documents on file only partly read\",\n      \"records\": [\"D-SYN-01680001-1099-2025\", \"D-P-0168-2-SSA1099-1-2025\", \"D-SYN-01200001-1099-2025\"],\n      \"what_the_records_show\": \"The PDFs are compressed and cannot be searched as text, so about 30 of roughly 520 were read one at a time. Every one read matched the CRM tax ID and the custodian registration.\",\n      \"why_the_reviewer_should_look\": \"A TIN or name difference in an unread tax form or statement would not have been caught.\"\n    }\n  ],\n  \"figures\": [\n    {\"label\": \"Households reviewed\", \"value\": 92, \"source\": \"households/*/portfolio/household.json\", \"computed\": true},\n    {\"label\": \"Date of death, Jasper Zelinski (P-0168-1)\", \"value\": \"2025-07-29\", \"source\": \"households/HH-0168/portfolio/household.json\"},\n    {\"label\": \"Date of death, Jasper Zelinski, per CRM\", \"value\": \"2025-07-29\", \"source\": \"households/HH-0168/crm/crm.json\"},\n    {\"label\": \"SYN-01680002 primary beneficiary share, Jasper Zelinski\", \"value\": \"100\", \"source\": \"households/HH-0168/custodian/beneficiaries.csv\"},\n    {\"label\": \"Aryan Zelinski tax ID, CRM\", \"value\": \"000-01-6802\", \"source\": \"households/HH-0168/crm/crm.json\"},\n    {\"label\": \"Aryan Zelinski TIN on 1099-R\", \"value\": \"000-01-6802\", \"source\": \"households/HH-0168/documents/SYN-01680002-1099R-7-2025.pdf\"},\n    {\"label\": \"Date of death, Omar Wainwright\", \"value\": \"2025-06-13\", \"source\": \"households/HH-0193/portfolio/household.json\"},\n    {\"label\": \"Date of death, Signe Bakshi\", \"value\": \"2025-08-18\", \"source\": \"households/HH-0265/portfolio/household.json\"},\n    {\"label\": \"Date of death, Chidi Vinterberg\", \"value\": \"2025-09-11\", \"source\": \"households/HH-0611/portfolio/household.json\"},\n    {\"label\": \"Date of death, Rafael Mendoza\", \"value\": \"2025-06-18\", \"source\": \"households/HH-8312/portfolio/household.json\"},\n    {\"label\": \"Beneficiary form sent date, HH-0193\", \"value\": \"2025-07-01\", \"source\": \"households/HH-0193/crm/crm.json\"},\n    {\"label\": \"Beneficiary form sent date, HH-0611\", \"value\": \"2025-10-01\", \"source\": \"households/HH-0611/crm/crm.json\"},\n    {\"label\": \"Beneficiary change confirmed date, SYN-07960002\", \"value\": \"2025-12-09\", \"source\": \"households/HH-0796/custodian/beneficiaries.csv\"},\n    {\"label\": \"Decedent date of death, SYN-03300002\", \"value\": \"2022-11-06\", \"source\": \"households/HH-0330/custodian/accounts.csv\"},\n    {\"label\": \"Decedent date of death, SYN-03300002, per statement\", \"value\": \"2022-11-06\", \"source\": \"households/HH-0330/documents/statement-SYN-03300002-2026Q1.pdf\"}\n  ],\n  \"explanation\": \"Across all 92 households, the portfolio system, the CRM and the custodian files state the same names, relationships, taxpayer IDs, owners, beneficiaries and dates of death, and every document read matched them. The remaining items, beneficiary designations and joint registrations still naming a deceased person, are out of date in every source alike, which the policy says is not a disagreement but a reviewer may note. Only about 30 of roughly 520 compressed PDFs were read one by one, so differences in the unread documents cannot be ruled out.\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": {
+      "breakdown": [
+        {
+          "detail": "every required field present",
+          "earned": 10,
+          "name": "output_parses",
+          "points": 10
+        },
+        {
+          "detail": "missed none (key finds none, leaves unresolved none)",
+          "earned": 35,
+          "name": "none_missed",
+          "points": 35
+        },
+        {
+          "detail": "wrongly named none (answer names none, unresolved none)",
+          "earned": 35,
+          "name": "none_wrongly_named",
+          "points": 35
+        },
+        {
+          "detail": "every household the key finds is named with its evidence",
+          "earned": 20,
+          "name": "evidence",
+          "points": 20
+        }
+      ],
+      "counts": {
+        "correct_unresolved": 0,
+        "false_alarm": 0,
+        "unnecessary_refusal": 0
+      },
+      "critical_fail": "fabricated figure: Households reviewed = 92 (cited households/*/portfolio/household.json)",
+      "passed": false,
+      "score": 0
+    },
+    "grader_before": "ecfd38e0c8442eb5f45dc70a141e7b1787f95eec576df90f47bf34d58db1ca51",
+    "utc": "2026-11-19T14:05:42+00:00"
+  },
+  "retries": [
+    {
+      "failure_reason": "CLI error (exit code 1): ",
+      "run_id": "T-CMP-06-skill-20261118T093928Z-bd88"
+    }
+  ],
+  "run_id": "T-CMP-06-skill-20261118T141703Z-dfba",
+  "settings": {
+    "crm_tools": [],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "skills_loaded": [
+    "indus-advisor:compliance-review"
+  ],
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 1
+  },
+  "started_utc": "2026-11-18T14:17:04+00:00",
+  "state": "mapped",
+  "task_id": "T-CMP-06",
+  "token_use": {
+    "cache_creation_input_tokens": 248239,
+    "cache_read_input_tokens": 3663048,
+    "input_tokens": 82,
+    "output_tokens": 21353
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping the compliance function of a small independent advisory firm. The firm is an SEC-registered investment adviser acting as a fiduciary; not a broker-dealer, law firm or CPA firm. Your answer goes to the firm's chief compliance officer as an internal compliance memo: raise what a reviewer should look at, from the records, and draw no legal conclusion.\n\nThe firm's policy: \"A fact about who owns an account, who its beneficiaries are, or who a person is (name, relationship, date of death, taxpayer ID) must read the same in every record that states it: the custodian's, the portfolio system's, the CRM's and the documents on file. Where two records state it differently, the record is held for review. A record that is out of date in every source alike is not a disagreement, though a reviewer may note it.\"\n\nThis folder holds the records of every client household of the firm as they stood on 15 April 2026, one folder per household under households/<household ID>/, each with the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the documents on file (documents/).\n\nThe chief compliance officer asks: which households' records hold an identifier, beneficiary or ownership fact that two sources state differently?\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"found\" if one or more households do, \"none_found\" if none does, or \"unresolved\" if the files settle no household as found and leave some unresolved\n- \"households\": one entry per household that does, each as {\"household_id\": ..., \"records\": the account or person IDs whose facts disagree, \"explanation\": one sentence}, or [] if none\n- \"unresolved\": the households the files cannot settle, each as {\"household_id\": ..., \"explanation\": one sentence}, or [] if none\n- \"issues_for_reviewer\": one entry per issue a reviewer should look at, each as {\"issue\": a short title, \"records\": the IDs of the records it rests on (account, security, lot, transaction, CRM activity or document IDs), \"what_the_records_show\": one or two sentences, \"why_the_reviewer_should_look\": one sentence}, or [] if none\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed rather than read\n- \"explanation\": two or three sentences",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40",
+      "--plugin-dir",
+      "skills/indus-advisor"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": "indus-advisor"
+  },
+  "transcript": {
+    "events": 275,
+    "file": "attempt-1.jsonl"
+  }
+}

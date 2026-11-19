@@ -1,0 +1,193 @@
+{
+  "arm": "basic",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T11:59:26+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T11:58:40+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": null,
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "HH-7350",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T11:59:26+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": {
+    "breakdown": [
+      {
+        "detail": "every required field present",
+        "earned": 10,
+        "name": "output_parses",
+        "points": 10
+      },
+      {
+        "detail": "answer no_fee_error, key no_fee_error",
+        "earned": 40,
+        "name": "finding",
+        "points": 40
+      },
+      {
+        "detail": "answer 0.00, needs 0 or null (key 0.00)",
+        "earned": 30,
+        "name": "amount",
+        "points": 30
+      },
+      {
+        "detail": "debited 4297.15 vs 4297.15, correct 4297.15 vs 4297.15",
+        "earned": 20,
+        "name": "fees",
+        "points": 20
+      }
+    ],
+    "counts": {
+      "correct_unresolved": 0,
+      "false_alarm": 0,
+      "unnecessary_refusal": 0
+    },
+    "critical_fail": null,
+    "passed": true,
+    "score": 100
+  },
+  "hashes": {
+    "answer": "9ba373ecf337ac326cf721ab23c0fdca30b3d3dd06f84021bcb7795c0929fc5b",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "81b01875655e303fd5ce4e19a657d4bb5397adb8b49d98efb2fe282a700997a6",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "43e1819cf4b71b15cf5eee12fbdfe83c74506c5edefafaa90717e47d24169ad4",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "3dd895f61b7ddbe1bbca504f01f6a2318b771b8b22902a446c3ccbd5d7c38c2a"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "I've checked the quarter-end values against the fee schedule. **There is no fee error.** The 2 April 2026 debits total **$4,297.15**, and that is what the agreements and schedule call for.\n\n**How the accounts are billed**\n- **Agreement AGR-7350-1** covers the joint account (SYN-73500001) and Kenji's IRA (SYN-73500002). Both are on the standard fee schedule, so they are billed together as group BG-7350-1.\n- **Agreement AGR-7350-2** covers Aiko's account (SYN-73500003). It says that account is \"billed on its own\" and that Aiko \"has not agreed to household billing\", so it is a separate group, BG-7350-2.\n- The groups in `portfolio/household.json` match the agreements. The October 2025 annual review was with Maeve and Kenji only and changed nothing, so Aiko's account was correctly kept out of the household total.\n\n**The fee schedule (FS-STD)**\nFees are charged quarterly, after the quarter ends, on the 31 March value of positions plus cash in each group. The annual rates are 1.00% on the first $1M, 0.80% from $1M to $2M, and 0.60% above $2M.\n\n**Quarter-end values**\nThe custodian's position and cash records match the Q1 statements to the cent:\n\n| Account | Positions | Cash | Total |\n|---|---|---|---|\n| SYN-73500001 | 798,542.17 | 24,830.78 | 823,372.95 |\n| SYN-73500002 | 398,482.40 | 5,207.05 | 403,689.45 |\n| SYN-73500003 | 526,430.10 | 10,780.26 | 537,210.36 |\n\n**Fee calculation**\n\n| Group | Value | Annual fee | Quarterly fee | Debited |\n|---|---|---|---|---|\n| BG-7350-1 | 1,227,062.40 | 10,000 + 227,062.40 \u00d7 0.8% = 11,816.50 | **2,954.12** | 1,982.25 + 971.87 = **2,954.12** |\n| BG-7350-2 | 537,210.36 | 537,210.36 \u00d7 1.0% = 5,372.10 | **1,343.03** | **1,343.03** |\n\nSplitting the joint group's fee between its two accounts in proportion to their values gives exactly the two amounts debited ($1,982.25 and $971.87).\n\n```json\n{\n  \"finding\": \"no_fee_error\",\n  \"debited_fee\": 4297.15,\n  \"correct_fee\": 4297.15,\n  \"amount_misbilled\": 0.00,\n  \"figures\": [\n    {\"label\": \"Fee debited 2026-04-02, SYN-73500001\", \"value\": 1982.25, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"Fee debited 2026-04-02, SYN-73500002\", \"value\": 971.87, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"Fee debited 2026-04-02, SYN-73500003\", \"value\": 1343.03, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"Total fee debited 2026-04-02\", \"value\": 4297.15, \"source\": \"custodian/transactions.csv\", \"computed\": true},\n    {\"label\": \"SYN-73500001 Larkspur Total Market Fund market value 2026-03-31\", \"value\": 306140.25, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"SYN-73500001 Larkspur World ex-US Fund market value 2026-03-31\", \"value\": 129701.04, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"SYN-73500001 Larkspur Core Bond Fund market value 2026-03-31\", \"value\": 213282.60, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"SYN-73500001 Orrin Software Group market value 2026-03-31\", \"value\": 149418.28, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"SYN-73500001 cash 2026-03-31\", \"value\": 24830.78, \"source\": \"custodian/cash.csv\"},\n    {\"label\": \"SYN-73500001 total value 2026-03-31\", \"value\": 823372.95, \"source\": \"documents/statement-SYN-73500001-2026Q1.pdf\"},\n    {\"label\": \"SYN-73500002 Larkspur Total Market Fund market value 2026-03-31\", \"value\": 203908.80, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"SYN-73500002 Larkspur Core Bond Fund market value 2026-03-31\", \"value\": 194573.60, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"SYN-73500002 cash 2026-03-31\", \"value\": 5207.05, \"source\": \"custodian/cash.csv\"},\n    {\"label\": \"SYN-73500002 total value 2026-03-31\", \"value\": 403689.45, \"source\": \"documents/statement-SYN-73500002-2026Q1.pdf\"},\n    {\"label\": \"SYN-73500003 Larkspur Total Market Fund market value 2026-03-31\", \"value\": 250453.20, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"SYN-73500003 Larkspur Core Bond Fund market value 2026-03-31\", \"value\": 151542.90, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"SYN-73500003 Halvern Health Holdings market value 2026-03-31\", \"value\": 124434.00, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"SYN-73500003 cash 2026-03-31\", \"value\": 10780.26, \"source\": \"custodian/cash.csv\"},\n    {\"label\": \"SYN-73500003 total value 2026-03-31\", \"value\": 537210.36, \"source\": \"documents/statement-SYN-73500003-2026Q1.pdf\"},\n    {\"label\": \"FS-STD tier 1 annual rate (up to 1,000,000)\", \"value\": 0.0100, \"source\": \"portfolio/billing.json\"},\n    {\"label\": \"FS-STD tier 2 annual rate (1,000,000 to 2,000,000)\", \"value\": 0.0080, \"source\": \"portfolio/billing.json\"},\n    {\"label\": \"FS-STD tier 3 annual rate (above 2,000,000)\", \"value\": 0.0060, \"source\": \"portfolio/billing.json\"},\n    {\"label\": \"BG-7350-1 (SYN-73500001 + SYN-73500002) billable value 2026-03-31\", \"value\": 1227062.40, \"source\": \"portfolio/household.json\", \"computed\": true},\n    {\"label\": \"BG-7350-1 annual fee\", \"value\": 11816.50, \"source\": \"portfolio/billing.json\", \"computed\": true},\n    {\"label\": \"BG-7350-1 quarterly fee\", \"value\": 2954.12, \"source\": \"portfolio/billing.json\", \"computed\": true},\n    {\"label\": \"BG-7350-2 (SYN-73500003) billable value 2026-03-31\", \"value\": 537210.36, \"source\": \"portfolio/household.json\", \"computed\": true},\n    {\"label\": \"BG-7350-2 quarterly fee\", \"value\": 1343.03, \"source\": \"portfolio/billing.json\", \"computed\": true},\n    {\"label\": \"Correct total quarterly fee\", \"value\": 4297.15, \"source\": \"portfolio/billing.json\", \"computed\": true}\n  ],\n  \"explanation\": \"Agreement AGR-7350-1 bills the joint account and Kenji's IRA together, while AGR-7350-2 bills Aiko's account on its own because she has not agreed to household billing; the billing groups in the portfolio system match this. Applying the FS-STD tiers to the 31 March 2026 values of positions plus cash gives $2,954.12 for the joint group ($1,227,062.40 of assets) and $1,343.03 for Aiko ($537,210.36). Both match the 2 April debits exactly, for a total of $4,297.15.\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": {
+      "breakdown": [
+        {
+          "detail": "every required field present",
+          "earned": 10,
+          "name": "output_parses",
+          "points": 10
+        },
+        {
+          "detail": "answer no_fee_error, key no_fee_error",
+          "earned": 40,
+          "name": "finding",
+          "points": 40
+        },
+        {
+          "detail": "answer 0.00, needs 0 or null (key 0.00)",
+          "earned": 30,
+          "name": "amount",
+          "points": 30
+        },
+        {
+          "detail": "debited 4297.15 vs 4297.15, correct 4297.15 vs 4297.15",
+          "earned": 20,
+          "name": "fees",
+          "points": 20
+        }
+      ],
+      "counts": {
+        "correct_unresolved": 0,
+        "false_alarm": 0,
+        "unnecessary_refusal": 0
+      },
+      "critical_fail": null,
+      "passed": true,
+      "score": 100
+    },
+    "grader_before": "8bb16f88c2b4d9b0ddd292e31d4a9f219ef14121f658734fc779ebb0ae2ea1f8",
+    "utc": "2026-11-19T14:05:56+00:00"
+  },
+  "run_id": "T-REC-02-basic-20261118T115840Z-8342",
+  "settings": {
+    "crm_tools": [],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 1
+  },
+  "started_utc": "2026-11-18T11:58:40+00:00",
+  "state": "mapped",
+  "task_id": "T-REC-02",
+  "token_use": {
+    "cache_creation_input_tokens": 27693,
+    "cache_read_input_tokens": 86952,
+    "input_tokens": 12,
+    "output_tokens": 5040
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping an advisor at a small independent advisory firm. This folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the statements on file (documents/).\n\nThe advisor asks: were the advisory fees debited on 2 April 2026, for the quarter ended 31 March 2026, the right amount under this household's agreements and fee schedule?\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"fee_error\", \"no_fee_error\" or \"unresolved\"\n- \"debited_fee\": the total fee debited on 2 April 2026 across the household's accounts\n- \"correct_fee\": the total fee the agreements and the schedule call for, or null if unresolved\n- \"amount_misbilled\": debited_fee minus correct_fee, or null if unresolved\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed rather than read\n- \"explanation\": two or three sentences",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": null
+  },
+  "transcript": {
+    "events": 42,
+    "file": "attempt-1.jsonl"
+  }
+}

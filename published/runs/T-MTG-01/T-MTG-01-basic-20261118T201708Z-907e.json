@@ -1,0 +1,208 @@
+{
+  "arm": "basic",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T20:18:53+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T20:17:09+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": {
+    "households": {
+      "HH-1204": {
+        "added": [
+          {
+            "after": {
+              "date": "2026-04-15",
+              "note_id": "SB-1204-01",
+              "text": "2025 review prep: tax treatment of Luka's 2025 backdoor Roth conversion. Luka made a $7,000.00 nondeductible contribution to traditional IRA SYN-12040003 on 2025-02-10 and converted $7,000.00 to Roth IRA SYN-12040004 on 2025-02-13. The pro-rata rule applies because his rollover IRA SYN-12040002 (kept as it was under the 2024-12-09 plan) was still a traditional IRA on 31 Dec 2025, valued at $187,544.92 (Larkspur Core Bond Fund $42,871.51 + Fernhollow Large Cap Index Fund $142,362.18 + cash $2,311.23; SYN-12040003 was $0.00). Form 8606 figures: line 2 prior basis $0.00 (tax profile at 2024-12-31); line 3/5 basis $7,000.00; line 6 year-end value $187,544.92; line 8 conversion $7,000.00; line 9 $194,544.92; line 10 ratio 0.035981 (7,000 / 194,544.92); line 11 nontaxable part $251.87; line 18 taxable part $6,748.13; line 14 basis carried to 2026 $6,748.13 (it now sits with the rollover IRA). Rounding line 10 to 0.036 instead gives $252 nontaxable / $6,748 taxable / $6,748 basis. The 1099-R for SYN-12040003 shows $7,000.00 in box 2a with \"taxable amount not determined\" ticked, so the preparer has to file Form 8606 to get the $251.87 treated as nontaxable; otherwise the whole $7,000 would be reported as income. Conversions can't be recharacterized, so the 2025 result is final. The 2025 return is due today (2026-04-15), so the preparer needs these figures now or should file an extension. Firm decisions: send these figures to Luka and Funmilayo for their preparer; do not start a 2026 backdoor conversion until we've looked at moving SYN-12040002 out of IRA status (for example, a roll-in to Luka's employer plan, if it accepts one) before 31 Dec 2026. The firm doesn't prepare returns, and this is not tax advice."
+            },
+            "collection": "notes",
+            "record_id": "SB-1204-01"
+          },
+          {
+            "after": {
+              "activity_id": "SB-1204-02",
+              "date": "2026-04-15",
+              "kind": "task",
+              "sent_to_client": false,
+              "summary": "Advisor: send Luka and Funmilayo the message about the 2025 backdoor Roth conversion, with the Form 8606 figures for their preparer: $7,000.00 converted, $6,748.13 taxable, $251.87 nontaxable, $6,748.13 basis carried to 2026, and $187,544.92 as the 31 Dec 2025 value of SYN-12040002. Today is the filing deadline."
+            },
+            "collection": "activities",
+            "record_id": "SB-1204-02"
+          },
+          {
+            "after": {
+              "activity_id": "SB-1204-03",
+              "date": "2026-04-15",
+              "kind": "task",
+              "sent_to_client": false,
+              "summary": "Clients' tax preparer: file Form 8606 for Luka with the 2025 return, which is due 2026-04-15 (file an extension if it can't be done in time). Report the 1099-R from SYN-12040003 ($7,000.00, box 2a not determined) as $6,748.13 taxable. Follow up with the clients to confirm it was filed."
+            },
+            "collection": "activities",
+            "record_id": "SB-1204-03"
+          },
+          {
+            "after": {
+              "activity_id": "SB-1204-04",
+              "date": "2026-04-15",
+              "kind": "task",
+              "sent_to_client": false,
+              "summary": "Confirm with Luka and his preparer that he had no traditional IRA basis before 2025 (no earlier Forms 8606, and no after-tax money in rollover IRA SYN-12040002). The firm's tax profile shows $0.00 at 2024-12-31. If there was basis, the 2025 figures change."
+            },
+            "collection": "activities",
+            "record_id": "SB-1204-04"
+          },
+          {
+            "after": {
+              "activity_id": "SB-1204-05",
+              "date": "2026-04-15",
+              "kind": "task",
+              "sent_to_client": false,
+              "summary": "Advisor: before any 2026 backdoor Roth contribution, review with Luka whether Harrowgate Freight Systems' plan accepts a roll-in of rollover IRA SYN-12040002, so no traditional IRA balance is left at 31 Dec 2026. Include the $6,748.13 basis carried forward in that analysis."
+            },
+            "collection": "activities",
+            "record_id": "SB-1204-05"
+          },
+          {
+            "after": {
+              "activity_id": "SB-1204-06",
+              "date": "2026-04-15",
+              "kind": "task",
+              "sent_to_client": false,
+              "summary": "Operations: update Luka's (P-1204-2) traditional IRA basis in the portfolio tax profile to $6,748.13 at 2025-12-31 once the 2025 Form 8606 is filed. The profile currently shows $0.00 at 2024-12-31."
+            },
+            "collection": "activities",
+            "record_id": "SB-1204-06"
+          }
+        ],
+        "changed": [],
+        "removed": []
+      }
+    }
+  },
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "HH-1204",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T20:18:53+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": null,
+  "hashes": {
+    "answer": "60176ab5456b3ae2563feaa31a03a9022872edb6465a0ad80f107d4f6b497d55",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "491bf142a9b8b5eaf738aaecd97652876f3902279c46aa486140057c953b53d9",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "09f1ed70747e6692842fd48da59a44222e949bc891a2958e4d106b44cc120d43",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "27223ffa406eb0efe3f124635d05d55346c25b06be858f1edc0b0def7e0324a1"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "Of Luka's $7,000.00 backdoor Roth conversion in 2025, **$6,748.13 is taxable income for 2025** (Form 8606 line 18). Only $251.87 comes out tax-free. The other $6,748.13 of his basis carries into 2026 (line 14).\n\n**Why:** the pro-rata rule. For this rule the IRS counts all of Luka's traditional IRAs together, valued at 31 December 2025. The new IRA (SYN-12040003) was empty by then, but his rollover IRA (SYN-12040002) still held $187,544.92 of pre-tax money. That is Larkspur Core Bond Fund $42,871.51, Fernhollow Large Cap Index Fund $142,362.18 and cash $2,311.23. So the conversion counts as coming from a mix of his $7,000 of after-tax money and that pre-tax balance, not from the after-tax money alone:\n\n| Form 8606 line | What it is | Amount |\n|---|---|---|\n| 2 | Basis from earlier years (tax profile at 2024-12-31) | $0.00 |\n| 1, 3, 5 | 2025 nondeductible contribution (2025-02-10) | $7,000.00 |\n| 6 | Traditional IRA value at 31 Dec 2025 | $187,544.92 |\n| 8 | Amount converted (2025-02-13) | $7,000.00 |\n| 9 | Line 6 + line 8 | $194,544.92 |\n| 10 | Line 5 \u00f7 line 9 | 0.035981 |\n| 11 / 13 | Tax-free part of the conversion | $251.87 |\n| **18** | **Taxable part of the conversion** | **$6,748.13** |\n| **14** | **Basis carried to 2026** | **$6,748.13** |\n\n- **Rounding:** if the preparer rounds line 10 to 0.036, the figures become $252 tax-free and $6,748 taxable and carried.\n- **The 1099-R:** it shows the full $7,000 in box 2a, with \"taxable amount not determined\" ticked. Without a Form 8606, all $7,000 would be reported as income.\n- **No undo:** conversions can no longer be reversed, so the 2025 result is final.\n- **The cause:** the December 2024 plan left the rollover IRA as it was, and that is what triggered the rule. Nothing in the files suggests anyone raised this at the time.\n- **Today is the deadline:** the 2025 return is due today, 15 April 2026, so the preparer needs these figures now or should file an extension.\n\n**Assumptions:** I relied on the firm's record that Luka had $0 basis before 2025. I also took the contribution as nondeductible, as the plan said. Neither is confirmed by a tax document, so there is a task to check them. A \"decision\" in the note is a recommendation of mine, not something the clients agreed to: hold off on a 2026 backdoor until moving the rollover IRA has been looked at.\n\n**CRM (HH-1204 only, all dated 2026-04-15):**\n- **Note SB-1204-01:** the finding, every figure above, and the decisions.\n- **SB-1204-02:** the advisor sends the clients the message below.\n- **SB-1204-03:** the preparer files Form 8606 by today's deadline or extends.\n- **SB-1204-04:** confirm Luka had no basis before 2025.\n- **SB-1204-05:** before any 2026 backdoor, check whether Luka's employer plan will take in the rollover IRA.\n- **SB-1204-06:** operations updates Luka's IRA basis in the tax profile to $6,748.13.\n\nAll five tasks are logged as not sent to the client. The message below is a draft and hasn't been sent.\n\n```json\n{\n  \"finding\": \"pro_rata_tax\",\n  \"taxable_amount\": 6748.13,\n  \"basis_carried\": 6748.13,\n  \"figures\": [\n    {\"label\": \"2025 nondeductible contribution to SYN-12040003 (2025-02-10)\", \"value\": 7000.00, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"Roth conversion SYN-12040003 to SYN-12040004 (2025-02-13)\", \"value\": 7000.00, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"Plan: 2025 contribution nondeductible; rollover IRA SYN-12040002 stays as it is\", \"value\": \"CA-1204-01\", \"source\": \"crm/crm.json\"},\n    {\"label\": \"Luka's traditional IRA basis at 2024-12-31 (Form 8606 line 2)\", \"value\": 0.00, \"source\": \"portfolio/tax_profile.json\"},\n    {\"label\": \"SYN-12040002 Larkspur Core Bond Fund market value 2025-12-31\", \"value\": 42871.51, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"SYN-12040002 Fernhollow Large Cap Index Fund market value 2025-12-31\", \"value\": 142362.18, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"SYN-12040002 cash 2025-12-31\", \"value\": 2311.23, \"source\": \"custodian/cash.csv\"},\n    {\"label\": \"SYN-12040003 cash 2025-12-31 (no positions)\", \"value\": 0.00, \"source\": \"custodian/cash.csv\"},\n    {\"label\": \"1099-R SYN-12040003 box 1 gross distribution\", \"value\": 7000.00, \"source\": \"documents/SYN-12040003-1099R-2-2025.pdf\"},\n    {\"label\": \"1099-R SYN-12040003 box 2a taxable amount (2b not determined)\", \"value\": 7000.00, \"source\": \"documents/SYN-12040003-1099R-2-2025.pdf\"},\n    {\"label\": \"Form 8606 line 3/5 total basis\", \"value\": 7000.00, \"source\": \"custodian/transactions.csv\", \"computed\": true},\n    {\"label\": \"Form 8606 line 6 traditional IRA value at 2025-12-31\", \"value\": 187544.92, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Form 8606 line 9 (line 6 + line 8)\", \"value\": 194544.92, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Form 8606 line 10 nontaxable ratio\", \"value\": 0.035981, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Form 8606 line 11/13 nontaxable part of conversion\", \"value\": 251.87, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Form 8606 line 18 taxable part of conversion\", \"value\": 6748.13, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Form 8606 line 14 basis carried to 2026\", \"value\": 6748.13, \"source\": \"custodian/positions.csv\", \"computed\": true}\n  ],\n  \"explanation\": \"The pro-rata rule counts all of Luka's traditional IRAs together as of 31 December 2025, and his rollover IRA SYN-12040002 still held $187,544.92 of pre-tax money then. So only 7,000/194,544.92 (about 3.6%) of the $7,000 conversion, or $251.87, comes out of his after-tax basis, and $6,748.13 is taxable income for 2025. The remaining $6,748.13 of basis carries to 2026 on Form 8606 line 14.\",\n  \"client_message\": \"Dear Funmilayo and Luka,\\n\\nAs part of preparing your 2025 review, we looked at how Luka's 2025 backdoor Roth conversion will be taxed. Please pass this on to your tax preparer today, because your 2025 return is due on 15 April 2026.\\n\\nLuka contributed $7,000 to his new traditional IRA in February 2025, after tax, and converted it to his Roth IRA a few days later. Ordinarily that conversion would be almost entirely tax-free. However, the IRS treats all of a person's traditional IRAs as one pool, based on their value on 31 December of the year of the conversion. Luka's rollover IRA was worth $187,544.92 on 31 December 2025, and it is pre-tax money. Under this rule (the pro-rata rule), only about 3.6% of the conversion counts as coming from his after-tax contribution.\\n\\nThe result, as we calculate it:\\n- Amount converted: $7,000.00\\n- Tax-free part: $251.87\\n- Taxable income for 2025: $6,748.13\\n- After-tax basis carried forward to 2026: $6,748.13\\n\\nYour preparer will need to file Form 8606 for Luka with your 2025 return. The Form 1099-R from the custodian shows the full $7,000 as taxable, with the taxable amount marked as not determined, and Form 8606 is how the tax-free part is claimed. If there isn't time before today's deadline, your preparer can file an extension. Please also confirm with your preparer that Luka has no earlier Forms 8606 and that his rollover IRA holds no after-tax money. Our records show no earlier basis, and if that's wrong, these figures would change.\\n\\nConversions can't be reversed, so the 2025 result is settled. The $6,748.13 isn't lost: it stays on record as after-tax basis for the future. Before Luka makes a 2026 backdoor contribution, we'd like to look at whether his rollover IRA can be moved into his Harrowgate Freight Systems plan, so that the rule doesn't apply next year. We'll raise this at your review.\\n\\nWe don't prepare tax returns, so please rely on your preparer for the final figures and the tax owed.\\n\\nKind regards\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": null,
+    "grader_before": "dbc427c93c1a291af0761bcf374be3e8ec762f097d2dba6f14d6a423f0efbdbe",
+    "utc": "2026-11-19T14:07:52+00:00"
+  },
+  "run_id": "T-MTG-01-basic-20261118T201708Z-907e",
+  "settings": {
+    "crm_tools": [
+      "mcp__crm__list_households",
+      "mcp__crm__read_household",
+      "mcp__crm__add_note",
+      "mcp__crm__add_activity",
+      "mcp__crm__mark_activity_done"
+    ],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "skills_loaded": [],
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 3
+  },
+  "started_utc": "2026-11-18T20:17:08+00:00",
+  "state": "mapped",
+  "task_id": "T-MTG-01",
+  "token_use": {
+    "cache_creation_input_tokens": 46697,
+    "cache_read_input_tokens": 181236,
+    "input_tokens": 16,
+    "output_tokens": 10764
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping an advisor at a small independent advisory firm. This folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the documents on file (documents/). The firm's CRM is also open to you through its tools: list_households, read_household, add_note, add_activity and mark_activity_done (add_activity takes sent_to_client: true only for a record of something sent to the client).\n\nThe advisor is preparing the 2025 review with this household and asks: what will the 2025 backdoor Roth conversion cost in tax, that is, how much of it is taxable income for 2025, and why? Answer in taxable income, not in tax dollars: the firm does not prepare returns.\n\nThen record the follow-up in the CRM, for this household only, dated 15 April 2026: a note of what was discussed and decided, with the figures it turns on, and an activity for each item someone still has to do. Then draft the client's message.\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"pro_rata_tax\" if part of the conversion is taxable under the pro-rata rule, \"no_pro_rata_tax\" if none of it is, or \"unresolved\"\n- \"taxable_amount\": the taxable amount of the conversion for 2025 (Form 8606 line 18), or null if unresolved\n- \"basis_carried\": the basis in traditional IRAs carried to 2026 (Form 8606 line 14), or null if unresolved\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed rather than read\n- \"explanation\": two or three sentences\n- \"client_message\": the message to the client, as plain text",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40",
+      "--mcp-config",
+      "<private>/runs/T-MTG-01-basic-20261118T201708Z-907e/crm-1/mcp.json",
+      "--allowedTools",
+      "mcp__crm__list_households,mcp__crm__read_household,mcp__crm__add_note,mcp__crm__add_activity,mcp__crm__mark_activity_done"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": null
+  },
+  "transcript": {
+    "events": 94,
+    "file": "attempt-1.jsonl"
+  },
+  "verdict_held": true
+}

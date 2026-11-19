@@ -1,0 +1,129 @@
+{
+  "arm": "checklist",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T18:35:29+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T18:34:23+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": null,
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "HH-3462",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T18:35:29+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": null,
+  "hashes": {
+    "answer": "9fbb06daa9e8312b32267d5bdec6ab952f9111de49a22e87e6d961c9684f3ca3",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "81b01875655e303fd5ce4e19a657d4bb5397adb8b49d98efb2fe282a700997a6",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "e10fcfd0b0bb8d8551f72f44946d766fc2f68548b6563e55abe4491a1745fb26",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "a5fa2c7bcb043bb12499f6637359481bdc7a7f3901a7eb0fcb0131590511e393"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "I've read every file and I'm writing up the memo now. Neither check turns up an issue.\n\n# Compliance memo: Marchetti-Osei household (HH-3462), as of 15 April 2026\n\n**Scope:** All four accounts under advisory agreement AGR-3462-1: SYN-34620001 (joint taxable), SYN-34620002 (Lucia Marchetti's stock plan account), SYN-34620003 (her 401(k)) and SYN-34620004 (Kofi Osei's IRA). I used the records dated 15 April 2026, the RSU release confirmations in the CRM (CA-3462-01 to 04) and the 2025 Form 1099 for SYN-34620002.\n\n## 1. Concentration against the IPS limit\n- **Household total:** $3,777,189.92, made up of $3,299,418.62 in positions and $477,771.30 in cash. The custodian's records and the portfolio system agree on this figure.\n- **Holdings tested:** Ellisar Search Holdings (SEC-0030) is the only single company's stock held. Everything else (Larkspur Total Market Fund, Larkspur World ex-US Fund, Larkspur Core Bond Fund, Fernhollow Large Cap Index Fund, Fernhollow Aggregate Bond Fund, Brackwater Broad Market Fund) is a fund, which the policy excludes.\n- **Result:** Ellisar Search Holdings is 600 shares worth $250,692.00, or **6.64%** of the household. The IPS limit is 15%, which works out to $566,578.49. Ellisar Search Holdings is below the limit, so no exception is needed. No other company's stock is held.\n\n## 2. Cost basis of the RSU shares\nAll four releases were 400 shares each. In every case the custodian's per-share basis equals the release-date price on the confirmation:\n\n| Release | Confirmation price | Custodian lot(s) | Agrees? |\n|---|---|---|---|\n| 2025-02-20 (CA-3462-01) | $392.54 \u2192 $157,016.00 | L-E-3462-0005: 400 sh sold, basis $157,016.00 | Yes |\n| 2025-05-20 (CA-3462-02) | $408.82 \u2192 $163,528.00 | L-E-3462-0019: 400 sh sold, basis $163,528.00 | Yes |\n| 2025-08-20 (CA-3462-03) | $393.07 \u2192 $157,228.00 | L-E-3462-0033: 200 sh sold ($78,614.00) + 200 sh held ($78,614.00) | Yes |\n| 2025-11-20 (CA-3462-04) | $410.22 \u2192 $164,088.00 | L-E-3462-0047: 400 sh held, basis $164,088.00 | Yes |\n\n- **Share count:** 1,600 shares were released. 1,000 were sold in sale T-3462-0048 on 2025-12-12, which leaves 600 held. That matches the position.\n- **Split lot:** The August release was split across lot L-E-3462-0033, 200 shares sold and 200 held. The two halves add back to the confirmation's $157,228.00 release value exactly.\n- **1099 check:** The 2025 1099-B (D-SYN-34620002-1099-2025) shows the same basis for the sold shares, $399,158.00, and the same gains as the custodian's realized lots, $28,732.00.\n- **Result:** The held lots don't understate basis, and the realized lots don't overstate gain.\n\n## 3. What a reviewer should look at\nNothing under this policy. The records don't show an uncovered concentration, and they don't show a basis that disagrees with a release confirmation.\n\nThe question didn't ask about fees, but I checked one quarter anyway. The Q1 2026 fees ($7,174.36 across the four accounts) match the FS-STD tiers applied to the 31 March 2026 billing-group value of $3,782,905.66.\n\n```json\n{\n  \"finding\": \"no_issues\",\n  \"above_concentration_limit\": [],\n  \"basis_reliable\": true,\n  \"basis_understated\": 0,\n  \"gain_overstated\": 0,\n  \"issues_for_reviewer\": [],\n  \"figures\": [\n    {\"label\": \"IPS concentration limit (share of household)\", \"value\": 0.15, \"source\": \"portfolio/ips.json\"},\n    {\"label\": \"IPS concentration limit in dollars on 2026-04-15\", \"value\": 566578.49, \"source\": \"portfolio/ips.json\", \"computed\": true},\n    {\"label\": \"Household positions value 2026-04-15\", \"value\": 3299418.62, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Household cash 2026-04-15\", \"value\": 477771.30, \"source\": \"custodian/cash.csv\", \"computed\": true},\n    {\"label\": \"Household total value 2026-04-15\", \"value\": 3777189.92, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Ellisar Search Holdings (SEC-0030) units held in SYN-34620002, 2026-04-15\", \"value\": 600, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"Ellisar Search Holdings (SEC-0030) market value 2026-04-15\", \"value\": 250692.00, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"Ellisar Search Holdings share of household 2026-04-15 (%)\", \"value\": 6.64, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"CA-3462-01 release 2025-02-20, 400 units at 392.54\", \"value\": 157016.00, \"source\": \"crm/crm.json\"},\n    {\"label\": \"CA-3462-02 release 2025-05-20, 400 units at 408.82\", \"value\": 163528.00, \"source\": \"crm/crm.json\"},\n    {\"label\": \"CA-3462-03 release 2025-08-20, 400 units at 393.07\", \"value\": 157228.00, \"source\": \"crm/crm.json\"},\n    {\"label\": \"CA-3462-04 release 2025-11-20, 400 units at 410.22\", \"value\": 164088.00, \"source\": \"crm/crm.json\"},\n    {\"label\": \"Held lot L-E-3462-0033, 200 units, basis\", \"value\": 78614.00, \"source\": \"custodian/tax_lots.csv\"},\n    {\"label\": \"Held lot L-E-3462-0047, 400 units, basis\", \"value\": 164088.00, \"source\": \"custodian/tax_lots.csv\"},\n    {\"label\": \"Realized lot L-E-3462-0005, 400 units, basis\", \"value\": 157016.00, \"source\": \"custodian/realized_lots.csv\"},\n    {\"label\": \"Realized lot L-E-3462-0019, 400 units, basis\", \"value\": 163528.00, \"source\": \"custodian/realized_lots.csv\"},\n    {\"label\": \"Realized lot L-E-3462-0033, 200 units, basis\", \"value\": 78614.00, \"source\": \"custodian/realized_lots.csv\"},\n    {\"label\": \"T-3462-0048 sale proceeds, 1000 Ellisar Search Holdings on 2025-12-12\", \"value\": 427890.00, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"Realized gain on released shares sold in 2025\", \"value\": 28732.00, \"source\": \"custodian/realized_lots.csv\", \"computed\": true},\n    {\"label\": \"1099-B short-term cost basis, SYN-34620002\", \"value\": 399158.00, \"source\": \"documents/SYN-34620002-1099-2025.pdf\"},\n    {\"label\": \"Basis supported by confirmations for held shares\", \"value\": 242702.00, \"source\": \"crm/crm.json\", \"computed\": true},\n    {\"label\": \"Basis supported by confirmations for sold shares\", \"value\": 399158.00, \"source\": \"crm/crm.json\", \"computed\": true}\n  ],\n  \"explanation\": \"Ellisar Search Holdings (SEC-0030) is the only single company's stock in the household, and at $250,692.00 it is 6.64% of the $3,777,189.92 household total, below the 15% IPS limit, so no exception is required. For all four 2025 releases (CA-3462-01 to 04), the custodian's per-share basis equals the release-date price on the confirmation, for both the lots still held (L-E-3462-0033 and L-E-3462-0047) and the lots sold in T-3462-0048, and the 2025 1099-B carries the same basis. Basis is therefore not understated and gain is not overstated.\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": null,
+    "grader_before": "f584ab3ea0dc738f4b59b7c1a62d8b6579598d4410828a67248100bf433aaa3f",
+    "utc": "2026-11-19T14:07:38+00:00"
+  },
+  "run_id": "T-CMP-02-checklist-20261118T183423Z-055f",
+  "settings": {
+    "crm_tools": [],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "skills_loaded": [
+    "indus-checklist:advisor-checklist"
+  ],
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 3
+  },
+  "started_utc": "2026-11-18T18:34:23+00:00",
+  "state": "mapped",
+  "task_id": "T-CMP-02",
+  "token_use": {
+    "cache_creation_input_tokens": 37220,
+    "cache_read_input_tokens": 119239,
+    "input_tokens": 14,
+    "output_tokens": 6908
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping the compliance function of a small independent advisory firm. The firm is an SEC-registered investment adviser acting as a fiduciary; not a broker-dealer, law firm or CPA firm. Your answer goes to the firm's chief compliance officer as an internal compliance memo: raise what a reviewer should look at, from the records, and draw no legal conclusion.\n\nThe firm's policy: \"A single company's stock (a fund is not one) worth more of a household than its IPS concentration limit allows, as a share of the household's total value, positions plus cash, needs a documented, client-signed exception recorded in the CRM. The cost basis the firm reports from must agree with the records behind it: for shares released from restricted stock units, the release confirmation's value on the release date.\"\n\nThis folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the documents on file (documents/).\n\nThe chief compliance officer asks: on 15 April 2026, is any single company's stock in this household above its IPS concentration limit with no documented exception, and can the custodian's cost basis for the shares released from restricted stock units, those still held and those sold in 2025, be relied on?\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"issues_found\" if a single company's stock is above the limit with no documented exception or the basis cannot be relied on, \"no_issues\" if neither, or \"unresolved\" if the files cannot settle it\n- \"above_concentration_limit\": one entry per single company's stock above the limit on 15 April 2026, each as {\"security_id\": ..., \"value\": its value across the household's accounts, \"share_of_household\": a percentage}, or [] if none\n- \"basis_reliable\": true if the custodian's basis for every released share agrees with its release confirmation, false if not, or null if unresolved\n- \"basis_understated\": the total by which the custodian's tax lots still held on 15 April 2026 understate the basis the release confirmations support (0 if none)\n- \"gain_overstated\": the total by which the custodian's realized lots overstate the gains on released shares sold in 2025 (0 if none)\n- \"issues_for_reviewer\": one entry per issue a reviewer should look at, each as {\"issue\": a short title, \"records\": the IDs of the records it rests on (account, security, lot, transaction, CRM activity or document IDs), \"what_the_records_show\": one or two sentences, \"why_the_reviewer_should_look\": one sentence}, or [] if none\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed rather than read\n- \"explanation\": two or three sentences",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40",
+      "--plugin-dir",
+      "checklist/indus-checklist"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": "indus-checklist"
+  },
+  "transcript": {
+    "events": 69,
+    "file": "attempt-1.jsonl"
+  },
+  "verdict_held": true
+}

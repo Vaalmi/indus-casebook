@@ -1,0 +1,124 @@
+{
+  "arm": "basic",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T08:18:01+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T08:16:57+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": null,
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "HH-4105",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T08:18:01+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": null,
+  "hashes": {
+    "answer": "e1e024f7db3524dc89d8152d3e987f005df1db99c9931c0a79e4c1733d2631a7",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "81b01875655e303fd5ce4e19a657d4bb5397adb8b49d98efb2fe282a700997a6",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "ff7815cda07d1ac35eabb9561dd898b7189537e188bdda49131df694cd46eb7d",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "4a6bdc1939ad951822743202dc96782974f6a23d5267e93ae2324c209607af55"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "**To:** Chief Compliance Officer\n**Re:** Achterberg household (HH-4105), 2025 Roth conversion, records as of 15 April 2026\n\n**Bottom line:** The conversion amount is documented: $60,000.00. The taxable amount is not. Rosalind Achterberg says she has $38,500.00 of after-tax basis in her traditional IRAs. Under our policy, that basis has to rest on a 2024 Form 8606 or the return that carries it, and neither document is on file.\n\n**What is documented**\n- **The conversion:** On 2025-11-06, $60,000.00 moved from her traditional IRA SYN-41050002 to her Roth IRA SYN-41050003 (custodian transaction T-4105-0028, both sides). The 2025 Form 1099-R (D-SYN-41050002-1099R-7-2025) agrees: Box 1 is $60,000.00 and Box 7 code is 7 with the IRA box checked.\n- **The 1099-R taxable figure doesn't settle the question:** Box 2a shows $60,000.00, but Box 2b \"Taxable amount not determined\" is checked. The custodian is not stating the taxable amount, so Box 2a can't stand in for it.\n- **Year-end value:** The year-end 2025 value of the traditional IRA can be taken from the custodian's files. Holdings plus cash on 2025-12-31 come to $392,711.36. So once the basis is documented, the only missing input will be the basis itself.\n\n**Why the basis is not documented**\n- CRM activity CA-4105-01 (2025-04-22) says her 2024 Form 1040 and Form 8606 were received and show $38,500.00 of basis. The portfolio system's tax profile carries the same figure.\n- Neither form is on file. The document index lists only three Q1 2026 statements, the 1099 composite for the taxable account and the 1099-R.\n- Under the policy, a CRM note and a system field are not a document. The $38,500.00 is therefore neither assumed nor ruled out, and I have not calculated a taxable amount from it.\n\n**Other points for the reviewer**\n1. **The basis was entered before the form arrived.** The tax-profile basis is dated 2025-04-15, a week before the CRM records the Form 8606 as received (2025-04-22). Someone should find out where that figure came from.\n2. **Other traditional IRAs may exist.** Splitting a conversion between taxable and after-tax money uses the year-end value of *all* her traditional, SEP and SIMPLE IRAs. Our records show only SYN-41050002, and nothing on file confirms there are no IRAs held elsewhere.\n3. **The IRA sale shows a gain.** The custodian recorded a $28,965.74 gain on the sale of 230 Fernhollow Large Cap Index Fund inside the IRA (T-4105-0027, lot L-41050002-01) to raise cash for the conversion. That gain sits inside an IRA. It shouldn't flow into any figure we report, and her taxable-account 1099-B correctly shows no 2025 sales.\n\n**Suggested next step:** Get the 2024 Form 8606 (or the 2024 return that includes it) into the documents file, and confirm with her whether she holds other traditional, SEP or SIMPLE IRAs elsewhere. With both on file, the taxable amount can be worked out from the figures below.\n\n```json\n{\n  \"finding\": \"unresolved\",\n  \"converted\": 60000.00,\n  \"basis_on_file\": null,\n  \"taxable_amount\": null,\n  \"issues_for_reviewer\": [\n    {\n      \"issue\": \"Claimed IRA basis has no Form 8606 or return on file\",\n      \"records\": [\"CA-4105-01\", \"P-4105-1\", \"SYN-41050002\", \"D-SYN-41050002-1099R-7-2025\"],\n      \"what_the_records_show\": \"CRM activity CA-4105-01 says a 2024 Form 1040 and Form 8606 showing $38,500.00 of basis were received, and the portfolio tax profile carries $38,500.00, but neither form appears in the documents index or folder.\",\n      \"why_the_reviewer_should_look\": \"Under firm policy the conversion's taxable amount cannot be reported until the 2024 Form 8606 (or the return carrying it) is on file.\"\n    },\n    {\n      \"issue\": \"1099-R taxable amount marked not determined\",\n      \"records\": [\"D-SYN-41050002-1099R-7-2025\", \"T-4105-0028\"],\n      \"what_the_records_show\": \"The 1099-R shows Box 1 $60,000.00 and Box 2a $60,000.00 with Box 2b 'taxable amount not determined' checked; the custodian ledger shows the matching $60,000.00 conversion on 2025-11-06.\",\n      \"why_the_reviewer_should_look\": \"Box 2a should not be relied on as the taxable amount, because the custodian did not determine it and basis is claimed.\"\n    },\n    {\n      \"issue\": \"Basis entered in the portfolio system before the form was recorded as received\",\n      \"records\": [\"P-4105-1\", \"CA-4105-01\"],\n      \"what_the_records_show\": \"The tax_profile ira_basis of $38,500.00 has known_as_of 2025-04-15, while the CRM records receipt of the Form 8606 on 2025-04-22.\",\n      \"why_the_reviewer_should_look\": \"The source of the system's basis figure is unclear and should be traced to a document before it is used.\"\n    },\n    {\n      \"issue\": \"Other traditional IRAs not confirmed\",\n      \"records\": [\"SYN-41050002\", \"SYN-41050003\", \"SYN-41050001\"],\n      \"what_the_records_show\": \"The firm's records show one traditional IRA (SYN-41050002) for Rosalind Achterberg; nothing on file confirms whether she holds other traditional, SEP or SIMPLE IRAs elsewhere.\",\n      \"why_the_reviewer_should_look\": \"The taxable share of the conversion depends on the year-end value of all of her traditional IRAs, not just the one the firm manages.\"\n    },\n    {\n      \"issue\": \"Realized gain recorded inside the IRA\",\n      \"records\": [\"T-4105-0027\", \"L-41050002-01\", \"SYN-41050002\"],\n      \"what_the_records_show\": \"The custodian recorded a $28,965.74 gain on the 2025-11-03 sale of 230 Fernhollow Large Cap Index Fund in the traditional IRA, made to fund the conversion; the taxable account's 1099-B shows no 2025 sales.\",\n      \"why_the_reviewer_should_look\": \"A gain inside an IRA should not flow into any client tax figure the firm reports.\"\n    }\n  ],\n  \"figures\": [\n    {\"label\": \"Roth conversion out of SYN-41050002 (T-4105-0028)\", \"value\": -60000.00, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"Roth conversion into SYN-41050003 (T-4105-0028)\", \"value\": 60000.00, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"1099-R Box 1 gross distribution\", \"value\": 60000.00, \"source\": \"documents/SYN-41050002-1099R-7-2025.pdf\"},\n    {\"label\": \"1099-R Box 2a taxable amount (Box 2b not determined checked)\", \"value\": 60000.00, \"source\": \"documents/SYN-41050002-1099R-7-2025.pdf\"},\n    {\"label\": \"Claimed traditional IRA basis per CRM note (undocumented)\", \"value\": 38500.00, \"source\": \"crm/crm.json\"},\n    {\"label\": \"Traditional IRA basis in portfolio tax profile (undocumented)\", \"value\": 38500.00, \"source\": \"portfolio/tax_profile.json\"},\n    {\"label\": \"SYN-41050002 Larkspur Total Market Fund market value 2025-12-31\", \"value\": 197164.92, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"SYN-41050002 Fernhollow Large Cap Index Fund market value 2025-12-31\", \"value\": 90181.62, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"SYN-41050002 Fernhollow Corporate Bond Fund market value 2025-12-31\", \"value\": 100156.28, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"SYN-41050002 cash 2025-12-31\", \"value\": 5208.54, \"source\": \"custodian/cash.csv\"},\n    {\"label\": \"SYN-41050002 total value 2025-12-31\", \"value\": 392711.36, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"IRA sale proceeds 230 Fernhollow Large Cap Index Fund (T-4105-0027)\", \"value\": 59149.10, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"Realized gain recorded inside IRA (T-4105-0027)\", \"value\": 28965.74, \"source\": \"custodian/realized_lots.csv\"}\n  ],\n  \"explanation\": \"The $60,000.00 conversion is documented by the custodian ledger and the 2025 Form 1099-R, but the 1099-R marks the taxable amount as not determined. The owner's claimed $38,500.00 of after-tax basis appears only in a CRM note and the portfolio tax profile, and no 2024 Form 8606 or return is on file. Under firm policy that basis is neither assumed nor ruled out, so the taxable amount cannot be reported until the document is obtained.\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": null,
+    "grader_before": "fbd339bc0bbeb81aa03005a43080853c4979bb7979cb01df5f22ba826f2c5b26",
+    "utc": "2026-11-19T14:05:19+00:00"
+  },
+  "run_id": "T-CMP-03-basic-20261118T081656Z-cb60",
+  "settings": {
+    "crm_tools": [],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 1
+  },
+  "started_utc": "2026-11-18T08:16:56+00:00",
+  "state": "mapped",
+  "task_id": "T-CMP-03",
+  "token_use": {
+    "cache_creation_input_tokens": 28560,
+    "cache_read_input_tokens": 65360,
+    "input_tokens": 10,
+    "output_tokens": 6970
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping the compliance function of a small independent advisory firm. The firm is an SEC-registered investment adviser acting as a fiduciary; not a broker-dealer, law firm or CPA firm. Your answer goes to the firm's chief compliance officer as an internal compliance memo: raise what a reviewer should look at, from the records, and draw no legal conclusion.\n\nThe firm's policy: \"A tax figure the firm reports or gives a client must rest on documents on file. A Roth conversion's taxable amount rests on the Form 1099-R and, where the owner has after-tax basis in traditional IRAs, on the prior year's Form 8606 or the return that carries it. A basis the client claims with no Form 8606 or return behind it is not documented, and is neither assumed nor ruled out.\"\n\nThis folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the documents on file (documents/).\n\nThe chief compliance officer asks: is this household's 2025 Roth conversion documented well enough to report its taxable amount, and if it is, what is the taxable amount?\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"documented\" if the records on file settle the conversion's taxable amount, or \"unresolved\" if they do not\n- \"converted\": the amount converted to a Roth IRA in 2025\n- \"basis_on_file\": the after-tax basis in the owner's traditional IRAs carried from 2024 (Form 8606 line 2) that the records document, or null if unresolved\n- \"taxable_amount\": the taxable part of the conversion, or null if unresolved\n- \"issues_for_reviewer\": one entry per issue a reviewer should look at, each as {\"issue\": a short title, \"records\": the IDs of the records it rests on (account, security, lot, transaction, CRM activity or document IDs), \"what_the_records_show\": one or two sentences, \"why_the_reviewer_should_look\": one sentence}, or [] if none\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed rather than read\n- \"explanation\": two or three sentences",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": null
+  },
+  "transcript": {
+    "events": 61,
+    "file": "attempt-1.jsonl"
+  },
+  "verdict_held": true
+}

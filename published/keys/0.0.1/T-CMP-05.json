@@ -1,0 +1,517 @@
+{
+  "checked": [
+    "HH-0120",
+    "HH-0129",
+    "HH-0168",
+    "HH-0190",
+    "HH-0193",
+    "HH-0218",
+    "HH-0221",
+    "HH-0222",
+    "HH-0232",
+    "HH-0236",
+    "HH-0265",
+    "HH-0286",
+    "HH-0287",
+    "HH-0328",
+    "HH-0330",
+    "HH-0347",
+    "HH-0363",
+    "HH-0364",
+    "HH-0371",
+    "HH-0376",
+    "HH-0380",
+    "HH-0404",
+    "HH-0410",
+    "HH-0414",
+    "HH-0420",
+    "HH-0425",
+    "HH-0445",
+    "HH-0466",
+    "HH-0478",
+    "HH-0491",
+    "HH-0514",
+    "HH-0517",
+    "HH-0555",
+    "HH-0562",
+    "HH-0571",
+    "HH-0572",
+    "HH-0586",
+    "HH-0592",
+    "HH-0607",
+    "HH-0608",
+    "HH-0610",
+    "HH-0611",
+    "HH-0616",
+    "HH-0633",
+    "HH-0637",
+    "HH-0642",
+    "HH-0664",
+    "HH-0679",
+    "HH-0690",
+    "HH-0716",
+    "HH-0737",
+    "HH-0747",
+    "HH-0780",
+    "HH-0782",
+    "HH-0787",
+    "HH-0796",
+    "HH-0799",
+    "HH-0809",
+    "HH-0816",
+    "HH-0829",
+    "HH-0842",
+    "HH-0844",
+    "HH-0847",
+    "HH-0882",
+    "HH-0885",
+    "HH-0926",
+    "HH-0928",
+    "HH-0934",
+    "HH-0981",
+    "HH-0984",
+    "HH-0985",
+    "HH-0989",
+    "HH-1204",
+    "HH-1587",
+    "HH-2316",
+    "HH-2749",
+    "HH-3058",
+    "HH-3462",
+    "HH-4105",
+    "HH-4633",
+    "HH-4821",
+    "HH-5271",
+    "HH-5814",
+    "HH-6047",
+    "HH-6590",
+    "HH-7126",
+    "HH-7350",
+    "HH-7683",
+    "HH-8312",
+    "HH-8865",
+    "HH-9234",
+    "HH-9571"
+  ],
+  "cleared": [
+    "HH-0120",
+    "HH-0129",
+    "HH-0168",
+    "HH-0190",
+    "HH-0193",
+    "HH-0218",
+    "HH-0222",
+    "HH-0232",
+    "HH-0236",
+    "HH-0265",
+    "HH-0286",
+    "HH-0287",
+    "HH-0328",
+    "HH-0330",
+    "HH-0347",
+    "HH-0363",
+    "HH-0364",
+    "HH-0371",
+    "HH-0380",
+    "HH-0404",
+    "HH-0410",
+    "HH-0414",
+    "HH-0420",
+    "HH-0425",
+    "HH-0445",
+    "HH-0466",
+    "HH-0478",
+    "HH-0491",
+    "HH-0514",
+    "HH-0517",
+    "HH-0555",
+    "HH-0562",
+    "HH-0571",
+    "HH-0572",
+    "HH-0586",
+    "HH-0592",
+    "HH-0607",
+    "HH-0608",
+    "HH-0610",
+    "HH-0611",
+    "HH-0616",
+    "HH-0633",
+    "HH-0637",
+    "HH-0642",
+    "HH-0664",
+    "HH-0679",
+    "HH-0690",
+    "HH-0716",
+    "HH-0737",
+    "HH-0747",
+    "HH-0780",
+    "HH-0782",
+    "HH-0787",
+    "HH-0796",
+    "HH-0799",
+    "HH-0809",
+    "HH-0829",
+    "HH-0842",
+    "HH-0844",
+    "HH-0847",
+    "HH-0882",
+    "HH-0885",
+    "HH-0926",
+    "HH-0928",
+    "HH-0934",
+    "HH-0981",
+    "HH-0985",
+    "HH-0989",
+    "HH-1204",
+    "HH-1587",
+    "HH-2316",
+    "HH-2749",
+    "HH-4105",
+    "HH-4633",
+    "HH-4821",
+    "HH-7126",
+    "HH-7350",
+    "HH-7683"
+  ],
+  "found": {
+    "HH-0221": [
+      "SEC-0040"
+    ],
+    "HH-0376": [
+      "SEC-0032"
+    ],
+    "HH-0816": [
+      "SEC-0005"
+    ],
+    "HH-0984": [
+      "SEC-0048"
+    ],
+    "HH-3058": [
+      "SEC-0028",
+      "US equity",
+      "International equity",
+      "Fixed income"
+    ],
+    "HH-3462": [
+      "Fixed income"
+    ],
+    "HH-5271": [
+      "US equity",
+      "Fixed income"
+    ],
+    "HH-5814": [
+      "US equity",
+      "Fixed income"
+    ],
+    "HH-6047": [
+      "US equity",
+      "Fixed income"
+    ],
+    "HH-6590": [
+      "US equity",
+      "Fixed income"
+    ],
+    "HH-8312": [
+      "US equity",
+      "Fixed income"
+    ],
+    "HH-8865": [
+      "US equity",
+      "Fixed income"
+    ],
+    "HH-9234": [
+      "US equity",
+      "Fixed income"
+    ],
+    "HH-9571": [
+      "US equity",
+      "Fixed income"
+    ]
+  },
+  "reviews": {
+    "HH-0221": {
+      "above_concentration_limit": [
+        {
+          "limit_percent": "25.00",
+          "security_id": "SEC-0040",
+          "share_percent": "40.29",
+          "value": "1216955.30"
+        }
+      ],
+      "as_of": "2026-04-15",
+      "household_id": "HH-0221",
+      "outside_band": [],
+      "total": "3020567.41"
+    },
+    "HH-0376": {
+      "above_concentration_limit": [
+        {
+          "limit_percent": "30.00",
+          "security_id": "SEC-0032",
+          "share_percent": "37.71",
+          "value": "1317831.00"
+        }
+      ],
+      "as_of": "2026-04-15",
+      "household_id": "HH-0376",
+      "outside_band": [],
+      "total": "3494538.51"
+    },
+    "HH-0816": {
+      "above_concentration_limit": [
+        {
+          "limit_percent": "20.00",
+          "security_id": "SEC-0005",
+          "share_percent": "49.07",
+          "value": "1500708.44"
+        }
+      ],
+      "as_of": "2026-04-15",
+      "household_id": "HH-0816",
+      "outside_band": [],
+      "total": "3058018.17"
+    },
+    "HH-0984": {
+      "above_concentration_limit": [
+        {
+          "limit_percent": "30.00",
+          "security_id": "SEC-0048",
+          "share_percent": "35.75",
+          "value": "1032983.25"
+        }
+      ],
+      "as_of": "2026-04-15",
+      "household_id": "HH-0984",
+      "outside_band": [],
+      "total": "2889161.08"
+    },
+    "HH-3058": {
+      "above_concentration_limit": [
+        {
+          "limit_percent": "15.00",
+          "security_id": "SEC-0028",
+          "share_percent": "32.49",
+          "value": "1265646.04"
+        }
+      ],
+      "as_of": "2026-04-15",
+      "household_id": "HH-3058",
+      "outside_band": [
+        {
+          "asset_class": "US equity",
+          "band_percent": "5.00",
+          "share_percent": "68.11",
+          "target_percent": "60.00",
+          "value": "2653402.51"
+        },
+        {
+          "asset_class": "International equity",
+          "band_percent": "4.00",
+          "share_percent": "4.11",
+          "target_percent": "10.00",
+          "value": "159950.70"
+        },
+        {
+          "asset_class": "Fixed income",
+          "band_percent": "5.00",
+          "share_percent": "15.04",
+          "target_percent": "28.00",
+          "value": "585802.68"
+        }
+      ],
+      "total": "3895524.87"
+    },
+    "HH-3462": {
+      "above_concentration_limit": [],
+      "as_of": "2026-04-15",
+      "household_id": "HH-3462",
+      "outside_band": [
+        {
+          "asset_class": "Fixed income",
+          "band_percent": "5.00",
+          "share_percent": "17.75",
+          "target_percent": "30.00",
+          "value": "670442.44"
+        }
+      ],
+      "total": "3777189.92"
+    },
+    "HH-5271": {
+      "above_concentration_limit": [],
+      "as_of": "2026-04-15",
+      "household_id": "HH-5271",
+      "outside_band": [
+        {
+          "asset_class": "US equity",
+          "band_percent": "5.00",
+          "share_percent": "56.12",
+          "target_percent": "50.00",
+          "value": "974020.24"
+        },
+        {
+          "asset_class": "Fixed income",
+          "band_percent": "5.00",
+          "share_percent": "32.42",
+          "target_percent": "40.00",
+          "value": "562726.22"
+        }
+      ],
+      "total": "1735503.19"
+    },
+    "HH-5814": {
+      "above_concentration_limit": [],
+      "as_of": "2026-04-15",
+      "household_id": "HH-5814",
+      "outside_band": [
+        {
+          "asset_class": "US equity",
+          "band_percent": "5.00",
+          "share_percent": "55.89",
+          "target_percent": "50.00",
+          "value": "895699.06"
+        },
+        {
+          "asset_class": "Fixed income",
+          "band_percent": "5.00",
+          "share_percent": "32.96",
+          "target_percent": "40.00",
+          "value": "528288.58"
+        }
+      ],
+      "total": "1602656.42"
+    },
+    "HH-6047": {
+      "above_concentration_limit": [],
+      "as_of": "2026-04-15",
+      "household_id": "HH-6047",
+      "outside_band": [
+        {
+          "asset_class": "US equity",
+          "band_percent": "5.00",
+          "share_percent": "51.63",
+          "target_percent": "45.00",
+          "value": "476167.92"
+        },
+        {
+          "asset_class": "Fixed income",
+          "band_percent": "5.00",
+          "share_percent": "39.71",
+          "target_percent": "48.00",
+          "value": "366211.64"
+        }
+      ],
+      "total": "922232.02"
+    },
+    "HH-6590": {
+      "above_concentration_limit": [],
+      "as_of": "2026-04-15",
+      "household_id": "HH-6590",
+      "outside_band": [
+        {
+          "asset_class": "US equity",
+          "band_percent": "5.00",
+          "share_percent": "50.24",
+          "target_percent": "45.00",
+          "value": "474773.40"
+        },
+        {
+          "asset_class": "Fixed income",
+          "band_percent": "5.00",
+          "share_percent": "40.61",
+          "target_percent": "47.00",
+          "value": "383773.62"
+        }
+      ],
+      "total": "945082.29"
+    },
+    "HH-8312": {
+      "above_concentration_limit": [],
+      "as_of": "2026-04-15",
+      "household_id": "HH-8312",
+      "outside_band": [
+        {
+          "asset_class": "US equity",
+          "band_percent": "5.00",
+          "share_percent": "72.06",
+          "target_percent": "55.00",
+          "value": "1238774.71"
+        },
+        {
+          "asset_class": "Fixed income",
+          "band_percent": "5.00",
+          "share_percent": "27.01",
+          "target_percent": "40.00",
+          "value": "464356.64"
+        }
+      ],
+      "total": "1719137.39"
+    },
+    "HH-8865": {
+      "above_concentration_limit": [],
+      "as_of": "2026-04-15",
+      "household_id": "HH-8865",
+      "outside_band": [
+        {
+          "asset_class": "US equity",
+          "band_percent": "5.00",
+          "share_percent": "70.71",
+          "target_percent": "55.00",
+          "value": "1150756.15"
+        },
+        {
+          "asset_class": "Fixed income",
+          "band_percent": "5.00",
+          "share_percent": "28.47",
+          "target_percent": "40.00",
+          "value": "463352.52"
+        }
+      ],
+      "total": "1627337.97"
+    },
+    "HH-9234": {
+      "above_concentration_limit": [],
+      "as_of": "2026-04-15",
+      "household_id": "HH-9234",
+      "outside_band": [
+        {
+          "asset_class": "US equity",
+          "band_percent": "5.00",
+          "share_percent": "65.31",
+          "target_percent": "55.00",
+          "value": "1238142.65"
+        },
+        {
+          "asset_class": "Fixed income",
+          "band_percent": "5.00",
+          "share_percent": "24.47",
+          "target_percent": "30.00",
+          "value": "463865.40"
+        }
+      ],
+      "total": "1895869.98"
+    },
+    "HH-9571": {
+      "above_concentration_limit": [],
+      "as_of": "2026-04-15",
+      "household_id": "HH-9571",
+      "outside_band": [
+        {
+          "asset_class": "US equity",
+          "band_percent": "5.00",
+          "share_percent": "65.74",
+          "target_percent": "55.00",
+          "value": "1209917.68"
+        },
+        {
+          "asset_class": "Fixed income",
+          "band_percent": "5.00",
+          "share_percent": "24.49",
+          "target_percent": "30.00",
+          "value": "450808.32"
+        }
+      ],
+      "total": "1840425.74"
+    }
+  },
+  "unresolved": []
+}

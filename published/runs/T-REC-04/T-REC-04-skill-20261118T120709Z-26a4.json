@@ -1,0 +1,141 @@
+{
+  "arm": "skill",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T12:07:51+00:00",
+      "failure_reason": "the transcript shows no instruction loaded",
+      "started_utc": "2026-11-18T12:07:09+00:00"
+    },
+    {
+      "attempt": 2,
+      "ended_utc": "2026-11-18T12:08:33+00:00",
+      "failure_reason": "the transcript shows no instruction loaded",
+      "started_utc": "2026-11-18T12:07:51+00:00"
+    },
+    {
+      "attempt": 3,
+      "ended_utc": "2026-11-18T12:09:12+00:00",
+      "failure_reason": "the transcript shows no instruction loaded",
+      "started_utc": "2026-11-18T12:08:33+00:00"
+    },
+    {
+      "attempt": 4,
+      "ended_utc": "2026-11-18T12:09:54+00:00",
+      "failure_reason": "the transcript shows no instruction loaded",
+      "started_utc": "2026-11-18T12:09:12+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": null,
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "HH-6590",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T12:09:54+00:00",
+  "errors": [
+    "attempt 1: the transcript shows no instruction loaded",
+    "attempt 2: the transcript shows no instruction loaded",
+    "attempt 3: the transcript shows no instruction loaded",
+    "attempt 4: the transcript shows no instruction loaded"
+  ],
+  "failure_reason": "the transcript shows no instruction loaded",
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": null,
+  "hashes": {
+    "answer": "7a130d7d6e0c33095af3b06d957743fe3f860dba963586d7248206d2582389a8",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "81b01875655e303fd5ce4e19a657d4bb5397adb8b49d98efb2fe282a700997a6",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "d62ca6d71f8d28b8dedf4b1e7207205b45d4d49db37109cee3467baa437e219c",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "e64fc13dc593660124b74f00a37dfa5e4a892ab2074520aef16d74b95ec98b80"
+  },
+  "instruction_loaded": false,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": null,
+  "run_id": "T-REC-04-skill-20261118T120709Z-26a4",
+  "settings": {
+    "crm_tools": [],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 1
+  },
+  "started_utc": "2026-11-18T12:07:09+00:00",
+  "state": "failed",
+  "task_id": "T-REC-04",
+  "token_use": {
+    "cache_creation_input_tokens": 21230,
+    "cache_read_input_tokens": 69231,
+    "input_tokens": 12,
+    "output_tokens": 4614
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping an advisor at a small independent advisory firm. This folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the statements and tax forms on file (documents/).\n\nThe advisor asks: do the custodian's 2025 distributions from this household's IRAs agree with what the CRM records, and was the 2025 required minimum distribution met?\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"records_disagree\" if the custodian's records and the CRM's disagree about a 2025 IRA distribution, \"records_agree\" if they agree, or \"unresolved\"\n- \"qcd_amount\": the total paid from the household's traditional IRAs in 2025 as qualified charitable distributions, 0 if none\n- \"custodian_distributions\": the total the custodian's transactions show leaving the household's traditional IRAs in 2025, distributions and QCDs together\n- \"taxable_distributions\": custodian_distributions minus the qualified charitable distributions\n- \"rmd\": the 2025 required minimum distribution from the household's traditional IRAs\n- \"rmd_met\": true, false, or null if unresolved\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed rather than read; cite a factor from the IRS life-expectancy tables with \"source\": \"IRS Publication 590-B\"\n- \"explanation\": two or three sentences",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40",
+      "--plugin-dir",
+      "skills/indus-advisor"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": "indus-advisor"
+  },
+  "transcript": {
+    "events": 46,
+    "file": "attempt-4.jsonl"
+  }
+}

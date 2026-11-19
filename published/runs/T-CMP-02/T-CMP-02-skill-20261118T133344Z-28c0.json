@@ -1,0 +1,126 @@
+{
+  "arm": "skill",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T13:34:52+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T13:33:44+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": null,
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "HH-3462",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T13:34:52+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": null,
+  "hashes": {
+    "answer": "9fbb06daa9e8312b32267d5bdec6ab952f9111de49a22e87e6d961c9684f3ca3",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "81b01875655e303fd5ce4e19a657d4bb5397adb8b49d98efb2fe282a700997a6",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "e10fcfd0b0bb8d8551f72f44946d766fc2f68548b6563e55abe4491a1745fb26",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "a5fa2c7bcb043bb12499f6637359481bdc7a7f3901a7eb0fcb0131590511e393"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "# Compliance memo: Marchetti-Osei household (HH-3462), records as of 15 April 2026\n\nTo: Chief Compliance Officer\nScope: the IPS concentration limit and the custodian's basis for shares released from restricted stock units (RSUs). This memo reports what the records show. It draws no legal conclusion.\n\n## 1. Single-company stock against the 15% limit\n\nThe IPS limit is 0.15 of household value (`portfolio/ips.json`). The only single company's stock in the household is Ellisar Search Holdings (SEC-0030): 600 shares, all in SYN-34620002. Every other holding is a fund (Larkspur Total Market Fund, Larkspur World ex-US Fund, Larkspur Core Bond Fund, Fernhollow Large Cap Index Fund, Fernhollow Aggregate Bond Fund, Brackwater Broad Market Fund), and the policy excludes funds.\n\n| Item | Amount |\n|---|---|\n| Positions, all 4 accounts (10 rows, 2026-04-15) | $3,299,418.62 |\n| Cash (32,529.65 + 430,396.37 + 7,725.44 + 7,119.84) | $477,771.30 |\n| **Household total** | **$3,777,189.92** |\n| Ellisar Search Holdings: 600 \u00d7 417.82 | $250,692.00 |\n| **Ellisar Search Holdings share**: 250,692.00 \u00f7 3,777,189.92 | **6.64%** |\n\n- Ellisar Search Holdings is below the 15% limit. At 15%, the cap would be about $566,578.\n- No exception is needed, and none is on file: the CRM has no concentration-exception record.\n- The custodian files and the portfolio system agree on every position and cash figure for 2026-04-15.\n\n## 2. Basis for the RSU shares\n\nI checked each release against its confirmation in the CRM (CA-3462-01 to -04), the custodian's tax lots and realized lots, and the 2025 Form 1099-B (D-SYN-34620002-1099-2025).\n\n| Release | Confirmation value | Custodian basis |\n|---|---|---|\n| 2025-02-20, 400 \u00d7 392.54 (CA-3462-01) | $157,016.00 | Sold lot L-E-3462-0005: $157,016.00 |\n| 2025-05-20, 400 \u00d7 408.82 (CA-3462-02) | $163,528.00 | Sold lot L-E-3462-0019: $163,528.00 |\n| 2025-08-20, 400 \u00d7 393.07 (CA-3462-03) | $157,228.00 | Lot L-E-3462-0033: 200 sold at $78,614.00 + 200 held at $78,614.00 = $157,228.00 |\n| 2025-11-20, 400 \u00d7 410.22 (CA-3462-04) | $164,088.00 | Held lot L-E-3462-0047: $164,088.00 |\n\n- **Basis:** Every lot agrees with its release confirmation. Lots still held understate basis by $0, and 2025 realized lots overstate gains by $0.\n- **The 2025 sale (T-3462-0048):** 1,000 shares at 427.89 for proceeds of $427,890.00. Basis was $399,158.00 and the gain $28,732.00 (14,140 + 7,628 + 6,964). The 1-099-B matches the realized lots line for line.\n- **Share count:** 1,600 shares released minus 1,000 sold leaves 600, which matches the position.\n- **Release prices:** the custodian's vesting transactions (T-3462-0005, -0019, -0033, -0047) use the same prices as the confirmations.\n\n## 3. Outside the question asked\n\nThe question didn't cover the asset-class bands, but a reviewer may want to look at them. On 2026-04-15, fixed income (Larkspur Core Bond Fund + Fernhollow Aggregate Bond Fund = $670,442.44) is 17.75% of the household. The IPS band for fixed income is 25%\u201335% (target 30% \u00b1 5%). Cash is 12.65%, mostly the $430,396.37 left in SYN-34620002 after the December Ellisar Search Holdings sale. US equity (64.24%) and international equity (5.36%) are within their bands. The firm policy quoted for this review doesn't address bands, so I've left this out of the finding below.\n\n```json\n{\n  \"finding\": \"no_issues\",\n  \"above_concentration_limit\": [],\n  \"basis_reliable\": true,\n  \"basis_understated\": 0,\n  \"gain_overstated\": 0,\n  \"issues_for_reviewer\": [],\n  \"figures\": [\n    {\"label\": \"IPS concentration limit (share of household)\", \"value\": \"0.15\", \"source\": \"portfolio/ips.json\"},\n    {\"label\": \"Household positions total, 2026-04-15\", \"value\": 3299418.62, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Cash SYN-34620001, 2026-04-15\", \"value\": 32529.65, \"source\": \"custodian/cash.csv\"},\n    {\"label\": \"Cash SYN-34620002, 2026-04-15\", \"value\": 430396.37, \"source\": \"custodian/cash.csv\"},\n    {\"label\": \"Cash SYN-34620003, 2026-04-15\", \"value\": 7725.44, \"source\": \"custodian/cash.csv\"},\n    {\"label\": \"Cash SYN-34620004, 2026-04-15\", \"value\": 7119.84, \"source\": \"custodian/cash.csv\"},\n    {\"label\": \"Household cash total, 2026-04-15\", \"value\": 477771.30, \"source\": \"custodian/cash.csv\", \"computed\": true},\n    {\"label\": \"Household total value, 2026-04-15\", \"value\": 3777189.92, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Ellisar Search Holdings (SEC-0030) value, 600 x 417.82, SYN-34620002\", \"value\": 250692.00, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"Ellisar Search Holdings share of household\", \"value\": \"6.64%\", \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Release value 2025-02-20, 400 x 392.54 (CA-3462-01)\", \"value\": 157016.00, \"source\": \"crm/crm.json\"},\n    {\"label\": \"Release value 2025-05-20, 400 x 408.82 (CA-3462-02)\", \"value\": 163528.00, \"source\": \"crm/crm.json\"},\n    {\"label\": \"Release value 2025-08-20, 400 x 393.07 (CA-3462-03)\", \"value\": 157228.00, \"source\": \"crm/crm.json\"},\n    {\"label\": \"Release value 2025-11-20, 400 x 410.22 (CA-3462-04)\", \"value\": 164088.00, \"source\": \"crm/crm.json\"},\n    {\"label\": \"Held lot L-E-3462-0033 basis, 200 sh\", \"value\": 78614.00, \"source\": \"custodian/tax_lots.csv\"},\n    {\"label\": \"Held lot L-E-3462-0047 basis, 400 sh\", \"value\": 164088.00, \"source\": \"custodian/tax_lots.csv\"},\n    {\"label\": \"Realized lot L-E-3462-0005 basis, 400 sh\", \"value\": 157016.00, \"source\": \"custodian/realized_lots.csv\"},\n    {\"label\": \"Realized lot L-E-3462-0019 basis, 400 sh\", \"value\": 163528.00, \"source\": \"custodian/realized_lots.csv\"},\n    {\"label\": \"Realized lot L-E-3462-0033 basis, 200 sh\", \"value\": 78614.00, \"source\": \"custodian/realized_lots.csv\"},\n    {\"label\": \"Confirmation-supported basis per 200 sh of 2025-08-20 release (157,228 / 2)\", \"value\": 78614.00, \"source\": \"crm/crm.json\", \"computed\": true},\n    {\"label\": \"T-3462-0048 proceeds, 1000 x 427.89\", \"value\": 427890.00, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"1099-B short-term cost basis total\", \"value\": 399158.00, \"source\": \"documents/SYN-34620002-1099-2025.pdf\"},\n    {\"label\": \"Realized gain on 2025 Ellisar Search Holdings sale (14,140 + 7,628 + 6,964)\", \"value\": 28732.00, \"source\": \"custodian/realized_lots.csv\", \"computed\": true},\n    {\"label\": \"Basis understated on held lots\", \"value\": 0, \"source\": \"custodian/tax_lots.csv\", \"computed\": true},\n    {\"label\": \"Gain overstated on 2025 realized lots\", \"value\": 0, \"source\": \"custodian/realized_lots.csv\", \"computed\": true},\n    {\"label\": \"Fixed income (Larkspur Core Bond Fund + Fernhollow Aggregate Bond Fund) value, 2026-04-15\", \"value\": 670442.44, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Fixed income share of household\", \"value\": \"17.75%\", \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Fixed income IPS target and band\", \"value\": \"0.30 +/- 0.05\", \"source\": \"portfolio/ips.json\"}\n  ],\n  \"explanation\": \"On 15 April 2026 the household's only single company's stock is Ellisar Search Holdings (SEC-0030), worth $250,692.00, or 6.64% of the household's $3,777,189.92 (positions plus cash). That is below the IPS limit of 15%, so no exception is needed. The custodian's basis for every RSU lot, held (L-E-3462-0033, L-E-3462-0047) and sold in 2025 (L-E-3462-0005, -0019, -0033), equals the release value in confirmations CA-3462-01 to -04, and the 2025 Form 1099-B matches, so nothing is understated or overstated.\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": null,
+    "grader_before": "f584ab3ea0dc738f4b59b7c1a62d8b6579598d4410828a67248100bf433aaa3f",
+    "utc": "2026-11-19T14:06:27+00:00"
+  },
+  "run_id": "T-CMP-02-skill-20261118T133344Z-28c0",
+  "settings": {
+    "crm_tools": [],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 2
+  },
+  "started_utc": "2026-11-18T13:33:44+00:00",
+  "state": "mapped",
+  "task_id": "T-CMP-02",
+  "token_use": {
+    "cache_creation_input_tokens": 37768,
+    "cache_read_input_tokens": 98465,
+    "input_tokens": 12,
+    "output_tokens": 7568
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping the compliance function of a small independent advisory firm. The firm is an SEC-registered investment adviser acting as a fiduciary; not a broker-dealer, law firm or CPA firm. Your answer goes to the firm's chief compliance officer as an internal compliance memo: raise what a reviewer should look at, from the records, and draw no legal conclusion.\n\nThe firm's policy: \"A single company's stock (a fund is not one) worth more of a household than its IPS concentration limit allows, as a share of the household's total value, positions plus cash, needs a documented, client-signed exception recorded in the CRM. The cost basis the firm reports from must agree with the records behind it: for shares released from restricted stock units, the release confirmation's value on the release date.\"\n\nThis folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the documents on file (documents/).\n\nThe chief compliance officer asks: on 15 April 2026, is any single company's stock in this household above its IPS concentration limit with no documented exception, and can the custodian's cost basis for the shares released from restricted stock units, those still held and those sold in 2025, be relied on?\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"issues_found\" if a single company's stock is above the limit with no documented exception or the basis cannot be relied on, \"no_issues\" if neither, or \"unresolved\" if the files cannot settle it\n- \"above_concentration_limit\": one entry per single company's stock above the limit on 15 April 2026, each as {\"security_id\": ..., \"value\": its value across the household's accounts, \"share_of_household\": a percentage}, or [] if none\n- \"basis_reliable\": true if the custodian's basis for every released share agrees with its release confirmation, false if not, or null if unresolved\n- \"basis_understated\": the total by which the custodian's tax lots still held on 15 April 2026 understate the basis the release confirmations support (0 if none)\n- \"gain_overstated\": the total by which the custodian's realized lots overstate the gains on released shares sold in 2025 (0 if none)\n- \"issues_for_reviewer\": one entry per issue a reviewer should look at, each as {\"issue\": a short title, \"records\": the IDs of the records it rests on (account, security, lot, transaction, CRM activity or document IDs), \"what_the_records_show\": one or two sentences, \"why_the_reviewer_should_look\": one sentence}, or [] if none\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed rather than read\n- \"explanation\": two or three sentences",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40",
+      "--plugin-dir",
+      "skills/indus-advisor"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": "indus-advisor"
+  },
+  "transcript": {
+    "events": 64,
+    "file": "attempt-1.jsonl"
+  },
+  "verdict_held": true
+}

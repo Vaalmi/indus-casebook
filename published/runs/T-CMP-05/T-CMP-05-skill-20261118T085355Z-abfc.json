@@ -1,0 +1,195 @@
+{
+  "arm": "skill",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T09:01:54+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T08:53:56+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": null,
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "book",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T09:01:54+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": {
+    "breakdown": [
+      {
+        "detail": "every required field present",
+        "earned": 10,
+        "name": "output_parses",
+        "points": 10
+      },
+      {
+        "detail": "missed none (key finds HH-0221, HH-0376, HH-0816, HH-0984, HH-3058, HH-3462, HH-5271, HH-5814, HH-6047, HH-6590, HH-8312, HH-8865, HH-9234, HH-9571, leaves unresolved none)",
+        "earned": 35,
+        "name": "none_missed",
+        "points": 35
+      },
+      {
+        "detail": "wrongly named none (answer names HH-0221, HH-0376, HH-0816, HH-0984, HH-3058, HH-3462, HH-5271, HH-5814, HH-6047, HH-6590, HH-8312, HH-8865, HH-9234, HH-9571, unresolved none)",
+        "earned": 35,
+        "name": "none_wrongly_named",
+        "points": 35
+      },
+      {
+        "detail": "every household the key finds is named with its evidence",
+        "earned": 20,
+        "name": "evidence",
+        "points": 20
+      }
+    ],
+    "counts": {
+      "correct_unresolved": 0,
+      "false_alarm": 0,
+      "unnecessary_refusal": 0
+    },
+    "critical_fail": "fabricated figure: '$2,232.26' in the answer is in no file and follows from none",
+    "passed": false,
+    "score": 0
+  },
+  "hashes": {
+    "answer": "89e629dd7489380ec9a1d3711b64890b1aee9f56fb075a56a27c2b171d86b002",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "81b01875655e303fd5ce4e19a657d4bb5397adb8b49d98efb2fe282a700997a6",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "344945997a8be4affa2058dd21f5cb910d69c089bebf238bfe2796565b92b4ac",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "a8c71d9735bd77a9fe387d30d74a78581e0d6382a3f9c2cdf3ac82a1ed8ea428"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "# Internal compliance memo: IPS concentration limits and bands as of 15 April 2026\n\n**To:** Chief Compliance Officer\n**Scope:** All 92 households under `households/`, using records known on 15 April 2026. This memo sets out what the records show; it draws no legal conclusion.\n\n## Method\n- **Holdings:** I took each household's custodian positions and cash for 15 April 2026. The portfolio system's figures for that date match the custodian's: the number of positions agrees for all 92 households, and I compared values and cash line by line for 9 of them. Each household's custodian accounts also match the accounts in its portfolio-system ownership records.\n- **Asset classes:** I mapped each holding to an asset class using that household's IPS. Every IPS uses the same mapping. The single company stocks are Bramwell Devices Group, Orrin Software Group, Halvern Health Holdings, Corvane Semiconductor Holdings, Ellisar Search Holdings, Fenwright Networks Group, Ostrel Semiconductor Group, Ashvane Bank Group, Corriden Card Holdings, Brisley Health Group, Varrick Pharma Holdings, Dunmere Energy Group, Velloran Apparel Group, Ardley Rail Group and Fallowmere Utilities Group; everything else is a fund.\n- **Shares:** Each share is the holding's value divided by the household's total value (positions plus cash). Cash is not an IPS asset class, so it counts only in the total.\n- **Exceptions:** I searched all 92 CRM files for an exception, waiver or concentration acknowledgment. **None exists in any household.** The latest annual-review notes (N-xxxx-02, dated 2025-10-14) all say \"No changes requested.\"\n\n## Results\n**Five households hold a single stock above their concentration limit:**\n- HH-0816: Halvern Health Holdings is 49.1% (limit 20%).\n- HH-0221: Varrick Pharma Holdings is 40.3% (limit 25%).\n- HH-3058: Bramwell Devices Group is 32.5% (limit 15%).\n- HH-0376: Fenwright Networks Group is 37.7% (limit 30%).\n- HH-0984: Ardley Rail Group is 35.8% (limit 30%).\n\n**Ten households have asset classes outside their bands:**\n- **HH-3058:** all three classes are outside their bands. US equity is 68.1% (band 55\u201365%), International equity 4.1% (6\u201314%) and Fixed income 15.0% (23\u201333%).\n- **HH-3462:** Fixed income only, at 17.8% (band 25\u201335%).\n- **Eight households have US equity above its band and Fixed income below its band:** HH-8865, HH-8312, HH-9234, HH-9571, HH-5814, HH-5271, HH-6590 and HH-6047.\n\n**The other 78 households** are within their limits and bands; I worked out the weights for all of them. I checked the boundary case, HH-6590, to the cent: US equity is $474,773.40, which is $2,232.26 over 50% of the $945,082.29 total.\n\n## What a reviewer should look at\n- **Restricted stock units:** In the four households whose stock came through vesting (0816, 0221, 0984, 3058), the CRM logs quarterly vestings delivering more of that stock. The records show one partial sale in each of those four. HH-0376 also has a Fenwright Networks Group sale (T-0376-0029).\n- **Cash from sales:** In HH-3058 and HH-3462, money from a December 2025 stock sale is still held as cash. This contributes to the low Fixed income and International equity weights.\n- **Rebalancing trades:** In HH-9234 and HH-9571, trades made in November and December 2025 left US equity above its band.\n- **Data quality:** No household is left unresolved. Positions and cash agree between the custodian and the portfolio system for every household I checked, and the accounts agree for all 92.\n\n```json\n{\n  \"finding\": \"found\",\n  \"households\": [\n    {\"household_id\": \"HH-0816\", \"above_concentration_limit\": [\"SEC-0005\"], \"outside_band\": [], \"explanation\": \"Halvern Health Holdings held in SYN-08160001 and SYN-08160002 totals $1,500,708.44, 49.1% of the $3,058,018.17 household against a 20% limit, and the CRM records no exception.\"},\n    {\"household_id\": \"HH-0221\", \"above_concentration_limit\": [\"SEC-0040\"], \"outside_band\": [], \"explanation\": \"Varrick Pharma Holdings held in SYN-02210001 and SYN-02210002 totals $1,216,955.30, 40.3% of the $3,020,567.41 household against a 25% limit, and the CRM records no exception.\"},\n    {\"household_id\": \"HH-0984\", \"above_concentration_limit\": [\"SEC-0048\"], \"outside_band\": [], \"explanation\": \"Ardley Rail Group held in SYN-09840001 and SYN-09840002 totals $1,032,983.25, 35.8% of the $2,889,161.08 household against a 30% limit, and the CRM records no exception.\"},\n    {\"household_id\": \"HH-0376\", \"above_concentration_limit\": [\"SEC-0032\"], \"outside_band\": [], \"explanation\": \"Fenwright Networks Group held in SYN-03760001 and SYN-03760002 totals $1,317,831.00, 37.7% of the $3,494,538.51 household against a 30% limit, and the CRM records no exception.\"},\n    {\"household_id\": \"HH-3058\", \"above_concentration_limit\": [\"SEC-0028\"], \"outside_band\": [\"US equity\", \"International equity\", \"Fixed income\"], \"explanation\": \"Bramwell Devices Group is 32.5% against a 15% limit, and US equity (68.1% vs 60%\u00b15%), International equity (4.1% vs 10%\u00b14%) and Fixed income (15.0% vs 28%\u00b15%) are all outside their bands, with no exception in the CRM.\"},\n    {\"household_id\": \"HH-3462\", \"above_concentration_limit\": [], \"outside_band\": [\"Fixed income\"], \"explanation\": \"Fixed income is $670,442.44, 17.8% of the $3,777,189.92 household against a 30% target with a 5% band, and the CRM records no exception.\"},\n    {\"household_id\": \"HH-8865\", \"above_concentration_limit\": [], \"outside_band\": [\"US equity\", \"Fixed income\"], \"explanation\": \"US equity is 70.7% against 55%\u00b15% and Fixed income is 28.5% against 40%\u00b15% of the $1,627,337.97 household, with no exception in the CRM.\"},\n    {\"household_id\": \"HH-8312\", \"above_concentration_limit\": [], \"outside_band\": [\"US equity\", \"Fixed income\"], \"explanation\": \"US equity is 72.1% against 55%\u00b15% and Fixed income is 27.0% against 40%\u00b15% of the $1,719,137.39 household, with no exception in the CRM.\"},\n    {\"household_id\": \"HH-9234\", \"above_concentration_limit\": [], \"outside_band\": [\"US equity\", \"Fixed income\"], \"explanation\": \"US equity is 65.3% against 55%\u00b15% and Fixed income is 24.5% against 30%\u00b15% of the $1,895,869.98 household, with no exception in the CRM.\"},\n    {\"household_id\": \"HH-9571\", \"above_concentration_limit\": [], \"outside_band\": [\"US equity\", \"Fixed income\"], \"explanation\": \"US equity is 65.7% against 55%\u00b15% and Fixed income is 24.5% against 30%\u00b15% of the $1,840,425.74 household, with no exception in the CRM.\"},\n    {\"household_id\": \"HH-5814\", \"above_concentration_limit\": [], \"outside_band\": [\"US equity\", \"Fixed income\"], \"explanation\": \"US equity is 55.9% against 50%\u00b15% and Fixed income is 33.0% against 40%\u00b15% of the $1,602,656.42 household, with no exception in the CRM.\"},\n    {\"household_id\": \"HH-5271\", \"above_concentration_limit\": [], \"outside_band\": [\"US equity\", \"Fixed income\"], \"explanation\": \"US equity is 56.1% against 50%\u00b15% and Fixed income is 32.4% against 40%\u00b15% of the $1,735,503.19 household, with no exception in the CRM.\"},\n    {\"household_id\": \"HH-6590\", \"above_concentration_limit\": [], \"outside_band\": [\"US equity\", \"Fixed income\"], \"explanation\": \"US equity is 50.24% against 45%\u00b15% and Fixed income is 40.6% against 47%\u00b15% of the $945,082.29 household, with no exception in the CRM.\"},\n    {\"household_id\": \"HH-6047\", \"above_concentration_limit\": [], \"outside_band\": [\"US equity\", \"Fixed income\"], \"explanation\": \"US equity is 51.6% against 45%\u00b15% and Fixed income is 39.7% against 48%\u00b15% of the $922,232.02 household, with no exception in the CRM.\"}\n  ],\n  \"unresolved\": [],\n  \"issues_for_reviewer\": [\n    {\"issue\": \"Halvern Health Holdings concentration at HH-0816 with continuing restricted stock unit deliveries\", \"records\": [\"SYN-08160001\", \"SYN-08160002\", \"SEC-0005\", \"CA-0816-01\", \"CA-0816-02\", \"CA-0816-03\", \"CA-0816-04\", \"T-0816-0014\", \"N-0816-02\"], \"what_the_records_show\": \"Halvern Health Holdings is $1,500,708.44, 49.1% of the household against a 20% limit; four 2025 releases of 890 units each went into SYN-08160002, and one sale of 890 units is recorded (T-0816-0014).\", \"why_the_reviewer_should_look\": \"The policy calls for a client-signed exception recorded in the CRM, and the CRM has none, including in the 2025-10-14 annual review.\"},\n    {\"issue\": \"Varrick Pharma Holdings concentration at HH-0221\", \"records\": [\"SYN-02210001\", \"SYN-02210002\", \"SEC-0040\", \"CA-0221-01\", \"CA-0221-02\", \"CA-0221-03\", \"CA-0221-04\", \"T-0221-0016\", \"N-0221-02\"], \"what_the_records_show\": \"Varrick Pharma Holdings is $1,216,955.30, 40.3% of the household against a 25% limit, with quarterly restricted stock unit releases into SYN-02210002 and one sale of 770 units.\", \"why_the_reviewer_should_look\": \"No signed exception is recorded in the CRM.\"},\n    {\"issue\": \"Ardley Rail Group concentration at HH-0984\", \"records\": [\"SYN-09840001\", \"SYN-09840002\", \"SEC-0048\", \"CA-0984-01\", \"CA-0984-02\", \"CA-0984-03\", \"CA-0984-04\", \"T-0984-0034\", \"N-0984-02\"], \"what_the_records_show\": \"Ardley Rail Group is $1,032,983.25, 35.8% of the household against a 30% limit, with quarterly restricted stock unit releases into SYN-09840002 and one sale of 480 units.\", \"why_the_reviewer_should_look\": \"No signed exception is recorded in the CRM.\"},\n    {\"issue\": \"Fenwright Networks Group concentration at HH-0376\", \"records\": [\"SYN-03760001\", \"SYN-03760002\", \"SEC-0032\", \"CA-0376-01\", \"CA-0376-02\", \"CA-0376-03\", \"CA-0376-04\", \"T-0376-0029\", \"N-0376-02\"], \"what_the_records_show\": \"Fenwright Networks Group is $1,317,831.00, 37.7% of the household against a 30% limit, with quarterly restricted stock unit releases into SYN-03760002 and one sale of 780 units.\", \"why_the_reviewer_should_look\": \"No signed exception is recorded in the CRM.\"},\n    {\"issue\": \"Bramwell Devices Group concentration and all three bands at HH-3058\", \"records\": [\"SYN-30580001\", \"SYN-30580002\", \"SEC-0028\", \"CA-3058-01\", \"CA-3058-02\", \"CA-3058-03\", \"CA-3058-04\", \"T-3058-0048\", \"N-3058-02\"], \"what_the_records_show\": \"Bramwell Devices Group is 32.5% against a 15% limit; the $437,776.00 from selling 1,600 Bramwell Devices Group in December 2025 is still cash in SYN-30580002 ($439,841.31), and US equity, International equity and Fixed income are all outside their bands.\", \"why_the_reviewer_should_look\": \"The limit and all three bands are exceeded, and the CRM records no exception.\"},\n    {\"issue\": \"Fixed income below band at HH-3462 after Ellisar Search Holdings sale\", \"records\": [\"SYN-34620002\", \"SEC-0030\", \"T-3462-0048\", \"N-3462-02\"], \"what_the_records_show\": \"The $427,890.00 from selling 1,000 Ellisar Search Holdings in December 2025 sits as $430,396.37 of cash in SYN-34620002, and Fixed income is 17.8% against a 25\u201335% band.\", \"why_the_reviewer_should_look\": \"The band is exceeded with no exception, and the cash has been uninvested for about four months.\"},\n    {\"issue\": \"US equity above and Fixed income below band in two households where a spouse has died\", \"records\": [\"SYN-88650001\", \"SYN-88650002\", \"CA-8865-01\", \"N-8865-02\", \"SYN-83120001\", \"SYN-83120002\", \"CA-8312-01\", \"CA-8312-03\", \"N-8312-02\"], \"what_the_records_show\": \"HH-8865 (US equity 70.7%, Fixed income 28.5%) and HH-8312 (US equity 72.1%, Fixed income 27.0%) are both well outside 55%\u00b15% and 40%\u00b15%; both households recorded a spouse's death in 2025.\", \"why_the_reviewer_should_look\": \"Both bands are exceeded by wide margins with no exception, and the annual reviews after the deaths recorded no changes.\"},\n    {\"issue\": \"Rebalancing trades left US equity above its band\", \"records\": [\"SYN-92340001\", \"SYN-92340002\", \"T-9234-0035\", \"T-9234-0036\", \"T-9234-0037\", \"N-9234-02\", \"SYN-95710001\", \"SYN-95710002\", \"T-9571-0035\", \"T-9571-0036\", \"T-9571-0037\", \"N-9571-02\"], \"what_the_records_show\": \"In November and December 2025 both households sold Wexcombe Mid Cap Fund, bought Ridgeholm Equal Weight Fund and then bought 500 Wexcombe Mid Cap Fund; US equity is now 65.3% (HH-9234) and 65.7% (HH-9571) against 55%\u00b15%, and Fixed income about 24.5% against 30%\u00b15%.\", \"why_the_reviewer_should_look\": \"Trades the firm placed itself coincide with the drift beyond the band, and no exception is recorded.\"},\n    {\"issue\": \"US equity above and Fixed income below band in four smaller households\", \"records\": [\"SYN-58140002\", \"T-5814-0043\", \"T-5814-0045\", \"N-5814-02\", \"SYN-52710002\", \"T-5271-0043\", \"N-5271-02\", \"SYN-65900002\", \"T-6590-0009\", \"T-6590-0023\", \"N-6590-02\", \"SYN-60470002\", \"T-6047-0015\", \"T-6047-0023\", \"N-6047-02\"], \"what_the_records_show\": \"HH-5814, HH-5271, HH-6590 and HH-6047 have US equity 0.2 to 6.1 percentage points above their bands and Fixed income below them; the recorded 2025 sales were mostly bond funds or small amounts.\", \"why_the_reviewer_should_look\": \"Each is outside its band with no exception recorded; HH-6590 is over by only $2,232.26, so a valuation check could matter.\"},\n    {\"issue\": \"No IPS exception records anywhere in the CRM\", \"records\": [\"N-0816-02\", \"N-0221-02\", \"N-0984-02\", \"N-0376-02\", \"N-3058-02\"], \"what_the_records_show\": \"None of the 92 CRM files contains a record of an exception, waiver or concentration acknowledgment; the 2025-10-14 annual-review notes say the IPS targets were reviewed and no changes were requested.\", \"why_the_reviewer_should_look\": \"The policy requires a documented, client-signed exception recorded in the CRM, and none exists for any household.\"}\n  ],\n  \"figures\": [\n    {\"label\": \"HH-0816 Halvern Health Holdings market value (931,224.14 + 569,484.30)\", \"value\": \"1500708.44\", \"source\": \"households/HH-0816/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0816 cash (139.09 + 177,708.67 + 6,095.13)\", \"value\": \"183942.89\", \"source\": \"households/HH-0816/custodian/cash.csv\", \"computed\": true},\n    {\"label\": \"HH-0816 household total (positions 2,874,075.28 + cash 183,942.89)\", \"value\": \"3058018.17\", \"source\": \"households/HH-0816/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0816 Halvern Health Holdings share (1,500,708.44 / 3,058,018.17)\", \"value\": \"0.4907\", \"source\": \"households/HH-0816/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0816 concentration limit\", \"value\": \"0.20\", \"source\": \"households/HH-0816/portfolio/ips.json\"},\n    {\"label\": \"HH-0221 Varrick Pharma Holdings market value (720,721.10 + 496,234.20)\", \"value\": \"1216955.30\", \"source\": \"households/HH-0221/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0221 household total (positions 2,797,587.77 + cash 222,979.64)\", \"value\": \"3020567.41\", \"source\": \"households/HH-0221/custodian/cash.csv\", \"computed\": true},\n    {\"label\": \"HH-0221 Varrick Pharma Holdings share (1,216,955.30 / 3,020,567.41)\", \"value\": \"0.4029\", \"source\": \"households/HH-0221/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0221 concentration limit\", \"value\": \"0.25\", \"source\": \"households/HH-0221/portfolio/ips.json\"},\n    {\"label\": \"HH-0984 Ardley Rail Group market value (601,199.25 + 431,784.00)\", \"value\": \"1032983.25\", \"source\": \"households/HH-0984/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0984 household total (positions 2,683,059.87 + cash 206,101.21)\", \"value\": \"2889161.08\", \"source\": \"households/HH-0984/custodian/cash.csv\", \"computed\": true},\n    {\"label\": \"HH-0984 Ardley Rail Group share (1,032,983.25 / 2,889,161.08)\", \"value\": \"0.3575\", \"source\": \"households/HH-0984/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0984 concentration limit\", \"value\": \"0.30\", \"source\": \"households/HH-0984/portfolio/ips.json\"},\n    {\"label\": \"HH-0376 Fenwright Networks Group market value (870,914.40 + 446,916.60)\", \"value\": \"1317831.00\", \"source\": \"households/HH-0376/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0376 household total (positions 3,297,291.92 + cash 197,246.59)\", \"value\": \"3494538.51\", \"source\": \"households/HH-0376/custodian/cash.csv\", \"computed\": true},\n    {\"label\": \"HH-0376 Fenwright Networks Group share (1,317,831.00 / 3,494,538.51)\", \"value\": \"0.3771\", \"source\": \"households/HH-0376/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-0376 concentration limit\", \"value\": \"0.30\", \"source\": \"households/HH-0376/portfolio/ips.json\"},\n    {\"label\": \"HH-3058 Bramwell Devices Group market value (825,134.04 + 440,512.00)\", \"value\": \"1265646.04\", \"source\": \"households/HH-3058/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-3058 household total (positions 3,399,155.89 + cash 496,368.98)\", \"value\": \"3895524.87\", \"source\": \"households/HH-3058/custodian/cash.csv\", \"computed\": true},\n    {\"label\": \"HH-3058 Bramwell Devices Group share (1,265,646.04 / 3,895,524.87)\", \"value\": \"0.3249\", \"source\": \"households/HH-3058/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-3058 concentration limit\", \"value\": \"0.15\", \"source\": \"households/HH-3058/portfolio/ips.json\"},\n    {\"label\": \"HH-3058 US equity weight (2,653,402.51 / 3,895,524.87); target 0.60 band 0.05\", \"value\": \"0.6811\", \"source\": \"households/HH-3058/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-3058 International equity weight (159,950.70 / 3,895,524.87); target 0.10 band 0.04\", \"value\": \"0.0411\", \"source\": \"households/HH-3058/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-3058 Fixed income weight (585,802.68 / 3,895,524.87); target 0.28 band 0.05\", \"value\": \"0.1504\", \"source\": \"households/HH-3058/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-3058 Bramwell Devices Group sale proceeds T-3058-0048\", \"value\": \"437776.00\", \"source\": \"households/HH-3058/custodian/transactions.csv\"},\n    {\"label\": \"HH-3462 household total (positions 3,299,418.62 + cash 477,771.30)\", \"value\": \"3777189.92\", \"source\": \"households/HH-3462/custodian/cash.csv\", \"computed\": true},\n    {\"label\": \"HH-3462 Fixed income weight (670,442.44 / 3,777,189.92); target 0.30 band 0.05\", \"value\": \"0.1775\", \"source\": \"households/HH-3462/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-3462 Ellisar Search Holdings sale proceeds T-3462-0048\", \"value\": \"427890.00\", \"source\": \"households/HH-3462/custodian/transactions.csv\"},\n    {\"label\": \"HH-8865 household total (1,150,756.15 + 463,352.52 + cash 13,229.30)\", \"value\": \"1627337.97\", \"source\": \"households/HH-8865/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-8865 US equity weight (1,150,756.15 / 1,627,337.97); target 0.55 band 0.05\", \"value\": \"0.7071\", \"source\": \"households/HH-8865/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-8865 Fixed income weight (463,352.52 / 1,627,337.97); target 0.40 band 0.05\", \"value\": \"0.2847\", \"source\": \"households/HH-8865/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-8312 household total (1,238,774.71 + 464,356.64 + cash 16,006.04)\", \"value\": \"1719137.39\", \"source\": \"households/HH-8312/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-8312 US equity weight (1,238,774.71 / 1,719,137.39); target 0.55 band 0.05\", \"value\": \"0.7206\", \"source\": \"households/HH-8312/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-8312 Fixed income weight (464,356.64 / 1,719,137.39); target 0.40 band 0.05\", \"value\": \"0.2701\", \"source\": \"households/HH-8312/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-9234 household total (1,238,142.65 + 463,865.40 + 113,876.49 + cash 79,985.44)\", \"value\": \"1895869.98\", \"source\": \"households/HH-9234/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-9234 US equity weight (1,238,142.65 / 1,895,869.98); target 0.55 band 0.05\", \"value\": \"0.6531\", \"source\": \"households/HH-9234/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-9234 Fixed income weight (463,865.40 / 1,895,869.98); target 0.30 band 0.05\", \"value\": \"0.2447\", \"source\": \"households/HH-9234/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-9571 household total (1,209,917.68 + 450,808.32 + 104,401.68 + cash 75,298.06)\", \"value\": \"1840425.74\", \"source\": \"households/HH-9571/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-9571 US equity weight (1,209,917.68 / 1,840,425.74); target 0.55 band 0.05\", \"value\": \"0.6574\", \"source\": \"households/HH-9571/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-9571 Fixed income weight (450,808.32 / 1,840,425.74); target 0.30 band 0.05\", \"value\": \"0.2449\", \"source\": \"households/HH-9571/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-5814 household total (895,699.06 + 149,069.70 + 528,288.58 + cash 29,599.08)\", \"value\": \"1602656.42\", \"source\": \"households/HH-5814/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-5814 US equity weight (895,699.06 / 1,602,656.42); target 0.50 band 0.05\", \"value\": \"0.5589\", \"source\": \"households/HH-5814/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-5814 Fixed income weight (528,288.58 / 1,602,656.42); target 0.40 band 0.05\", \"value\": \"0.3296\", \"source\": \"households/HH-5814/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-5271 household total (974,020.24 + 159,950.70 + 562,726.22 + cash 38,806.03)\", \"value\": \"1735503.19\", \"source\": \"households/HH-5271/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-5271 US equity weight (974,020.24 / 1,735,503.19); target 0.50 band 0.05\", \"value\": \"0.5612\", \"source\": \"households/HH-5271/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-5271 Fixed income weight (562,726.22 / 1,735,503.19); target 0.40 band 0.05\", \"value\": \"0.3242\", \"source\": \"households/HH-5271/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-6590 household total (474,773.40 + 383,773.62 + 71,150.46 + cash 15,384.81)\", \"value\": \"945082.29\", \"source\": \"households/HH-6590/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-6590 US equity weight (474,773.40 / 945,082.29); target 0.45 band 0.05\", \"value\": \"0.5024\", \"source\": \"households/HH-6590/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-6590 Fixed income weight (383,773.62 / 945,082.29); target 0.47 band 0.05\", \"value\": \"0.4061\", \"source\": \"households/HH-6590/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-6047 household total (476,167.92 + 366,211.64 + 61,675.65 + cash 18,176.81)\", \"value\": \"922232.02\", \"source\": \"households/HH-6047/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-6047 US equity weight (476,167.92 / 922,232.02); target 0.45 band 0.05\", \"value\": \"0.5163\", \"source\": \"households/HH-6047/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"HH-6047 Fixed income weight (366,211.64 / 922,232.02); target 0.48 band 0.05\", \"value\": \"0.3971\", \"source\": \"households/HH-6047/custodian/positions.csv\", \"computed\": true}\n  ],\n  \"explanation\": \"I calculated every household's single-stock shares and asset-class weights from the 15 April 2026 custodian positions and cash, against its own IPS. Five households hold a stock above their concentration limit and ten have asset classes outside their bands (HH-3058 has both). No CRM in the folder records a client-signed exception for any of them, so all fourteen are listed for review; the other 78 are within their limits and bands, and their individual weights are not listed in the figures above.\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": {
+      "breakdown": [
+        {
+          "detail": "every required field present",
+          "earned": 10,
+          "name": "output_parses",
+          "points": 10
+        },
+        {
+          "detail": "missed none (key finds HH-0221, HH-0376, HH-0816, HH-0984, HH-3058, HH-3462, HH-5271, HH-5814, HH-6047, HH-6590, HH-8312, HH-8865, HH-9234, HH-9571, leaves unresolved none)",
+          "earned": 35,
+          "name": "none_missed",
+          "points": 35
+        },
+        {
+          "detail": "wrongly named none (answer names HH-0221, HH-0376, HH-0816, HH-0984, HH-3058, HH-3462, HH-5271, HH-5814, HH-6047, HH-6590, HH-8312, HH-8865, HH-9234, HH-9571, unresolved none)",
+          "earned": 35,
+          "name": "none_wrongly_named",
+          "points": 35
+        },
+        {
+          "detail": "every household the key finds is named with its evidence",
+          "earned": 20,
+          "name": "evidence",
+          "points": 20
+        }
+      ],
+      "counts": {
+        "correct_unresolved": 0,
+        "false_alarm": 0,
+        "unnecessary_refusal": 0
+      },
+      "critical_fail": "fabricated figure: '$2,232.26' in the answer is in no file and follows from none",
+      "passed": false,
+      "score": 0
+    },
+    "grader_before": "edc3746f1a014c504dc8ed80812854fad1734e49eb84062fb591fab16e7375fb",
+    "utc": "2026-11-19T14:05:25+00:00"
+  },
+  "run_id": "T-CMP-05-skill-20261118T085355Z-abfc",
+  "settings": {
+    "crm_tools": [],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 1
+  },
+  "started_utc": "2026-11-18T08:53:56+00:00",
+  "state": "mapped",
+  "task_id": "T-CMP-05",
+  "token_use": {
+    "cache_creation_input_tokens": 230586,
+    "cache_read_input_tokens": 4888916,
+    "input_tokens": 82,
+    "output_tokens": 55970
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping the compliance function of a small independent advisory firm. The firm is an SEC-registered investment adviser acting as a fiduciary; not a broker-dealer, law firm or CPA firm. Your answer goes to the firm's chief compliance officer as an internal compliance memo: raise what a reviewer should look at, from the records, and draw no legal conclusion.\n\nThe firm's policy: \"A single company's stock (a fund is not one) worth more of a household than its IPS concentration limit allows, or an asset class further from its IPS target than its band allows, each as a share of the household's total value, positions plus cash, needs a documented, client-signed exception recorded in the CRM.\"\n\nThis folder holds the records of every client household of the firm as they stood on 15 April 2026, one folder per household under households/<household ID>/, each with the custodian's files (custodian/), the firm's portfolio system (portfolio/) and its CRM (crm/).\n\nThe chief compliance officer asks: which households, on 15 April 2026, have a single company's stock above their IPS concentration limit, or an asset class outside its IPS band, with no documented exception?\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"found\" if one or more households do, \"none_found\" if none does, or \"unresolved\" if the files settle no household as found and leave some unresolved\n- \"households\": one entry per household that does, each as {\"household_id\": ..., \"above_concentration_limit\": the security IDs of the stocks above the limit, \"outside_band\": the asset classes outside their bands, named as the IPS names them, \"explanation\": one sentence}, or [] if none\n- \"unresolved\": the households the files cannot settle, each as {\"household_id\": ..., \"explanation\": one sentence}, or [] if none\n- \"issues_for_reviewer\": one entry per issue a reviewer should look at, each as {\"issue\": a short title, \"records\": the IDs of the records it rests on (account, security, lot, transaction, CRM activity or document IDs), \"what_the_records_show\": one or two sentences, \"why_the_reviewer_should_look\": one sentence}, or [] if none\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed rather than read\n- \"explanation\": two or three sentences",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40",
+      "--plugin-dir",
+      "skills/indus-advisor"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": "indus-advisor"
+  },
+  "transcript": {
+    "events": 453,
+    "file": "attempt-1.jsonl"
+  }
+}

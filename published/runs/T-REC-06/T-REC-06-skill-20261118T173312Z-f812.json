@@ -1,0 +1,198 @@
+{
+  "arm": "skill",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T17:36:39+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T17:33:13+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": null,
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "book",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T17:36:39+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": {
+    "breakdown": [
+      {
+        "detail": "every required field present",
+        "earned": 10,
+        "name": "output_parses",
+        "points": 10
+      },
+      {
+        "detail": "missed none (key finds none, leaves unresolved none)",
+        "earned": 35,
+        "name": "none_missed",
+        "points": 35
+      },
+      {
+        "detail": "wrongly named none (answer names none, unresolved none)",
+        "earned": 35,
+        "name": "none_wrongly_named",
+        "points": 35
+      },
+      {
+        "detail": "every household the key finds is named with its evidence",
+        "earned": 20,
+        "name": "evidence",
+        "points": 20
+      }
+    ],
+    "counts": {
+      "correct_unresolved": 0,
+      "false_alarm": 0,
+      "unnecessary_refusal": 0
+    },
+    "critical_fail": null,
+    "passed": true,
+    "score": 100
+  },
+  "hashes": {
+    "answer": "b9126dc180f35a88112df5f39f037b1949cfb3d508c5ace1e548ce7433533ff8",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "81b01875655e303fd5ce4e19a657d4bb5397adb8b49d98efb2fe282a700997a6",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "b77a5b69e75322b465bf835815177bd36baa60ced6e1c12811ef31ce53a92976",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "eb4dbd0d36e38edc2608fc19ab8624f76ab2b26f07e8e99317b638c75cec20be"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "I found no disagreement. On 15 April 2026, every household's custodian positions and cash agree with the portfolio system.\n\n**What I checked, for all 92 households**\n- **Dates:** Every portfolio record (`portfolio/positions.json`) is valued and known as of 2026-04-15, on a trade-date basis. On the custodian side, I compared only the rows valued and known on 2026-04-15.\n- **Number of positions:** Each household has the same number of 15 April position rows in both sources, 688 in total.\n- **Cash:** I compared all 278 accounts. Each portfolio cash figure equals the custodian's settled cash for 15 April, and unsettled cash is 0.00 in every account. So the portfolio's trade-date cash and the custodian's settled cash should be the same, and they are.\n- **Positions:** For all 688 positions, the portfolio's market value, price and units each match a custodian figure in the same household. Every 15 April price is one used on the custodian side.\n- **Pending trades:** No trade from early to mid April settles after 15 April. The only April transactions in that window are two withdrawals that settled the same day, so no timing difference applies.\n\n**Things that look odd but aren't discrepancies**\n- A few unit counts are written \"1417.0\" instead of \"1417\" (for example HH-0642 Dunmere Energy Group, HH-0737, HH-0796, HH-0829, HH-8865). Both systems use the same form, so the figures agree.\n- Several accounts hold no positions and 0.00 cash, for example SYN-03470003. Both sources show them the same way.\n\n**One limit on the method:** I matched values within each household, not line by line per account. In theory, two positions recorded under each other's account numbers could slip through. That's unlikely, because the record counts, values, units and prices all reconcile. If you want certainty, the next step is a line-by-line comparison per account.\n\n```json\n{\n  \"finding\": \"none_found\",\n  \"households\": [],\n  \"unresolved\": [],\n  \"figures\": [\n    {\"label\": \"Households reviewed\", \"value\": 92, \"source\": \"households/*/portfolio/positions.json\", \"computed\": true},\n    {\"label\": \"Custodian position rows valued and known 2026-04-15\", \"value\": 688, \"source\": \"households/*/custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Portfolio position records valued and known 2026-04-15\", \"value\": 688, \"source\": \"households/*/portfolio/positions.json\", \"computed\": true},\n    {\"label\": \"Accounts with cash compared on 2026-04-15\", \"value\": 278, \"source\": \"households/*/custodian/cash.csv\", \"computed\": true},\n    {\"label\": \"Portfolio cash figures matching custodian settled cash\", \"value\": 278, \"source\": \"households/*/portfolio/positions.json\", \"computed\": true},\n    {\"label\": \"Portfolio positions whose market value, units and price match the custodian\", \"value\": 688, \"source\": \"households/*/portfolio/positions.json\", \"computed\": true},\n    {\"label\": \"Custodian unsettled cash, every account, 2026-04-15\", \"value\": \"0.00\", \"source\": \"households/*/custodian/cash.csv\"},\n    {\"label\": \"HH-0120 SYN-01200001 settled cash, custodian 2026-04-15\", \"value\": \"13492.08\", \"source\": \"households/HH-0120/custodian/cash.csv\"},\n    {\"label\": \"HH-0120 SYN-01200001 cash, portfolio 2026-04-15\", \"value\": \"13492.08\", \"source\": \"households/HH-0120/portfolio/positions.json\"},\n    {\"label\": \"HH-0120 SYN-01200002 Larkspur Total Market Fund units, custodian 2026-04-15\", \"value\": \"1088\", \"source\": \"households/HH-0120/custodian/positions.csv\"},\n    {\"label\": \"HH-0120 SYN-01200002 Larkspur Total Market Fund units, portfolio 2026-04-15\", \"value\": \"1088\", \"source\": \"households/HH-0120/portfolio/positions.json\"},\n    {\"label\": \"HH-0120 SYN-01200002 Larkspur Total Market Fund market value (1088 x 275.44)\", \"value\": \"299678.72\", \"source\": \"households/HH-0120/custodian/positions.csv\"},\n    {\"label\": \"HH-0642 SYN-06420001 Dunmere Energy Group units, both sources\", \"value\": \"1417.0\", \"source\": \"households/HH-0642/custodian/positions.csv\"}\n  ],\n  \"explanation\": \"For all 92 households, I compared the custodian's 15 April 2026 cash and position rows with the portfolio system's trade-date records for the same date. Record counts, cash for all 278 accounts, and market value, units and price for all 688 positions match. With no unsettled cash and no trades settling after 15 April, there is no timing difference to explain either.\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": {
+      "breakdown": [
+        {
+          "detail": "every required field present",
+          "earned": 10,
+          "name": "output_parses",
+          "points": 10
+        },
+        {
+          "detail": "missed none (key finds none, leaves unresolved none)",
+          "earned": 35,
+          "name": "none_missed",
+          "points": 35
+        },
+        {
+          "detail": "wrongly named none (answer names none, unresolved none)",
+          "earned": 35,
+          "name": "none_wrongly_named",
+          "points": 35
+        },
+        {
+          "detail": "every household the key finds is named with its evidence",
+          "earned": 20,
+          "name": "evidence",
+          "points": 20
+        }
+      ],
+      "counts": {
+        "correct_unresolved": 0,
+        "false_alarm": 0,
+        "unnecessary_refusal": 0
+      },
+      "critical_fail": "fabricated figure: Households reviewed = 92 (cited households/*/portfolio/positions.json)",
+      "passed": false,
+      "score": 0
+    },
+    "grader_before": "0d397af3fc8aae648ffabcbb4b4f46521bf871a94ab37cfaa0606a75c56a6278",
+    "utc": "2026-11-19T14:07:30+00:00"
+  },
+  "run_id": "T-REC-06-skill-20261118T173312Z-f812",
+  "settings": {
+    "crm_tools": [],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "skills_loaded": [
+    "indus-advisor:reconciliation-as-of"
+  ],
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 2
+  },
+  "started_utc": "2026-11-18T17:33:12+00:00",
+  "state": "mapped",
+  "task_id": "T-REC-06",
+  "token_use": {
+    "cache_creation_input_tokens": 148257,
+    "cache_read_input_tokens": 2586790,
+    "input_tokens": 66,
+    "output_tokens": 20258
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping an advisor at a small independent advisory firm. This folder holds the records of every client household of the firm as they stood on 15 April 2026, one folder per household under households/<household ID>/, each with the custodian's files (custodian/) and the firm's portfolio system (portfolio/).\n\nThe advisor asks: which households' custodian positions and cash disagree with the portfolio system on 15 April 2026?\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"found\" if one or more households disagree, \"none_found\" if none does, or \"unresolved\" if the files settle no household as found and leave some unresolved\n- \"households\": one entry per household that disagrees, each as {\"household_id\": ..., \"account_ids\": the accounts that disagree, \"explanation\": one sentence}, or [] if none\n- \"unresolved\": the households the files cannot settle, each as {\"household_id\": ..., \"explanation\": one sentence}, or [] if none\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed rather than read\n- \"explanation\": two or three sentences",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40",
+      "--plugin-dir",
+      "skills/indus-advisor"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": "indus-advisor"
+  },
+  "transcript": {
+    "events": 194,
+    "file": "attempt-1.jsonl"
+  }
+}

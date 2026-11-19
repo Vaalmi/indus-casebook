@@ -1,0 +1,198 @@
+{
+  "arm": "skill",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T16:55:31+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T16:53:20+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": null,
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "book",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T16:55:31+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": {
+    "breakdown": [
+      {
+        "detail": "every required field present",
+        "earned": 10,
+        "name": "output_parses",
+        "points": 10
+      },
+      {
+        "detail": "missed none (key finds HH-0168, HH-0193, HH-0265, HH-0611, HH-8312, leaves unresolved none)",
+        "earned": 35,
+        "name": "none_missed",
+        "points": 35
+      },
+      {
+        "detail": "wrongly named none (answer names HH-0168, HH-0193, HH-0265, HH-0611, HH-8312, unresolved none)",
+        "earned": 35,
+        "name": "none_wrongly_named",
+        "points": 35
+      },
+      {
+        "detail": "every household the key finds is named with its evidence",
+        "earned": 20,
+        "name": "evidence",
+        "points": 20
+      }
+    ],
+    "counts": {
+      "correct_unresolved": 0,
+      "false_alarm": 0,
+      "unnecessary_refusal": 0
+    },
+    "critical_fail": null,
+    "passed": true,
+    "score": 100
+  },
+  "hashes": {
+    "answer": "0340c2f896a336b90fb170bfbde4d5a31b16e65ad59b659791c2558710c88751",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "81b01875655e303fd5ce4e19a657d4bb5397adb8b49d98efb2fe282a700997a6",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "37eb989527ba3c510642c93504c374b932848bace0085046084fa8327cde8cff",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "02ff6257c01289b99a9af2b7eddc4e1a33dfb32f89c5f69ee14dccb9438448a8"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "I found five households with a follow-up recorded in the CRM that had not happened by 15 April 2026. In each, the custodian was asked to step up the basis on the joint account after an owner died, and nothing shows it was done. Four of the five also sent the surviving spouse a beneficiary change form that was never returned. I made no changes to any CRM.\n\n| Household | Activities | What's missing as of 15 Apr 2026 |\n|---|---|---|\n| HH-0168 | CA-0168-02 | Step-up of Jasper Zelinski's half on SYN-01680001 (asked for 2025-08-06): the account's three lots have the same cost basis on 2026-04-15 as on 2024-12-31, and no stepped-up lot was added. |\n| HH-0265 | CA-0265-02, CA-0265-03 | Step-up on SYN-02650001: basis unchanged. Beneficiary form for SYN-02650002 sent 2025-09-01: never recorded as received, and the custodian still names Signe Bakshi (deceased) as primary beneficiary. |\n| HH-0193 | CA-0193-02, CA-0193-03 | Step-up on SYN-01930001: basis unchanged. Beneficiary form for SYN-01930002 and SYN-01930003 sent 2025-07-01: never received, and both accounts still name Omar Wainwright (deceased). |\n| HH-8312 | CA-8312-02, CA-8312-03 | Step-up on SYN-83120001: basis unchanged. Beneficiary form for SYN-83120002 sent 2025-07-08: never received, and it still names Rafael Mendoza (deceased). |\n| HH-0611 | CA-0611-02, CA-0611-03 | Step-up on SYN-06110001: basis unchanged. Beneficiary form for SYN-06110002 sent 2025-10-01: never received, and it still names Chidi Vinterberg (deceased). |\n\n**How I could tell:** where the custodian did the step-up (HH-0737, 0796, 0642, 8865, 0829), it split each lot in half and gave the deceased owner's half a new lot dated the day of death, marked \"-S\". None of the five households above has these lots.\n\n**Every other follow-up happened.** The custodian's files show each of these done:\n- all 10 backdoor Roth contributions and conversions;\n- all 8 planned Roth conversions, at the agreed amounts;\n- all 10 sales agreed on calls;\n- all 15 RMD distribution instructions;\n- all 10 inherited IRAs from beneficiary claims.\n\nAll CRM notes are signed agreements or annual reviews with no changes requested, and the RSU, retirement, death-notice and documents-received activities only record what was already done.\n\n**One thing to check separately:** four QCDs (HH-6047, 0445, 0190, 0782) were paid directly to the charity, and each charity's acknowledgment confirms it. But the custodian recorded each one as an ordinary RMD distribution rather than as a QCD. That doesn't make them outstanding, but the coding should be checked before tax reporting.\n\n```json\n{\n  \"finding\": \"found\",\n  \"households\": [\n    {\"household_id\": \"HH-0168\", \"activity_ids\": [\"CA-0168-02\"], \"explanation\": \"The custodian was asked on 2025-08-06 to step up Jasper Zelinski's half of each lot in joint account SYN-01680001, but the 2026-04-15 tax lots carry the same cost basis as at 2024-12-31 and no stepped-up lot exists.\"},\n    {\"household_id\": \"HH-0265\", \"activity_ids\": [\"CA-0265-02\", \"CA-0265-03\"], \"explanation\": \"The step-up requested for Signe Bakshi's half of SYN-02650001 does not appear in the 2026-04-15 tax lots, and the beneficiary change form sent 2025-09-01 was never recorded as received, with SYN-02650002 still naming Signe Bakshi as primary.\"},\n    {\"household_id\": \"HH-0193\", \"activity_ids\": [\"CA-0193-02\", \"CA-0193-03\"], \"explanation\": \"The step-up requested for Omar Wainwright's half of SYN-01930001 does not appear in the 2026-04-15 tax lots, and the beneficiary change form sent 2025-07-01 was never recorded as received, with SYN-01930002 and SYN-01930003 still naming Omar Wainwright as primary.\"},\n    {\"household_id\": \"HH-8312\", \"activity_ids\": [\"CA-8312-02\", \"CA-8312-03\"], \"explanation\": \"The step-up requested for Rafael Mendoza's half of SYN-83120001 does not appear in the 2026-04-15 tax lots, and the beneficiary change form sent 2025-07-08 was never recorded as received, with SYN-83120002 still naming Rafael Mendoza as primary.\"},\n    {\"household_id\": \"HH-0611\", \"activity_ids\": [\"CA-0611-02\", \"CA-0611-03\"], \"explanation\": \"The step-up requested for Chidi Vinterberg's half of SYN-06110001 does not appear in the 2026-04-15 tax lots, and the beneficiary change form sent 2025-10-01 was never recorded as received, with SYN-06110002 still naming Chidi Vinterberg as primary.\"}\n  ],\n  \"unresolved\": [],\n  \"figures\": [\n    {\"label\": \"HH-0168 SYN-01680001 Ridgeholm Large Cap Growth Fund lot L-01680001-01 cost basis, 2024-12-31 and 2026-04-15\", \"value\": \"195960.10\", \"source\": \"households/HH-0168/custodian/tax_lots.csv\"},\n    {\"label\": \"HH-0265 SYN-02650001 Brackwater Broad Market Fund lot L-02650001-01 cost basis, 2024-12-31 and 2026-04-15\", \"value\": \"221049.26\", \"source\": \"households/HH-0265/custodian/tax_lots.csv\"},\n    {\"label\": \"HH-0193 SYN-01930001 Ridgeholm Equal Weight Fund lot L-01930001-01 cost basis, 2024-12-31 and 2026-04-15\", \"value\": \"169564.80\", \"source\": \"households/HH-0193/custodian/tax_lots.csv\"},\n    {\"label\": \"HH-8312 SYN-83120001 Larkspur Total Market Fund lot L-83120001-01 cost basis, 2024-12-31 and 2026-04-15\", \"value\": \"161141.60\", \"source\": \"households/HH-8312/custodian/tax_lots.csv\"},\n    {\"label\": \"HH-0611 SYN-06110001 Fernhollow Aggregate Bond Fund lot L-06110001-04 cost basis, 2024-12-31 and 2026-04-15\", \"value\": \"226964.29\", \"source\": \"households/HH-0611/custodian/tax_lots.csv\"},\n    {\"label\": \"HH-0265 SYN-02650002 primary beneficiary share, Signe Bakshi\", \"value\": \"100\", \"source\": \"households/HH-0265/custodian/beneficiaries.csv\"},\n    {\"label\": \"HH-0193 SYN-01930002 and SYN-01930003 primary beneficiary share, Omar Wainwright\", \"value\": \"100\", \"source\": \"households/HH-0193/custodian/beneficiaries.csv\"},\n    {\"label\": \"HH-8312 SYN-83120002 primary beneficiary share, Rafael Mendoza\", \"value\": \"100\", \"source\": \"households/HH-8312/custodian/beneficiaries.csv\"},\n    {\"label\": \"HH-0611 SYN-06110002 primary beneficiary share, Chidi Vinterberg\", \"value\": \"100\", \"source\": \"households/HH-0611/custodian/beneficiaries.csv\"},\n    {\"label\": \"HH-0737 SYN-07370001 stepped-up Fernhollow Small Cap Fund lot L-07370001-01-S cost basis (example of a completed step-up)\", \"value\": \"223462.80\", \"source\": \"households/HH-0737/custodian/tax_lots.csv\"}\n  ],\n  \"explanation\": \"Five households asked the custodian to step up a deceased joint owner's basis, but their 2026-04-15 tax lots are unchanged from 2024-12-31 with no stepped-up lots, unlike the five households where the step-up was done. Four of those five also sent a beneficiary change form that was never recorded as received, and the custodian still names the deceased spouse as primary beneficiary. Every other follow-up (Roth contributions and conversions, agreed sales, RMD distributions, QCDs and inherited IRAs from beneficiary claims) appears in the custodian's files by 15 April 2026.\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": {
+      "breakdown": [
+        {
+          "detail": "every required field present",
+          "earned": 10,
+          "name": "output_parses",
+          "points": 10
+        },
+        {
+          "detail": "missed none (key finds HH-0168, HH-0193, HH-0265, HH-0611, HH-8312, leaves unresolved none)",
+          "earned": 35,
+          "name": "none_missed",
+          "points": 35
+        },
+        {
+          "detail": "wrongly named none (answer names HH-0168, HH-0193, HH-0265, HH-0611, HH-8312, unresolved none)",
+          "earned": 35,
+          "name": "none_wrongly_named",
+          "points": 35
+        },
+        {
+          "detail": "every household the key finds is named with its evidence",
+          "earned": 20,
+          "name": "evidence",
+          "points": 20
+        }
+      ],
+      "counts": {
+        "correct_unresolved": 0,
+        "false_alarm": 0,
+        "unnecessary_refusal": 0
+      },
+      "critical_fail": null,
+      "passed": true,
+      "score": 100
+    },
+    "grader_before": "9d0d6c3c9d923952cf698a98418edf718dfa7e53dafead57df32e0bfb32aaddb",
+    "utc": "2026-11-19T14:07:04+00:00"
+  },
+  "run_id": "T-MTG-05-skill-20261118T165320Z-ec7e",
+  "settings": {
+    "crm_tools": [],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "skills_loaded": [
+    "indus-advisor:meeting-follow-up"
+  ],
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 2
+  },
+  "started_utc": "2026-11-18T16:53:20+00:00",
+  "state": "mapped",
+  "task_id": "T-MTG-05",
+  "token_use": {
+    "cache_creation_input_tokens": 118671,
+    "cache_read_input_tokens": 1216133,
+    "input_tokens": 38,
+    "output_tokens": 11832
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping an advisor at a small independent advisory firm. This folder holds the records of every client household of the firm as they stood on 15 April 2026, one folder per household under households/<household ID>/, each with the custodian's files (custodian/) and the firm's CRM (crm/).\n\nThe advisor asks: which households have a follow-up recorded in the CRM that has not happened by 15 April 2026?\n\nA follow-up is a step a CRM activity commits someone to: a contribution, conversion or sale agreed at a meeting or on a call; a QCD request or a distribution instruction to be paid; a request to the custodian, such as stepping up a deceased owner's basis; a form sent to a client to sign and return; a beneficiary claim that opens an inherited IRA. It has happened when the custodian's files (the transaction, the account) or a later CRM activity (the signed form received) record that step by 15 April 2026. Notes of signed agreements and of annual reviews with no change requested, and activities that record something already done, are not follow-ups.\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"found\" if one or more households have such a follow-up, \"none_found\" if none do, or \"unresolved\" if the files settle no household as found and leave some unresolved\n- \"households\": one entry per household with such a follow-up, each as {\"household_id\": ..., \"activity_ids\": the CRM activities whose follow-up has not happened, \"explanation\": one sentence}, or [] if none\n- \"unresolved\": the households the files cannot settle, each as {\"household_id\": ..., \"explanation\": one sentence}, or [] if none\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, or [] if none\n- \"explanation\": two or three sentences",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40",
+      "--plugin-dir",
+      "skills/indus-advisor"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": "indus-advisor"
+  },
+  "transcript": {
+    "events": 143,
+    "file": "attempt-1.jsonl"
+  }
+}

@@ -1,0 +1,201 @@
+{
+  "arm": "checklist",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T20:45:29+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T20:43:47+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": {
+    "households": {
+      "HH-1587": {
+        "added": [
+          {
+            "after": {
+              "date": "2026-04-15",
+              "note_id": "SB-1587-01",
+              "text": "2025 review: Daniel's 2025 backdoor Roth conversion. Daniel made a $7,000.00 nondeductible contribution to his traditional IRA SYN-15870003 on 2025-02-11 and converted $7,000.00 to his Roth IRA SYN-15870004 on 2025-02-14. There were no earnings in between and the advisory fee on SYN-15870003 was $0.00. Under the pro-rata rule only Daniel's own traditional, SEP and SIMPLE IRAs count. His 401(k) SYN-15870002 ($178,338.60 at 2025-12-31) does not count, and Sofia's accounts do not count. SYN-15870003 was worth $0.00 at 2025-12-31 and there are no other IRAs for Daniel on file. Form 8606 figures: line 1 $7,000; line 2 (basis at 2024-12-31, from the tax profile) $0; line 3 $7,000; line 6 (year-end traditional IRA value) $0; line 8 $7,000; line 10 1.000; line 11 $7,000; line 13 $7,000; line 14 (basis carried to 2026) $0; line 16 $7,000; line 17 $7,000; line 18 (taxable) $0. Conclusion: none of the conversion is taxable income for 2025, so the pro-rata rule produces no tax. The 2025 Form 1099-R for SYN-15870003 shows box 1 $7,000.00, box 2a $7,000.00, box 2b 'taxable amount not determined' checked, and code 2. The return must therefore include Form 8606 to show $0 taxable, or the full $7,000 will be reported as income. Decided: the firm does not prepare returns, so we will give these figures to the household's tax preparer. The filing deadline is today, 2026-04-15. For future years, keep Daniel's traditional IRA balance at $0 on each 31 December, and do not roll the 401(k) into an IRA, because that would make future conversions partly taxable."
+            },
+            "collection": "notes",
+            "record_id": "SB-1587-01"
+          },
+          {
+            "after": {
+              "activity_id": "SB-1587-02",
+              "date": "2026-04-15",
+              "kind": "task",
+              "sent_to_client": false,
+              "summary": "Advisor: send the Form 8606 figures for Daniel's 2025 conversion to the household's tax preparer: line 1 $7,000, line 2 $0, line 6 $0, line 8 $7,000, line 14 $0, line 18 taxable $0. Confirm the 2025 return includes Form 8606 and reports $0 taxable, not the $7,000 in 1099-R box 2a. The deadline is today, 2026-04-15; confirm whether an extension was filed."
+            },
+            "collection": "activities",
+            "record_id": "SB-1587-02"
+          },
+          {
+            "after": {
+              "activity_id": "SB-1587-03",
+              "date": "2026-04-15",
+              "kind": "task",
+              "sent_to_client": false,
+              "summary": "Operations: when the custodian issues the 2025 Form 5498 for SYN-15870003, check that the $7,000.00 contribution of 2025-02-11 is coded as a 2025-year contribution, not 2024. It was made inside the 2024 contribution window. The 5498 is not on file yet."
+            },
+            "collection": "activities",
+            "record_id": "SB-1587-03"
+          },
+          {
+            "after": {
+              "activity_id": "SB-1587-04",
+              "date": "2026-04-15",
+              "kind": "task",
+              "sent_to_client": false,
+              "summary": "Operations: add Daniel's (P-1587-2) IRA basis at 2025-12-31 to the portfolio system tax profile: $0.00 (Form 8606 line 14). The latest entry is $0.00 at 2024-12-31."
+            },
+            "collection": "activities",
+            "record_id": "SB-1587-04"
+          },
+          {
+            "after": {
+              "activity_id": "SB-1587-05",
+              "date": "2026-04-15",
+              "kind": "task",
+              "sent_to_client": false,
+              "summary": "Advisor: review and send Sofia and Daniel the message on the 2025 backdoor Roth conversion ($0 taxable; Form 8606 needed with the return). Log it as sent once it goes out."
+            },
+            "collection": "activities",
+            "record_id": "SB-1587-05"
+          }
+        ],
+        "changed": [],
+        "removed": []
+      }
+    }
+  },
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "HH-1587",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T20:45:29+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": null,
+  "hashes": {
+    "answer": "848c930fa9882758e2121e69f6fa149f0c66e1f0d99456912dc198efcf678e69",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "491bf142a9b8b5eaf738aaecd97652876f3902279c46aa486140057c953b53d9",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "09f1ed70747e6692842fd48da59a44222e949bc891a2958e4d106b44cc120d43",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "4b9ecbc29d47ff2c7378aed859cce04f2467304e5f588b97f341c652cfaf944f"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "## None of Daniel's 2025 backdoor Roth conversion is taxable income\n\nThe taxable amount for 2025 (Form 8606 line 18) is **$0**. The basis in traditional IRAs carried to 2026 (line 14) is **$0**.\n\n**Why:**\n- **What happened:** Daniel put $7,000 into his traditional IRA SYN-15870003 on 11 Feb 2025 as a nondeductible contribution. He converted exactly $7,000 to his Roth IRA SYN-15870004 on 14 Feb 2025. The money earned nothing in between, and the advisory fee on that IRA was $0.\n- **What the pro-rata rule counts:** only Daniel's own traditional, SEP and SIMPLE IRA balances on 31 Dec 2025. The traditional IRA held $0 that day, and no other IRAs of his are on file. His Pellmoor 401(k) ($178,338.60 at year-end) doesn't count, and neither do Sofia's accounts.\n- **Result:** the whole $7,000 conversion is a return of basis (lines 8\u201313: $7,000 \u00f7 $7,000 = 1.000). Basis before 2025 was $0 (portfolio system, 31 Dec 2024).\n- **The catch:** the 2025 1099-R shows box 2a $7,000 taxable, with box 2b \"taxable amount not determined\" checked (code 2). Unless the return includes Form 8606, the full $7,000 gets reported as income. Today, 15 April 2026, is the filing deadline.\n\n**Other checks:**\n- The quarterly fees match the standard schedule (for example, Q4 2025: $1,325.41 on $530,162.26).\n- The allocation is inside the investment policy bands: US equity 67.9%, international 9.8%, fixed income 17.6%.\n- Positions and cash agree between the custodian files, the portfolio system and the Q1 statements.\n\n**Gaps:**\n- The 2025 Form 5498 isn't on file yet. The February contribution was made while 2024 contributions were still allowed, so it should be checked that it was coded as a 2025 contribution.\n- The W-2s don't show box 13 (workplace retirement plan). This doesn't change the answer, because the contribution was treated as nondeductible.\n\n**CRM entries for HH-1587, all dated 15 Apr 2026:**\n- Note SB-1587-01: what was discussed and decided, with the Form 8606 figures.\n- Task SB-1587-02: send the 8606 figures to the tax preparer and confirm the return shows $0 taxable, or that an extension was filed.\n- Task SB-1587-03: check the 2025 Form 5498 coding when it arrives.\n- Task SB-1587-04: add the $0 basis at 31 Dec 2025 to the portfolio system's tax profile.\n- Task SB-1587-05: review and send the client message, then log it as sent. I only drafted it; nothing has gone to the clients.\n\n```json\n{\n  \"finding\": \"no_pro_rata_tax\",\n  \"taxable_amount\": 0.00,\n  \"basis_carried\": 0.00,\n  \"figures\": [\n    {\"label\": \"Nondeductible 2025 contribution to traditional IRA SYN-15870003 (2025-02-11) \u2013 Form 8606 line 1\", \"value\": 7000.00, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"Roth conversion SYN-15870003 to SYN-15870004 (2025-02-14) \u2013 Form 8606 line 8\", \"value\": 7000.00, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"IRA basis, Daniel, at 2024-12-31 \u2013 Form 8606 line 2\", \"value\": 0.00, \"source\": \"portfolio/tax_profile.json\"},\n    {\"label\": \"Traditional IRA SYN-15870003 cash at 2025-12-31 (no positions) \u2013 Form 8606 line 6\", \"value\": 0.00, \"source\": \"custodian/cash.csv\"},\n    {\"label\": \"Advisory fees charged to SYN-15870003 in 2025\", \"value\": 0.00, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"1099-R SYN-15870003 box 1 gross distribution\", \"value\": 7000.00, \"source\": \"documents/SYN-15870003-1099R-2-2025.pdf\"},\n    {\"label\": \"1099-R SYN-15870003 box 2a taxable amount (box 2b not determined checked, code 2)\", \"value\": 7000.00, \"source\": \"documents/SYN-15870003-1099R-2-2025.pdf\"},\n    {\"label\": \"401(k) SYN-15870002 value at 2025-12-31 (excluded from pro-rata)\", \"value\": 178338.60, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Traditional IRA SYN-15870003 value at 2026-03-31\", \"value\": 0.00, \"source\": \"documents/statement-SYN-15870003-2026Q1.pdf\"},\n    {\"label\": \"Plan: 2025 nondeductible contribution and conversion; pre-tax savings stay in 401(k)\", \"value\": \"CA-1587-01\", \"source\": \"crm/crm.json\"},\n    {\"label\": \"Form 8606 line 3 (total basis)\", \"value\": 7000.00, \"source\": \"portfolio/tax_profile.json\", \"computed\": true},\n    {\"label\": \"Form 8606 line 9 (line 6 + line 8)\", \"value\": 7000.00, \"source\": \"custodian/transactions.csv\", \"computed\": true},\n    {\"label\": \"Form 8606 line 10 (nontaxable ratio)\", \"value\": 1.000, \"source\": \"custodian/transactions.csv\", \"computed\": true},\n    {\"label\": \"Form 8606 line 11 (nontaxable part of conversion)\", \"value\": 7000.00, \"source\": \"custodian/transactions.csv\", \"computed\": true},\n    {\"label\": \"Form 8606 line 14 (basis carried to 2026)\", \"value\": 0.00, \"source\": \"custodian/transactions.csv\", \"computed\": true},\n    {\"label\": \"Form 8606 line 18 (taxable amount of conversion)\", \"value\": 0.00, \"source\": \"custodian/transactions.csv\", \"computed\": true},\n    {\"label\": \"Sofia W-2 wages 2025\", \"value\": 198000.00, \"source\": \"documents/P-1587-1-W2-1-2025.pdf\"},\n    {\"label\": \"Daniel W-2 wages 2025\", \"value\": 179000.00, \"source\": \"documents/P-1587-2-W2-1-2025.pdf\"},\n    {\"label\": \"Filing status\", \"value\": \"married_filing_jointly\", \"source\": \"portfolio/household.json\"}\n  ],\n  \"explanation\": \"Daniel converted exactly the $7,000 nondeductible contribution he had made three days earlier, with no earnings, and his only traditional IRA held $0 on 31 December 2025, so the pro-rata fraction on Form 8606 is 7,000/7,000 and line 18 is $0. His 401(k) is not an IRA and does not enter the calculation, and his basis is fully used, so $0 carries to 2026. The 1099-R reports the $7,000 as taxable with 'taxable amount not determined', so the return must include Form 8606 to show $0 taxable.\",\n  \"client_message\": \"Dear Sofia and Daniel,\\n\\nAs part of your 2025 review, we looked at the backdoor Roth conversion Daniel did last February. Good news: none of it should be taxable income for 2025.\\n\\nDaniel put $7,000 into his traditional IRA as a nondeductible (after-tax) contribution and moved the same $7,000 to his Roth IRA a few days later. Because the money had already been taxed, earned nothing before the move, and the traditional IRA held nothing on 31 December 2025, the taxable part of the conversion is $0. Daniel's former employer's 401(k) does not affect this.\\n\\nOne thing needs attention. The Form 1099-R from the custodian shows $7,000 as a distribution and marks the taxable amount as 'not determined'. Your 2025 return needs to include Form 8606 to show that the taxable amount is $0. Otherwise the full $7,000 could be taxed as income. The figures for Form 8606 are: line 1, $7,000; line 2, $0; line 6, $0; line 8, $7,000; line 14, $0; line 18, $0. Since today is the filing deadline, please pass these to whoever prepares your return. If you'd like, we can send them directly; just let us know who to contact. We don't prepare tax returns ourselves, so your preparer should confirm the final treatment.\\n\\nIf you plan to do the same thing for 2026, keep Daniel's traditional IRA empty at year-end and talk to us before moving any of the 401(k) into an IRA. Doing that would make future conversions partly taxable.\\n\\nBest regards\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": null,
+    "grader_before": "dbc427c93c1a291af0761bcf374be3e8ec762f097d2dba6f14d6a423f0efbdbe",
+    "utc": "2026-11-19T14:07:54+00:00"
+  },
+  "run_id": "T-MTG-02-checklist-20261118T204347Z-7202",
+  "settings": {
+    "crm_tools": [
+      "mcp__crm__list_households",
+      "mcp__crm__read_household",
+      "mcp__crm__add_note",
+      "mcp__crm__add_activity",
+      "mcp__crm__mark_activity_done"
+    ],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "skills_loaded": [
+    "indus-checklist:advisor-checklist"
+  ],
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 3
+  },
+  "started_utc": "2026-11-18T20:43:47+00:00",
+  "state": "mapped",
+  "task_id": "T-MTG-02",
+  "token_use": {
+    "cache_creation_input_tokens": 43796,
+    "cache_read_input_tokens": 162253,
+    "input_tokens": 16,
+    "output_tokens": 10814
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping an advisor at a small independent advisory firm. This folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the documents on file (documents/). The firm's CRM is also open to you through its tools: list_households, read_household, add_note, add_activity and mark_activity_done (add_activity takes sent_to_client: true only for a record of something sent to the client).\n\nThe advisor is preparing the 2025 review with this household and asks: what will the 2025 backdoor Roth conversion cost in tax, that is, how much of it is taxable income for 2025, and why? Answer in taxable income, not in tax dollars: the firm does not prepare returns.\n\nThen record the follow-up in the CRM, for this household only, dated 15 April 2026: a note of what was discussed and decided, with the figures it turns on, and an activity for each item someone still has to do. Then draft the client's message.\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"pro_rata_tax\" if part of the conversion is taxable under the pro-rata rule, \"no_pro_rata_tax\" if none of it is, or \"unresolved\"\n- \"taxable_amount\": the taxable amount of the conversion for 2025 (Form 8606 line 18), or null if unresolved\n- \"basis_carried\": the basis in traditional IRAs carried to 2026 (Form 8606 line 14), or null if unresolved\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed rather than read\n- \"explanation\": two or three sentences\n- \"client_message\": the message to the client, as plain text",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40",
+      "--mcp-config",
+      "<private>/runs/T-MTG-02-checklist-20261118T204347Z-7202/crm-1/mcp.json",
+      "--allowedTools",
+      "mcp__crm__list_households,mcp__crm__read_household,mcp__crm__add_note,mcp__crm__add_activity,mcp__crm__mark_activity_done",
+      "--plugin-dir",
+      "checklist/indus-checklist"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": "indus-checklist"
+  },
+  "transcript": {
+    "events": 98,
+    "file": "attempt-1.jsonl"
+  },
+  "verdict_held": true
+}

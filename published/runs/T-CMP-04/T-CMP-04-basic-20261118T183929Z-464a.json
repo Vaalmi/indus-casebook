@@ -1,0 +1,125 @@
+{
+  "arm": "basic",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T18:40:15+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T18:39:29+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": null,
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "HH-4633",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T18:40:15+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": null,
+  "hashes": {
+    "answer": "b9b134a0d3d48cf264bb11412600e259dd36a073023c791671bf4136e8ea096d",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "81b01875655e303fd5ce4e19a657d4bb5397adb8b49d98efb2fe282a700997a6",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "ff7815cda07d1ac35eabb9561dd898b7189537e188bdda49131df694cd46eb7d",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "61c7797975249774d4f2b533c2e732fbf708fefb3c4a86a3689b893dd828ccd1"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "**To:** Chief Compliance Officer\n**Re:** Halloran-Mendes household (HH-4633). Whether the 2025 Roth conversion's taxable amount is documented\n**Records as of:** 15 April 2026\n\n**Bottom line:** No. Under firm policy the records don't settle the taxable amount. The $60,000 converted is documented. The after-tax basis behind it is not: the client says she has basis, nothing on file backs it, and nothing on file rules it out either.\n\n**What the records show**\n\n1. **The amount converted is $60,000.00 and is documented.** On 7 Nov 2025, $60,000.00 moved from the traditional IRA SYN-46330002 to the Roth IRA SYN-46330003 (transaction T-4633-0028). The custodian's 2025 Form 1099-R (D-SYN-46330002-1099R-7-2025) matches: Box 1 is $60,000.00, Box 2a is $60,000.00 and the code is 7.\n2. **The custodian did not determine the taxable amount.** Box 2b (\"taxable amount not determined\") is checked on the 1099-R. So the $60,000.00 in Box 2a is the gross amount, not a figure the custodian worked out. It can't serve alone as the taxable amount where basis may exist.\n3. **The client claims basis that no Form 8606 supports.** At the 21 Oct 2025 planning meeting (CA-4633-02), Beatriz said she made nondeductible IRA contributions in the late 1990s. The note records that no Form 8606 is on file with the firm or with her current preparer, and that she would look for her returns from those years. No later CRM entry records a follow-up, and the conversion went ahead 17 days later.\n4. **The 2024 return is mentioned but isn't in the document store.** CA-4633-01 (23 Apr 2025) says her 2024 Form 1040 was received, reports no IRA basis and has no Form 8606 attached. That return doesn't appear in `documents/index.json`. Even taken at face value, a return without an 8606 doesn't rule out basis from earlier years, and the policy says such basis is \"neither assumed nor ruled out.\"\n5. **The portfolio system shows $0.00 basis with no source document.** `portfolio/tax_profile.json` records IRA basis of 0.00 at 31 Dec 2024. It was entered on 15 Apr 2025, which is before the 2024 return was logged and six months before the client raised her claim. It was never revisited. If a report pulled this figure, it would present a taxable amount of $60,000 as documented when it isn't.\n6. **A basis split would need one more figure.** If a basis is later documented, splitting the conversion into taxable and non-taxable parts would also need the IRA's value at 31 Dec 2025. The only IRA statement on file is for Q1 2026 (D-SYN-46330002-2026Q1).\n\n**Suggested next steps for the reviewer:** don't report a taxable amount yet. Get the client's 1990s returns and Forms 8606, or a written confirmation of basis from her preparer backed by those forms. Then correct or annotate the $0.00 basis in the tax profile.\n\n```json\n{\n  \"finding\": \"unresolved\",\n  \"converted\": 60000.00,\n  \"basis_on_file\": null,\n  \"taxable_amount\": null,\n  \"issues_for_reviewer\": [\n    {\n      \"issue\": \"Claimed nondeductible IRA basis with no Form 8606 on file\",\n      \"records\": [\"CA-4633-02\", \"SYN-46330002\", \"T-4633-0028\"],\n      \"what_the_records_show\": \"At the 2025-10-21 planning meeting the client said she made nondeductible traditional IRA contributions in the late 1990s, and the note records that no Form 8606 is on file with the firm or her preparer. No later CRM activity records the returns being found before or after the 2025-11-07 conversion.\",\n      \"why_the_reviewer_should_look\": \"Under firm policy a claimed basis without a Form 8606 or return is neither assumed nor ruled out, so the conversion's taxable amount cannot be settled from the records.\"\n    },\n    {\n      \"issue\": \"Form 1099-R taxable amount not determined\",\n      \"records\": [\"D-SYN-46330002-1099R-7-2025\", \"SYN-46330002\"],\n      \"what_the_records_show\": \"The 2025 Form 1099-R shows Box 1 and Box 2a both at $60,000.00, with Box 2b (taxable amount not determined) checked.\",\n      \"why_the_reviewer_should_look\": \"Box 2a reflects the gross amount, not a custodian determination, so it cannot stand alone as the taxable amount where basis may exist.\"\n    },\n    {\n      \"issue\": \"Portfolio tax profile shows $0.00 IRA basis with no supporting document\",\n      \"records\": [\"P-4633-1\", \"CA-4633-01\", \"CA-4633-02\"],\n      \"what_the_records_show\": \"tax_profile.json records IRA basis of 0.00 at 2024-12-31, entered 2025-04-15, before the 2024 return was logged (2025-04-23) and before the client's basis claim (2025-10-21). It was not updated afterward.\",\n      \"why_the_reviewer_should_look\": \"A report drawing on this field would present $60,000 as the documented taxable amount when the policy treats basis as undocumented and not ruled out.\"\n    },\n    {\n      \"issue\": \"2024 Form 1040 cited in CRM but not in the document store\",\n      \"records\": [\"CA-4633-01\"],\n      \"what_the_records_show\": \"The CRM says the 2024 Form 1040 was received, reports no IRA basis and has no Form 8606 attached, but no such document appears in documents/index.json.\",\n      \"why_the_reviewer_should_look\": \"The policy requires tax figures to rest on documents on file, and a return without an 8606 does not by itself rule out basis from earlier years.\"\n    }\n  ],\n  \"figures\": [\n    {\"label\": \"Roth conversion out of traditional IRA SYN-46330002 (T-4633-0028)\", \"value\": -60000.00, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"Roth conversion into Roth IRA SYN-46330003 (T-4633-0028)\", \"value\": 60000.00, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"Form 1099-R Box 1 gross distribution\", \"value\": 60000.00, \"source\": \"documents/SYN-46330002-1099R-7-2025.pdf\"},\n    {\"label\": \"Form 1099-R Box 2a taxable amount\", \"value\": 60000.00, \"source\": \"documents/SYN-46330002-1099R-7-2025.pdf\"},\n    {\"label\": \"Form 1099-R Box 2b taxable amount not determined\", \"value\": \"checked\", \"source\": \"documents/SYN-46330002-1099R-7-2025.pdf\"},\n    {\"label\": \"Form 1099-R Box 7 distribution code\", \"value\": \"7\", \"source\": \"documents/SYN-46330002-1099R-7-2025.pdf\"},\n    {\"label\": \"Portfolio-system IRA basis at 2024-12-31 (unsupported)\", \"value\": 0.00, \"source\": \"portfolio/tax_profile.json\"},\n    {\"label\": \"Planned conversion amount per planning meeting CA-4633-02\", \"value\": 60000.00, \"source\": \"crm/crm.json\"}\n  ],\n  \"explanation\": \"The $60,000.00 converted on 2025-11-07 is documented by the custodian's transaction record and the 2025 Form 1099-R, but Box 2b is checked, so the custodian did not determine the taxable amount. The client claims after-tax basis from 1990s nondeductible contributions, and no Form 8606 or return carrying it is on file. The portfolio system's $0.00 basis has no supporting document, so under firm policy the basis is neither assumed nor ruled out and the taxable amount stays unresolved.\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": null,
+    "grader_before": "fbd339bc0bbeb81aa03005a43080853c4979bb7979cb01df5f22ba826f2c5b26",
+    "utc": "2026-11-19T14:07:39+00:00"
+  },
+  "run_id": "T-CMP-04-basic-20261118T183929Z-464a",
+  "settings": {
+    "crm_tools": [],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "skills_loaded": [],
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 3
+  },
+  "started_utc": "2026-11-18T18:39:29+00:00",
+  "state": "mapped",
+  "task_id": "T-CMP-04",
+  "token_use": {
+    "cache_creation_input_tokens": 19646,
+    "cache_read_input_tokens": 41364,
+    "input_tokens": 8,
+    "output_tokens": 4988
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping the compliance function of a small independent advisory firm. The firm is an SEC-registered investment adviser acting as a fiduciary; not a broker-dealer, law firm or CPA firm. Your answer goes to the firm's chief compliance officer as an internal compliance memo: raise what a reviewer should look at, from the records, and draw no legal conclusion.\n\nThe firm's policy: \"A tax figure the firm reports or gives a client must rest on documents on file. A Roth conversion's taxable amount rests on the Form 1099-R and, where the owner has after-tax basis in traditional IRAs, on the prior year's Form 8606 or the return that carries it. A basis the client claims with no Form 8606 or return behind it is not documented, and is neither assumed nor ruled out.\"\n\nThis folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the documents on file (documents/).\n\nThe chief compliance officer asks: is this household's 2025 Roth conversion documented well enough to report its taxable amount, and if it is, what is the taxable amount?\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"documented\" if the records on file settle the conversion's taxable amount, or \"unresolved\" if they do not\n- \"converted\": the amount converted to a Roth IRA in 2025\n- \"basis_on_file\": the after-tax basis in the owner's traditional IRAs carried from 2024 (Form 8606 line 2) that the records document, or null if unresolved\n- \"taxable_amount\": the taxable part of the conversion, or null if unresolved\n- \"issues_for_reviewer\": one entry per issue a reviewer should look at, each as {\"issue\": a short title, \"records\": the IDs of the records it rests on (account, security, lot, transaction, CRM activity or document IDs), \"what_the_records_show\": one or two sentences, \"why_the_reviewer_should_look\": one sentence}, or [] if none\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed rather than read\n- \"explanation\": two or three sentences",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": null
+  },
+  "transcript": {
+    "events": 40,
+    "file": "attempt-1.jsonl"
+  },
+  "verdict_held": true
+}

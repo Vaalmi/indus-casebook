@@ -1,0 +1,125 @@
+{
+  "arm": "basic",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T17:20:30+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T17:19:44+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": null,
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "HH-6047",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T17:20:30+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": null,
+  "hashes": {
+    "answer": "1cffef4824fda827b4d17c74a66a1d95b416869c5395f3ee69fb0ce5b0cfaa23",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "81b01875655e303fd5ce4e19a657d4bb5397adb8b49d98efb2fe282a700997a6",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "39ddcf0cf384d36c3fb5d2fdc86a47123241dea8a07e4d415692f8bf4c8beb83",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "f74aadf35ab89cf65629564ea1c46f29a788641772284d1f4034586988b18668"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "The records disagree about one distribution. In the end it doesn't change the RMD result: the 2025 RMD was met exactly.\n\n**What the custodian shows (IRA SYN-60470002, Bernard's only traditional IRA)**\n- 2025-09-15: DISTRIBUTION of \u2212$12,000.00, described as \"Required minimum distribution for 2025, $0.00 federal tax withheld\" (`custodian/transactions.csv`, T-6047-0016).\n- 2025-11-18: DISTRIBUTION of \u2212$9,659.73, with $965.97 federal tax withheld (T-6047-0024).\n- Total: $21,659.73. The 2025 Form 1099-R reports the same figure in Box 1 and as fully taxable in Box 2a, code 7.\n- The $10,000 withdrawal on 2025-12-15 came from the joint taxable account, so I left it out.\n\n**What the CRM shows**\n- On 2025-08-28 Bernard signed a request for a $12,000 qualified charitable distribution (QCD) from this IRA to Tessaly Harbor Literacy Alliance, a public charity.\n- The charity's acknowledgment letter says it received $12,000.00 from his IRA on 2025-09-15, paid directly by the custodian, with no goods or services in return.\n- So the custodian treats the 15 September $12,000 as an ordinary distribution to Bernard, while the CRM shows it as a QCD. Bernard was 78, so he was old enough for a QCD, and $12,000 is well under the annual limit.\n\n**RMD check**\n- IRA value on 31 Dec 2024: $189,890.36 (Larkspur Total Market Fund) + $209,687.80 (Larkspur Core Bond Fund) + $64,935.90 (Larkspur Developed Markets Fund) + $12,000.00 cash = **$476,514.06**.\n- Bernard was born 1947-05-09, so he turned 78 in 2025. His sole beneficiary is his spouse, Yoshiko (born 1949-11-21), who is not more than 10 years younger. That means the Uniform Lifetime Table applies, with a factor of 22.0.\n- RMD = $476,514.06 \u00f7 22.0 = **$21,659.73**.\n- Distributions including the QCD total $21,659.73, so the RMD was met to the cent. A QCD counts toward the RMD, so the answer is the same however the $12,000 is labelled.\n\n**What this means for tax:** only $9,659.73 should be taxable, not the $21,659.73 shown in the 1099-R's Box 2a. The 2025 return should exclude the $12,000 as a QCD, using the charity's letter as support. It's also worth asking the custodian to fix how the 15 September transaction is coded.\n\n```json\n{\n  \"finding\": \"records_disagree\",\n  \"qcd_amount\": 12000.00,\n  \"custodian_distributions\": 21659.73,\n  \"taxable_distributions\": 9659.73,\n  \"rmd\": 21659.73,\n  \"rmd_met\": true,\n  \"figures\": [\n    {\"label\": \"2025-09-15 IRA distribution coded as RMD, $0 withheld (T-6047-0016)\", \"value\": 12000.00, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"2025-11-18 IRA distribution coded as RMD (T-6047-0024)\", \"value\": 9659.73, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"Federal tax withheld on 2025-11-18 distribution\", \"value\": 965.97, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"QCD request amount, IRA SYN-60470002 to Tessaly Harbor Literacy Alliance\", \"value\": 12000.00, \"source\": \"crm/crm.json\"},\n    {\"label\": \"Charity acknowledgment: received from IRA on 2025-09-15\", \"value\": 12000.00, \"source\": \"crm/crm.json\"},\n    {\"label\": \"Form 1099-R Box 1 gross distribution\", \"value\": 21659.73, \"source\": \"documents/SYN-60470002-1099R-7-2025.pdf\"},\n    {\"label\": \"Form 1099-R Box 2a taxable amount\", \"value\": 21659.73, \"source\": \"documents/SYN-60470002-1099R-7-2025.pdf\"},\n    {\"label\": \"Form 1099-R Box 4 federal tax withheld\", \"value\": 965.97, \"source\": \"documents/SYN-60470002-1099R-7-2025.pdf\"},\n    {\"label\": \"IRA Larkspur Total Market Fund market value 2024-12-31\", \"value\": 189890.36, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"IRA Larkspur Core Bond Fund market value 2024-12-31\", \"value\": 209687.80, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"IRA Larkspur Developed Markets Fund market value 2024-12-31\", \"value\": 64935.90, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"IRA settled cash 2024-12-31\", \"value\": 12000.00, \"source\": \"custodian/cash.csv\"},\n    {\"label\": \"IRA total value 2024-12-31\", \"value\": 476514.06, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Bernard Lachance date of birth\", \"value\": \"1947-05-09\", \"source\": \"portfolio/household.json\"},\n    {\"label\": \"Yoshiko Lachance (sole primary beneficiary) date of birth\", \"value\": \"1949-11-21\", \"source\": \"portfolio/household.json\"},\n    {\"label\": \"Sole primary beneficiary of IRA: spouse, 100%\", \"value\": \"Yoshiko Lachance\", \"source\": \"custodian/beneficiaries.csv\"},\n    {\"label\": \"Bernard's age at end of 2025\", \"value\": 78, \"source\": \"portfolio/household.json\", \"computed\": true},\n    {\"label\": \"Uniform Lifetime Table factor, age 78\", \"value\": 22.0, \"source\": \"IRS Publication 590-B\"},\n    {\"label\": \"2025 RMD (476,514.06 / 22.0)\", \"value\": 21659.73, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Total 2025 IRA distributions incl. QCD\", \"value\": 21659.73, \"source\": \"custodian/transactions.csv\", \"computed\": true},\n    {\"label\": \"Taxable distributions (21,659.73 - 12,000.00)\", \"value\": 9659.73, \"source\": \"custodian/transactions.csv\", \"computed\": true}\n  ],\n  \"explanation\": \"The custodian's transactions and 1099-R record the 15 September 2025 $12,000 payment from Bernard's IRA as an ordinary taxable RMD distribution, but the CRM holds a signed QCD request and the charity's acknowledgment that the custodian paid the $12,000 directly to a public charity, so the records disagree. Distributions including the QCD total $21,659.73, which equals the 2025 RMD of $476,514.06 / 22.0 (Uniform Lifetime Table, age 78, spouse beneficiary not more than 10 years younger), so the RMD was met, and only $9,659.73 should be taxable rather than the $21,659.73 shown on the 1099-R.\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": null,
+    "grader_before": "d62ca6d71f8d28b8dedf4b1e7207205b45d4d49db37109cee3467baa437e219c",
+    "utc": "2026-11-19T14:07:10+00:00"
+  },
+  "run_id": "T-REC-03-basic-20261118T171944Z-c873",
+  "settings": {
+    "crm_tools": [],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "skills_loaded": [],
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 2
+  },
+  "started_utc": "2026-11-18T17:19:44+00:00",
+  "state": "mapped",
+  "task_id": "T-REC-03",
+  "token_use": {
+    "cache_creation_input_tokens": 21076,
+    "cache_read_input_tokens": 59892,
+    "input_tokens": 10,
+    "output_tokens": 4948
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping an advisor at a small independent advisory firm. This folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the statements and tax forms on file (documents/).\n\nThe advisor asks: do the custodian's 2025 distributions from this household's IRAs agree with what the CRM records, and was the 2025 required minimum distribution met?\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"records_disagree\" if the custodian's records and the CRM's disagree about a 2025 IRA distribution, \"records_agree\" if they agree, or \"unresolved\"\n- \"qcd_amount\": the total paid from the household's traditional IRAs in 2025 as qualified charitable distributions, 0 if none\n- \"custodian_distributions\": the total the custodian's transactions show leaving the household's traditional IRAs in 2025, distributions and QCDs together\n- \"taxable_distributions\": custodian_distributions minus the qualified charitable distributions\n- \"rmd\": the 2025 required minimum distribution from the household's traditional IRAs\n- \"rmd_met\": true, false, or null if unresolved\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed rather than read; cite a factor from the IRS life-expectancy tables with \"source\": \"IRS Publication 590-B\"\n- \"explanation\": two or three sentences",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": null
+  },
+  "transcript": {
+    "events": 43,
+    "file": "attempt-1.jsonl"
+  },
+  "verdict_held": true
+}

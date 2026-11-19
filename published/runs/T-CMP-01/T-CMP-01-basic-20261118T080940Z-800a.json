@@ -1,0 +1,124 @@
+{
+  "arm": "basic",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T08:10:46+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T08:09:40+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": null,
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "HH-3058",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T08:10:46+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": null,
+  "hashes": {
+    "answer": "bc1f1c9b821ee501df273fd7d9550bdda168566d212f9a59874b4fe4323ea0a4",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "81b01875655e303fd5ce4e19a657d4bb5397adb8b49d98efb2fe282a700997a6",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "e10fcfd0b0bb8d8551f72f44946d766fc2f68548b6563e55abe4491a1745fb26",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "4596e174eac4f676308f3c6345aa2b6ff492f2d21a07ebd84c7c15f497974534"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "**To:** Chief Compliance Officer\n**Re:** Raghunathan-Cole household (HH-3058): single-stock concentration and basis of shares released from restricted stock units, as of 15 April 2026\n\n## 1. Concentration\nThe only single company's stock in the household is Bramwell Devices Group (SEC-0028). Larkspur Total Market Fund, Larkspur World ex-US Fund, Larkspur Core Bond Fund, Fernhollow Large Cap Index Fund, Fernhollow Aggregate Bond Fund and Brackwater Broad Market Fund are funds, so the policy doesn't apply to them.\n\n| Item (2026-04-15) | Value |\n|---|---|\n| Bramwell Devices Group in SYN-30580001 (joint), 2,997 sh @ 275.32 | $825,134.04 |\n| Bramwell Devices Group in SYN-30580002 (stock plan account), 1,600 sh @ 275.32 | $440,512.00 |\n| **Bramwell Devices Group across the household** | **$1,265,646.04** |\n| All positions in the 4 accounts | $3,399,155.89 |\n| All cash in the 4 accounts | $496,368.98 |\n| **Household total** | **$3,895,524.87** |\n| **Bramwell Devices Group share of household** | **32.49%** against the IPS limit of 15% |\n\n- Bramwell Devices Group is about $681,317 above the limit.\n- The joint-account Bramwell Devices Group alone is 21.2% of the household.\n- The custodian files and the firm's portfolio system agree on every position and cash balance.\n- I found no exception for Bramwell Devices Group in `crm/crm.json`, documented or signed. The CRM holds only the 2014 advisory agreement, the four release confirmations, and two notes. One is the 2025-10-14 annual review note (N-3058-02). It says the IPS targets were reviewed and \"No changes requested\", and it does not mention Bramwell Devices Group concentration.\n\n## 2. Basis of shares released from restricted stock units\nThe four release confirmations (CA-3058-01 to -04) match the custodian's lots on date and unit count. The custodian, however, carries every one of these lots at **$0.00** basis (each vesting transaction reads \"no cost basis\").\n\n| Lot | Released | Value on the release confirmation | Custodian basis | Status |\n|---|---|---|---|---|\n| L-E-3058-0005 | 2025-02-20 | $172,848.00 (CA-3058-01) | $0.00 | Sold 2025-12-12 |\n| L-E-3058-0019 | 2025-05-20 | $183,920.00 (CA-3058-02) | $0.00 | Sold 2025-12-12 |\n| L-E-3058-0033 | 2025-08-20 | $189,464.00 (CA-3058-03) | $0.00 | Held |\n| L-E-3058-0047 | 2025-11-20 | $219,712.00 (CA-3058-04) | $0.00 | Held |\n\n- **Shares still held:** the basis is understated by **$409,176.00**.\n- **Shares sold in 2025 (T-3058-0048):** the custodian's realized lots and the 2025 1099-B (marked \"Covered\") show $437,776.00 of short-term gain on $0 basis. The release confirmations support a gain of $81,008.00, so the gain is overstated by **$356,768.00**.\n- The total of the four release values, $765,944.00, is included in Priya Raghunathan's 2025 W-2 Box 1 wages of $1,175,944.00, as each confirmation states. The W-2 does not itemize the RSU part, so it is consistent with the confirmations but does not confirm them on its own.\n\n## 3. Issues for review\n1. Bramwell Devices Group is at 32.49% of the household against a 15% limit, and the CRM has no exception on file.\n2. The custodian carries a $0 basis on the two held lots from restricted stock units, which conflicts with the release confirmations.\n3. The custodian's realized lots and the 2025 1099-B for SYN-30580002 report the December 2025 sale on a $0 basis, so the gain is overstated by $356,768.\n4. The 2025 annual review note doesn't mention the concentration, though Bramwell Devices Group was already above the limit and four lots were released in 2025.\n\n```json\n{\n  \"finding\": \"issues_found\",\n  \"above_concentration_limit\": [\n    {\"security_id\": \"SEC-0028\", \"value\": 1265646.04, \"share_of_household\": 32.49}\n  ],\n  \"basis_reliable\": false,\n  \"basis_understated\": 409176.00,\n  \"gain_overstated\": 356768.00,\n  \"issues_for_reviewer\": [\n    {\n      \"issue\": \"Bramwell Devices Group above IPS concentration limit with no documented exception\",\n      \"records\": [\"SEC-0028\", \"SYN-30580001\", \"SYN-30580002\", \"SYN-30580003\", \"SYN-30580004\", \"N-3058-02\"],\n      \"what_the_records_show\": \"On 2026-04-15 Bramwell Devices Group across SYN-30580001 and SYN-30580002 is worth $1,265,646.04, or 32.49% of the $3,895,524.87 household total, against an IPS limit of 15%. The CRM holds no client-signed exception for Bramwell Devices Group.\",\n      \"why_the_reviewer_should_look\": \"Firm policy requires a documented, client-signed exception recorded in the CRM for any single company's stock above the IPS limit, and none is on file.\"\n    },\n    {\n      \"issue\": \"Zero cost basis on held lots from restricted stock units\",\n      \"records\": [\"SYN-30580002\", \"L-E-3058-0033\", \"L-E-3058-0047\", \"T-3058-0033\", \"T-3058-0047\", \"CA-3058-03\", \"CA-3058-04\"],\n      \"what_the_records_show\": \"The custodian carries the 800-share lots released 2025-08-20 and 2025-11-20 at $0.00 basis. The release confirmations show release values of $189,464.00 and $219,712.00.\",\n      \"why_the_reviewer_should_look\": \"The basis the firm reports from does not agree with the release confirmations and is understated by $409,176.00.\"\n    },\n    {\n      \"issue\": \"2025 realized gain on shares from restricted stock units reported on zero basis\",\n      \"records\": [\"SYN-30580002\", \"T-3058-0048\", \"L-E-3058-0005\", \"L-E-3058-0019\", \"CA-3058-01\", \"CA-3058-02\", \"D-SYN-30580002-1099-2025\"],\n      \"what_the_records_show\": \"The 2025-12-12 sale of 1,600 Bramwell Devices Group is reported in the realized lots and on the 1099-B (marked covered) with $0.00 basis and $437,776.00 gain. The release confirmations support a basis of $356,768.00 and a gain of $81,008.00.\",\n      \"why_the_reviewer_should_look\": \"The reported 2025 gain is overstated by $356,768.00, and those release values were already included in the client's W-2 wages.\"\n    },\n    {\n      \"issue\": \"Annual review note silent on concentration\",\n      \"records\": [\"N-3058-02\", \"SEC-0028\"],\n      \"what_the_records_show\": \"The 2025-10-14 annual review note says the IPS targets were reviewed and no changes were requested. It does not mention Bramwell Devices Group concentration, although Bramwell Devices Group was above 15% of the household at that time.\",\n      \"why_the_reviewer_should_look\": \"The CRM has no record that the concentration was discussed or acknowledged with the clients.\"\n    }\n  ],\n  \"figures\": [\n    {\"label\": \"IPS concentration limit (share of household)\", \"value\": 0.15, \"source\": \"portfolio/ips.json\"},\n    {\"label\": \"Bramwell Devices Group market value SYN-30580001 on 2026-04-15 (2,997 sh @ 275.32)\", \"value\": 825134.04, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"Bramwell Devices Group market value SYN-30580002 on 2026-04-15 (1,600 sh @ 275.32)\", \"value\": 440512.00, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"Larkspur Total Market Fund SYN-30580001\", \"value\": 436021.52, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"Larkspur World ex-US Fund SYN-30580001\", \"value\": 159950.70, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"Larkspur Core Bond Fund SYN-30580001\", \"value\": 250868.12, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"Larkspur Core Bond Fund SYN-30580002\", \"value\": 19034.00, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"Fernhollow Large Cap Index Fund SYN-30580003\", \"value\": 737131.47, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"Fernhollow Aggregate Bond Fund SYN-30580003\", \"value\": 229105.52, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"Larkspur Core Bond Fund SYN-30580004\", \"value\": 86795.04, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"Brackwater Broad Market Fund SYN-30580004\", \"value\": 214603.48, \"source\": \"custodian/positions.csv\"},\n    {\"label\": \"Cash SYN-30580001\", \"value\": 39925.53, \"source\": \"custodian/cash.csv\"},\n    {\"label\": \"Cash SYN-30580002\", \"value\": 439841.31, \"source\": \"custodian/cash.csv\"},\n    {\"label\": \"Cash SYN-30580003\", \"value\": 10702.13, \"source\": \"custodian/cash.csv\"},\n    {\"label\": \"Cash SYN-30580004\", \"value\": 5900.01, \"source\": \"custodian/cash.csv\"},\n    {\"label\": \"Total positions 2026-04-15\", \"value\": 3399155.89, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Total cash 2026-04-15\", \"value\": 496368.98, \"source\": \"custodian/cash.csv\", \"computed\": true},\n    {\"label\": \"Household total 2026-04-15\", \"value\": 3895524.87, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Bramwell Devices Group household value\", \"value\": 1265646.04, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Bramwell Devices Group share of household (%)\", \"value\": 32.49, \"source\": \"custodian/positions.csv\", \"computed\": true},\n    {\"label\": \"Release value 2025-02-20 (CA-3058-01, 800 @ 216.06)\", \"value\": 172848.00, \"source\": \"crm/crm.json\"},\n    {\"label\": \"Release value 2025-05-20 (CA-3058-02, 800 @ 229.90)\", \"value\": 183920.00, \"source\": \"crm/crm.json\"},\n    {\"label\": \"Release value 2025-08-20 (CA-3058-03, 800 @ 236.83)\", \"value\": 189464.00, \"source\": \"crm/crm.json\"},\n    {\"label\": \"Release value 2025-11-20 (CA-3058-04, 800 @ 274.64)\", \"value\": 219712.00, \"source\": \"crm/crm.json\"},\n    {\"label\": \"Custodian basis L-E-3058-0033\", \"value\": 0.00, \"source\": \"custodian/tax_lots.csv\"},\n    {\"label\": \"Custodian basis L-E-3058-0047\", \"value\": 0.00, \"source\": \"custodian/tax_lots.csv\"},\n    {\"label\": \"Custodian basis L-E-3058-0005 (sold)\", \"value\": 0.00, \"source\": \"custodian/realized_lots.csv\"},\n    {\"label\": \"Custodian basis L-E-3058-0019 (sold)\", \"value\": 0.00, \"source\": \"custodian/realized_lots.csv\"},\n    {\"label\": \"Proceeds L-E-3058-0005\", \"value\": 218888.00, \"source\": \"custodian/realized_lots.csv\"},\n    {\"label\": \"Proceeds L-E-3058-0019\", \"value\": 218888.00, \"source\": \"custodian/realized_lots.csv\"},\n    {\"label\": \"Custodian reported gain on 2025 sale\", \"value\": 437776.00, \"source\": \"custodian/realized_lots.csv\", \"computed\": true},\n    {\"label\": \"1099-B short-term proceeds, cost basis $0.00\", \"value\": 437776.00, \"source\": \"documents/SYN-30580002-1099-2025.pdf\"},\n    {\"label\": \"Basis understated on held lots\", \"value\": 409176.00, \"source\": \"crm/crm.json\", \"computed\": true},\n    {\"label\": \"Gain supported by release confirmations\", \"value\": 81008.00, \"source\": \"crm/crm.json\", \"computed\": true},\n    {\"label\": \"Gain overstated on 2025 sale\", \"value\": 356768.00, \"source\": \"custodian/realized_lots.csv\", \"computed\": true},\n    {\"label\": \"Sum of 2025 release values\", \"value\": 765944.00, \"source\": \"crm/crm.json\", \"computed\": true},\n    {\"label\": \"2025 W-2 Box 1 wages, Priya Raghunathan\", \"value\": 1175944.00, \"source\": \"documents/P-3058-1-W2-1-2025.pdf\"}\n  ],\n  \"explanation\": \"On 15 April 2026, Bramwell Devices Group (SEC-0028) is worth $1,265,646.04 across the joint and stock plan accounts, or 32.49% of the $3,895,524.87 household total against an IPS limit of 15%, and the CRM holds no client-signed exception. The custodian carries all four lots released from restricted stock units at $0 basis, although the release confirmations show their value on the release date. That understates the basis of the held lots by $409,176.00 and overstates the 2025 realized gain, also reported on the 1099-B, by $356,768.00.\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": null,
+    "grader_before": "f584ab3ea0dc738f4b59b7c1a62d8b6579598d4410828a67248100bf433aaa3f",
+    "utc": "2026-11-19T14:05:17+00:00"
+  },
+  "run_id": "T-CMP-01-basic-20261118T080940Z-800a",
+  "settings": {
+    "crm_tools": [],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 1
+  },
+  "started_utc": "2026-11-18T08:09:40+00:00",
+  "state": "mapped",
+  "task_id": "T-CMP-01",
+  "token_use": {
+    "cache_creation_input_tokens": 34770,
+    "cache_read_input_tokens": 75858,
+    "input_tokens": 10,
+    "output_tokens": 7918
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping the compliance function of a small independent advisory firm. The firm is an SEC-registered investment adviser acting as a fiduciary; not a broker-dealer, law firm or CPA firm. Your answer goes to the firm's chief compliance officer as an internal compliance memo: raise what a reviewer should look at, from the records, and draw no legal conclusion.\n\nThe firm's policy: \"A single company's stock (a fund is not one) worth more of a household than its IPS concentration limit allows, as a share of the household's total value, positions plus cash, needs a documented, client-signed exception recorded in the CRM. The cost basis the firm reports from must agree with the records behind it: for shares released from restricted stock units, the release confirmation's value on the release date.\"\n\nThis folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the documents on file (documents/).\n\nThe chief compliance officer asks: on 15 April 2026, is any single company's stock in this household above its IPS concentration limit with no documented exception, and can the custodian's cost basis for the shares released from restricted stock units, those still held and those sold in 2025, be relied on?\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"issues_found\" if a single company's stock is above the limit with no documented exception or the basis cannot be relied on, \"no_issues\" if neither, or \"unresolved\" if the files cannot settle it\n- \"above_concentration_limit\": one entry per single company's stock above the limit on 15 April 2026, each as {\"security_id\": ..., \"value\": its value across the household's accounts, \"share_of_household\": a percentage}, or [] if none\n- \"basis_reliable\": true if the custodian's basis for every released share agrees with its release confirmation, false if not, or null if unresolved\n- \"basis_understated\": the total by which the custodian's tax lots still held on 15 April 2026 understate the basis the release confirmations support (0 if none)\n- \"gain_overstated\": the total by which the custodian's realized lots overstate the gains on released shares sold in 2025 (0 if none)\n- \"issues_for_reviewer\": one entry per issue a reviewer should look at, each as {\"issue\": a short title, \"records\": the IDs of the records it rests on (account, security, lot, transaction, CRM activity or document IDs), \"what_the_records_show\": one or two sentences, \"why_the_reviewer_should_look\": one sentence}, or [] if none\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed rather than read\n- \"explanation\": two or three sentences",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": null
+  },
+  "transcript": {
+    "events": 52,
+    "file": "attempt-1.jsonl"
+  },
+  "verdict_held": true
+}

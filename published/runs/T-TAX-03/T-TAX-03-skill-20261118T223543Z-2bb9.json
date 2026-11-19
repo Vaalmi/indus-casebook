@@ -1,0 +1,129 @@
+{
+  "arm": "skill",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T22:36:15+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T22:35:43+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": null,
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "HH-9234",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T22:36:15+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": null,
+  "hashes": {
+    "answer": "718bb25b0de5ae7b185b28586dbafc951b0205892c9766f06d3e6535a18cc2e1",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "81b01875655e303fd5ce4e19a657d4bb5397adb8b49d98efb2fe282a700997a6",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "79d3c1acea4a8c73fa5be2403c2c401f2295651ae719ab563deb04db75399015",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "fd10ee0593c97aee0282a9bd24acf3a093109816e188a41b21c8bbeacf83c581"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "**No, not all of it.** The custodian reports a $53,516.17 loss on the Wexcombe Mid Cap Fund sale. A wash sale disallows $31,591.60 of that for 2025, which leaves $21,924.57 allowed.\n\n**The loss sale.** On 3 Nov 2025 the joint taxable account (SYN-92340001, owned by Marcus Oyelaran and Ingrid Halvorsen) sold all 847 Wexcombe Mid Cap Fund from lot L-92340001-01, bought 17 Jul 2023. Proceeds were $224,556.64 against a basis of $278,072.81, a long-term loss of $53,516.17. The 2025 1099-B shows the same figures and no wash-sale adjustment. This is the only 2025 sale in the household's files.\n\n**The replacement purchase.** On 19 Nov 2025, Ingrid's traditional IRA (SYN-92340002) bought 500 Wexcombe Mid Cap Fund at $260.38, $130,190.00 in total. That is 16 days after the sale, so it falls inside the 30-day window. It is the same fund, so it counts as substantially identical. Ingrid is a joint owner of the account that sold, and the couple file jointly, so the household controls both accounts.\n\n**Other purchases checked.**\n- The 4,500 Ridgeholm Equal Weight Fund bought in the joint account on the day of the sale is a different security (SEC-0027), so it doesn't trigger a wash sale.\n- No other Wexcombe Mid Cap Fund was bought from 4 Oct to 3 Dec 2025 in any account.\n\n**Arithmetic.** Only 500 of the 847 shares sold were replaced, so the loss splits by share count:\n- Loss per share: $53,516.17 \u00f7 847 = $63.1832\n- Disallowed: $53,516.17 \u00d7 500/847 = **$31,591.60**\n- Allowed: $53,516.17 \u2212 $31,591.60 = **$21,924.57** (the 347 shares not replaced)\n\nThe replacement shares are in an IRA, so the $31,591.60 isn't added to their basis. It is lost for good, not just deferred. The 1099-B shows the full loss with no adjustment, so the return will need the wash-sale adjustment made when it is prepared. The allowed amount is before the annual capital-loss limit, and the household has no loss carried forward from 2024.\n\n```json\n{\n  \"finding\": \"wash_sale\",\n  \"loss_reported\": 53516.17,\n  \"disallowed_loss\": 31591.60,\n  \"allowed_loss\": 21924.57,\n  \"figures\": [\n    {\"label\": \"Wexcombe Mid Cap Fund units sold 2025-11-03, joint taxable SYN-92340001\", \"value\": 847, \"source\": \"custodian/realized_lots.csv\"},\n    {\"label\": \"Wexcombe Mid Cap Fund sale proceeds\", \"value\": 224556.64, \"source\": \"custodian/realized_lots.csv\"},\n    {\"label\": \"Wexcombe Mid Cap Fund sold lot cost basis\", \"value\": 278072.81, \"source\": \"custodian/realized_lots.csv\"},\n    {\"label\": \"Wexcombe Mid Cap Fund loss as reported\", \"value\": -53516.17, \"source\": \"custodian/realized_lots.csv\"},\n    {\"label\": \"1099-B Wexcombe Mid Cap Fund loss, long-term, no wash-sale adjustment\", \"value\": -53516.17, \"source\": \"documents/SYN-92340001-1099-2025.pdf\"},\n    {\"label\": \"Wexcombe Mid Cap Fund units bought 2025-11-19 in Ingrid Halvorsen traditional IRA SYN-92340002\", \"value\": 500, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"Wexcombe Mid Cap Fund replacement purchase amount\", \"value\": 130190.00, \"source\": \"custodian/transactions.csv\"},\n    {\"label\": \"Days from sale (2025-11-03) to replacement purchase (2025-11-19)\", \"value\": 16, \"source\": \"custodian/transactions.csv\", \"computed\": true},\n    {\"label\": \"Loss per share sold (53516.17 / 847)\", \"value\": 63.1832, \"source\": \"custodian/realized_lots.csv\", \"computed\": true},\n    {\"label\": \"Disallowed loss (53516.17 x 500 / 847)\", \"value\": 31591.60, \"source\": \"custodian/realized_lots.csv\", \"computed\": true},\n    {\"label\": \"Allowed loss (53516.17 - 31591.60)\", \"value\": 21924.57, \"source\": \"custodian/realized_lots.csv\", \"computed\": true},\n    {\"label\": \"Prior-year capital loss carryforward\", \"value\": 0.00, \"source\": \"portfolio/tax_profile.json\"}\n  ],\n  \"explanation\": \"The joint taxable account sold 847 Wexcombe Mid Cap Fund at a $53,516.17 loss on 3 Nov 2025, and 16 days later Ingrid Halvorsen's traditional IRA bought 500 Wexcombe Mid Cap Fund, a substantially identical purchase inside the 30-day window in an account the household controls. The loss on 500 of the 847 shares, $31,591.60, is disallowed and, because the replacement is in an IRA, is not added to any basis, leaving $21,924.57 allowed for 2025. The 1099-B reports the full loss with no wash-sale adjustment.\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": null,
+    "grader_before": "c5266d182925e4f5eabee70efbbb846aa754a943b34afbd05d3704d80cb8b06e",
+    "utc": "2026-11-19T14:08:28+00:00"
+  },
+  "run_id": "T-TAX-03-skill-20261118T223543Z-2bb9",
+  "settings": {
+    "crm_tools": [],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "skills_loaded": [
+    "indus-advisor:tax-lot-rmd"
+  ],
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 3
+  },
+  "started_utc": "2026-11-18T22:35:43+00:00",
+  "state": "mapped",
+  "task_id": "T-TAX-03",
+  "token_use": {
+    "cache_creation_input_tokens": 20803,
+    "cache_read_input_tokens": 44136,
+    "input_tokens": 10,
+    "output_tokens": 3465
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping an advisor at a small independent advisory firm. This folder holds one client household's records as they stood on 15 April 2026: the custodian's files (custodian/), the firm's portfolio system (portfolio/), its CRM (crm/) and the statements and tax forms on file (documents/).\n\nThe advisor asks: the household harvested losses in its taxable accounts during 2025. Are those losses deductible on the 2025 return as the custodian reports them?\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"wash_sale\" if a purchase disallows some of the 2025 losses, \"no_wash_sale\" if all of them are allowed as reported, or \"unresolved\"\n- \"loss_reported\": the total 2025 loss on the household's sales at a loss in taxable accounts, as the custodian reports it\n- \"disallowed_loss\": the part of that loss not allowed for 2025, 0 if none, or null if unresolved\n- \"allowed_loss\": loss_reported minus disallowed_loss, before any annual limit on capital losses, or null if unresolved\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed rather than read\n- \"explanation\": two or three sentences",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40",
+      "--plugin-dir",
+      "skills/indus-advisor"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": "indus-advisor"
+  },
+  "transcript": {
+    "events": 38,
+    "file": "attempt-1.jsonl"
+  },
+  "verdict_held": true
+}

@@ -1,0 +1,194 @@
+{
+  "arm": "basic",
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_utc": "2026-11-18T22:17:06+00:00",
+      "failure_reason": null,
+      "started_utc": "2026-11-18T22:15:38+00:00"
+    }
+  ],
+  "cli_version": "2.1.304 (Claude Code)",
+  "crm_sandbox_diff": null,
+  "dataset": {
+    "book": "out/real/0.0.1",
+    "household_id": "book",
+    "real_tickers": true,
+    "version": "0.0.1"
+  },
+  "ended_utc": "2026-11-18T22:17:06+00:00",
+  "errors": [],
+  "failure_reason": null,
+  "freeze": "706f3c129aff84af6f384386affd35bc96ebaa25fa668e77738ee0602ac9e40e",
+  "grade": {
+    "breakdown": [
+      {
+        "detail": "every required field present",
+        "earned": 10,
+        "name": "output_parses",
+        "points": 10
+      },
+      {
+        "detail": "missed none (key finds HH-0586, HH-0592, HH-0928, HH-4821, leaves unresolved none)",
+        "earned": 35,
+        "name": "none_missed",
+        "points": 35
+      },
+      {
+        "detail": "wrongly named none (answer names HH-0586, HH-0592, HH-0928, HH-4821, unresolved none)",
+        "earned": 35,
+        "name": "none_wrongly_named",
+        "points": 35
+      },
+      {
+        "detail": "every household the key finds is named with its evidence",
+        "earned": 20,
+        "name": "evidence",
+        "points": 20
+      }
+    ],
+    "counts": {
+      "correct_unresolved": 0,
+      "false_alarm": 0,
+      "unnecessary_refusal": 0
+    },
+    "critical_fail": null,
+    "passed": true,
+    "score": 100
+  },
+  "hashes": {
+    "answer": "0b59d1824a406a677e50468ac07b36df0aa0c9f39238d6467c31e1f611b3fdb0",
+    "checklist": "2c07a914c8cff52ec4a29a7a9e3f0ec9590bf9e25cf7c7db06388005c86c639e",
+    "config": "81b01875655e303fd5ce4e19a657d4bb5397adb8b49d98efb2fe282a700997a6",
+    "dataset": "85817922978ec519ba3221ea6791a2a718da654251d7535f6b6a3eedd7c661e6",
+    "grader": "152dd5453e02c8123a52c5b0f9d28f8401060bb1bc65d9dc567f934604387b42",
+    "skill": "460ffc2ff1e3002fc2bbd2bae20eaf01af794e9c459a14cc23b92acb441e6ab3",
+    "task": "81d04bba2037823279aa8f7773696c1febd74ec8d4eab303943bf108d49a923a"
+  },
+  "instruction_loaded": true,
+  "model_requested": "claude-opus-5-5",
+  "models_reported": [
+    "claude-opus-5-5"
+  ],
+  "output": "I found four households: **HH-0586, HH-0592, HH-0928 and HH-4821**. In each, a signed householding agreement puts three accounts into one billing group, but the portfolio system still bills them in two groups.\n\nThe four cases follow the same pattern. The householding letter covers the joint account, a spouse's traditional IRA and an adult child's individual account. It says they \"are billed together as one group from the next billing cycle.\" In `portfolio/household.json`, though, the joint account and the IRA are in one billing group and the child's account is in a second. Both groups were last changed on the date of the child's advisory agreement, which is before the householding letter was signed. So the billing groups were never updated after the letter.\n\n| Household | Agreement (signed) | Billing groups | Groups last changed |\n|---|---|---|---|\n| HH-0586 Quarshie | AGR-0586-3 (2024-06-07) | BG-0586-1 (joint + Saoirse's IRA), BG-0586-2 (Amara) | 2021-09-01 |\n| HH-0592 Haddad | AGR-0592-3 (2023-10-20) | BG-0592-1 (joint + Bilal's IRA), BG-0592-2 (Fatima) | 2021-09-01 |\n| HH-0928 Jablonski | AGR-0928-3 (2024-03-05) | BG-0928-1 (joint + Hugo's IRA), BG-0928-2 (Nikhil) | 2021-09-01 |\n| HH-4821 Okafor-Lind | AGR-4821-3 (2024-11-18) | BG-4821-1 (joint + Henrik's IRA), BG-4821-2 (Ngozi) | 2021-09-14 |\n\nThings I checked that don't change the answer:\n- **No other householding agreements:** across all 92 CRM files, these are the only four.\n- **Nothing undoes them:** no note or activity revokes or overrides the letters. The latest annual reviews (2025-10-14) say \"No changes requested.\"\n- **Accounts still open:** the custodian lists all twelve accounts as open on 15 April 2026.\n- **Same fee schedule:** both groups in each household use the tiered FS-STD schedule, which applies per billing group. Splitting the accounts therefore stops the household's combined assets from reaching the lower-rate tiers. I didn't calculate how much each household may have been overbilled.\n- **Excluded on purpose:** some households have advisory agreements that say \"billed together\" or \"billed with the taxable account\" (e.g. HH-3058, HH-9571, HH-0607). These are not householding agreements, so I left them out. HH-7350's agreement says Aiko \"has not agreed to household billing,\" which supports billing her account separately.\n\n```json\n{\n  \"finding\": \"found\",\n  \"households\": [\n    {\n      \"household_id\": \"HH-0586\",\n      \"agreement_id\": \"AGR-0586-3\",\n      \"billing_group_ids\": [\"BG-0586-1\", \"BG-0586-2\"],\n      \"explanation\": \"The householding letter signed 2024-06-07 bills SYN-05860001, SYN-05860002 and SYN-05860003 together as one group, but the portfolio system still bills the joint account and Saoirse's IRA in BG-0586-1 and Amara's account in BG-0586-2, unchanged since 2021-09-01.\"\n    },\n    {\n      \"household_id\": \"HH-0592\",\n      \"agreement_id\": \"AGR-0592-3\",\n      \"billing_group_ids\": [\"BG-0592-1\", \"BG-0592-2\"],\n      \"explanation\": \"The householding letter signed 2023-10-20 bills SYN-05920001, SYN-05920002 and SYN-05920003 together as one group, but the portfolio system still bills the joint account and Bilal's IRA in BG-0592-1 and Fatima's account in BG-0592-2, unchanged since 2021-09-01.\"\n    },\n    {\n      \"household_id\": \"HH-0928\",\n      \"agreement_id\": \"AGR-0928-3\",\n      \"billing_group_ids\": [\"BG-0928-1\", \"BG-0928-2\"],\n      \"explanation\": \"The householding letter signed 2024-03-05 bills SYN-09280001, SYN-09280002 and SYN-09280003 together as one group, but the portfolio system still bills the joint account and Hugo's IRA in BG-0928-1 and Nikhil's account in BG-0928-2, unchanged since 2021-09-01.\"\n    },\n    {\n      \"household_id\": \"HH-4821\",\n      \"agreement_id\": \"AGR-4821-3\",\n      \"billing_group_ids\": [\"BG-4821-1\", \"BG-4821-2\"],\n      \"explanation\": \"The householding letter signed 2024-11-18 bills SYN-48210001, SYN-48210002 and SYN-48210003 together as one group, but the portfolio system still bills the joint account and Henrik's IRA in BG-4821-1 and Ngozi's account in BG-4821-2, unchanged since 2021-09-14.\"\n    }\n  ],\n  \"unresolved\": [],\n  \"figures\": [\n    {\"label\": \"HH-0586 householding agreement AGR-0586-3 signed\", \"value\": \"2024-06-07\", \"source\": \"households/HH-0586/crm/crm.json\"},\n    {\"label\": \"HH-0586 AGR-0586-3 accounts\", \"value\": \"SYN-05860001, SYN-05860002, SYN-05860003\", \"source\": \"households/HH-0586/crm/crm.json\"},\n    {\"label\": \"HH-0586 BG-0586-1 accounts\", \"value\": \"SYN-05860001, SYN-05860002\", \"source\": \"households/HH-0586/portfolio/household.json\"},\n    {\"label\": \"HH-0586 BG-0586-2 accounts\", \"value\": \"SYN-05860003\", \"source\": \"households/HH-0586/portfolio/household.json\"},\n    {\"label\": \"HH-0586 billing groups last changed\", \"value\": \"2021-09-01\", \"source\": \"households/HH-0586/portfolio/household.json\"},\n    {\"label\": \"HH-0592 householding agreement AGR-0592-3 signed\", \"value\": \"2023-10-20\", \"source\": \"households/HH-0592/crm/crm.json\"},\n    {\"label\": \"HH-0592 AGR-0592-3 accounts\", \"value\": \"SYN-05920001, SYN-05920002, SYN-05920003\", \"source\": \"households/HH-0592/crm/crm.json\"},\n    {\"label\": \"HH-0592 BG-0592-1 accounts\", \"value\": \"SYN-05920001, SYN-05920002\", \"source\": \"households/HH-0592/portfolio/household.json\"},\n    {\"label\": \"HH-0592 BG-0592-2 accounts\", \"value\": \"SYN-05920003\", \"source\": \"households/HH-0592/portfolio/household.json\"},\n    {\"label\": \"HH-0592 billing groups last changed\", \"value\": \"2021-09-01\", \"source\": \"households/HH-0592/portfolio/household.json\"},\n    {\"label\": \"HH-0928 householding agreement AGR-0928-3 signed\", \"value\": \"2024-03-05\", \"source\": \"households/HH-0928/crm/crm.json\"},\n    {\"label\": \"HH-0928 AGR-0928-3 accounts\", \"value\": \"SYN-09280001, SYN-09280002, SYN-09280003\", \"source\": \"households/HH-0928/crm/crm.json\"},\n    {\"label\": \"HH-0928 BG-0928-1 accounts\", \"value\": \"SYN-09280001, SYN-09280002\", \"source\": \"households/HH-0928/portfolio/household.json\"},\n    {\"label\": \"HH-0928 BG-0928-2 accounts\", \"value\": \"SYN-09280003\", \"source\": \"households/HH-0928/portfolio/household.json\"},\n    {\"label\": \"HH-0928 billing groups last changed\", \"value\": \"2021-09-01\", \"source\": \"households/HH-0928/portfolio/household.json\"},\n    {\"label\": \"HH-4821 householding agreement AGR-4821-3 signed\", \"value\": \"2024-11-18\", \"source\": \"households/HH-4821/crm/crm.json\"},\n    {\"label\": \"HH-4821 AGR-4821-3 accounts\", \"value\": \"SYN-48210001, SYN-48210002, SYN-48210003\", \"source\": \"households/HH-4821/crm/crm.json\"},\n    {\"label\": \"HH-4821 BG-4821-1 accounts\", \"value\": \"SYN-48210001, SYN-48210002\", \"source\": \"households/HH-4821/portfolio/household.json\"},\n    {\"label\": \"HH-4821 BG-4821-2 accounts\", \"value\": \"SYN-48210003\", \"source\": \"households/HH-4821/portfolio/household.json\"},\n    {\"label\": \"HH-4821 billing groups last changed\", \"value\": \"2021-09-14\", \"source\": \"households/HH-4821/portfolio/household.json\"},\n    {\"label\": \"Households with a householding agreement on file\", \"value\": 4, \"source\": \"households/*/crm/crm.json\", \"computed\": true},\n    {\"label\": \"Households searched\", \"value\": 92, \"source\": \"households/*/crm/crm.json\", \"computed\": true}\n  ],\n  \"explanation\": \"Only four households (HH-0586, HH-0592, HH-0928, HH-4821) have a signed householding agreement, and each puts the joint account, a spouse's IRA and a child's individual account into one billing group. In every case the portfolio system still splits those accounts across two billing groups last changed in 2021, before the letter was signed. No later CRM record revokes or overrides any of the letters, and the custodian lists all the accounts as open.\"\n}\n```",
+  "regraded": {
+    "decision": "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md",
+    "freeze": "e1b3759723f45a61179fba3f144b63f661804a50db905dfdb568af56438d1e7a",
+    "grade_before": {
+      "breakdown": [
+        {
+          "detail": "every required field present",
+          "earned": 10,
+          "name": "output_parses",
+          "points": 10
+        },
+        {
+          "detail": "missed none (key finds HH-0586, HH-0592, HH-0928, HH-4821, leaves unresolved none)",
+          "earned": 35,
+          "name": "none_missed",
+          "points": 35
+        },
+        {
+          "detail": "wrongly named none (answer names HH-0586, HH-0592, HH-0928, HH-4821, unresolved none)",
+          "earned": 35,
+          "name": "none_wrongly_named",
+          "points": 35
+        },
+        {
+          "detail": "every household the key finds is named with its evidence",
+          "earned": 20,
+          "name": "evidence",
+          "points": 20
+        }
+      ],
+      "counts": {
+        "correct_unresolved": 0,
+        "false_alarm": 0,
+        "unnecessary_refusal": 0
+      },
+      "critical_fail": "fabricated figure: Households with a householding agreement on file = 4 (cited households/*/crm/crm.json)",
+      "passed": false,
+      "score": 0
+    },
+    "grader_before": "ec252b54c58d88236860955db0167851f011ae49357a5772b74bd52bb3c8a02b",
+    "utc": "2026-11-19T14:08:06+00:00"
+  },
+  "run_id": "T-REC-05-basic-20261118T221537Z-068e",
+  "settings": {
+    "crm_tools": [],
+    "effort": "high",
+    "flags": [
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose"
+    ],
+    "max_turns": 40,
+    "model": "claude-opus-5-5",
+    "retries": 3,
+    "timeout_seconds": 900,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Skill"
+    ]
+  },
+  "skills_loaded": [],
+  "slot": {
+    "pass_id": "pass-20261118T080940Z-4471",
+    "repeat": 3
+  },
+  "started_utc": "2026-11-18T22:15:37+00:00",
+  "state": "mapped",
+  "task_id": "T-REC-05",
+  "token_use": {
+    "cache_creation_input_tokens": 53458,
+    "cache_read_input_tokens": 570703,
+    "input_tokens": 36,
+    "output_tokens": 8026
+  },
+  "tools_and_permissions": {
+    "arguments": [
+      "claude",
+      "-p",
+      "You are helping an advisor at a small independent advisory firm. This folder holds the records of every client household of the firm as they stood on 15 April 2026, one folder per household under households/<household ID>/, each with the custodian's files (custodian/), the firm's portfolio system (portfolio/) and its CRM (crm/).\n\nThe advisor asks: which households are billed in groups that a signed householding agreement contradicts?\n\nWork only from these files. End your answer with one fenced json block with these fields:\n- \"finding\": \"found\" if one or more households are, \"none_found\" if none is, or \"unresolved\" if the files settle no household as found and leave some unresolved\n- \"households\": one entry per household that is, each as {\"household_id\": ..., \"agreement_id\": the householding agreement, \"billing_group_ids\": the billing groups that hold its accounts apart, \"explanation\": one sentence}, or [] if none\n- \"unresolved\": the households the files cannot settle, each as {\"household_id\": ..., \"explanation\": one sentence}, or [] if none\n- \"figures\": every figure you relied on, each as {\"label\": ..., \"value\": ..., \"source\": the file it came from, relative to this folder}, adding \"computed\": true to a figure you computed rather than read\n- \"explanation\": two or three sentences",
+      "--restricted",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--permission-mode",
+      "dontAsk",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "high",
+      "--tools",
+      "Read,Glob,Grep,Skill",
+      "--max-turns",
+      "40"
+    ],
+    "environment_keys": [
+      "HOME",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER"
+    ],
+    "instruction": null
+  },
+  "transcript": {
+    "events": 115,
+    "file": "attempt-1.jsonl"
+  }
+}
