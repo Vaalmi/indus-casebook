@@ -17,7 +17,10 @@ from casebook.model.files import (
 from casebook.publish.gates import run_gates, run_layout_problems, unmapped_record_problems
 from casebook.publish.private_set import private_set_problems
 from casebook.site import STATIC_DIR, data_root, render_site
+from casebook.site.errata import ErrataError
 from casebook.site.results import ResultsError, private_outcomes_path
+from casebook.site.tasks import is_held
+from casebook.tasks.task import load_task
 
 
 class SiteBuildError(RuntimeError):
@@ -35,8 +38,10 @@ def build_site(
     tasks: Path | None = None,
     keys: Path | None = None,
     private_outcomes: Path | None = None,
+    errata: Path | None = None,
 ) -> int:
-    """`private_outcomes`: the private set's published counts, by default beside the runs in `published/results/`."""
+    """`private_outcomes`: the private set's published counts, by default beside the runs in `published/results/`.
+    `errata`: the errata log, `published/errata.json`; with none, the log's page says there is no correction yet."""
     if read_json(book, METADATA).get("securities") != ALIASES:
         raise SiteBuildError(f"{book} is not a default build; a real-ticker build is never published")
     held = sorted(
@@ -75,9 +80,11 @@ def build_site(
         shutil.rmtree(staging)
     keys_dir = keys / manifest.version if keys else None
     try:
-        pages = render_site(book, runs, tasks, keys_dir, private_outcomes)
+        pages = render_site(book, runs, tasks, keys_dir, private_outcomes, errata)
     except ResultsError as error:
         raise SiteBuildError(f"the results page cannot be built: {error}") from error
+    except ErrataError as error:
+        raise SiteBuildError(f"the errata log cannot be built: {error}") from error
     for name, html in pages.items():
         path = staging / name
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -94,7 +101,9 @@ def build_site(
             target = staging / RUNS_DATA / path.relative_to(runs)
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(path, target)
-    problems = run_gates(staging, readme, data / METADATA)
+    shown = [load_task(tasks / f"{Path(n).stem}.toml") for n in pages if n.startswith("tasks/")] if tasks else []
+    held = {t.task_id: t.justified_conclusion for t in shown if is_held(t)}
+    problems = run_gates(staging, readme, data / METADATA, held)
     if problems:
         raise SiteBuildError("the site fails its gates:\n  " + "\n  ".join(problems))
     if out.exists():

@@ -15,6 +15,7 @@ def test_build_check_and_site_from_the_command_line(tmp_path: Path, capsys: pyte
     site = tmp_path / "site"
     none = str(tmp_path / "no-runs")
     assert main(["site", "--book", str(book), "--out", str(site), "--readme", str(README), "--runs", none]) == 0
-    # The index and a page per public featured household.
-    assert f"built {1 + len(FEATURED)} pages" in capsys.readouterr().out
+    # The index, the errata log (from published/errata.json) and a page per public featured household.
+    assert f"built {2 + len(FEATURED)} pages" in capsys.readouterr().out
     assert (site / "households" / "HH-4821.html").is_file()
+    assert "No corrections yet" in (site / "errata.html").read_text()

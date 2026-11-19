@@ -6,6 +6,8 @@ from pathlib import Path
 from typing import Any
 
 from casebook.publish.site_build import build_site
+from casebook.runner.session import published_record
+from casebook.tasks.task import find_task
 
 from .conftest import README, ROOT
 from .test_held_verdicts import a_graded_record, runs_with
@@ -90,7 +92,10 @@ def test_a_missing_vote_is_shown_as_missing(book: Path, tmp_path: Path) -> None:
 
 
 def test_a_held_task_page_shows_the_crm_writes_but_no_vote(book: Path, tmp_path: Path) -> None:
-    html = page(book, tmp_path, with_follow_up("T-TAX-01", (4, 5, 3)))
+    """Published as a held run is: its grade, votes and all, stripped (a held record with its grade fails the
+    site build's gate)."""
+    record = published_record(find_task(TASKS, "T-TAX-01"), with_follow_up("T-TAX-01", (4, 5, 3)))
+    html = page(book, tmp_path, record)
     assert "Discussed the fee refund." in html
     assert "data-juror" not in html and "median 4 of 5" not in html
 

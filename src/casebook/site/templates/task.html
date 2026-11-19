@@ -20,14 +20,19 @@
 {% endmacro %}
 <nav class="crumbs"><a href="../index.html">Households and tasks</a></nav>
 <header class="household-head">
-  <h1>{{ view.task.task_id }}: {{ view.task.workflow|capitalize }}</h1>
+  <h1>{{ view.task.task_id }}: {{ workflow_names[view.task.workflow] }}</h1>
+  {% if view.task.household_id == book_id %}
+  <p>Across the whole public book (<a href="../{{ data }}/manifest.json">the manifest of its files</a>), with evidence known by {{ view.task.cutoff }}.</p>
+  {% else %}
   <p>On <a href="../households/{{ view.task.household_id }}.html">{{ view.task.household_id }}</a>, with evidence known by {{ view.task.cutoff }}.</p>
+  {% endif %}
 </header>
 
 <section aria-labelledby="task-heading" data-section="task">
   <h2 id="task-heading">The task</h2>
   <pre class="prompt">{{ view.task.prompt }}</pre>
-  <p>The AI under test gets the household's four source sets as they stood on {{ view.task.cutoff }}, read on real tickers with invented prices. It has the tools {{ view.file_tools|join(", ") }}, and Skill, by which the checklist and skill arms load their instruction{% if view.crm_tools %}, and the CRM sandbox's {{ view.crm_tools|join(", ") }}, which read and write a copy of the firm's CRM made for the run{% endif %}; nothing that runs code or reaches the web. Its output is shown here under aliases.</p>
+  <p data-section="sources">Sources: the {{ "book's" if view.task.household_id == book_id else "household's" }} files in {{ view.task.fixtures|join(", ") }}, as they stood on {{ view.task.cutoff }}.</p>
+  <p>The AI under test gets those files, read on real tickers with invented prices. It has the tools {{ view.file_tools|join(", ") }}, and Skill, by which the checklist and skill arms load their instruction{% if view.crm_tools %}, and the CRM sandbox's {{ view.crm_tools|join(", ") }}, which read and write a copy of the firm's CRM made for the run{% endif %}; nothing that runs code or reaches the web. Its output is shown here under aliases.</p>
 </section>
 
 <section aria-labelledby="arms-heading">
@@ -41,8 +46,8 @@
       {% else %}
       <p class="run-name" data-run-name>{{ arm.tool }} · model {{ arm.models or "not reported" }}{% if arm.effort %} at {{ arm.effort }} effort{% endif %} · {{ arm.date }}</p>
       {% set regraded = arm.record.regraded if arm.record.regraded is defined else none %}
-      {% if regraded %}
-      <p class="regraded" data-regraded>Graded again on {{ regraded.utc[:10] }}, with no new run, under the fabricated-figure rule as the owner widened it on 18 November 2026 (it now accepts figures that follow from the files){% if regraded.grade_before and not view.held %}; first graded {{ regraded.grade_before.score }} of 100{% if regraded.grade_before.critical_fail %} ({{ regraded.grade_before.critical_fail }}){% endif %}{% endif %}.</p>
+      {% if regraded and not view.held %}
+      <p class="regraded" data-regraded>Graded again on {{ regraded.utc[:10] }}, with no new run, under the fabricated-figure rule as the owner widened it on 18 and 19 November 2026 (it now accepts figures that follow from the files){% if regraded.grade_before %}; first graded {{ regraded.grade_before.score }} of 100{% if regraded.grade_before.critical_fail %} ({{ regraded.grade_before.critical_fail }}){% endif %}{% endif %}.</p>
       {% endif %}
       {% if arm.record.state == "failed" and not view.held %}
       <p class="failed" data-outcome="failed">Run failed, not scored: {{ arm.record.failure_reason }}</p>

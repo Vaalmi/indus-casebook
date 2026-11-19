@@ -22,6 +22,8 @@ from casebook.model.files import (
     POSITIONS_CSV,
     REGISTRY,
     SEALED_HOUSEHOLDS,
+    SECURITIES_COLUMNS,
+    SECURITIES_CSV,
     SOURCE_SETS,
     TRANSACTIONS_COLUMNS,
     TRANSACTIONS_CSV,
@@ -35,6 +37,7 @@ from casebook.model.files import (
 from casebook.model.money import parse_decimal, usd
 from casebook.model.registry import RegistryEntry, parse_entry
 from casebook.notice import NOTICE, NOTICE_HEADLINE
+from casebook.site.errata import load_errata
 from casebook.site.results import (
     OUTCOME_NAMES,
     OUTCOMES,
@@ -45,7 +48,7 @@ from casebook.site.results import (
     results,
 )
 from casebook.site.tasks import ARM_NAMES, ARM_ORDER, load_records, task_views
-from casebook.tasks.task import WORKFLOWS
+from casebook.tasks.task import BOOK, WORKFLOWS
 
 STATIC_DIR = Path(__file__).parent / "static"
 FEATURED = "featured"
@@ -157,6 +160,8 @@ class HouseholdView:
 
     observations: list[tuple[str, list[str]]]
     returns: list[tuple[str, list[ReturnForm]]]
+    # Each security's invented name, by its ID: the events layer names a security as every other page does.
+    securities: dict[str, str]
 
     @property
     def key_events(self) -> list[dict[str, Any]]:
@@ -185,6 +190,11 @@ def _household_files(book: Path, household_id: str) -> dict[str, list[str]]:
         source: sorted(p.relative_to(root).as_posix() for p in (root / source).rglob("*") if p.is_file())
         for source in SOURCE_SETS
     }
+
+
+def securities(book: Path) -> dict[str, str]:
+    """Each security's invented name, by its ID (the book's securities list)."""
+    return {r["security_id"]: r["security"] for r in read_csv(book, SECURITIES_CSV, SECURITIES_COLUMNS)}
 
 
 def load_household(
@@ -230,6 +240,7 @@ def load_household(
             household_id,
             {m["person_id"]: m["name"] for m in read_json(root, PORTFOLIO_HOUSEHOLD)["household_membership"]},
         ),
+        securities=securities(book),
     )
 
 
@@ -294,6 +305,7 @@ def render_site(
     tasks: Path | None = None,
     keys: Path | None = None,
     private_outcomes: Path | None = None,
+    errata: Path | None = None,
 ) -> dict[str, str]:
     manifest = read_manifest(book)
     metadata = read_json(book, METADATA)
@@ -319,8 +331,14 @@ def render_site(
     sections = results(load_records(runs) if runs and runs.is_dir() else {}, tasks, private) if tasks else []
     pages = {
         "index.html": env.get_template("index.html").render(
-            households=households, tasks=views, results=bool(sections), root=".", **common
-        )
+            households=households,
+            tasks=views,
+            workflow_names=WORKFLOW_NAMES,
+            results=bool(sections),
+            root=".",
+            **common,
+        ),
+        "errata.html": env.get_template("errata.html").render(errata=load_errata(errata), root=".", **common),
     }
     if sections:
         pages["results.html"] = env.get_template("results.html").render(
@@ -336,7 +354,9 @@ def render_site(
             **common,
         )
     for view in views:
-        pages[f"tasks/{view.task.task_id}.html"] = env.get_template("task.html").render(view=view, root="..", **common)
+        pages[f"tasks/{view.task.task_id}.html"] = env.get_template("task.html").render(
+            view=view, root="..", workflow_names=WORKFLOW_NAMES, book_id=BOOK, **common
+        )
     for household in households:
         page = env.get_template("household.html").render(
             household=household,

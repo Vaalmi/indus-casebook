@@ -86,7 +86,7 @@ def _site(args: argparse.Namespace) -> int:
     from casebook.site.tasks import UnnamedResultError
 
     try:
-        pages = build_site(args.book, args.out, args.readme, args.runs, args.tasks, args.keys)
+        pages = build_site(args.book, args.out, args.readme, args.runs, args.tasks, args.keys, errata=args.errata)
     except (SiteBuildError, UnnamedResultError) as error:
         print(f"site build failed: {error}", file=sys.stderr)
         return 1
@@ -374,6 +374,7 @@ def parser() -> argparse.ArgumentParser:
     site.add_argument("--runs", type=Path, default=PUBLISHED_RUNS, help="mapped run records, for the task pages")
     site.add_argument("--tasks", type=Path, default=Path("tasks/public"))
     site.add_argument("--keys", type=Path, default=PUBLISHED_KEYS)
+    site.add_argument("--errata", type=Path, default=Path("published/errata.json"), help="the errata log")
     site.set_defaults(run=_site)
     run = commands.add_parser("run", help="run one task under one arm on the CLI under test")
     run.add_argument("--task", required=True)

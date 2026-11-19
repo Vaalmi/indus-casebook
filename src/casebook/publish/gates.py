@@ -1,5 +1,5 @@
-"""The gates on published files: the notice, the synthetic label, no real identifier, and the watermark
-and notice on every page of a filled return."""
+"""The gates on published files: the notice, the synthetic label, no real identifier, the watermark
+and notice on every page of a filled return, and nothing of a held task's verdict."""
 
 import csv
 import io
@@ -154,11 +154,49 @@ def run_layout_problems(runs: Path) -> list[str]:
     ]
 
 
-def run_gates(site: Path, readme: Path, metadata: Path) -> list[str]:
+# What a held task's page never shows before the tax review: "sources and outputs only, with no verdict and no
+# failure marking" (docs/SPEC.md), "and no explanation of the task's expected output" (docs/PLAN.md, U4). The page's
+# own words are read; the prompt, each arm's output and what a run wrote to the CRM sandbox are the task's and the
+# model's, and may say anything.
+_QUOTED = re.compile(r'<pre class="(?:prompt|output)">.*?</pre>|<details data-section="crm-diff">.*?</details>', re.S)
+_VERDICT_MARKUP = re.compile(r'data-outcome="(?!held")[^"]*"|data-verdict="(?!held")[^"]*"')
+_VERDICT_TEXT = re.compile(r"\b(?:passed|failed)\s*[:,]\s*\d|\b\d{1,3} of 100\b|critical fail|graded again", re.I)
+_MARKING = re.compile(r'data-criterion=|class="(?:hit|miss)"|[\u2713\u2717]')
+_EXPLANATION = re.compile(r'data-section="justified-conclusion"|justified conclusion', re.I)
+# As much of a held task's justified conclusion as shows it was copied in.
+_CONCLUSION_SHOWN = 60
+
+
+def held_page_problems(site: Path, held: dict[str, str]) -> list[str]:
+    """Every held task's page and published run records: no verdict, no failure marking, no explanation of the
+    expected output. `held`: each held task's ID and its justified conclusion."""
+    problems: list[str] = []
+    for task_id, conclusion in sorted(held.items()):
+        page = site / "tasks" / f"{task_id}.html"
+        if page.is_file():
+            own = _QUOTED.sub(" ", page.read_text(encoding="utf-8"))
+            text = " ".join(html_visible_text(own).split())
+            where = page.relative_to(site).as_posix()
+            if _VERDICT_MARKUP.search(own) or _VERDICT_TEXT.search(text):
+                problems.append(f"{where}: a held task's page shows a verdict")
+            if _MARKING.search(own):
+                problems.append(f"{where}: a held task's page marks a failure")
+            shown = " ".join(conclusion.split())[:_CONCLUSION_SHOWN]
+            if _EXPLANATION.search(own) or (shown and shown in text):
+                problems.append(f"{where}: a held task's page explains its expected output")
+        for record in sorted((site / "data" / "runs" / task_id).glob("*.json")):
+            data = json.loads(record.read_text(encoding="utf-8"))
+            if data.get("grade") is not None or (data.get("regraded") or {}).get("grade_before") is not None:
+                problems.append(f"{record.relative_to(site).as_posix()}: a held task's run record carries its grade")
+    return problems
+
+
+def run_gates(site: Path, readme: Path, metadata: Path, held: dict[str, str] | None = None) -> list[str]:
     return (
         notice_problems(site, readme, metadata)
         + synthetic_problems(site)
         + real_identifier_problems(site)
         + return_problems(site)
         + private_set_problems(site)
+        + held_page_problems(site, held or {})
     )

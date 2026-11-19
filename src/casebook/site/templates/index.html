@@ -24,19 +24,21 @@
 {% if tasks %}
 <section class="tasks" aria-labelledby="tasks-heading">
   <h2 id="tasks-heading">Tasks</h2>
+  <div class="scroll">
   <table class="list">
     <thead><tr><th>Task</th><th>Workflow</th><th>Household</th>{% for arm in tasks[0].arms %}<th>{{ arm.name }}</th>{% endfor %}</tr></thead>
     <tbody>
     {% for t in tasks %}
       <tr data-task="{{ t.task.task_id }}">
         <td><a href="tasks/{{ t.task.task_id }}.html">{{ t.task.task_id }}</a></td>
-        <td>{{ t.task.workflow|capitalize }}</td>
-        <td>{{ t.task.household_id }}</td>
+        <td>{{ workflow_names[t.task.workflow] }}</td>
+        <td>{{ "the whole book" if t.task.household_id == "book" else t.task.household_id }}</td>
         {% for arm in t.arms %}<td>{% if not arm.record %}not run{% elif t.held %}not scored until the tax review{% elif arm.record.state == "failed" %}failed run{% elif not arm.record.grade %}not graded{% else %}{{ "passed" if arm.record.grade.passed else "failed" }}, {{ arm.record.grade.score }}{% endif %}</td>{% endfor %}
       </tr>
     {% endfor %}
     </tbody>
   </table>
+  </div>
 </section>
 {% endif %}
 {% if results %}
@@ -45,6 +47,10 @@
   <p><a href="results.html">The results</a>: every run by task, arm and repeat, the skill against the checklist and the basic prompt on the same task and repeat, the counts per workflow beside the private set's, and how often the repeats agree.</p>
 </section>
 {% endif %}
+<section class="errata-link" aria-labelledby="errata-link-heading">
+  <h2 id="errata-link-heading">Errata</h2>
+  <p>The <a href="errata.html">errata log</a> lists every correction, with the version that ships it.</p>
+</section>
 <section class="data" aria-labelledby="data-heading">
   <h2 id="data-heading">The book's files</h2>
   <p>Download the <a href="{{ data }}/metadata.json">book metadata</a>, the <a href="{{ data }}/manifest.json">manifest with file hashes</a>, the <a href="{{ data }}/securities/securities.csv">securities list</a> and the <a href="{{ data }}/securities/prices_synthetic.csv">synthetic price series</a>.</p>

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Errata log{% endblock %}
+{% block main %}
+<nav class="crumbs"><a href="index.html">Households and tasks</a></nav>
+<section class="intro" aria-labelledby="errata-heading" data-section="errata">
+  <h1 id="errata-heading">Errata log</h1>
+  <p>Every correction to the book's data, keys or tasks ships as a new version with an entry here. A published household or task ID never changes meaning.</p>
+  {% if errata %}
+  <div class="scroll">
+  <table class="list">
+    <thead><tr><th>Version</th><th>Date</th><th>Correction</th><th>IDs</th></tr></thead>
+    <tbody>
+    {% for c in errata %}
+      <tr data-correction="{{ c.version }}"><td>{{ c.version }}</td><td>{{ c.date.isoformat() }}</td><td>{{ c.correction }}</td><td>{{ c.ids|join(", ") if c.ids else "none" }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+  <p data-correction="none">No corrections yet: book {{ metadata.version }} is as first published.</p>
+  {% endif %}
+</section>
+{% endblock %}

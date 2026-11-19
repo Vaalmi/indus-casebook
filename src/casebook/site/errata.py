@@ -1,0 +1,55 @@
+"""The errata log: the public list of corrections (docs/SPEC.md, Words), each a version, a date, what it corrected
+and the household or task IDs it names. The first version has none."""
+
+import json
+from dataclasses import dataclass
+from datetime import date
+from pathlib import Path
+from typing import Any
+
+ERRATA_FIELDS = ("version", "date", "correction", "ids")
+
+
+class ErrataError(ValueError):
+    pass
+
+
+@dataclass(frozen=True)
+class Correction:
+    version: str
+    date: date
+    correction: str
+    ids: tuple[str, ...]
+
+
+def _correction(raw: Any, where: str) -> Correction:
+    if not isinstance(raw, dict) or sorted(raw) != sorted(ERRATA_FIELDS):  # pyright: ignore[reportUnknownArgumentType]
+        raise ErrataError(f"{where}: an entry has exactly {', '.join(ERRATA_FIELDS)}")
+    entry: dict[str, Any] = raw  # pyright: ignore[reportUnknownVariableType]
+    version, when, text, ids = (entry[f] for f in ERRATA_FIELDS)
+    if not isinstance(version, str) or not version.strip():
+        raise ErrataError(f"{where}: an entry names its version")
+    if not isinstance(text, str) or not text.strip():
+        raise ErrataError(f"{where}: an entry says what it corrected")
+    if not isinstance(ids, list) or not all(isinstance(i, str) and i.strip() for i in ids):  # pyright: ignore[reportUnknownVariableType]
+        raise ErrataError(f"{where}: an entry's ids are a list of household or task IDs")
+    try:
+        day = date.fromisoformat(str(when))
+    except ValueError as error:
+        raise ErrataError(f"{where}: {when!r} is not a date (YYYY-MM-DD)") from error
+    return Correction(version.strip(), day, text.strip(), tuple(str(i) for i in ids))  # pyright: ignore[reportUnknownArgumentType, reportUnknownVariableType]
+
+
+def load_errata(path: Path | None) -> list[Correction]:
+    """The log's entries, newest version first; none where there is no log yet."""
+    if path is None or not path.is_file():
+        return []
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as error:
+        raise ErrataError(f"{path.name} is not JSON: {error}") from error
+    if not isinstance(data, dict) or sorted(data) != ["entries"] or not isinstance(data["entries"], list):  # pyright: ignore[reportUnknownArgumentType]
+        raise ErrataError(f'{path.name}: the log is {{"entries": [...]}}')
+    entries: list[Any] = data["entries"]  # pyright: ignore[reportUnknownVariableType]
+    corrections = [_correction(e, f"{path.name} entry {i + 1}") for i, e in enumerate(entries)]
+    return sorted(corrections, key=lambda c: (c.date, c.version), reverse=True)

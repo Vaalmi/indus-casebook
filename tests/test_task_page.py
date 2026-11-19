@@ -44,9 +44,9 @@ def test_the_task_page_shows_each_arm_with_the_failure_marked_and_the_run_named(
     book: Path, runs: Path, tmp_path: Path, browser: Browser
 ) -> None:
     site = tmp_path / "site"
-    # The index, the public featured households' pages (16 before the freeze, 20 after), the task page and the
-    # results page.
-    assert build(book, site, runs) == 1 + len(FEATURED) + 2
+    # The index, the errata log, the public featured households' pages (16 before the freeze, 20 after), the task
+    # page and the results page.
+    assert build(book, site, runs) == 2 + len(FEATURED) + 2
     page, noise = visit(browser, (site / "tasks" / "T-REC-01.html").as_uri())
     arms = page.locator("[data-arm]")
     assert [arms.nth(i).get_attribute("data-arm") for i in range(3)] == ["basic", "checklist", "skill"]
@@ -86,6 +86,6 @@ def test_a_result_without_its_model_cannot_be_published(book: Path, runs: Path, 
 
 def test_without_runs_the_site_has_no_task_pages(book: Path, tmp_path: Path) -> None:
     empty = tmp_path / "none"
-    assert build_site(book, tmp_path / "site", README, empty, TASKS, None) == 1 + len(FEATURED)
+    assert build_site(book, tmp_path / "site", README, empty, TASKS, None) == 2 + len(FEATURED)  # with the errata log
     assert not (tmp_path / "site" / "tasks").exists()
     shutil.rmtree(tmp_path / "site")

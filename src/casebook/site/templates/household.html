@@ -102,7 +102,7 @@
       <div class="scroll">
       <table>
         <thead><tr><th>Date</th><th>Event</th><th>Account</th><th>Security</th><th class="num">Units</th><th class="num">Amount</th></tr></thead>
-        <tbody>{% for e in household.key_events %}<tr><td>{{ e.date }}</td><td>{{ e.type|replace("_", " ") }}</td><td>{{ e.account_id }}{% if e.get("to_account_id") %} to {{ e.to_account_id }}{% endif %}</td><td>{{ e.get("security_id", "") }}</td><td class="num">{{ e.get("units", "") }}</td><td class="num">{% if e.get("amount") %}{{ e.amount|money }}{% endif %}</td></tr>{% endfor %}</tbody>
+        <tbody>{% for e in household.key_events %}<tr><td>{{ e.date }}</td><td>{{ e.type|replace("_", " ") }}</td><td>{{ e.account_id }}{% if e.get("to_account_id") %} to {{ e.to_account_id }}{% endif %}</td><td>{{ household.securities.get(e.get("security_id", ""), "") }}</td><td class="num">{{ e.get("units", "") }}</td><td class="num">{% if e.get("amount") %}{{ e.amount|money }}{% endif %}</td></tr>{% endfor %}</tbody>
       </table>
       </div>
       <details>

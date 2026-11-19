@@ -28,7 +28,7 @@ def test_each_public_featured_household_has_a_page_with_its_item_and_layers(site
         assert "This household is the twin in pair 1" in html
 
 
-def test_the_index_lists_the_16_public_featured_households(site: Path) -> None:
+def test_the_index_lists_the_public_featured_households(site: Path) -> None:
     index = (site / "index.html").read_text()
     assert sorted(set(re.findall(r"households/(HH-\d{4})\.html", index))) == list(FEATURED)
 
