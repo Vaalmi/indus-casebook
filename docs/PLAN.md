@@ -323,12 +323,12 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 
 **Depends on:** 13.
 
-- [ ] The site lists the 20 featured households with a page each, 24 task pages, the results page and an errata log page, and loads with no account or install
-- [ ] Each task page shows the task, what every arm produced, the failure marked, and why the justified conclusion is what it is; tax-lot and RMD task pages show sources and outputs with no verdict, no failure marking and no explanation of the expected output (a test fails the site build when one carries any of the three)
-- [ ] A featured household's page shows the justified conclusion with its figures for a tax or RMD planted item, the same as for any other; Playwright asserts it on one such household
-- [ ] Every page carries the notice banner; invented security names appear everywhere; the alias gate passes on the whole site
-- [ ] Playwright walks the home page, one household, one task and the results page at phone and desktop widths with a clean console
-- [ ] The one check command passes
+- [x] The site lists the 20 featured households with a page each, 24 task pages, the results page and an errata log page, and loads with no account or install
+- [x] Each task page shows the task, what every arm produced, the failure marked, and why the justified conclusion is what it is; tax-lot and RMD task pages show sources and outputs with no verdict, no failure marking and no explanation of the expected output (a test fails the site build when one carries any of the three)
+- [x] A featured household's page shows the justified conclusion with its figures for a tax or RMD planted item, the same as for any other; Playwright asserts it on one such household
+- [x] Every page carries the notice banner; invented security names appear everywhere; the alias gate passes on the whole site
+- [x] Playwright walks the home page, one household, one task and the results page at phone and desktop widths with a clean console
+- [x] The one check command passes
 
 ### Slice 15: Package the plugin (week 13)
 
