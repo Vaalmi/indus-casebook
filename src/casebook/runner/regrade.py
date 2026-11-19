@@ -9,7 +9,9 @@ private set is not regraded: under option 1a its runs are run again under the ne
 A regrade is refused unless the freeze matches today's hashes, so every regraded run names the freeze it was graded
 under; unless the task and the key are the ones the run ran with (the key is computed again and must hash as the
 record's answer key); and, for a follow-up run, unless its stored votes read back as stored and are on the message
-its answer drafted. Each run's record keeps the grade it had and the grader that gave it, under `regraded`.
+its answer drafted. Each run's record keeps the grade it had and the grader that gave it, under `regraded`. A failed
+run of the pass is never graded; under the same checks it stands under the regrade's freeze with the rest of its pass
+(found building the results page: the pass was split in two, its failed runs shown as not run).
 """
 
 import hashlib
@@ -36,8 +38,10 @@ from casebook.runner.session import finish_run, keys_root_for
 from casebook.tasks.task import Task, find_task
 
 DECISION = "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md"
-# The states of a run whose answer was graded: only these are graded again.
+# The states of a run whose answer was graded: only these are graded again. A failed run is never graded; it
+# stands under the regrade's freeze with the rest of its pass.
 GRADED = ("graded", "mapped", "published")
+FAILED = "failed"
 
 
 class RegradeRefusedError(RunRefusedError):
@@ -50,10 +54,13 @@ class Regraded:
 
     slot: str
     run_id: str
-    before: tuple[int, str | None]
-    after: tuple[int, str | None]
+    before: tuple[int, str | None] | None  # None for a failed run, never graded
+    after: tuple[int, str | None] | None
 
     def __str__(self) -> str:
+        if self.before is None or self.after is None:
+            return f"{self.slot}: {self.run_id}: failed run, never graded; stands under this freeze"
+
         def shown(grade: tuple[int, str | None]) -> str:
             return f"{grade[0]}" + (f" ({grade[1]})" if grade[1] else "")
 
@@ -103,8 +110,9 @@ def regrade_run(task: Task, tasks: Path, book: Path, keys_root: Path, published:
     """Grade one public run again and publish it again, its earlier grade kept under `regraded`."""
     folder = private_root() / "runs" / run_id
     record: dict[str, Any] = json.loads((folder / "record.json").read_text(encoding="utf-8"))
-    if record["state"] not in GRADED or not record["grade"]:
-        raise RegradeRefusedError(f"run {run_id} is {record['state']}; only a graded run is graded again")
+    failed = record["state"] == FAILED
+    if not failed and (record["state"] not in GRADED or not record["grade"]):
+        raise RegradeRefusedError(f"run {run_id} is {record['state']}; only a graded or failed run is regraded")
     spec = grader(task.grader)
     key = spec.key(book, task.household_id, task.grader_params)
     if hashlib.sha256(json_text(key.to_dict()).encode()).hexdigest() != record["hashes"]["answer"]:
@@ -123,10 +131,10 @@ def regrade_run(task: Task, tasks: Path, book: Path, keys_root: Path, published:
     previous = record.get(REGRADED)
     before = previous["grade_before"] if previous else record["grade"]
     grader_before = previous["grader_before"] if previous else record["hashes"]["grader"]
-    grade = regrade_record(task, spec, key, record, folder / f"workspace-{len(record['attempts'])}")
+    grade = None if failed else regrade_record(task, spec, key, record, folder / f"workspace-{len(record['attempts'])}")
     record = {
         **record,
-        "state": "graded",
+        "state": FAILED if failed else "graded",
         "grade": grade,
         "hashes": {**record["hashes"], "grader": spec.sha256()},
         REGRADED: {
@@ -141,6 +149,8 @@ def regrade_run(task: Task, tasks: Path, book: Path, keys_root: Path, published:
     (folder / "record.json").write_text(json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     keys = keys_root_for(task, keys_root) / read_manifest(book).version
     finish_run(task, tasks, False, spec, key, keys, record, published)
+    if before is None or grade is None:
+        return Regraded(f"{task.task_id} {record['arm']}", run_id, None, None)
     score = (int(before["score"]), before["critical_fail"]), (int(grade["score"]), grade["critical_fail"])
     return Regraded(f"{task.task_id} {record['arm']}", run_id, *score)
 
@@ -156,7 +166,7 @@ def regrade_pass(run: Pass, progress: Callable[[str], object] = lambda _: None) 
     for slot_state in run.slots:
         task_id = slot_state.slot.task_id
         last = slot_state.runs[-1] if slot_state.runs else None
-        if is_private_task_id(task_id) or last is None or last.state not in GRADED:
+        if is_private_task_id(task_id) or last is None or last.state not in (*GRADED, FAILED):
             continue
         tasks, book = run.folders.for_task(task_id)
         result = regrade_run(find_task(tasks, task_id), tasks, book, run.folders.keys, run.folders.runs, last.run_id)

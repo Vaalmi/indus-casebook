@@ -58,6 +58,7 @@
   "models_reported": [
     "claude-opus-5-5"
   ],
+  "notice": "UNVALIDATED SYNTHETIC RESEARCH PREVIEW. Household data, prices, transactions and document contents are invented. Securities appear under invented names by default; an optional mode uses real ticker identifiers with invented prices. Tax calculations, answer keys and workflow judgments have not been independently reviewed by qualified practitioners. This is not tax, investment or compliance advice and is unsuitable for filing, trading or client decisions. No performance claims are established.",
   "output": null,
   "run_id": "T-MTG-06-skill-20261118T113314Z-1ca1",
   "settings": {

@@ -9,6 +9,8 @@ import pytest
 
 from casebook.cli import main
 from casebook.keys.fee_reconciliation import fee_key
+from casebook.notice import NOTICE
+from casebook.publish.gates import synthetic_problems
 from casebook.publish.mapper import MappingError, map_to_aliases
 from casebook.runner.run import GradeRefusedError
 from casebook.securities.scan import default_scan
@@ -56,6 +58,21 @@ def test_a_run_is_keyed_graded_and_published_under_aliases(
     assert default_scan().find(published) == []
     key = json.loads((tmp_path / "keys" / "0.0.1" / "T-REC-01.json").read_text())
     assert key["finding"] == "fee_error"
+
+
+def test_a_published_run_that_quotes_a_price_carries_the_notice_and_passes_the_synthetic_gate(
+    tmp_path: Path, real_book: Path, standin_cli: StandIn
+) -> None:
+    # The live pass's answers quote prices ("$216.06 a share"); the site refused ten of their files until the
+    # notice, whose "SYNTHETIC" labels them, went into every published record and transcript.
+    standin_cli.answer.write_text(answer_for(real_book, "VTI was priced at $216.06 a share on the statement."))
+    run(tmp_path, real_book, "basic")
+    [record_file] = (tmp_path / "runs" / "T-REC-01").glob("*[0-9a-f].json")
+    [transcript] = (tmp_path / "runs" / "T-REC-01").glob("*.transcript.jsonl")
+    assert json.loads(record_file.read_text())["notice"] == NOTICE
+    assert json.loads(transcript.read_text().splitlines()[0]) == {"notice": NOTICE}
+    assert "$216.06 a share" in transcript.read_text() + record_file.read_text()
+    assert synthetic_problems(tmp_path / "runs") == []
 
 
 def test_a_failed_run_is_published_with_its_reason_and_no_grade(

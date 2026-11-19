@@ -92,6 +92,50 @@ def test_a_pass_s_public_answers_are_graded_again_with_their_earlier_grade_kept(
     assert all(_record(run_id)[REGRADED]["grade_before"] == zeroed[run_id] for run_id in public)
 
 
+def test_a_pass_s_failed_run_stands_under_the_regrade_s_freeze_never_graded(
+    tmp_path: Path, real_book: Path, standin_cli: StandIn, frozen: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Found building the results page, 19 November 2026: the regrade left the pass's five failed runs under the
+    # freeze they ran under, so the pass showed as two sections and, in the regraded one, its failed slots as
+    # "not run" and no failed runs counted.
+    standin_cli.answer.write_text(answer_for(real_book))
+    real_run = full_pass.run_and_grade
+    calls: list[str] = []
+
+    def error_on_the_second(*args: Any, **named: Any) -> Any:
+        calls.append(f"{args[0]} {args[1]}")
+        standin_cli.set("error" if len(calls) == 2 else "answer")
+        return real_run(*args, **named)
+
+    private_tasks(private_root() / "tasks", ())
+    monkeypatch.setattr(full_pass, "run_and_grade", error_on_the_second)
+    tasks = public_tasks(tmp_path / "tasks", "T-REC-01")
+    published = tmp_path / "published" / "runs"
+    folders = Folders(tasks, private_root() / "tasks", real_book, real_book, tmp_path / "keys", published)
+    done = run_pass(new_pass(folders, 1, SharedConfig()))
+    [failed_id] = [s.runs[-1].run_id for s in done.slots if s.runs[-1].state == "failed"]
+    for run_id in (s.runs[-1].run_id for s in done.slots if s.runs[-1].state != "failed"):
+        _as_if_zeroed(run_id)
+
+    done_list = regrade_pass(load_pass(done.pass_id))
+    assert [str(r) for r in done_list if r.run_id == failed_id] == [
+        f"T-REC-01 checklist: {failed_id}: failed run, never graded; stands under this freeze"
+    ]
+    failed = _record(failed_id)
+    assert (failed["state"], failed["grade"], failed[REGRADED]["grade_before"]) == ("failed", None, None)
+    records = [json.loads(p.read_text()) for p in sorted((published / "T-REC-01").glob("*[0-9a-f].json"))]
+    assert {run_name(r).freeze for r in records} == {failed[REGRADED]["freeze"]}
+    [section] = results({"T-REC-01": records}, TASKS, [])
+    assert section.public["reconciliation"]["checklist"]["failed_run"] == 1
+    # Here the pass ran under the regrade's own freeze; as if it ran under an earlier one, the section says so.
+    earlier = [r | {"freeze": "a" * 64} for r in records]
+    [section] = results({"T-REC-01": earlier}, TASKS, [])
+    assert section.regraded_label == (
+        f"2 public runs ran under freeze {'a' * 12} and were graded again under this one, with no new run; "
+        "1 failed run of the same pass stands under it too, never graded"
+    )
+
+
 def test_a_regrade_is_refused_unless_the_freeze_matches_today_s_hashes(
     tmp_path: Path,
     real_book: Path,
@@ -169,6 +213,11 @@ def test_a_regraded_record_names_when_and_what_it_had_before() -> None:
     check_record({**record, REGRADED: regraded})
     with pytest.raises(RunRecordError, match="a regrade names"):
         check_record({**record, REGRADED: {"utc": "x"}})
+    # A failed run of a regraded pass carries it with no grade before or after; never with one.
+    failed = {**record, "state": "failed", "grade": None, "failure_reason": "CLI error"}
+    check_record({**failed, REGRADED: {**regraded, "grade_before": None}})
+    with pytest.raises(RunRecordError, match="a failed run is never graded"):
+        check_record({**failed, REGRADED: regraded})
 
 
 def test_a_held_task_s_regraded_record_is_published_without_its_earlier_grade() -> None:

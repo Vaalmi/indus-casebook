@@ -12,6 +12,7 @@ from casebook.graders.registry import GraderSpec, grader
 from casebook.model.crm import parse_crm_diff
 from casebook.model.files import json_text, read_manifest
 from casebook.model.ledger import is_private_task_id
+from casebook.notice import NOTICE
 from casebook.publish.mapper import map_to_aliases
 from casebook.publish.private_set import private_households
 from casebook.runner.config import SharedConfig
@@ -23,6 +24,8 @@ from casebook.tasks.task import HELD_GRADERS, HELD_WORKFLOWS, Task, find_task
 
 # Where a held workflow's keys go whatever --keys says: out/keys/, which the release script ignores.
 HELD_KEYS = Path("out/keys")
+# The field that carries the notice in a published record, and on a published transcript's first line.
+NOTICE_FIELD = "notice"
 
 
 class PrivateTaskError(RunRefusedError):
@@ -171,14 +174,26 @@ def finish_run(
     out = published / task.task_id
     out.mkdir(parents=True, exist_ok=True)
     public = published_record(task, mapped)
-    (out / f"{record['run_id']}.json").write_text(json.dumps(public, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    (out / f"{record['run_id']}.json").write_text(record_text(public), encoding="utf-8")
     transcript = folder / record["transcript"]["file"]
     if transcript.is_file():
         lines = [
             json.dumps(map_to_aliases(json.loads(line))) for line in transcript.read_text().splitlines() if line.strip()
         ]
-        (out / f"{record['run_id']}.transcript.jsonl").write_text("\n".join(lines) + "\n", encoding="utf-8")
+        (out / f"{record['run_id']}.transcript.jsonl").write_text(transcript_text(lines), encoding="utf-8")
     return public
+
+
+def record_text(public: dict[str, Any]) -> str:
+    """A published record as written: with the notice, whose "synthetic" labels any price the answer quotes
+    (docs/SPEC.md, Notice everywhere and Synthetic prices; the site's gate refuses a file that shows prices
+    without it)."""
+    return json.dumps({**public, NOTICE_FIELD: NOTICE}, indent=2, sort_keys=True) + "\n"
+
+
+def transcript_text(lines: Sequence[str]) -> str:
+    """A published transcript as written: the notice on its first line, then the run's events, mapped."""
+    return "\n".join([json.dumps({NOTICE_FIELD: NOTICE}), *lines]) + "\n"
 
 
 def recover_run(

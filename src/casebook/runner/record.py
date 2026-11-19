@@ -46,7 +46,9 @@ SLOT = "slot"
 SKILLS_LOADED = "skills_loaded"
 SLOT_FIELDS = ("pass_id", "repeat")
 # A run graded again after it ran, with no new run (`casebook regrade`; the owner, 18 November 2026): when, under
-# which freeze and decision, and the grader and grade it had before. A run never regraded has no such field.
+# which freeze and decision, and the grader and grade it had before. A run never regraded has no such field. A
+# failed run of the pass carries it too, with no grade before or after: it stands under the regrade's freeze, as
+# what it ran is what that freeze holds, so the pass is not split in two on the results page.
 REGRADED = "regraded"
 REGRADED_FIELDS = ("utc", "freeze", "decision", "grader_before", "grade_before")
 
@@ -77,8 +79,9 @@ def check_record(record: dict[str, Any]) -> dict[str, Any]:
     regraded = record.get(REGRADED)
     if regraded is not None and (not isinstance(regraded, dict) or sorted(regraded) != sorted(REGRADED_FIELDS)):  # pyright: ignore[reportUnknownArgumentType]
         raise RunRecordError(f"run record {record['run_id']}: a regrade names {', '.join(REGRADED_FIELDS)}")
-    if regraded is not None and record["state"] == "failed":
-        raise RunRecordError(f"run record {record['run_id']}: a failed run is never graded, so never regraded")
+    if regraded is not None and record["state"] == "failed" and (record["grade"] or regraded["grade_before"]):
+        # A failed run of a regraded pass stands under the regrade's freeze, with no grade before or after.
+        raise RunRecordError(f"run record {record['run_id']}: a failed run is never graded, before or after a regrade")
     if SLOT in record and not is_slot(record[SLOT]):
         raise RunRecordError(f"run record {record['run_id']}: its slot names a pass and a repeat from 1")
     return record

@@ -285,16 +285,26 @@ class RunSetResult:
     workflows: tuple[WorkflowResult, ...]
     public: dict[str, dict[str, dict[str, int]]]  # workflow, arm, outcome
     private: dict[str, dict[str, dict[str, int]]] | None
-    # The freezes the section's regraded public runs ran under, and how many ran under each, shown by its name.
-    regraded_from: tuple[tuple[str, int], ...] = ()
+    # The freezes the section's regraded public runs ran under, and how many ran under each, graded and failed,
+    # shown by its name.
+    regraded_from: tuple[tuple[str, int, int], ...] = ()
 
     @property
     def regraded_label(self) -> str:
-        return "; ".join(
-            f"{n} public run{'s' if n != 1 else ''} ran under freeze {f[:12]} and {'were' if n != 1 else 'was'} "
-            "graded again under this one, with no new run"
-            for f, n in self.regraded_from
-        )
+        def one(freeze: str, graded: int, failed: int) -> str:
+            parts: list[str] = []
+            if graded:
+                runs, were = ("runs", "were") if graded != 1 else ("run", "was")
+                parts.append(
+                    f"{graded} public {runs} ran under freeze {freeze[:12]} and {were} graded again under this one, "
+                    "with no new run"
+                )
+            if failed:
+                runs, stand = ("runs", "stand") if failed != 1 else ("run", "stands")
+                parts.append(f"{failed} failed {runs} of the same pass {stand} under it too, never graded")
+            return "; ".join(parts)
+
+        return "; ".join(one(*entry) for entry in self.regraded_from)
 
     @property
     def dates(self) -> str:
@@ -385,12 +395,13 @@ def results(
             raise ResultsError("; ".join(held_problems))
         dates = [_date(r) for arms in by_task.values() for placed in arms.values() for r in placed.values()]
         earlier = Counter(
-            f
+            (f, r["state"] == "failed")
             for arms in by_task.values()
             for placed in arms.values()
             for r in placed.values()
             if (f := ran_under(r)) is not None
         )
+        regraded_from = tuple((f, earlier[(f, False)], earlier[(f, True)]) for f in sorted({f for f, _ in earlier}))
         mine = private_by_name.get(name)
         dates += [mine.first_date, mine.last_date] if mine else []
         sections.append(
@@ -402,7 +413,7 @@ def results(
                 workflows=tuple(workflows),
                 public=public,
                 private=mine.counts if mine else None,
-                regraded_from=tuple(sorted(earlier.items())),
+                regraded_from=regraded_from,
             )
         )
     return sorted(sections, key=lambda s: (s.first_date, s.last_date, s.name.label, s.name.freeze or ""))
