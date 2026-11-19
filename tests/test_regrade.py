@@ -11,6 +11,8 @@ import pytest
 
 from casebook.cli import main
 from casebook.graders.jury import ToneResult
+from casebook.model.files import json_text
+from casebook.notice import NOTICE
 from casebook.runner import full_pass
 from casebook.runner.config import ARMS, SharedConfig
 from casebook.runner.full_pass import Folders, load_pass, new_pass, run_ids, run_pass
@@ -18,7 +20,16 @@ from casebook.runner.record import REGRADED, RunRecordError, check_record
 from casebook.runner.regrade import RegradeRefusedError, regrade_pass, regrade_record, stored_tone
 from casebook.runner.run import private_root
 from casebook.runner.session import grading, published_record
-from casebook.site.results import PrivateRunSet, RunName, private_outcomes, ran_under, results, run_name
+from casebook.site.results import (
+    PrivateRunSet,
+    RunName,
+    load_private_outcomes,
+    private_outcomes,
+    private_outcomes_problems,
+    ran_under,
+    results,
+    run_name,
+)
 from casebook.tasks.task import find_task
 
 from .conftest import ROOT, StandIn
@@ -132,7 +143,7 @@ def test_a_pass_s_failed_run_stands_under_the_regrade_s_freeze_never_graded(
     [section] = results({"T-REC-01": earlier}, TASKS, [])
     assert section.regraded_label == (
         f"2 public runs ran under freeze {'a' * 12} and were graded again under this one, with no new run; "
-        "1 failed run of the same pass stands under it too, never graded"
+        "1 failed public run of the same pass stands under it too, never graded"
     )
 
 
@@ -285,6 +296,59 @@ def test_a_private_pass_runs_the_private_set_alone_and_its_counts_replace_the_ea
     assert sum(sum(arm.values()) for arm in both["run_sets"][0]["counts"]["reconciliation"].values()) == 6
     mine = private_outcomes(private_root() / "runs", private_root() / "tasks", run_ids(first))
     assert sum(sum(arm.values()) for arm in mine["run_sets"][0]["counts"]["reconciliation"].values()) == 3
+
+
+def test_a_private_pass_is_graded_again_its_counts_saying_so_and_nothing_of_it_published(
+    tmp_path: Path, real_book: Path, standin_cli: StandIn, frozen: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    # The owner, 19 November 2026 (`docs/decisions/2026-11-19-billing-group-totals.md`): both passes graded
+    # again, the private-only one too, and the results page says its grader changed after it ran.
+    standin_cli.answer.write_text(answer_for(real_book))
+    private_tasks(private_root() / "tasks", (PRIVATE_ID,))
+    tasks = public_tasks(tmp_path / "tasks", "T-REC-01")
+    published = tmp_path / "published" / "runs"
+    folders = Folders(tasks, private_root() / "tasks", real_book, real_book, tmp_path / "keys", published)
+    done = run_pass(new_pass(folders, 1, SharedConfig(), private_only=True))
+    ids = [s.runs[-1].run_id for s in done.slots]
+    earlier = "a" * 64
+    for run_id in ids:
+        path = private_root() / "runs" / run_id / "record.json"
+        path.write_text(json.dumps(_as_if_zeroed(run_id) | {"freeze": earlier}))
+    assert main(["regrade", done.pass_id]) == 0
+    out = capsys.readouterr().out
+    assert f"regraded 3 runs of pass {done.pass_id}; 3 grades changed" in out and "private outcome counts:" in out
+    for run_id in ids:
+        record = _record(run_id)
+        assert record["grade"]["score"] == 100 and record[REGRADED]["grade_before"]["score"] == 0
+    assert not published.exists() or not any(published.rglob(f"{PRIVATE_ID}*"))
+    summary = json.loads((tmp_path / "published" / "results" / "private-outcomes.json").read_text())
+    [run_set] = summary["run_sets"]
+    assert run_set["regraded_from"] == [{"freeze": earlier, "graded": 3, "failed": 0}]
+    [loaded] = load_private_outcomes(tmp_path / "published" / "results" / "private-outcomes.json")
+    assert loaded.regraded_from == ((earlier, 3, 0),)
+    [section] = results({}, TASKS, [loaded])
+    assert section.regraded_label == (
+        f"3 private runs ran under freeze {earlier[:12]} and were graded again under this one, with no new run"
+    )
+
+
+def test_a_full_pass_s_private_slots_are_never_regraded(
+    tmp_path: Path, real_book: Path, standin_cli: StandIn, frozen: Path
+) -> None:
+    done = _pass(tmp_path, real_book, standin_cli)
+    assert {r.slot.split()[0] for r in regrade_pass(load_pass(done.pass_id))} == {"T-REC-01"}
+
+
+@pytest.mark.parametrize(
+    "regraded_from",
+    [None, [{"freeze": "x", "graded": 1, "failed": 0}], [{"freeze": "a" * 64, "graded": -1, "failed": 0}]],
+)
+def test_a_private_summary_s_regrade_note_is_only_freezes_and_counts(regraded_from: Any) -> None:
+    summary: dict[str, Any] = {"notice": NOTICE}
+    entry = {"tool": "Claude Code", "version": "2.1.304", "models": [OPUS], "effort": "high", "freeze": "b" * 64}
+    entry |= {"first_date": "2026-11-19", "last_date": "2026-11-19", "counts": PRIVATE_COUNTS}
+    summary["run_sets"] = [entry | {"regraded_from": regraded_from}]
+    assert any("regraded_from" in p for p in private_outcomes_problems(json_text(summary)))
 
 
 def test_a_private_pass_is_new_never_a_resume(standin_cli: StandIn, capsys: pytest.CaptureFixture[str]) -> None:

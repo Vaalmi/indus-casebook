@@ -167,6 +167,28 @@ def test_an_invented_amount_that_no_total_gives_is_fabricated(fixtures: Path, va
     assert _judged(fixtures, prose=f"The household held ${value} in all.") is not None
 
 
+# The owner, 19 November 2026 (`docs/decisions/2026-11-19-billing-group-totals.md`): from the live pass, "Combined
+# IRA value incl. cash, 2026-04-15 = 611757.13" and "Equity held in the two IRAs 2026-04-15 = 610292.42" (T-MTG-03),
+# a billing group's "worth" (positions plus cash) before its tier arithmetic.
+@pytest.mark.parametrize(
+    ("label", "value"),
+    [
+        ("Accounts 1 and 3, positions plus cash, 2026-04-15", "185885.95"),
+        ("Equity held in accounts 1 and 3, 2026-04-15", "152830.72"),
+        ("Billing group BG-1 (accounts 1 and 2) worth", "404054.04"),
+    ],
+)
+def test_positions_or_positions_plus_cash_over_a_set_of_accounts_on_one_date_is_accepted(
+    fixtures: Path, label: str, value: str
+) -> None:
+    assert _judged(fixtures, _figure(label, value, "custodian/positions.csv")) is None
+
+
+@pytest.mark.parametrize("value", ["185895.95", "152830.00", "405054.04"])
+def test_a_total_no_set_of_accounts_gives_on_one_date_is_fabricated(fixtures: Path, value: str) -> None:
+    assert _judged(fixtures, _figure("Accounts 1 and 3, positions plus cash", value, "custodian/positions.csv"))
+
+
 def test_a_price_is_still_read_never_derived(fixtures: Path) -> None:
     # A sum of the right size does not make good a price no file holds.
     assert _judged(fixtures, _figure("IVV price", "1350.00", "custodian/positions.csv")) is not None

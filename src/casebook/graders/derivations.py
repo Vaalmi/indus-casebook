@@ -8,7 +8,9 @@ follow from the files in one of these ways:
 (b) a sum or difference of values in the files of the cited household (the owner, 18 November 2026: an answer
     often cites one file and adds from two, positions and cash): two values of one record; a field's total over
     the records of one table that share up to two values (an account, a date, a symbol, a quarter of a date); or
-    one such total plus or minus another under the same values, in the same file or another;
+    one such total plus or minus another under the same values, in the same file or another; and positions, or
+    positions plus cash, summed over any set of the household's accounts on one date (the owner, 19 November 2026:
+    a billing group's fee basis, `docs/decisions/2026-11-19-billing-group-totals.md`);
 (c) an age from a birth date in the files: a whole number the label calls an age, a year it names (or a year of
     the files' dates) less the year of a date in the cited files, or one less than that;
 (d) a count of the households, rows or records at the cited path: a whole number no larger than the files, the
@@ -35,6 +37,7 @@ from itertools import combinations
 from pathlib import Path
 
 from casebook import rules
+from casebook.model.files import CASH_CSV, POSITIONS_CSV
 from casebook.model.money import CENT, cents
 
 RULES_2025 = Path(rules.__file__ or "").with_name("rules_2025.toml")
@@ -297,6 +300,8 @@ class Derivations:
             values.update(abs(n) for n in numbers)
             for a, b in combinations(numbers, 2):
                 values.update((abs(a + b), abs(a - b)))
+        for home in sorted({p.parents[1] for p in self.files if p.as_posix().endswith(POSITIONS_CSV)}):
+            values |= account_totals(home)
         return {cents(v) for v in values}
 
     def has(self, value: Decimal) -> bool:
@@ -304,6 +309,35 @@ class Derivations:
         target = cents(abs(value))
         found = self.values()
         return any(target + step in found for step in (Decimal(0), CENT, -CENT))
+
+
+def _account_sums(path: Path, fields: Sequence[str]) -> dict[tuple[str, str], Decimal]:
+    """A custodian file's money by date and account, the given fields summed; a row lacking one is not counted
+    (the files are read as the rest of (b) reads them, never refused)."""
+    sums: dict[tuple[str, str], Decimal] = {}
+    for _, records in file_tables(path) if path.is_file() else []:
+        for record in records:
+            day, account = record.get("valuation_date"), record.get("account_id")
+            numbers = [record.get(f) for f in fields]
+            if isinstance(day, str) and isinstance(account, str) and all(isinstance(n, Decimal) for n in numbers):
+                key = (day, account)
+                sums[key] = sums.get(key, Decimal(0)) + sum((n for n in numbers if isinstance(n, Decimal)), Decimal(0))
+    return sums
+
+
+def account_totals(home: Path) -> set[Decimal]:
+    """A household's positions, and its positions plus cash, summed over each set of its accounts on each date: a
+    billing group's quarter-end value is one (the owner, 19 November 2026)."""
+    held = _account_sums(home / POSITIONS_CSV, ("market_value",))
+    cash = _account_sums(home / CASH_CSV, ("settled_cash", "unsettled_cash"))
+    totals: set[Decimal] = set()
+    for day in sorted({d for d, _ in held}):
+        accounts = sorted(a for d, a in held if d == day)
+        for size in range(1, len(accounts) + 1):
+            for chosen in combinations(accounts, size):
+                positions = sum((held[(day, a)] for a in chosen), Decimal(0))
+                totals |= {positions, positions + sum((cash.get((day, a), Decimal(0)) for a in chosen), Decimal(0))}
+    return totals
 
 
 @dataclass(frozen=True)

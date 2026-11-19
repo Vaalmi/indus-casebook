@@ -145,7 +145,7 @@ def test_a_held_workflow_s_verdict_count_is_refused_in_the_private_summary(tmp_p
 def _summary_with(extra: dict[str, Any]) -> dict[str, Any]:
     counts = no_counts()
     run_set = {"tool": "Claude Code", "version": "2.1.304", "models": [OPUS], "effort": "high", "freeze": FREEZE}
-    run_set |= {"first_date": "2026-11-18", "last_date": "2026-11-18", "counts": counts}
+    run_set |= {"first_date": "2026-11-18", "last_date": "2026-11-18", "counts": counts, "regraded_from": []}
     return {"notice": NOTICE, "run_sets": [run_set | extra]}
 
 
@@ -286,6 +286,7 @@ def test_the_private_summary_counts_each_slot_s_outcome_by_workflow_and_arm(priv
                 "first_date": "2026-11-18",
                 "last_date": "2026-11-19",
                 "counts": expected,
+                "regraded_from": [],
             }
         ],
     }

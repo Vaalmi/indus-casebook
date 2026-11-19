@@ -1,4 +1,4 @@
-# Decision needed: should the fabricated-figure rule accept a total over several of a household's accounts?
+# Decided: the fabricated-figure rule accepts a total over several of a household's accounts
 
 **What's stuck.** Slice 13's named results. The decided rule's sums, (b) on [the earlier page](2026-11-18-fabricated-figure-false-zeros.md), work inside one table, and pair two totals at most. So it accepts one account's positions plus its cash on a date, and all accounts' positions on a date. It does not accept **positions plus cash over two or more accounts but not all**. That is the fee basis the billing file states: "the quarter-end value of positions plus cash, per billing group".
 
@@ -25,4 +25,8 @@ The other zeros are the kinds the earlier page names: a derivation the answer do
 
 **If you don't decide.** The named results wait. Meanwhile I fix the site build's refusal of ten run files that quote a price without the word "synthetic", which is needed either way.
 
-**Decision.** <The owner's answer, with the date.>
+**Decision.** Option 1, widen (b) (the owner, 19 November 2026).
+
+**As built** (`src/casebook/graders/derivations.py`, `account_totals`): a household's positions (market value), and its positions plus cash (settled and unsettled), summed over every set of its accounts on each date of `custodian/positions.csv`, are values (b) accepts, to the cent as before. On the stored answers, with the change in the code, the zeros fall from 38 to 31 public and from 21 to 20 private, as measured above. An invented amount still passes (b) by chance at most 0.8% of the time over all of one household's files (2,000 random amounts per range, on two public runs' workspaces). `casebook regrade` now also takes a private-only pass (`casebook pass --private`). It grades its runs again and keeps their earlier grades in the private records, and it writes the private counts again. Each run set of the counts lists the freeze its runs ran under (`regraded_from`), and the results page says so beside the public note. A full pass's private slots are still never regraded, since the private-only pass ran them again.
+
+What this changes: for the private set, the rule's freeze before held-out runs now holds for the runs, not for their grades. The grader changed after the private pass ran, and the change was found reading one of its answers. The results page says so. Running the private set again instead (about an hour on `claude`, plus the jury's calls) would give private grades from a grader frozen before the runs.

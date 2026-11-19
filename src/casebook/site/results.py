@@ -286,25 +286,31 @@ class RunSetResult:
     public: dict[str, dict[str, dict[str, int]]]  # workflow, arm, outcome
     private: dict[str, dict[str, dict[str, int]]] | None
     # The freezes the section's regraded public runs ran under, and how many ran under each, graded and failed,
-    # shown by its name.
+    # shown by its name; and its private runs' (`PrivateRunSet.regraded_from`).
     regraded_from: tuple[tuple[str, int, int], ...] = ()
+    private_regraded_from: tuple[tuple[str, int, int], ...] = ()
 
     @property
     def regraded_label(self) -> str:
-        def one(freeze: str, graded: int, failed: int) -> str:
+        def one(kind: str, freeze: str, graded: int, failed: int) -> str:
             parts: list[str] = []
             if graded:
                 runs, were = ("runs", "were") if graded != 1 else ("run", "was")
                 parts.append(
-                    f"{graded} public {runs} ran under freeze {freeze[:12]} and {were} graded again under this one, "
+                    f"{graded} {kind} {runs} ran under freeze {freeze[:12]} and {were} graded again under this one, "
                     "with no new run"
                 )
             if failed:
                 runs, stand = ("runs", "stand") if failed != 1 else ("run", "stands")
-                parts.append(f"{failed} failed {runs} of the same pass {stand} under it too, never graded")
+                parts.append(f"{failed} failed {kind} {runs} of the same pass {stand} under it too, never graded")
             return "; ".join(parts)
 
-        return "; ".join(one(*entry) for entry in self.regraded_from)
+        return "; ".join(
+            [
+                *(one("public", *entry) for entry in self.regraded_from),
+                *(one("private", *entry) for entry in self.private_regraded_from),
+            ]
+        )
 
     @property
     def dates(self) -> str:
@@ -317,6 +323,9 @@ class PrivateRunSet:
     first_date: str
     last_date: str
     counts: dict[str, dict[str, dict[str, int]]]
+    # The freezes its regraded runs ran under, with how many graded and how many failed (the owner, 19 November
+    # 2026: the private-only pass graded again after it ran, which the results page says).
+    regraded_from: tuple[tuple[str, int, int], ...] = ()
 
 
 def _date(record: dict[str, Any]) -> str:
@@ -414,6 +423,7 @@ def results(
                 public=public,
                 private=mine.counts if mine else None,
                 regraded_from=regraded_from,
+                private_regraded_from=mine.regraded_from if mine else (),
             )
         )
     return sorted(sections, key=lambda s: (s.first_date, s.last_date, s.name.label, s.name.freeze or ""))
@@ -436,6 +446,7 @@ def private_outcomes(private_runs: Path, private_tasks: Path, run_ids: Iterable[
             records.setdefault(str(record["task_id"]), []).append(record)
     counts: dict[RunName, dict[str, dict[str, dict[str, int]]]] = {}
     dates: dict[RunName, list[str]] = {}
+    earlier: dict[RunName, Counter[tuple[str, bool]]] = {}
     for task_id, task_records in sorted(records.items()):
         task = find_task(private_tasks, task_id)
         for arm in ARM_ORDER:
@@ -444,14 +455,27 @@ def private_outcomes(private_runs: Path, private_tasks: Path, run_ids: Iterable[
                 kind = outcome(record, is_held(task)).kind
                 counts.setdefault(name, _empty_counts())[task.workflow][arm][kind] += 1
                 dates.setdefault(name, []).append(_date(record))
+                if (ran := ran_under(record)) is not None:
+                    earlier.setdefault(name, Counter())[(ran, record["state"] == "failed")] += 1
     run_sets = [
-        {**name.to_dict(), "first_date": min(dates[name]), "last_date": max(dates[name]), "counts": counts[name]}
+        {
+            **name.to_dict(),
+            "first_date": min(dates[name]),
+            "last_date": max(dates[name]),
+            "counts": counts[name],
+            "regraded_from": [
+                {"freeze": f, "graded": c[(f, False)], "failed": c[(f, True)]} for f in sorted({f for f, _ in c})
+            ]
+            if (c := earlier.get(name, Counter()))
+            else [],
+        }
         for name in sorted(counts, key=lambda n: (min(dates[n]), n.label, n.freeze or ""))
     ]
     return {"notice": NOTICE, "run_sets": run_sets}
 
 
-_SET_FIELDS = ("tool", "version", "models", "effort", "freeze", "first_date", "last_date", "counts")
+_HASH = re.compile(r"[0-9a-f]{64}")
+_SET_FIELDS = ("tool", "version", "models", "effort", "freeze", "first_date", "last_date", "counts", "regraded_from")
 
 
 def _is_date(value: Any) -> bool:
@@ -460,6 +484,17 @@ def _is_date(value: Any) -> bool:
     except ValueError:
         return False
     return isinstance(value, str)
+
+
+def _is_regraded_from(value: Any) -> bool:
+    return isinstance(value, list) and all(
+        isinstance(e, dict)
+        and sorted(e) == ["failed", "freeze", "graded"]  # pyright: ignore[reportUnknownArgumentType]
+        and isinstance(e["freeze"], str)
+        and _HASH.fullmatch(e["freeze"]) is not None
+        and all(type(e[k]) is int and e[k] >= 0 for k in ("graded", "failed"))
+        for e in value  # pyright: ignore[reportUnknownVariableType]
+    )
 
 
 def _set_problems(where: str, raw: Any) -> list[str]:
@@ -476,6 +511,8 @@ def _set_problems(where: str, raw: Any) -> list[str]:
         problems.append(f"{where}: freeze is a hash or null")
     if not (_is_date(entry["first_date"]) and _is_date(entry["last_date"])):
         problems.append(f"{where}: first_date and last_date are dates")
+    if not _is_regraded_from(entry["regraded_from"]):
+        problems.append(f"{where}: regraded_from lists each earlier freeze with its graded and failed counts")
     counts = entry["counts"]
     shape = all(
         isinstance(counts, dict)
@@ -532,6 +569,7 @@ def load_private_outcomes(path: Path) -> list[PrivateRunSet]:
             first_date=s["first_date"],
             last_date=s["last_date"],
             counts=s["counts"],
+            regraded_from=tuple((e["freeze"], e["graded"], e["failed"]) for e in s["regraded_from"]),
         )
         for s in json.loads(text)["run_sets"]
     ]

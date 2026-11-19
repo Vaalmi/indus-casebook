@@ -139,6 +139,7 @@ def private_summary(published: Path) -> None:
                 "first_date": "2026-11-18",
                 "last_date": "2026-11-20",
                 "counts": PRIVATE_COUNTS,
+                "regraded_from": [],
             }
         ],
     }

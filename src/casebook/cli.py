@@ -178,17 +178,31 @@ def _pass(args: argparse.Namespace) -> int:
 
 
 def _regrade(args: argparse.Namespace) -> int:
-    from casebook.runner.full_pass import load_pass
+    from casebook.runner.full_pass import load_pass, run_ids
     from casebook.runner.preflight import RunRefusedError
-    from casebook.runner.regrade import regrade_pass
+    from casebook.runner.regrade import is_private_pass, regrade_pass
+    from casebook.runner.run import private_root
+    from casebook.site.results import ResultsError, write_private_outcomes
 
+    run = load_pass(args.pass_id)
     try:
-        done = regrade_pass(load_pass(args.pass_id), print)
+        done = regrade_pass(run, print)
     except RunRefusedError as error:
         print(f"regrade refused: {type(error).__name__}: {error}", file=sys.stderr)
         return 2
     moved = sum(r.before != r.after for r in done)
     print(f"regraded {len(done)} runs of pass {args.pass_id}; {moved} grades changed")
+    if is_private_pass(run):
+        # The private counts are those of the pass's runs as graded again, saying so (the owner, 19 November 2026).
+        try:
+            folders = run.folders
+            written = write_private_outcomes(
+                private_root() / "runs", folders.private_tasks, folders.runs.parent, run_ids(run)
+            )
+        except ResultsError as error:
+            print(f"private outcome counts not written: {error}", file=sys.stderr)
+            return 1
+        print(f"private outcome counts: {written}")
     return 0
 
 

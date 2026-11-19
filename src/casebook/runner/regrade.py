@@ -2,9 +2,11 @@
 
 The owner's decision of 18 November 2026 (option 1 of `docs/decisions/2026-11-18-fabricated-figure-false-zeros.md`)
 changed the fabricated-figure rule after the full pass had run, and had its stored answers graded again: no model
-runs again, and a follow-up run keeps the jury's votes it was graded with (the jury is never called here). The
-private set is not regraded: under option 1a its runs are run again under the new freeze (`casebook pass
---private`), so every private grade comes from a grader frozen before the run.
+runs again, and a follow-up run keeps the jury's votes it was graded with (the jury is never called here). Under its
+option 1a the private set was run again under the new freeze (`casebook pass --private`), so a full pass's private
+slots are never regraded. The owner's decision of 19 November 2026 (`docs/decisions/2026-11-19-billing-group-totals.md`)
+widened the rule again and had both passes graded again, the private-only pass too: its records, and the private
+outcome counts, say that its grader changed after it ran.
 
 A regrade is refused unless the freeze matches today's hashes, so every regraded run names the freeze it was graded
 under; unless the task and the key are the ones the run ran with (the key is computed again and must hash as the
@@ -37,7 +39,7 @@ from casebook.runner.run import private_root
 from casebook.runner.session import finish_run, keys_root_for
 from casebook.tasks.task import Task, find_task
 
-DECISION = "docs/decisions/2026-11-18-fabricated-figure-false-zeros.md"
+DECISION = "docs/decisions/2026-11-19-billing-group-totals.md"
 # The states of a run whose answer was graded: only these are graded again. A failed run is never graded; it
 # stands under the regrade's freeze with the rest of its pass.
 GRADED = ("graded", "mapped", "published")
@@ -106,8 +108,11 @@ def _now() -> str:
     return datetime.now(UTC).isoformat(timespec="seconds")
 
 
-def regrade_run(task: Task, tasks: Path, book: Path, keys_root: Path, published: Path, run_id: str) -> Regraded:
-    """Grade one public run again and publish it again, its earlier grade kept under `regraded`."""
+def regrade_run(
+    task: Task, tasks: Path, book: Path, keys_root: Path, published: Path, run_id: str, secret: bool = False
+) -> Regraded:
+    """Grade one run again, its earlier grade kept under `regraded`, and publish a public one again; a private one
+    (`secret`) stays in `$CASEBOOK_PRIVATE`, its key there too."""
     folder = private_root() / "runs" / run_id
     record: dict[str, Any] = json.loads((folder / "record.json").read_text(encoding="utf-8"))
     failed = record["state"] == FAILED
@@ -147,29 +152,37 @@ def regrade_run(task: Task, tasks: Path, book: Path, keys_root: Path, published:
     }
     check_record(record)
     (folder / "record.json").write_text(json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    keys = keys_root_for(task, keys_root) / read_manifest(book).version
-    finish_run(task, tasks, False, spec, key, keys, record, published)
+    keys = (private_root() / "keys" if secret else keys_root_for(task, keys_root)) / read_manifest(book).version
+    finish_run(task, tasks, secret, spec, key, keys, record, published)
     if before is None or grade is None:
         return Regraded(f"{task.task_id} {record['arm']}", run_id, None, None)
     score = (int(before["score"]), before["critical_fail"]), (int(grade["score"]), grade["critical_fail"])
     return Regraded(f"{task.task_id} {record['arm']}", run_id, *score)
 
 
+def is_private_pass(run: Pass) -> bool:
+    """A pass of the private set alone (`casebook pass --private`)."""
+    return bool(run.slots) and all(is_private_task_id(s.slot.task_id) for s in run.slots)
+
+
 def regrade_pass(run: Pass, progress: Callable[[str], object] = lambda _: None) -> list[Regraded]:
-    """Every public slot's standing run graded again, in the pass's order; refused before any is unless the
-    freeze matches today's hashes."""
+    """Every public slot's standing run graded again, in the pass's order, or, for a private-only pass, every
+    private slot's; refused before any is unless the freeze matches today's hashes. A full pass's private slots
+    are not: a private-only pass ran them again (option 1a)."""
     problems = drift()
     if problems:
         shown = "\n".join(p.removeprefix(": ").strip() for p in problems)
         raise RegradeRefusedError(f"a regrade runs only under the recorded freeze:\n{shown}")
+    secret = is_private_pass(run)
     done: list[Regraded] = []
     for slot_state in run.slots:
         task_id = slot_state.slot.task_id
         last = slot_state.runs[-1] if slot_state.runs else None
-        if is_private_task_id(task_id) or last is None or last.state not in (*GRADED, FAILED):
+        if is_private_task_id(task_id) != secret or last is None or last.state not in (*GRADED, FAILED):
             continue
         tasks, book = run.folders.for_task(task_id)
-        result = regrade_run(find_task(tasks, task_id), tasks, book, run.folders.keys, run.folders.runs, last.run_id)
+        task = find_task(tasks, task_id)
+        result = regrade_run(task, tasks, book, run.folders.keys, run.folders.runs, last.run_id, secret)
         done.append(result)
         progress(str(result))
     return done
