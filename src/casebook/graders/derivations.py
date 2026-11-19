@@ -331,11 +331,12 @@ def account_totals(home: Path) -> set[Decimal]:
     held = _account_sums(home / POSITIONS_CSV, ("market_value",))
     cash = _account_sums(home / CASH_CSV, ("settled_cash", "unsettled_cash"))
     totals: set[Decimal] = set()
-    for day in sorted({d for d, _ in held}):
-        accounts = sorted(a for d, a in held if d == day)
+    # An account with cash and no positions on a date is one of that date's accounts too (reviewer A, round 1).
+    for day in sorted({d for d, _ in [*held, *cash]}):
+        accounts = sorted({a for d, a in [*held, *cash] if d == day})
         for size in range(1, len(accounts) + 1):
             for chosen in combinations(accounts, size):
-                positions = sum((held[(day, a)] for a in chosen), Decimal(0))
+                positions = sum((held.get((day, a), Decimal(0)) for a in chosen), Decimal(0))
                 totals |= {positions, positions + sum((cash.get((day, a), Decimal(0)) for a in chosen), Decimal(0))}
     return totals
 

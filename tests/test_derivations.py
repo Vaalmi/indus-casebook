@@ -184,6 +184,17 @@ def test_positions_or_positions_plus_cash_over_a_set_of_accounts_on_one_date_is_
     assert _judged(fixtures, _figure(label, value, "custodian/positions.csv")) is None
 
 
+def test_an_account_with_cash_and_no_positions_on_the_date_is_one_of_its_accounts(fixtures: Path) -> None:
+    # Reviewer A, round 1: account 3's positions gone, its cash kept; accounts 1 and 3, positions plus cash.
+    positions = fixtures / "custodian" / "positions.csv"
+    kept = [r for r in positions.read_text().splitlines() if not r.startswith("SYN-27490003,")]
+    positions.write_text("\n".join(kept) + "\n")
+    assert (
+        _judged(fixtures, _figure("Accounts 1 and 3, positions plus cash", "117885.95", "custodian/positions.csv"))
+        is None
+    )
+
+
 @pytest.mark.parametrize("value", ["185895.95", "152830.00", "405054.04"])
 def test_a_total_no_set_of_accounts_gives_on_one_date_is_fabricated(fixtures: Path, value: str) -> None:
     assert _judged(fixtures, _figure("Accounts 1 and 3, positions plus cash", value, "custodian/positions.csv"))

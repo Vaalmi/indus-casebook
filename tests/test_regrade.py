@@ -147,6 +147,12 @@ def test_a_pass_s_failed_run_stands_under_the_regrade_s_freeze_never_graded(
     )
 
 
+def test_a_regrade_of_no_such_pass_is_refused_not_a_traceback(capsys: pytest.CaptureFixture[str]) -> None:
+    # Reviewer A, round 1 (a note): the pass is loaded inside the refusal's handler.
+    assert main(["regrade", "not-a-pass"]) == 2
+    assert capsys.readouterr().err.startswith("regrade refused:")
+
+
 def test_a_regrade_is_refused_unless_the_freeze_matches_today_s_hashes(
     tmp_path: Path,
     real_book: Path,

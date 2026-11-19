@@ -184,8 +184,8 @@ def _regrade(args: argparse.Namespace) -> int:
     from casebook.runner.run import private_root
     from casebook.site.results import ResultsError, write_private_outcomes
 
-    run = load_pass(args.pass_id)
     try:
+        run = load_pass(args.pass_id)
         done = regrade_pass(run, print)
     except RunRefusedError as error:
         print(f"regrade refused: {type(error).__name__}: {error}", file=sys.stderr)
