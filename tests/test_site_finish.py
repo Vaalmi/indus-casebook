@@ -72,6 +72,12 @@ def test_the_errata_log_has_its_page_saying_there_is_no_correction_yet(published
     assert 'data-correction="none"' in html and "No corrections yet" in html
 
 
+def test_an_errata_log_named_but_missing_fails_the_site_build(book: Path, tmp_path: Path) -> None:
+    """Reviewer A, slice 14 round 1 (a note): a log named but not found is not "no corrections yet"."""
+    with pytest.raises(SiteBuildError, match="errata log"):
+        build_site(book, tmp_path / "site", README, errata=tmp_path / "missing.json")
+
+
 def test_the_errata_log_lists_each_correction_with_its_version(book: Path, tmp_path: Path) -> None:
     errata = tmp_path / "errata.json"
     entries = [

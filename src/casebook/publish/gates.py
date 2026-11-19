@@ -147,11 +147,21 @@ def run_layout_problems(runs: Path) -> list[str]:
     """Every file under the published runs that is not a run's record or transcript where `casebook run` writes it:
     the site copies the whole folder, so a file elsewhere would be published past the gates that read run records
     (reviewer A, slice 13 round 1)."""
-    return [
+    problems = [
         f"{relative}: not <task>/<run id>.json or <task>/<run id>.transcript.jsonl"
         for relative in (p.relative_to(runs).as_posix() for p in _files(runs))
         if not _RUN_FILE.fullmatch(relative)
     ]
+    # A record filed under another task's folder or name would be shown on that task's page but published, and
+    # gated, under this one (reviewer A, slice 14 round 1).
+    for path in sorted(runs.glob("*/*.json")):
+        record = json.loads(path.read_text(encoding="utf-8"))
+        if record.get("task_id") != path.parent.name or record.get("run_id") != path.stem:
+            problems.append(
+                f"{path.relative_to(runs).as_posix()}: names task {record.get('task_id')!r} and run "
+                f"{record.get('run_id')!r}, not the folder and file it is filed under"
+            )
+    return problems
 
 
 # What a held task's page never shows before the tax review: "sources and outputs only, with no verdict and no
@@ -161,15 +171,19 @@ def run_layout_problems(runs: Path) -> list[str]:
 _QUOTED = re.compile(r'<pre class="(?:prompt|output)">.*?</pre>|<details data-section="crm-diff">.*?</details>', re.S)
 _VERDICT_MARKUP = re.compile(r'data-outcome="(?!held")[^"]*"|data-verdict="(?!held")[^"]*"')
 _VERDICT_TEXT = re.compile(r"\b(?:passed|failed)\s*[:,]\s*\d|\b\d{1,3} of 100\b|critical fail|graded again", re.I)
-_MARKING = re.compile(r'data-criterion=|class="(?:hit|miss)"|[\u2713\u2717]')
-_EXPLANATION = re.compile(r'data-section="justified-conclusion"|justified conclusion', re.I)
+_MARKING = re.compile(r'data-criterion=|class="(?:hit|miss)"')
+_MARKS = re.compile(r"[\u2713\u2714\u2717\u2718]")  # check and cross marks, however the page writes them
+_EXPLANATION = re.compile(r'data-section="justified-conclusion"')
+_EXPLANATION_TEXT = re.compile(r"justified conclusion", re.I)
 # As much of a held task's justified conclusion as shows it was copied in.
 _CONCLUSION_SHOWN = 60
 
 
 def held_page_problems(site: Path, held: dict[str, str]) -> list[str]:
     """Every held task's page and published run records: no verdict, no failure marking, no explanation of the
-    expected output. `held`: each held task's ID and its justified conclusion."""
+    expected output. `held`: each held task's ID and its justified conclusion. The page's words are read as a
+    visitor sees them, entities decoded; a record is a held task's by its folder or by the task it names (reviewers
+    A and B, slice 14 round 1)."""
     problems: list[str] = []
     for task_id, conclusion in sorted(held.items()):
         page = site / "tasks" / f"{task_id}.html"
@@ -179,15 +193,17 @@ def held_page_problems(site: Path, held: dict[str, str]) -> list[str]:
             where = page.relative_to(site).as_posix()
             if _VERDICT_MARKUP.search(own) or _VERDICT_TEXT.search(text):
                 problems.append(f"{where}: a held task's page shows a verdict")
-            if _MARKING.search(own):
+            if _MARKING.search(own) or _MARKS.search(text):
                 problems.append(f"{where}: a held task's page marks a failure")
             shown = " ".join(conclusion.split())[:_CONCLUSION_SHOWN]
-            if _EXPLANATION.search(own) or (shown and shown in text):
+            if _EXPLANATION.search(own) or _EXPLANATION_TEXT.search(text) or (shown and shown in text):
                 problems.append(f"{where}: a held task's page explains its expected output")
-        for record in sorted((site / "data" / "runs" / task_id).glob("*.json")):
-            data = json.loads(record.read_text(encoding="utf-8"))
-            if data.get("grade") is not None or (data.get("regraded") or {}).get("grade_before") is not None:
-                problems.append(f"{record.relative_to(site).as_posix()}: a held task's run record carries its grade")
+    for record in sorted((site / "data" / "runs").rglob("*.json")):
+        data = json.loads(record.read_text(encoding="utf-8"))
+        if record.parent.name not in held and data.get("task_id") not in held:
+            continue
+        if data.get("grade") is not None or (data.get("regraded") or {}).get("grade_before") is not None:
+            problems.append(f"{record.relative_to(site).as_posix()}: a held task's run record carries its grade")
     return problems
 
 

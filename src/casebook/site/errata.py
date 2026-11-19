@@ -41,9 +41,12 @@ def _correction(raw: Any, where: str) -> Correction:
 
 
 def load_errata(path: Path | None) -> list[Correction]:
-    """The log's entries, newest version first; none where there is no log yet."""
-    if path is None or not path.is_file():
+    """The log's entries, newest version first; none where no log is given. A log named but missing is an error,
+    not an empty log (reviewer A, slice 14 round 1)."""
+    if path is None:
         return []
+    if not path.is_file():
+        raise ErrataError(f"{path} is not a file")
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as error:

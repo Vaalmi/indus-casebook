@@ -131,6 +131,9 @@ def test_a_held_page_quoting_a_verdict_only_in_the_prompt_output_or_crm_passes_t
         ("<p data-regraded>Graded again on 2026-11-19</p>", "shows a verdict"),
         ('<tr class="miss" data-criterion="finding"><td>finding</td></tr>', "marks a failure"),
         ("<td>✗ finding</td>", "marks a failure"),
+        ("<td>&#10007; finding</td>", "marks a failure"),  # reviewer B, slice 14 round 1: an entity is still a mark
+        ("<td>&check; finding</td>", "marks a failure"),
+        ("<p>Why the justified&#32;conclusion is what it is</p>", "explains its expected output"),
         ('<section data-section="justified-conclusion"><h2>Why</h2></section>', "explains its expected output"),
         ("<p>Why the justified conclusion is what it is</p>", "explains its expected output"),
         (f"<p>{CONCLUSION}</p>", "explains its expected output"),
@@ -176,4 +179,31 @@ def test_the_site_build_runs_the_gate_on_every_held_task_s_page(
 
     monkeypatch.setattr(site_build, "render_site", leaky)
     with pytest.raises(SiteBuildError, match=r"T-TAX-01\.html: a held task's page shows a verdict"):
+        build_site(book, tmp_path / "site", README, runs, TASKS, None)
+
+
+def test_a_graded_record_naming_a_held_task_is_gated_wherever_it_is_filed(tmp_path: Path) -> None:
+    """Reviewer A, slice 14 round 1: a held task's record filed under another task's folder."""
+    from casebook.publish.gates import held_page_problems
+
+    site = tmp_path / "site"
+    (site / "data" / "runs" / "T-REC-01").mkdir(parents=True)
+    record = a_graded_record("T-TAX-01")
+    (site / "data" / "runs" / "T-REC-01" / "misfiled.json").write_text(json.dumps(record))
+    assert held_page_problems(site, {"T-TAX-01": CONCLUSION}) == [
+        "data/runs/T-REC-01/misfiled.json: a held task's run record carries its grade"
+    ]
+
+
+@pytest.mark.parametrize("field", ["task_id", "run_id"])
+def test_a_run_record_filed_under_another_task_or_name_fails_the_site_build(
+    book: Path, tmp_path: Path, field: str
+) -> None:
+    """Reviewer A, slice 14 round 1: the page would show it under the task it names, published under another."""
+    record = a_graded_record("T-REC-05")
+    runs = runs_with(tmp_path, record)
+    path = runs / "T-REC-05" / f"{record['run_id']}.json"
+    other = {"task_id": "T-TAX-01", "run_id": "T-REC-05-skill-20261116T135933Z-0000"}[field]
+    path.write_text(json.dumps(record | {field: other}))
+    with pytest.raises(SiteBuildError, match="not the folder and file it is filed under"):
         build_site(book, tmp_path / "site", README, runs, TASKS, None)
