@@ -1,0 +1,4 @@
+transaction_id,account_id,lot_id,security_id,security,acquired_date,sold_date,units,cost_basis,proceeds,gain,valuation_date,known_as_of
+T-3462-0048,SYN-34620002,L-E-3462-0005,SEC-0030,Ellisar Search Holdings,2025-02-20,2025-12-12,400,157016.00,171156.00,14140.00,2025-12-12,2025-12-12
+T-3462-0048,SYN-34620002,L-E-3462-0019,SEC-0030,Ellisar Search Holdings,2025-05-20,2025-12-12,400,163528.00,171156.00,7628.00,2025-12-12,2025-12-12
+T-3462-0048,SYN-34620002,L-E-3462-0033,SEC-0030,Ellisar Search Holdings,2025-08-20,2025-12-12,200,78614.00,85578.00,6964.00,2025-12-12,2025-12-12

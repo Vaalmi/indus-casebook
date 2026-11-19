@@ -1,0 +1,2 @@
+transaction_id,account_id,lot_id,security_id,security,acquired_date,sold_date,units,cost_basis,proceeds,gain,valuation_date,known_as_of
+T-2316-0035,SYN-23160001,L-23160001-02,SEC-0019,Brackwater Broad Market Fund,2009-03-16,2025-12-08,400,28353.28,103292.00,74938.72,2025-12-08,2025-12-08

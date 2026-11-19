@@ -1,0 +1,92 @@
+{
+  "cash": [
+    {
+      "account_id": "SYN-71260001",
+      "basis": "trade date",
+      "cash": "8651.50",
+      "known_as_of": "2026-04-15",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-71260002",
+      "basis": "trade date",
+      "cash": "8869.63",
+      "known_as_of": "2026-04-15",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "positions": [
+    {
+      "account_id": "SYN-71260001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "260015.36",
+      "price": "275.44",
+      "price_label": "synthetic",
+      "security": "Larkspur Total Market Fund",
+      "security_id": "SEC-0001",
+      "units": "944",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-71260001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "85307.04",
+      "price": "217.62",
+      "price_label": "synthetic",
+      "security": "Larkspur World ex-US Fund",
+      "security_id": "SEC-0002",
+      "units": "392",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-71260001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "98188.08",
+      "price": "23.96",
+      "price_label": "synthetic",
+      "security": "Fernhollow Aggregate Bond Fund",
+      "security_id": "SEC-0014",
+      "units": "4098",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-71260002",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "176557.04",
+      "price": "275.44",
+      "price_label": "synthetic",
+      "security": "Larkspur Total Market Fund",
+      "security_id": "SEC-0001",
+      "units": "641",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-71260002",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "129431.20",
+      "price": "380.68",
+      "price_label": "synthetic",
+      "security": "Larkspur Core Bond Fund",
+      "security_id": "SEC-0003",
+      "units": "340",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-71260002",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "58100.25",
+      "price": "178.77",
+      "price_label": "synthetic",
+      "security": "Larkspur Developed Markets Fund",
+      "security_id": "SEC-0006",
+      "units": "325",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

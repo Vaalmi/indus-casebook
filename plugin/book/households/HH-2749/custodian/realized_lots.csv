@@ -1,0 +1,2 @@
+transaction_id,account_id,lot_id,security_id,security,acquired_date,sold_date,units,cost_basis,proceeds,gain,valuation_date,known_as_of
+T-2749-0035,SYN-27490001,L-27490001-02,SEC-0019,Brackwater Broad Market Fund,2010-10-04,2025-12-09,60,4651.71,15354.60,10702.89,2025-12-09,2025-12-09

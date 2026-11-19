@@ -1,0 +1,2 @@
+transaction_id,account_id,lot_id,security_id,security,acquired_date,sold_date,units,cost_basis,proceeds,gain,valuation_date,known_as_of
+T-4105-0027,SYN-41050002,L-41050002-01,SEC-0013,Fernhollow Large Cap Index Fund,2011-02-07,2025-11-03,230,30183.36,59149.10,28965.74,2025-11-03,2025-11-03

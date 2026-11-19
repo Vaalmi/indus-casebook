@@ -1,0 +1,93 @@
+{
+  "billing_groups": [
+    {
+      "account_ids": [
+        "SYN-65900001",
+        "SYN-65900002"
+      ],
+      "billing_group_id": "BG-6590-1",
+      "known_as_of": "2026-04-15",
+      "last_changed": "2013-08-19",
+      "schedule_id": "FS-STD",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "disclosure_permissions": [
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-65900001",
+        "SYN-65900002"
+      ],
+      "person_id": "P-6590-1",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-65900001",
+        "SYN-65900002"
+      ],
+      "person_id": "P-6590-2",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-6590",
+  "household_membership": [
+    {
+      "born": "1947-02-17",
+      "known_as_of": "2026-04-15",
+      "name": "Celestine Abara",
+      "person_id": "P-6590-1",
+      "relationship": "primary",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "born": "1979-06-30",
+      "known_as_of": "2026-04-15",
+      "name": "Ifeoma Abara-Lowe",
+      "person_id": "P-6590-2",
+      "relationship": "daughter",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "legal_ownership": [
+    {
+      "account_id": "SYN-65900001",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-6590-1"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-65900002",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-6590-1"
+      ],
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "name": "Abara household",
+  "tax_units": [
+    {
+      "filing_status": "single",
+      "known_as_of": "2026-04-15",
+      "person_ids": [
+        "P-6590-1"
+      ],
+      "tax_unit_id": "TU-6590-1",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "filing_status": "single",
+      "known_as_of": "2026-04-15",
+      "person_ids": [
+        "P-6590-2"
+      ],
+      "tax_unit_id": "TU-6590-2",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

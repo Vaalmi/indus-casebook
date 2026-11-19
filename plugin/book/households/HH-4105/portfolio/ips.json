@@ -1,0 +1,54 @@
+{
+  "asset_classes": [
+    {
+      "asset_class": "US equity",
+      "known_as_of": "2026-04-15",
+      "security": "Larkspur Total Market Fund",
+      "security_id": "SEC-0001",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "asset_class": "US equity",
+      "known_as_of": "2026-04-15",
+      "security": "Larkspur High Dividend Yield Fund",
+      "security_id": "SEC-0010",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "asset_class": "US equity",
+      "known_as_of": "2026-04-15",
+      "security": "Fernhollow Large Cap Index Fund",
+      "security_id": "SEC-0013",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "asset_class": "Fixed income",
+      "known_as_of": "2026-04-15",
+      "security": "Fernhollow Corporate Bond Fund",
+      "security_id": "SEC-0018",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "concentration_limit": {
+    "known_as_of": "2026-04-15",
+    "share_of_household": "0.60",
+    "valuation_date": "2026-04-15"
+  },
+  "restrictions": [],
+  "targets": [
+    {
+      "asset_class": "US equity",
+      "band": "0.05",
+      "known_as_of": "2026-04-15",
+      "target": "0.72",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "asset_class": "Fixed income",
+      "band": "0.05",
+      "known_as_of": "2026-04-15",
+      "target": "0.25",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

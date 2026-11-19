@@ -1,0 +1,93 @@
+{
+  "activities": [
+    {
+      "activity_id": "CA-2316-01",
+      "date": "2025-12-03",
+      "kind": "call",
+      "known_as_of": "2025-12-03",
+      "summary": "Ingrid called to ask for cash from the joint account for Astrid's spring tuition and the kitchen work. Agreed to sell part of the broad market fund they have held since 2009.",
+      "valuation_date": "2025-12-03"
+    },
+    {
+      "activity_id": "CA-2316-02",
+      "date": "2026-02-09",
+      "kind": "document_received",
+      "known_as_of": "2026-02-09",
+      "summary": "2025 Forms W-2 received: Ingrid, Marrowfield Regional Health, wages $141,500.00; Kwame, Ellery Vale School District, wages $87,000.00. No other income outside the accounts.",
+      "valuation_date": "2026-02-09"
+    }
+  ],
+  "agreements": [
+    {
+      "account_ids": [
+        "SYN-23160001",
+        "SYN-23160002",
+        "SYN-23160003"
+      ],
+      "agreement_id": "AGR-2316-1",
+      "kind": "advisory",
+      "known_as_of": "2008-05-19",
+      "party_ids": [
+        "P-2316-1",
+        "P-2316-2"
+      ],
+      "signed": "2008-05-19",
+      "summary": "Advisory agreement for the joint account and both traditional IRAs on the standard fee schedule.",
+      "valuation_date": "2008-05-19"
+    }
+  ],
+  "contacts": [
+    {
+      "email": "ingrid.lindqvist@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Ingrid Lindqvist",
+      "person_id": "P-2316-1",
+      "phone": "555-0109",
+      "relationship": "primary",
+      "tax_id": "000-23-1601",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "email": "kwame.osei@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Kwame Osei",
+      "person_id": "P-2316-2",
+      "phone": "555-0110",
+      "relationship": "spouse",
+      "tax_id": "000-23-1602",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-2316",
+  "notes": [
+    {
+      "author": "template",
+      "date": "2008-05-19",
+      "known_as_of": "2008-05-19",
+      "note_id": "N-2316-01",
+      "slots": {
+        "accounts": "SYN-23160001, SYN-23160002, SYN-23160003",
+        "agreement_id": "AGR-2316-1",
+        "kind": "advisory",
+        "parties": "Ingrid Lindqvist and Kwame Osei",
+        "summary": "Advisory agreement for the joint account and both traditional IRAs on the standard fee schedule."
+      },
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-2316-1 with Ingrid Lindqvist and Kwame Osei, covering accounts SYN-23160001, SYN-23160002, SYN-23160003. Advisory agreement for the joint account and both traditional IRAs on the standard fee schedule.",
+      "valuation_date": "2008-05-19"
+    },
+    {
+      "author": "template",
+      "date": "2025-10-14",
+      "known_as_of": "2025-10-14",
+      "note_id": "N-2316-02",
+      "slots": {
+        "accounts": "SYN-23160001, SYN-23160002, SYN-23160003",
+        "parties": "Ingrid Lindqvist and Kwame Osei"
+      },
+      "template": "annual_review",
+      "text": "Annual review with Ingrid Lindqvist and Kwame Osei. Went through accounts SYN-23160001, SYN-23160002, SYN-23160003, the fee schedule and the IPS targets. No changes requested.",
+      "valuation_date": "2025-10-14"
+    }
+  ]
+}

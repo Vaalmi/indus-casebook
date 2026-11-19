@@ -1,0 +1,92 @@
+{
+  "cash": [
+    {
+      "account_id": "SYN-88650001",
+      "basis": "trade date",
+      "cash": "6786.80",
+      "known_as_of": "2026-04-15",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-88650002",
+      "basis": "trade date",
+      "cash": "6442.50",
+      "known_as_of": "2026-04-15",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "positions": [
+    {
+      "account_id": "SYN-88650001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "498270.96",
+      "price": "275.44",
+      "price_label": "synthetic",
+      "security": "Larkspur Total Market Fund",
+      "security_id": "SEC-0001",
+      "units": "1809.0",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-88650001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "212419.44",
+      "price": "380.68",
+      "price_label": "synthetic",
+      "security": "Larkspur Core Bond Fund",
+      "security_id": "SEC-0003",
+      "units": "558",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-88650001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "257982.27",
+      "price": "374.43",
+      "price_label": "synthetic",
+      "security": "Larkspur High Dividend Yield Fund",
+      "security_id": "SEC-0010",
+      "units": "689.0",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-88650001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "182077.57",
+      "price": "309.13",
+      "price_label": "synthetic",
+      "security": "Fallowmere Utilities Group",
+      "security_id": "SEC-0049",
+      "units": "589.0",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-88650002",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "212425.35",
+      "price": "310.11",
+      "price_label": "synthetic",
+      "security": "Fernhollow Large Cap Index Fund",
+      "security_id": "SEC-0013",
+      "units": "685",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-88650002",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "250933.08",
+      "price": "23.96",
+      "price_label": "synthetic",
+      "security": "Fernhollow Aggregate Bond Fund",
+      "security_id": "SEC-0014",
+      "units": "10473",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

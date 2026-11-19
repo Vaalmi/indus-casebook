@@ -1,0 +1,4 @@
+account_id,account_type,registration,owners,opened,decedent,decedent_born,decedent_died,valuation_date,known_as_of
+SYN-48210001,joint_taxable,Joint tenants with right of survivorship,Adaeze Okafor-Lind; Henrik Lind,2016-04-12,,,,2026-04-15,2026-04-15
+SYN-48210002,traditional_ira,"Traditional IRA, Henrik Lind",Henrik Lind,2012-01-20,,,,2026-04-15,2026-04-15
+SYN-48210003,individual_taxable,"Individual, Ngozi Lind",Ngozi Lind,2021-09-14,,,,2026-04-15,2026-04-15

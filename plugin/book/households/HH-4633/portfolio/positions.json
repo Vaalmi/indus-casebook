@@ -1,0 +1,111 @@
+{
+  "cash": [
+    {
+      "account_id": "SYN-46330001",
+      "basis": "trade date",
+      "cash": "8325.01",
+      "known_as_of": "2026-04-15",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-46330002",
+      "basis": "trade date",
+      "cash": "2512.54",
+      "known_as_of": "2026-04-15",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-46330003",
+      "basis": "trade date",
+      "cash": "4075.97",
+      "known_as_of": "2026-04-15",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "positions": [
+    {
+      "account_id": "SYN-46330001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "275164.56",
+      "price": "275.44",
+      "price_label": "synthetic",
+      "security": "Larkspur Total Market Fund",
+      "security_id": "SEC-0001",
+      "units": "999",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-46330001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "80502.45",
+      "price": "374.43",
+      "price_label": "synthetic",
+      "security": "Larkspur High Dividend Yield Fund",
+      "security_id": "SEC-0010",
+      "units": "215",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-46330001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "139594.98",
+      "price": "229.22",
+      "price_label": "synthetic",
+      "security": "Fernhollow Corporate Bond Fund",
+      "security_id": "SEC-0018",
+      "units": "609",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-46330002",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "191981.68",
+      "price": "275.44",
+      "price_label": "synthetic",
+      "security": "Larkspur Total Market Fund",
+      "security_id": "SEC-0001",
+      "units": "697",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-46330002",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "93033.00",
+      "price": "310.11",
+      "price_label": "synthetic",
+      "security": "Fernhollow Large Cap Index Fund",
+      "security_id": "SEC-0013",
+      "units": "300",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-46330002",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "103378.22",
+      "price": "229.22",
+      "price_label": "synthetic",
+      "security": "Fernhollow Corporate Bond Fund",
+      "security_id": "SEC-0018",
+      "units": "451",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-46330003",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "90895.20",
+      "price": "275.44",
+      "price_label": "synthetic",
+      "security": "Larkspur Total Market Fund",
+      "security_id": "SEC-0001",
+      "units": "330",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

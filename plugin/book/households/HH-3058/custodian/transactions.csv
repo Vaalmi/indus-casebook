@@ -1,0 +1,71 @@
+transaction_id,account_id,trade_date,settle_date,type,security_id,security,units,lot_id,price,price_label,amount,description,valuation_date,known_as_of
+T-3058-0005,SYN-30580002,2025-02-20,2025-02-20,RSU_VEST,SEC-0028,Bramwell Devices Group,800,L-E-3058-0005,,,0,"RSU vesting, 800 Bramwell Devices Group, no cost basis",2025-02-20,2025-02-20
+T-3058-0006,SYN-30580001,2025-03-25,2025-03-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,735,,,,876.93,"Dividend Larkspur World ex-US Fund, 1.1931 per unit",2025-03-25,2025-03-25
+T-3058-0007,SYN-30580001,2025-03-25,2025-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,659,,,,284.49,"Dividend Larkspur Core Bond Fund, 0.4317 per unit",2025-03-25,2025-03-25
+T-3058-0008,SYN-30580002,2025-03-25,2025-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,50,,,,21.59,"Dividend Larkspur Core Bond Fund, 0.4317 per unit",2025-03-25,2025-03-25
+T-3058-0009,SYN-30580004,2025-03-25,2025-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,228,,,,98.43,"Dividend Larkspur Core Bond Fund, 0.4317 per unit",2025-03-25,2025-03-25
+T-3058-0010,SYN-30580003,2025-03-25,2025-03-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,2377,,,,915.62,"Dividend Fernhollow Large Cap Index Fund, 0.3852 per unit",2025-03-25,2025-03-25
+T-3058-0011,SYN-30580003,2025-03-25,2025-03-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,9562,,,,348.06,"Dividend Fernhollow Aggregate Bond Fund, 0.0364 per unit",2025-03-25,2025-03-25
+T-3058-0012,SYN-30580004,2025-03-25,2025-03-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,812,,,,585.37,"Dividend Brackwater Broad Market Fund, 0.7209 per unit",2025-03-25,2025-03-25
+T-3058-0013,SYN-30580001,2025-03-25,2025-03-25,DIVIDEND,SEC-0028,Bramwell Devices Group,2997,,,,1699.60,"Dividend Bramwell Devices Group, 0.5671 per unit",2025-03-25,2025-03-25
+T-3058-0014,SYN-30580002,2025-03-25,2025-03-25,DIVIDEND,SEC-0028,Bramwell Devices Group,800,,,,453.68,"Dividend Bramwell Devices Group, 0.5671 per unit",2025-03-25,2025-03-25
+T-3058-0015,SYN-30580001,2025-04-02,2025-04-02,FEE,,,,,,,-3071.15,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-3058-0016,SYN-30580002,2025-04-02,2025-04-02,FEE,,,,,,,-405.61,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-3058-0017,SYN-30580003,2025-04-02,2025-04-02,FEE,,,,,,,-1579.15,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-3058-0018,SYN-30580004,2025-04-02,2025-04-02,FEE,,,,,,,-556.73,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-3058-0019,SYN-30580002,2025-05-20,2025-05-20,RSU_VEST,SEC-0028,Bramwell Devices Group,800,L-E-3058-0019,,,0,"RSU vesting, 800 Bramwell Devices Group, no cost basis",2025-05-20,2025-05-20
+T-3058-0020,SYN-30580001,2025-06-25,2025-06-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,735,,,,902.80,"Dividend Larkspur World ex-US Fund, 1.2283 per unit",2025-06-25,2025-06-25
+T-3058-0021,SYN-30580001,2025-06-25,2025-06-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,659,,,,275.73,"Dividend Larkspur Core Bond Fund, 0.4184 per unit",2025-06-25,2025-06-25
+T-3058-0022,SYN-30580002,2025-06-25,2025-06-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,50,,,,20.92,"Dividend Larkspur Core Bond Fund, 0.4184 per unit",2025-06-25,2025-06-25
+T-3058-0023,SYN-30580004,2025-06-25,2025-06-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,228,,,,95.40,"Dividend Larkspur Core Bond Fund, 0.4184 per unit",2025-06-25,2025-06-25
+T-3058-0024,SYN-30580003,2025-06-25,2025-06-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,2377,,,,976.00,"Dividend Fernhollow Large Cap Index Fund, 0.4106 per unit",2025-06-25,2025-06-25
+T-3058-0025,SYN-30580003,2025-06-25,2025-06-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,9562,,,,357.62,"Dividend Fernhollow Aggregate Bond Fund, 0.0374 per unit",2025-06-25,2025-06-25
+T-3058-0026,SYN-30580004,2025-06-25,2025-06-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,812,,,,626.54,"Dividend Brackwater Broad Market Fund, 0.7716 per unit",2025-06-25,2025-06-25
+T-3058-0027,SYN-30580001,2025-06-25,2025-06-25,DIVIDEND,SEC-0028,Bramwell Devices Group,2997,,,,1896.20,"Dividend Bramwell Devices Group, 0.6327 per unit",2025-06-25,2025-06-25
+T-3058-0028,SYN-30580002,2025-06-25,2025-06-25,DIVIDEND,SEC-0028,Bramwell Devices Group,1600,,,,1012.32,"Dividend Bramwell Devices Group, 0.6327 per unit",2025-06-25,2025-06-25
+T-3058-0029,SYN-30580001,2025-07-02,2025-07-02,FEE,,,,,,,-3179.14,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-3058-0030,SYN-30580002,2025-07-02,2025-07-02,FEE,,,,,,,-826.72,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-3058-0031,SYN-30580003,2025-07-02,2025-07-02,FEE,,,,,,,-1618.78,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-3058-0032,SYN-30580004,2025-07-02,2025-07-02,FEE,,,,,,,-562.52,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-3058-0033,SYN-30580002,2025-08-20,2025-08-20,RSU_VEST,SEC-0028,Bramwell Devices Group,800,L-E-3058-0033,,,0,"RSU vesting, 800 Bramwell Devices Group, no cost basis",2025-08-20,2025-08-20
+T-3058-0034,SYN-30580001,2025-09-25,2025-09-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,735,,,,914.12,"Dividend Larkspur World ex-US Fund, 1.2437 per unit",2025-09-25,2025-09-25
+T-3058-0035,SYN-30580001,2025-09-25,2025-09-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,659,,,,279.15,"Dividend Larkspur Core Bond Fund, 0.4236 per unit",2025-09-25,2025-09-25
+T-3058-0036,SYN-30580002,2025-09-25,2025-09-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,50,,,,21.18,"Dividend Larkspur Core Bond Fund, 0.4236 per unit",2025-09-25,2025-09-25
+T-3058-0037,SYN-30580004,2025-09-25,2025-09-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,228,,,,96.58,"Dividend Larkspur Core Bond Fund, 0.4236 per unit",2025-09-25,2025-09-25
+T-3058-0038,SYN-30580003,2025-09-25,2025-09-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,2377,,,,1037.09,"Dividend Fernhollow Large Cap Index Fund, 0.4363 per unit",2025-09-25,2025-09-25
+T-3058-0039,SYN-30580003,2025-09-25,2025-09-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,9562,,,,350.93,"Dividend Fernhollow Aggregate Bond Fund, 0.0367 per unit",2025-09-25,2025-09-25
+T-3058-0040,SYN-30580004,2025-09-25,2025-09-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,812,,,,674.61,"Dividend Brackwater Broad Market Fund, 0.8308 per unit",2025-09-25,2025-09-25
+T-3058-0041,SYN-30580001,2025-09-25,2025-09-25,DIVIDEND,SEC-0028,Bramwell Devices Group,2997,,,,1954.04,"Dividend Bramwell Devices Group, 0.6520 per unit",2025-09-25,2025-09-25
+T-3058-0042,SYN-30580002,2025-09-25,2025-09-25,DIVIDEND,SEC-0028,Bramwell Devices Group,2400,,,,1564.80,"Dividend Bramwell Devices Group, 0.6520 per unit",2025-09-25,2025-09-25
+T-3058-0043,SYN-30580001,2025-10-02,2025-10-02,FEE,,,,,,,-3132.27,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-3058-0044,SYN-30580002,2025-10-02,2025-10-02,FEE,,,,,,,-1215.50,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-3058-0045,SYN-30580003,2025-10-02,2025-10-02,FEE,,,,,,,-1652.10,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-3058-0046,SYN-30580004,2025-10-02,2025-10-02,FEE,,,,,,,-573.89,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-3058-0047,SYN-30580002,2025-11-20,2025-11-20,RSU_VEST,SEC-0028,Bramwell Devices Group,800,L-E-3058-0047,,,0,"RSU vesting, 800 Bramwell Devices Group, no cost basis",2025-11-20,2025-11-20
+T-3058-0048,SYN-30580002,2025-12-12,2025-12-15,SELL,SEC-0028,Bramwell Devices Group,1600,,273.61,synthetic,437776.00,Sell 1600 Bramwell Devices Group,2025-12-12,2025-12-12
+T-3058-0049,SYN-30580001,2025-12-25,2025-12-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,735,,,,931.98,"Dividend Larkspur World ex-US Fund, 1.2680 per unit",2025-12-25,2025-12-25
+T-3058-0050,SYN-30580001,2025-12-25,2025-12-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,659,,,,279.02,"Dividend Larkspur Core Bond Fund, 0.4234 per unit",2025-12-25,2025-12-25
+T-3058-0051,SYN-30580002,2025-12-25,2025-12-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,50,,,,21.17,"Dividend Larkspur Core Bond Fund, 0.4234 per unit",2025-12-25,2025-12-25
+T-3058-0052,SYN-30580004,2025-12-25,2025-12-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,228,,,,96.54,"Dividend Larkspur Core Bond Fund, 0.4234 per unit",2025-12-25,2025-12-25
+T-3058-0053,SYN-30580003,2025-12-25,2025-12-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,2377,,,,1164.25,"Dividend Fernhollow Large Cap Index Fund, 0.4898 per unit",2025-12-25,2025-12-25
+T-3058-0054,SYN-30580003,2025-12-25,2025-12-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,9562,,,,371.01,"Dividend Fernhollow Aggregate Bond Fund, 0.0388 per unit",2025-12-25,2025-12-25
+T-3058-0055,SYN-30580004,2025-12-25,2025-12-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,812,,,,659.83,"Dividend Brackwater Broad Market Fund, 0.8126 per unit",2025-12-25,2025-12-25
+T-3058-0056,SYN-30580001,2025-12-25,2025-12-25,DIVIDEND,SEC-0028,Bramwell Devices Group,2997,,,,2122.78,"Dividend Bramwell Devices Group, 0.7083 per unit",2025-12-25,2025-12-25
+T-3058-0057,SYN-30580002,2025-12-25,2025-12-25,DIVIDEND,SEC-0028,Bramwell Devices Group,1600,,,,1133.28,"Dividend Bramwell Devices Group, 0.7083 per unit",2025-12-25,2025-12-25
+T-3058-0058,SYN-30580001,2026-01-02,2026-01-02,FEE,,,,,,,-3189.50,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-3058-0059,SYN-30580002,2026-01-02,2026-01-02,FEE,,,,,,,-1687.79,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-3058-0060,SYN-30580003,2026-01-02,2026-01-02,FEE,,,,,,,-1742.79,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-3058-0061,SYN-30580004,2026-01-02,2026-01-02,FEE,,,,,,,-562.37,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-3058-0062,SYN-30580001,2026-03-25,2026-03-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,735,,,,907.43,"Dividend Larkspur World ex-US Fund, 1.2346 per unit",2026-03-25,2026-03-25
+T-3058-0063,SYN-30580001,2026-03-25,2026-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,659,,,,295.23,"Dividend Larkspur Core Bond Fund, 0.4480 per unit",2026-03-25,2026-03-25
+T-3058-0064,SYN-30580002,2026-03-25,2026-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,50,,,,22.40,"Dividend Larkspur Core Bond Fund, 0.4480 per unit",2026-03-25,2026-03-25
+T-3058-0065,SYN-30580004,2026-03-25,2026-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,228,,,,102.14,"Dividend Larkspur Core Bond Fund, 0.4480 per unit",2026-03-25,2026-03-25
+T-3058-0066,SYN-30580003,2026-03-25,2026-03-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,2377,,,,1247.69,"Dividend Fernhollow Large Cap Index Fund, 0.5249 per unit",2026-03-25,2026-03-25
+T-3058-0067,SYN-30580003,2026-03-25,2026-03-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,9562,,,,376.74,"Dividend Fernhollow Aggregate Bond Fund, 0.0394 per unit",2026-03-25,2026-03-25
+T-3058-0068,SYN-30580004,2026-03-25,2026-03-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,812,,,,699.86,"Dividend Brackwater Broad Market Fund, 0.8619 per unit",2026-03-25,2026-03-25
+T-3058-0069,SYN-30580001,2026-03-25,2026-03-25,DIVIDEND,SEC-0028,Bramwell Devices Group,2997,,,,2087.11,"Dividend Bramwell Devices Group, 0.6964 per unit",2026-03-25,2026-03-25
+T-3058-0070,SYN-30580002,2026-03-25,2026-03-25,DIVIDEND,SEC-0028,Bramwell Devices Group,1600,,,,1114.24,"Dividend Bramwell Devices Group, 0.6964 per unit",2026-03-25,2026-03-25
+T-3058-0071,SYN-30580001,2026-04-02,2026-04-02,FEE,,,,,,,-3209.02,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02
+T-3058-0072,SYN-30580002,2026-04-02,2026-04-02,FEE,,,,,,,-1684.65,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02
+T-3058-0073,SYN-30580003,2026-04-02,2026-04-02,FEE,,,,,,,-1850.06,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02
+T-3058-0074,SYN-30580004,2026-04-02,2026-04-02,FEE,,,,,,,-579.78,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02

@@ -1,0 +1,5 @@
+account_id,designation,name,relationship,share_percent,person_id,valuation_date,known_as_of
+SYN-95710002,primary,Graham Reid,spouse,100,P-9571-2,2005-04-11,2005-04-11
+SYN-95710002,contingent,Isla Castellanos-Reid,daughter,100,,2005-04-11,2005-04-11
+SYN-95710003,primary,Elena Castellanos,spouse,100,P-9571-1,2003-07-14,2003-07-14
+SYN-95710003,contingent,Isla Castellanos-Reid,daughter,100,,2003-07-14,2003-07-14

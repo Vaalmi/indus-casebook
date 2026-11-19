@@ -1,0 +1,5 @@
+account_id,account_type,registration,owners,opened,decedent,decedent_born,decedent_died,valuation_date,known_as_of
+SYN-34620001,joint_taxable,Joint tenants with right of survivorship,Lucia Marchetti; Kofi Osei,2015-09-21,,,,2026-04-15,2026-04-15
+SYN-34620002,individual_taxable,"Individual, Lucia Marchetti (stock plan account)",Lucia Marchetti,2020-01-13,,,,2026-04-15,2026-04-15
+SYN-34620003,401k,"401(k), Lucia Marchetti",Lucia Marchetti,2013-08-05,,,,2026-04-15,2026-04-15
+SYN-34620004,traditional_ira,"Traditional IRA, Kofi Osei",Kofi Osei,2011-05-16,,,,2026-04-15,2026-04-15

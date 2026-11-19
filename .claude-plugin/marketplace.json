@@ -1,0 +1,11 @@
+{
+  "name": "indus-casebook",
+  "owner": {"name": "The Indus Casebook"},
+  "plugins": [
+    {
+      "name": "indus-casebook",
+      "source": "./plugin",
+      "description": "The four advisor skills and the sample book of 20 invented households."
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "billing_groups": [
+    {
+      "account_ids": [
+        "SYN-23160001",
+        "SYN-23160002",
+        "SYN-23160003"
+      ],
+      "billing_group_id": "BG-2316-1",
+      "known_as_of": "2026-04-15",
+      "last_changed": "2008-05-19",
+      "schedule_id": "FS-STD",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "disclosure_permissions": [
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-23160001",
+        "SYN-23160002",
+        "SYN-23160003"
+      ],
+      "person_id": "P-2316-1",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-23160001",
+        "SYN-23160002",
+        "SYN-23160003"
+      ],
+      "person_id": "P-2316-2",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-2316",
+  "household_membership": [
+    {
+      "born": "1971-04-16",
+      "known_as_of": "2026-04-15",
+      "name": "Ingrid Lindqvist",
+      "person_id": "P-2316-1",
+      "relationship": "primary",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "born": "1969-12-02",
+      "known_as_of": "2026-04-15",
+      "name": "Kwame Osei",
+      "person_id": "P-2316-2",
+      "relationship": "spouse",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "legal_ownership": [
+    {
+      "account_id": "SYN-23160001",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-2316-1",
+        "P-2316-2"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-23160002",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-2316-1"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-23160003",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-2316-2"
+      ],
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "name": "Lindqvist-Osei household",
+  "tax_units": [
+    {
+      "filing_status": "married_filing_jointly",
+      "known_as_of": "2026-04-15",
+      "person_ids": [
+        "P-2316-1",
+        "P-2316-2"
+      ],
+      "tax_unit_id": "TU-2316-1",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

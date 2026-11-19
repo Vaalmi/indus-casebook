@@ -1,0 +1,5 @@
+account_id,account_type,registration,owners,opened,decedent,decedent_born,decedent_died,valuation_date,known_as_of
+SYN-30580001,joint_taxable,Joint tenants with right of survivorship,Priya Raghunathan; Daniel Cole,2014-06-02,,,,2026-04-15,2026-04-15
+SYN-30580002,individual_taxable,"Individual, Priya Raghunathan (stock plan account)",Priya Raghunathan,2019-08-01,,,,2026-04-15,2026-04-15
+SYN-30580003,401k,"401(k), Priya Raghunathan",Priya Raghunathan,2012-04-02,,,,2026-04-15,2026-04-15
+SYN-30580004,traditional_ira,"Traditional IRA, Daniel Cole",Daniel Cole,2009-10-19,,,,2026-04-15,2026-04-15

@@ -1,0 +1,108 @@
+{
+  "billing_groups": [
+    {
+      "account_ids": [
+        "SYN-52710001",
+        "SYN-52710002",
+        "SYN-52710003",
+        "SYN-52710004"
+      ],
+      "billing_group_id": "BG-5271-1",
+      "known_as_of": "2026-04-15",
+      "last_changed": "2018-03-05",
+      "schedule_id": "FS-STD",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "disclosure_permissions": [
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-52710001",
+        "SYN-52710002",
+        "SYN-52710003",
+        "SYN-52710004"
+      ],
+      "person_id": "P-5271-1",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-52710001",
+        "SYN-52710002",
+        "SYN-52710003",
+        "SYN-52710004"
+      ],
+      "person_id": "P-5271-2",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-5271",
+  "household_membership": [
+    {
+      "born": "1952-03-14",
+      "known_as_of": "2026-04-15",
+      "name": "Teodoro Villanueva",
+      "person_id": "P-5271-1",
+      "relationship": "primary",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "born": "1955-10-02",
+      "known_as_of": "2026-04-15",
+      "name": "Marguerite Villanueva",
+      "person_id": "P-5271-2",
+      "relationship": "spouse",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "legal_ownership": [
+    {
+      "account_id": "SYN-52710001",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-5271-1",
+        "P-5271-2"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-52710002",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-5271-1"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-52710003",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-5271-1"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-52710004",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-5271-1"
+      ],
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "name": "Villanueva household",
+  "tax_units": [
+    {
+      "filing_status": "married_filing_jointly",
+      "known_as_of": "2026-04-15",
+      "person_ids": [
+        "P-5271-1",
+        "P-5271-2"
+      ],
+      "tax_unit_id": "TU-5271-1",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

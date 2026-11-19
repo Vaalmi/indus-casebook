@@ -1,0 +1,77 @@
+{
+  "billing_groups": [
+    {
+      "account_ids": [
+        "SYN-41050001",
+        "SYN-41050002",
+        "SYN-41050003"
+      ],
+      "billing_group_id": "BG-4105-1",
+      "known_as_of": "2026-04-15",
+      "last_changed": "2006-03-20",
+      "schedule_id": "FS-STD",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "disclosure_permissions": [
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-41050001",
+        "SYN-41050002",
+        "SYN-41050003"
+      ],
+      "person_id": "P-4105-1",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-4105",
+  "household_membership": [
+    {
+      "born": "1958-09-14",
+      "known_as_of": "2026-04-15",
+      "name": "Rosalind Achterberg",
+      "person_id": "P-4105-1",
+      "relationship": "primary",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "legal_ownership": [
+    {
+      "account_id": "SYN-41050001",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-4105-1"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-41050002",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-4105-1"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-41050003",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-4105-1"
+      ],
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "name": "Achterberg household",
+  "tax_units": [
+    {
+      "filing_status": "single",
+      "known_as_of": "2026-04-15",
+      "person_ids": [
+        "P-4105-1"
+      ],
+      "tax_unit_id": "TU-4105-1",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

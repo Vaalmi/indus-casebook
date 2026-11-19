@@ -1,0 +1,5 @@
+account_id,designation,name,relationship,share_percent,person_id,valuation_date,known_as_of
+SYN-15870002,primary,Sofia Reyes-Nakamura,spouse,100,P-1587-1,2016-05-02,2016-05-02
+SYN-15870003,primary,Sofia Reyes-Nakamura,spouse,100,P-1587-1,2024-12-10,2024-12-10
+SYN-15870004,primary,Sofia Reyes-Nakamura,spouse,100,P-1587-1,2016-05-02,2016-05-02
+SYN-15870004,contingent,Hiroshi Nakamura,brother,100,,2016-05-02,2016-05-02

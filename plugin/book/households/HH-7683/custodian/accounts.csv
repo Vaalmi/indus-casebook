@@ -1,0 +1,3 @@
+account_id,account_type,registration,owners,opened,decedent,decedent_born,decedent_died,valuation_date,known_as_of
+SYN-76830001,joint_taxable,Joint tenants with right of survivorship,Theo Marchetti; Hana Marchetti,2015-05-18,,,,2026-04-15,2026-04-15
+SYN-76830002,inherited_ira,"Inherited IRA, Carla Marchetti, deceased 2023-02-26, FBO Theo Marchetti",Theo Marchetti,2023-05-15,Carla Marchetti,1953-04-03,2023-02-26,2026-04-15,2026-04-15

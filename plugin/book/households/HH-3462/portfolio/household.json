@@ -1,0 +1,108 @@
+{
+  "billing_groups": [
+    {
+      "account_ids": [
+        "SYN-34620001",
+        "SYN-34620002",
+        "SYN-34620003",
+        "SYN-34620004"
+      ],
+      "billing_group_id": "BG-3462-1",
+      "known_as_of": "2026-04-15",
+      "last_changed": "2015-09-21",
+      "schedule_id": "FS-STD",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "disclosure_permissions": [
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-34620001",
+        "SYN-34620002",
+        "SYN-34620003",
+        "SYN-34620004"
+      ],
+      "person_id": "P-3462-1",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-34620001",
+        "SYN-34620002",
+        "SYN-34620003",
+        "SYN-34620004"
+      ],
+      "person_id": "P-3462-2",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-3462",
+  "household_membership": [
+    {
+      "born": "1980-11-05",
+      "known_as_of": "2026-04-15",
+      "name": "Lucia Marchetti",
+      "person_id": "P-3462-1",
+      "relationship": "primary",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "born": "1979-04-22",
+      "known_as_of": "2026-04-15",
+      "name": "Kofi Osei",
+      "person_id": "P-3462-2",
+      "relationship": "spouse",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "legal_ownership": [
+    {
+      "account_id": "SYN-34620001",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-3462-1",
+        "P-3462-2"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-34620002",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-3462-1"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-34620003",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-3462-1"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-34620004",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-3462-2"
+      ],
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "name": "Marchetti-Osei household",
+  "tax_units": [
+    {
+      "filing_status": "married_filing_jointly",
+      "known_as_of": "2026-04-15",
+      "person_ids": [
+        "P-3462-1",
+        "P-3462-2"
+      ],
+      "tax_unit_id": "TU-3462-1",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

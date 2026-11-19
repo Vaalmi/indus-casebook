@@ -1,0 +1,3 @@
+account_id,account_type,registration,owners,opened,decedent,decedent_born,decedent_died,valuation_date,known_as_of
+SYN-65900001,individual_taxable,"Individual, Celestine Abara",Celestine Abara,2013-08-19,,,,2026-04-15,2026-04-15
+SYN-65900002,traditional_ira,"Traditional IRA, Celestine Abara",Celestine Abara,2002-04-08,,,,2026-04-15,2026-04-15

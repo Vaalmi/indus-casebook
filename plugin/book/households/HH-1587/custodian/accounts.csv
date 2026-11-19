@@ -1,0 +1,5 @@
+account_id,account_type,registration,owners,opened,decedent,decedent_born,decedent_died,valuation_date,known_as_of
+SYN-15870001,joint_taxable,Joint tenants with right of survivorship,Sofia Reyes-Nakamura; Daniel Nakamura,2016-03-07,,,,2026-04-15,2026-04-15
+SYN-15870002,401k,"401(k), Daniel Nakamura, former employer plan of Pellmoor Avionics",Daniel Nakamura,2014-07-01,,,,2026-04-15,2026-04-15
+SYN-15870003,traditional_ira,"Traditional IRA, Daniel Nakamura",Daniel Nakamura,2024-12-10,,,,2026-04-15,2026-04-15
+SYN-15870004,roth_ira,"Roth IRA, Daniel Nakamura",Daniel Nakamura,2013-03-11,,,,2026-04-15,2026-04-15

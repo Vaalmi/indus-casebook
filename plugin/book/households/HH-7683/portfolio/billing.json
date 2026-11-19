@@ -1,0 +1,24 @@
+{
+  "fee_schedules": [
+    {
+      "basis": "Quarterly in arrears on the quarter-end value of positions plus cash, per billing group",
+      "known_as_of": "2026-04-15",
+      "schedule_id": "FS-STD",
+      "tiers": [
+        {
+          "annual_rate": "0.0100",
+          "up_to": "1000000"
+        },
+        {
+          "annual_rate": "0.0080",
+          "up_to": "2000000"
+        },
+        {
+          "annual_rate": "0.0060",
+          "up_to": null
+        }
+      ],
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

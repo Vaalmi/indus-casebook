@@ -1,0 +1,43 @@
+transaction_id,account_id,trade_date,settle_date,type,security_id,security,units,lot_id,price,price_label,amount,description,valuation_date,known_as_of
+T-4633-0004,SYN-46330001,2025-03-17,2025-03-17,WITHDRAWAL,,,,,,,-11000.00,Withdrawal,2025-03-17,2025-03-17
+T-4633-0005,SYN-46330001,2025-03-25,2025-03-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,215,,,,272.25,"Dividend Larkspur High Dividend Yield Fund, 1.2663 per unit",2025-03-25,2025-03-25
+T-4633-0006,SYN-46330002,2025-03-25,2025-03-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,525,,,,202.23,"Dividend Fernhollow Large Cap Index Fund, 0.3852 per unit",2025-03-25,2025-03-25
+T-4633-0007,SYN-46330001,2025-03-25,2025-03-25,DIVIDEND,SEC-0018,Fernhollow Corporate Bond Fund,609,,,,860.03,"Dividend Fernhollow Corporate Bond Fund, 1.4122 per unit",2025-03-25,2025-03-25
+T-4633-0008,SYN-46330002,2025-03-25,2025-03-25,DIVIDEND,SEC-0018,Fernhollow Corporate Bond Fund,451,,,,636.90,"Dividend Fernhollow Corporate Bond Fund, 1.4122 per unit",2025-03-25,2025-03-25
+T-4633-0009,SYN-46330001,2025-04-02,2025-04-02,FEE,,,,,,,-1258.37,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-4633-0010,SYN-46330002,2025-04-02,2025-04-02,FEE,,,,,,,-1018.29,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-4633-0011,SYN-46330003,2025-04-02,2025-04-02,FEE,,,,,,,-78.56,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-4633-0012,SYN-46330001,2025-06-25,2025-06-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,215,,,,282.32,"Dividend Larkspur High Dividend Yield Fund, 1.3131 per unit",2025-06-25,2025-06-25
+T-4633-0013,SYN-46330002,2025-06-25,2025-06-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,525,,,,215.57,"Dividend Fernhollow Large Cap Index Fund, 0.4106 per unit",2025-06-25,2025-06-25
+T-4633-0014,SYN-46330001,2025-06-25,2025-06-25,DIVIDEND,SEC-0018,Fernhollow Corporate Bond Fund,609,,,,919.59,"Dividend Fernhollow Corporate Bond Fund, 1.5100 per unit",2025-06-25,2025-06-25
+T-4633-0015,SYN-46330002,2025-06-25,2025-06-25,DIVIDEND,SEC-0018,Fernhollow Corporate Bond Fund,451,,,,681.01,"Dividend Fernhollow Corporate Bond Fund, 1.5100 per unit",2025-06-25,2025-06-25
+T-4633-0016,SYN-46330001,2025-07-02,2025-07-02,FEE,,,,,,,-1338.28,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-4633-0017,SYN-46330002,2025-07-02,2025-07-02,FEE,,,,,,,-1091.87,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-4633-0018,SYN-46330003,2025-07-02,2025-07-02,FEE,,,,,,,-83.95,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-4633-0019,SYN-46330001,2025-09-16,2025-09-16,WITHDRAWAL,,,,,,,-11000.00,Withdrawal,2025-09-16,2025-09-16
+T-4633-0020,SYN-46330001,2025-09-25,2025-09-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,215,,,,274.64,"Dividend Larkspur High Dividend Yield Fund, 1.2774 per unit",2025-09-25,2025-09-25
+T-4633-0021,SYN-46330002,2025-09-25,2025-09-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,525,,,,229.06,"Dividend Fernhollow Large Cap Index Fund, 0.4363 per unit",2025-09-25,2025-09-25
+T-4633-0022,SYN-46330001,2025-09-25,2025-09-25,DIVIDEND,SEC-0018,Fernhollow Corporate Bond Fund,609,,,,841.94,"Dividend Fernhollow Corporate Bond Fund, 1.3825 per unit",2025-09-25,2025-09-25
+T-4633-0023,SYN-46330002,2025-09-25,2025-09-25,DIVIDEND,SEC-0018,Fernhollow Corporate Bond Fund,451,,,,623.51,"Dividend Fernhollow Corporate Bond Fund, 1.3825 per unit",2025-09-25,2025-09-25
+T-4633-0024,SYN-46330001,2025-10-02,2025-10-02,FEE,,,,,,,-1248.78,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-4633-0025,SYN-46330002,2025-10-02,2025-10-02,FEE,,,,,,,-1072.56,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-4633-0026,SYN-46330003,2025-10-02,2025-10-02,FEE,,,,,,,-81.81,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-4633-0027,SYN-46330002,2025-11-04,2025-11-05,SELL,SEC-0013,Fernhollow Large Cap Index Fund,225,,257.71,synthetic,57984.75,Sell 225 Fernhollow Large Cap Index Fund,2025-11-04,2025-11-04
+T-4633-0028,SYN-46330002,2025-11-07,2025-11-07,CONVERSION_OUT,,,,,,,-60000.00,Roth conversion to SYN-46330003,2025-11-07,2025-11-07
+T-4633-0028,SYN-46330003,2025-11-07,2025-11-07,CONVERSION_IN,,,,,,,60000.00,Roth conversion from SYN-46330002,2025-11-07,2025-11-07
+T-4633-0029,SYN-46330003,2025-11-11,2025-11-12,BUY,SEC-0001,Larkspur Total Market Fund,210,L-E-4633-0029,268.58,synthetic,-56401.80,Buy 210 Larkspur Total Market Fund,2025-11-11,2025-11-11
+T-4633-0030,SYN-46330001,2025-12-25,2025-12-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,215,,,,278.21,"Dividend Larkspur High Dividend Yield Fund, 1.2940 per unit",2025-12-25,2025-12-25
+T-4633-0031,SYN-46330002,2025-12-25,2025-12-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,300,,,,146.94,"Dividend Fernhollow Large Cap Index Fund, 0.4898 per unit",2025-12-25,2025-12-25
+T-4633-0032,SYN-46330001,2025-12-25,2025-12-25,DIVIDEND,SEC-0018,Fernhollow Corporate Bond Fund,609,,,,860.52,"Dividend Fernhollow Corporate Bond Fund, 1.4130 per unit",2025-12-25,2025-12-25
+T-4633-0033,SYN-46330002,2025-12-25,2025-12-25,DIVIDEND,SEC-0018,Fernhollow Corporate Bond Fund,451,,,,637.26,"Dividend Fernhollow Corporate Bond Fund, 1.4130 per unit",2025-12-25,2025-12-25
+T-4633-0034,SYN-46330001,2026-01-02,2026-01-02,FEE,,,,,,,-1286.84,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-4633-0035,SYN-46330002,2026-01-02,2026-01-02,FEE,,,,,,,-965.56,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-4633-0036,SYN-46330003,2026-01-02,2026-01-02,FEE,,,,,,,-238.56,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-4633-0037,SYN-46330001,2026-03-17,2026-03-17,WITHDRAWAL,,,,,,,-11000.00,Withdrawal,2026-03-17,2026-03-17
+T-4633-0038,SYN-46330001,2026-03-25,2026-03-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,215,,,,280.92,"Dividend Larkspur High Dividend Yield Fund, 1.3066 per unit",2026-03-25,2026-03-25
+T-4633-0039,SYN-46330002,2026-03-25,2026-03-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,300,,,,157.47,"Dividend Fernhollow Large Cap Index Fund, 0.5249 per unit",2026-03-25,2026-03-25
+T-4633-0040,SYN-46330001,2026-03-25,2026-03-25,DIVIDEND,SEC-0018,Fernhollow Corporate Bond Fund,609,,,,844.99,"Dividend Fernhollow Corporate Bond Fund, 1.3875 per unit",2026-03-25,2026-03-25
+T-4633-0041,SYN-46330002,2026-03-25,2026-03-25,DIVIDEND,SEC-0018,Fernhollow Corporate Bond Fund,451,,,,625.76,"Dividend Fernhollow Corporate Bond Fund, 1.3875 per unit",2026-03-25,2026-03-25
+T-4633-0042,SYN-46330001,2026-04-02,2026-04-02,FEE,,,,,,,-1258.13,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02
+T-4633-0043,SYN-46330002,2026-04-02,2026-04-02,FEE,,,,,,,-979.64,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02
+T-4633-0044,SYN-46330003,2026-04-02,2026-04-02,FEE,,,,,,,-239.35,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02

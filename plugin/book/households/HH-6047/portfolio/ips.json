@@ -1,0 +1,68 @@
+{
+  "asset_classes": [
+    {
+      "asset_class": "US equity",
+      "known_as_of": "2026-04-15",
+      "security": "Larkspur Total Market Fund",
+      "security_id": "SEC-0001",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "asset_class": "Fixed income",
+      "known_as_of": "2026-04-15",
+      "security": "Larkspur Core Bond Fund",
+      "security_id": "SEC-0003",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "asset_class": "International equity",
+      "known_as_of": "2026-04-15",
+      "security": "Larkspur Developed Markets Fund",
+      "security_id": "SEC-0006",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "asset_class": "Fixed income",
+      "known_as_of": "2026-04-15",
+      "security": "Larkspur Tax-Exempt Bond Fund",
+      "security_id": "SEC-0008",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "asset_class": "US equity",
+      "known_as_of": "2026-04-15",
+      "security": "Larkspur High Dividend Yield Fund",
+      "security_id": "SEC-0010",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "concentration_limit": {
+    "known_as_of": "2026-04-15",
+    "share_of_household": "0.30",
+    "valuation_date": "2026-04-15"
+  },
+  "restrictions": [],
+  "targets": [
+    {
+      "asset_class": "US equity",
+      "band": "0.05",
+      "known_as_of": "2026-04-15",
+      "target": "0.45",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "asset_class": "International equity",
+      "band": "0.04",
+      "known_as_of": "2026-04-15",
+      "target": "0.07",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "asset_class": "Fixed income",
+      "band": "0.05",
+      "known_as_of": "2026-04-15",
+      "target": "0.48",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

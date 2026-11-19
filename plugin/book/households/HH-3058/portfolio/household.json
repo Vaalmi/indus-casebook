@@ -1,0 +1,108 @@
+{
+  "billing_groups": [
+    {
+      "account_ids": [
+        "SYN-30580001",
+        "SYN-30580002",
+        "SYN-30580003",
+        "SYN-30580004"
+      ],
+      "billing_group_id": "BG-3058-1",
+      "known_as_of": "2026-04-15",
+      "last_changed": "2014-06-02",
+      "schedule_id": "FS-STD",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "disclosure_permissions": [
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-30580001",
+        "SYN-30580002",
+        "SYN-30580003",
+        "SYN-30580004"
+      ],
+      "person_id": "P-3058-1",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-30580001",
+        "SYN-30580002",
+        "SYN-30580003",
+        "SYN-30580004"
+      ],
+      "person_id": "P-3058-2",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-3058",
+  "household_membership": [
+    {
+      "born": "1976-09-14",
+      "known_as_of": "2026-04-15",
+      "name": "Priya Raghunathan",
+      "person_id": "P-3058-1",
+      "relationship": "primary",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "born": "1974-02-03",
+      "known_as_of": "2026-04-15",
+      "name": "Daniel Cole",
+      "person_id": "P-3058-2",
+      "relationship": "spouse",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "legal_ownership": [
+    {
+      "account_id": "SYN-30580001",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-3058-1",
+        "P-3058-2"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-30580002",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-3058-1"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-30580003",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-3058-1"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-30580004",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-3058-2"
+      ],
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "name": "Raghunathan-Cole household",
+  "tax_units": [
+    {
+      "filing_status": "married_filing_jointly",
+      "known_as_of": "2026-04-15",
+      "person_ids": [
+        "P-3058-1",
+        "P-3058-2"
+      ],
+      "tax_unit_id": "TU-3058-1",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

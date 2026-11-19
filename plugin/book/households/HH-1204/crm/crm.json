@@ -1,0 +1,94 @@
+{
+  "activities": [
+    {
+      "activity_id": "CA-1204-01",
+      "date": "2024-12-09",
+      "kind": "meeting",
+      "known_as_of": "2024-12-09",
+      "summary": "Planning meeting with Funmilayo and Luka. Their wages are above the Roth IRA income limit, so Luka will make his 2025 IRA contribution to the new traditional IRA SYN-12040003, nondeductible, and convert it to his Roth IRA SYN-12040004. His rollover IRA SYN-12040002 stays as it is.",
+      "valuation_date": "2024-12-09"
+    },
+    {
+      "activity_id": "CA-1204-02",
+      "date": "2026-02-12",
+      "kind": "document_received",
+      "known_as_of": "2026-02-12",
+      "summary": "2025 Forms W-2 received: Funmilayo, Quillfield Diagnostics, wages $212,000.00; Luka, Harrowgate Freight Systems, wages $186,000.00.",
+      "valuation_date": "2026-02-12"
+    }
+  ],
+  "agreements": [
+    {
+      "account_ids": [
+        "SYN-12040001",
+        "SYN-12040002",
+        "SYN-12040003",
+        "SYN-12040004"
+      ],
+      "agreement_id": "AGR-1204-1",
+      "kind": "advisory",
+      "known_as_of": "2024-12-09",
+      "party_ids": [
+        "P-1204-1",
+        "P-1204-2"
+      ],
+      "signed": "2024-12-09",
+      "summary": "Advisory agreement on the standard fee schedule, restated to add Luka's new traditional IRA to the joint account, his rollover IRA and his Roth IRA.",
+      "valuation_date": "2024-12-09"
+    }
+  ],
+  "contacts": [
+    {
+      "email": "funmilayo.adebayokovac@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Funmilayo Adebayo-Kovac",
+      "person_id": "P-1204-1",
+      "phone": "555-0101",
+      "relationship": "primary",
+      "tax_id": "000-12-0401",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "email": "luka.kovac@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Luka Kovac",
+      "person_id": "P-1204-2",
+      "phone": "555-0102",
+      "relationship": "spouse",
+      "tax_id": "000-12-0402",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-1204",
+  "notes": [
+    {
+      "author": "template",
+      "date": "2024-12-09",
+      "known_as_of": "2024-12-09",
+      "note_id": "N-1204-01",
+      "slots": {
+        "accounts": "SYN-12040001, SYN-12040002, SYN-12040003, SYN-12040004",
+        "agreement_id": "AGR-1204-1",
+        "kind": "advisory",
+        "parties": "Funmilayo Adebayo-Kovac and Luka Kovac",
+        "summary": "Advisory agreement on the standard fee schedule, restated to add Luka's new traditional IRA to the joint account, his rollover IRA and his Roth IRA."
+      },
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-1204-1 with Funmilayo Adebayo-Kovac and Luka Kovac, covering accounts SYN-12040001, SYN-12040002, SYN-12040003, SYN-12040004. Advisory agreement on the standard fee schedule, restated to add Luka's new traditional IRA to the joint account, his rollover IRA and his Roth IRA.",
+      "valuation_date": "2024-12-09"
+    },
+    {
+      "author": "template",
+      "date": "2025-10-14",
+      "known_as_of": "2025-10-14",
+      "note_id": "N-1204-02",
+      "slots": {
+        "accounts": "SYN-12040001, SYN-12040002, SYN-12040003, SYN-12040004",
+        "parties": "Funmilayo Adebayo-Kovac and Luka Kovac"
+      },
+      "template": "annual_review",
+      "text": "Annual review with Funmilayo Adebayo-Kovac and Luka Kovac. Went through accounts SYN-12040001, SYN-12040002, SYN-12040003, SYN-12040004, the fee schedule and the IPS targets. No changes requested.",
+      "valuation_date": "2025-10-14"
+    }
+  ]
+}

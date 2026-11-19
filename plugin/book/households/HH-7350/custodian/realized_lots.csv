@@ -1,0 +1,2 @@
+transaction_id,account_id,lot_id,security_id,security,acquired_date,sold_date,units,cost_basis,proceeds,gain,valuation_date,known_as_of
+T-7350-0025,SYN-73500001,L-73500001-04,SEC-0004,Orrin Software Group,2019-05-06,2025-08-25,120,1839.10,5176.80,3337.70,2025-08-25,2025-08-25

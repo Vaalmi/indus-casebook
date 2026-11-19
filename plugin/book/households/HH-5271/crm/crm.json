@@ -1,0 +1,94 @@
+{
+  "activities": [
+    {
+      "activity_id": "CA-5271-01",
+      "date": "2019-06-28",
+      "kind": "retirement",
+      "known_as_of": "2019-06-28",
+      "summary": "Teodoro Villanueva retired from Calloway Turbine Works. His 401(k) stays in the plan as a former employee's account.",
+      "valuation_date": "2019-06-28"
+    },
+    {
+      "activity_id": "CA-5271-02",
+      "date": "2025-11-24",
+      "kind": "distribution_instruction",
+      "known_as_of": "2025-11-24",
+      "summary": "Teodoro Villanueva signed a distribution form for his 2025 required minimum distribution: one payment from IRA SYN-52710002, with 10% federal tax withheld.",
+      "valuation_date": "2025-11-24"
+    }
+  ],
+  "agreements": [
+    {
+      "account_ids": [
+        "SYN-52710001",
+        "SYN-52710002",
+        "SYN-52710003",
+        "SYN-52710004"
+      ],
+      "agreement_id": "AGR-5271-1",
+      "kind": "advisory",
+      "known_as_of": "2018-03-05",
+      "party_ids": [
+        "P-5271-1",
+        "P-5271-2"
+      ],
+      "signed": "2018-03-05",
+      "summary": "Advisory agreement for the joint account, Teodoro's two IRAs and his former employer's 401(k) on the standard fee schedule.",
+      "valuation_date": "2018-03-05"
+    }
+  ],
+  "contacts": [
+    {
+      "email": "teodoro.villanueva@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Teodoro Villanueva",
+      "person_id": "P-5271-1",
+      "phone": "555-0125",
+      "relationship": "primary",
+      "tax_id": "000-52-7101",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "email": "marguerite.villanueva@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Marguerite Villanueva",
+      "person_id": "P-5271-2",
+      "phone": "555-0126",
+      "relationship": "spouse",
+      "tax_id": "000-52-7102",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-5271",
+  "notes": [
+    {
+      "author": "template",
+      "date": "2018-03-05",
+      "known_as_of": "2018-03-05",
+      "note_id": "N-5271-01",
+      "slots": {
+        "accounts": "SYN-52710001, SYN-52710002, SYN-52710003, SYN-52710004",
+        "agreement_id": "AGR-5271-1",
+        "kind": "advisory",
+        "parties": "Teodoro Villanueva and Marguerite Villanueva",
+        "summary": "Advisory agreement for the joint account, Teodoro's two IRAs and his former employer's 401(k) on the standard fee schedule."
+      },
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-5271-1 with Teodoro Villanueva and Marguerite Villanueva, covering accounts SYN-52710001, SYN-52710002, SYN-52710003, SYN-52710004. Advisory agreement for the joint account, Teodoro's two IRAs and his former employer's 401(k) on the standard fee schedule.",
+      "valuation_date": "2018-03-05"
+    },
+    {
+      "author": "template",
+      "date": "2025-10-14",
+      "known_as_of": "2025-10-14",
+      "note_id": "N-5271-02",
+      "slots": {
+        "accounts": "SYN-52710001, SYN-52710002, SYN-52710003, SYN-52710004",
+        "parties": "Teodoro Villanueva and Marguerite Villanueva"
+      },
+      "template": "annual_review",
+      "text": "Annual review with Teodoro Villanueva and Marguerite Villanueva. Went through accounts SYN-52710001, SYN-52710002, SYN-52710003, SYN-52710004, the fee schedule and the IPS targets. No changes requested.",
+      "valuation_date": "2025-10-14"
+    }
+  ]
+}

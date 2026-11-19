@@ -1,0 +1,76 @@
+{
+  "activities": [],
+  "agreements": [
+    {
+      "account_ids": [
+        "SYN-92340001",
+        "SYN-92340002",
+        "SYN-92340003"
+      ],
+      "agreement_id": "AGR-9234-1",
+      "kind": "advisory",
+      "known_as_of": "2011-03-14",
+      "party_ids": [
+        "P-9234-1",
+        "P-9234-2"
+      ],
+      "signed": "2011-03-14",
+      "summary": "Advisory agreement for the joint account and both IRAs, billed together as one group on the standard fee schedule.",
+      "valuation_date": "2011-03-14"
+    }
+  ],
+  "contacts": [
+    {
+      "email": "marcus.oyelaran@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Marcus Oyelaran",
+      "person_id": "P-9234-1",
+      "phone": "555-0172",
+      "relationship": "primary",
+      "tax_id": "000-92-3401",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "email": "ingrid.halvorsen@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Ingrid Halvorsen",
+      "person_id": "P-9234-2",
+      "phone": "555-0173",
+      "relationship": "spouse",
+      "tax_id": "000-92-3402",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-9234",
+  "notes": [
+    {
+      "author": "template",
+      "date": "2011-03-14",
+      "known_as_of": "2011-03-14",
+      "note_id": "N-9234-01",
+      "slots": {
+        "accounts": "SYN-92340001, SYN-92340002, SYN-92340003",
+        "agreement_id": "AGR-9234-1",
+        "kind": "advisory",
+        "parties": "Marcus Oyelaran and Ingrid Halvorsen",
+        "summary": "Advisory agreement for the joint account and both IRAs, billed together as one group on the standard fee schedule."
+      },
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-9234-1 with Marcus Oyelaran and Ingrid Halvorsen, covering accounts SYN-92340001, SYN-92340002, SYN-92340003. Advisory agreement for the joint account and both IRAs, billed together as one group on the standard fee schedule.",
+      "valuation_date": "2011-03-14"
+    },
+    {
+      "author": "template",
+      "date": "2025-10-14",
+      "known_as_of": "2025-10-14",
+      "note_id": "N-9234-02",
+      "slots": {
+        "accounts": "SYN-92340001, SYN-92340002, SYN-92340003",
+        "parties": "Marcus Oyelaran and Ingrid Halvorsen"
+      },
+      "template": "annual_review",
+      "text": "Annual review with Marcus Oyelaran and Ingrid Halvorsen. Went through accounts SYN-92340001, SYN-92340002, SYN-92340003, the fee schedule and the IPS targets. No changes requested.",
+      "valuation_date": "2025-10-14"
+    }
+  ]
+}

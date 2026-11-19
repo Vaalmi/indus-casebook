@@ -1,0 +1,135 @@
+{
+  "cash": [
+    {
+      "account_id": "SYN-92340001",
+      "basis": "trade date",
+      "cash": "53363.33",
+      "known_as_of": "2026-04-15",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-92340002",
+      "basis": "trade date",
+      "cash": "17810.09",
+      "known_as_of": "2026-04-15",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-92340003",
+      "basis": "trade date",
+      "cash": "8812.02",
+      "known_as_of": "2026-04-15",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "positions": [
+    {
+      "account_id": "SYN-92340001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "394430.08",
+      "price": "275.44",
+      "price_label": "synthetic",
+      "security": "Larkspur Total Market Fund",
+      "security_id": "SEC-0001",
+      "units": "1432",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-92340001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "202521.76",
+      "price": "380.68",
+      "price_label": "synthetic",
+      "security": "Larkspur Core Bond Fund",
+      "security_id": "SEC-0003",
+      "units": "532",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-92340001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "113876.49",
+      "price": "178.77",
+      "price_label": "synthetic",
+      "security": "Larkspur Developed Markets Fund",
+      "security_id": "SEC-0006",
+      "units": "637",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-92340001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "212490.00",
+      "price": "47.22",
+      "price_label": "synthetic",
+      "security": "Ridgeholm Equal Weight Fund",
+      "security_id": "SEC-0027",
+      "units": "4500",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-92340002",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "198470.40",
+      "price": "310.11",
+      "price_label": "synthetic",
+      "security": "Fernhollow Large Cap Index Fund",
+      "security_id": "SEC-0013",
+      "units": "640",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-92340002",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "174548.60",
+      "price": "23.96",
+      "price_label": "synthetic",
+      "security": "Fernhollow Aggregate Bond Fund",
+      "security_id": "SEC-0014",
+      "units": "7285",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-92340002",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "122740.00",
+      "price": "245.48",
+      "price_label": "synthetic",
+      "security": "Wexcombe Mid Cap Fund",
+      "security_id": "SEC-0025",
+      "units": "500",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-92340003",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "86795.04",
+      "price": "380.68",
+      "price_label": "synthetic",
+      "security": "Larkspur Core Bond Fund",
+      "security_id": "SEC-0003",
+      "units": "228",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-92340003",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "310012.17",
+      "price": "264.29",
+      "price_label": "synthetic",
+      "security": "Brackwater Broad Market Fund",
+      "security_id": "SEC-0019",
+      "units": "1173",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

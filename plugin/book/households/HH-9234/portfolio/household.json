@@ -1,0 +1,97 @@
+{
+  "billing_groups": [
+    {
+      "account_ids": [
+        "SYN-92340001",
+        "SYN-92340002",
+        "SYN-92340003"
+      ],
+      "billing_group_id": "BG-9234-1",
+      "known_as_of": "2026-04-15",
+      "last_changed": "2011-03-14",
+      "schedule_id": "FS-STD",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "disclosure_permissions": [
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-92340001",
+        "SYN-92340002",
+        "SYN-92340003"
+      ],
+      "person_id": "P-9234-1",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-92340001",
+        "SYN-92340002",
+        "SYN-92340003"
+      ],
+      "person_id": "P-9234-2",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-9234",
+  "household_membership": [
+    {
+      "born": "1966-05-09",
+      "known_as_of": "2026-04-15",
+      "name": "Marcus Oyelaran",
+      "person_id": "P-9234-1",
+      "relationship": "primary",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "born": "1968-12-01",
+      "known_as_of": "2026-04-15",
+      "name": "Ingrid Halvorsen",
+      "person_id": "P-9234-2",
+      "relationship": "spouse",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "legal_ownership": [
+    {
+      "account_id": "SYN-92340001",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-9234-1",
+        "P-9234-2"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-92340002",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-9234-2"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-92340003",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-9234-1"
+      ],
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "name": "Oyelaran-Halvorsen household",
+  "tax_units": [
+    {
+      "filing_status": "married_filing_jointly",
+      "known_as_of": "2026-04-15",
+      "person_ids": [
+        "P-9234-1",
+        "P-9234-2"
+      ],
+      "tax_unit_id": "TU-9234-1",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

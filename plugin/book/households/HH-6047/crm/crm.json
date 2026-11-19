@@ -1,0 +1,95 @@
+{
+  "activities": [
+    {
+      "activity_id": "CA-6047-01",
+      "date": "2025-08-28",
+      "kind": "qcd_request",
+      "known_as_of": "2025-08-28",
+      "summary": "QCD request signed by Bernard Lachance: pay $12,000.00 from IRA SYN-60470002 directly to Tessaly Harbor Literacy Alliance, a public charity, as a qualified charitable distribution toward his 2025 required minimum distribution. Sent to the custodian the same day.",
+      "valuation_date": "2025-08-28"
+    },
+    {
+      "account_id": "SYN-60470002",
+      "activity_id": "CA-6047-02",
+      "amount": "12000.00",
+      "date": "2025-10-06",
+      "kind": "charity_acknowledgment",
+      "known_as_of": "2025-10-06",
+      "refers_to": "2025-09-15",
+      "summary": "Acknowledgment letter from Tessaly Harbor Literacy Alliance: received $12,000.00 from the IRA of Bernard Lachance on 2025-09-15, paid by the custodian directly to the charity. No goods or services were provided in return. Filed with the household's 2025 tax papers.",
+      "valuation_date": "2025-10-06"
+    }
+  ],
+  "agreements": [
+    {
+      "account_ids": [
+        "SYN-60470001",
+        "SYN-60470002"
+      ],
+      "agreement_id": "AGR-6047-1",
+      "kind": "advisory",
+      "known_as_of": "2012-05-14",
+      "party_ids": [
+        "P-6047-1",
+        "P-6047-2"
+      ],
+      "signed": "2012-05-14",
+      "summary": "Advisory agreement for the joint account and Bernard's IRA on the standard fee schedule.",
+      "valuation_date": "2012-05-14"
+    }
+  ],
+  "contacts": [
+    {
+      "email": "bernard.lachance@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Bernard Lachance",
+      "person_id": "P-6047-1",
+      "phone": "555-0133",
+      "relationship": "primary",
+      "tax_id": "000-60-4701",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "email": "yoshiko.lachance@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Yoshiko Lachance",
+      "person_id": "P-6047-2",
+      "phone": "555-0134",
+      "relationship": "spouse",
+      "tax_id": "000-60-4702",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-6047",
+  "notes": [
+    {
+      "author": "template",
+      "date": "2012-05-14",
+      "known_as_of": "2012-05-14",
+      "note_id": "N-6047-01",
+      "slots": {
+        "accounts": "SYN-60470001, SYN-60470002",
+        "agreement_id": "AGR-6047-1",
+        "kind": "advisory",
+        "parties": "Bernard Lachance and Yoshiko Lachance",
+        "summary": "Advisory agreement for the joint account and Bernard's IRA on the standard fee schedule."
+      },
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-6047-1 with Bernard Lachance and Yoshiko Lachance, covering accounts SYN-60470001, SYN-60470002. Advisory agreement for the joint account and Bernard's IRA on the standard fee schedule.",
+      "valuation_date": "2012-05-14"
+    },
+    {
+      "author": "template",
+      "date": "2025-10-14",
+      "known_as_of": "2025-10-14",
+      "note_id": "N-6047-02",
+      "slots": {
+        "accounts": "SYN-60470001, SYN-60470002",
+        "parties": "Bernard Lachance and Yoshiko Lachance"
+      },
+      "template": "annual_review",
+      "text": "Annual review with Bernard Lachance and Yoshiko Lachance. Went through accounts SYN-60470001, SYN-60470002, the fee schedule and the IPS targets. No changes requested.",
+      "valuation_date": "2025-10-14"
+    }
+  ]
+}

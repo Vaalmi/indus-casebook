@@ -1,0 +1,108 @@
+{
+  "billing_groups": [
+    {
+      "account_ids": [
+        "SYN-58140001",
+        "SYN-58140002",
+        "SYN-58140003",
+        "SYN-58140004"
+      ],
+      "billing_group_id": "BG-5814-1",
+      "known_as_of": "2026-04-15",
+      "last_changed": "2017-10-23",
+      "schedule_id": "FS-STD",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "disclosure_permissions": [
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-58140001",
+        "SYN-58140002",
+        "SYN-58140003",
+        "SYN-58140004"
+      ],
+      "person_id": "P-5814-1",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-58140001",
+        "SYN-58140002",
+        "SYN-58140003",
+        "SYN-58140004"
+      ],
+      "person_id": "P-5814-2",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-5814",
+  "household_membership": [
+    {
+      "born": "1952-07-22",
+      "known_as_of": "2026-04-15",
+      "name": "Prema Raghavan",
+      "person_id": "P-5814-1",
+      "relationship": "primary",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "born": "1957-01-09",
+      "known_as_of": "2026-04-15",
+      "name": "Martin Kessler",
+      "person_id": "P-5814-2",
+      "relationship": "spouse",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "legal_ownership": [
+    {
+      "account_id": "SYN-58140001",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-5814-1",
+        "P-5814-2"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-58140002",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-5814-1"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-58140003",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-5814-1"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-58140004",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-5814-1"
+      ],
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "name": "Raghavan-Kessler household",
+  "tax_units": [
+    {
+      "filing_status": "married_filing_jointly",
+      "known_as_of": "2026-04-15",
+      "person_ids": [
+        "P-5814-1",
+        "P-5814-2"
+      ],
+      "tax_unit_id": "TU-5814-1",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

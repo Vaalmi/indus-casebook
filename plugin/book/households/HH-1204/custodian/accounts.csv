@@ -1,0 +1,5 @@
+account_id,account_type,registration,owners,opened,decedent,decedent_born,decedent_died,valuation_date,known_as_of
+SYN-12040001,joint_taxable,Joint tenants with right of survivorship,Funmilayo Adebayo-Kovac; Luka Kovac,2015-08-17,,,,2026-04-15,2026-04-15
+SYN-12040002,traditional_ira,"Rollover IRA, Luka Kovac",Luka Kovac,2020-06-15,,,,2026-04-15,2026-04-15
+SYN-12040003,traditional_ira,"Traditional IRA, Luka Kovac",Luka Kovac,2024-12-09,,,,2026-04-15,2026-04-15
+SYN-12040004,roth_ira,"Roth IRA, Luka Kovac",Luka Kovac,2012-05-04,,,,2026-04-15,2026-04-15

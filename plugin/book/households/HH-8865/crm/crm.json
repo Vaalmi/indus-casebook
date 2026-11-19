@@ -1,0 +1,103 @@
+{
+  "activities": [
+    {
+      "activity_id": "CA-8865-01",
+      "date": "2025-05-30",
+      "kind": "death_notification",
+      "known_as_of": "2025-05-30",
+      "person_id": "P-8865-2",
+      "refers_to": "2025-05-28",
+      "summary": "Helen Arora called to tell us that Vikram Arora died on 2025-05-28. A certified copy of the death certificate is on file.",
+      "valuation_date": "2025-05-30"
+    },
+    {
+      "activity_id": "CA-8865-02",
+      "date": "2025-06-03",
+      "kind": "custodian_request",
+      "known_as_of": "2025-06-03",
+      "summary": "Sent the custodian the death certificate for Vikram Arora and asked for date-of-death values on joint account SYN-88650001, and for the basis of his half of each lot to be stepped up to its value on 2025-05-28.",
+      "valuation_date": "2025-06-03"
+    },
+    {
+      "activity_id": "CA-8865-03",
+      "date": "2025-08-12",
+      "kind": "beneficiary_form_received",
+      "known_as_of": "2025-08-12",
+      "summary": "Received Helen Arora's signed beneficiary change for her IRA SYN-88650002: Nisha Arora and Dev Arora as primary beneficiaries, 50% each, in place of Vikram Arora. The custodian confirmed it the same day.",
+      "valuation_date": "2025-08-12"
+    }
+  ],
+  "agreements": [
+    {
+      "account_ids": [
+        "SYN-88650001",
+        "SYN-88650002"
+      ],
+      "agreement_id": "AGR-8865-1",
+      "kind": "advisory",
+      "known_as_of": "1999-10-04",
+      "party_ids": [
+        "P-8865-1",
+        "P-8865-2"
+      ],
+      "signed": "1999-10-04",
+      "summary": "Advisory agreement for the joint account and Helen's IRA, billed together as one group on the standard fee schedule.",
+      "valuation_date": "1999-10-04"
+    }
+  ],
+  "contacts": [
+    {
+      "email": "helen.arora@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Helen Arora",
+      "person_id": "P-8865-1",
+      "phone": "555-0168",
+      "relationship": "primary",
+      "tax_id": "000-88-6501",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "died": "2025-05-28",
+      "email": "vikram.arora@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Vikram Arora",
+      "person_id": "P-8865-2",
+      "phone": "555-0169",
+      "relationship": "spouse",
+      "tax_id": "000-88-6502",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-8865",
+  "notes": [
+    {
+      "author": "template",
+      "date": "1999-10-04",
+      "known_as_of": "1999-10-04",
+      "note_id": "N-8865-01",
+      "slots": {
+        "accounts": "SYN-88650001, SYN-88650002",
+        "agreement_id": "AGR-8865-1",
+        "kind": "advisory",
+        "parties": "Helen Arora and Vikram Arora",
+        "summary": "Advisory agreement for the joint account and Helen's IRA, billed together as one group on the standard fee schedule."
+      },
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-8865-1 with Helen Arora and Vikram Arora, covering accounts SYN-88650001, SYN-88650002. Advisory agreement for the joint account and Helen's IRA, billed together as one group on the standard fee schedule.",
+      "valuation_date": "1999-10-04"
+    },
+    {
+      "author": "template",
+      "date": "2025-10-14",
+      "known_as_of": "2025-10-14",
+      "note_id": "N-8865-02",
+      "slots": {
+        "accounts": "SYN-88650001, SYN-88650002",
+        "parties": "Helen Arora"
+      },
+      "template": "annual_review",
+      "text": "Annual review with Helen Arora. Went through accounts SYN-88650001, SYN-88650002, the fee schedule and the IPS targets. No changes requested.",
+      "valuation_date": "2025-10-14"
+    }
+  ]
+}

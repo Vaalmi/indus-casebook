@@ -1,0 +1,86 @@
+{
+  "billing_groups": [
+    {
+      "account_ids": [
+        "SYN-60470001",
+        "SYN-60470002"
+      ],
+      "billing_group_id": "BG-6047-1",
+      "known_as_of": "2026-04-15",
+      "last_changed": "2012-05-14",
+      "schedule_id": "FS-STD",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "disclosure_permissions": [
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-60470001",
+        "SYN-60470002"
+      ],
+      "person_id": "P-6047-1",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-60470001",
+        "SYN-60470002"
+      ],
+      "person_id": "P-6047-2",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-6047",
+  "household_membership": [
+    {
+      "born": "1947-05-09",
+      "known_as_of": "2026-04-15",
+      "name": "Bernard Lachance",
+      "person_id": "P-6047-1",
+      "relationship": "primary",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "born": "1949-11-21",
+      "known_as_of": "2026-04-15",
+      "name": "Yoshiko Lachance",
+      "person_id": "P-6047-2",
+      "relationship": "spouse",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "legal_ownership": [
+    {
+      "account_id": "SYN-60470001",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-6047-1",
+        "P-6047-2"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-60470002",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-6047-1"
+      ],
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "name": "Lachance household",
+  "tax_units": [
+    {
+      "filing_status": "married_filing_jointly",
+      "known_as_of": "2026-04-15",
+      "person_ids": [
+        "P-6047-1",
+        "P-6047-2"
+      ],
+      "tax_unit_id": "TU-6047-1",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

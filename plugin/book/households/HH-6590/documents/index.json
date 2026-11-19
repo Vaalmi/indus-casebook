@@ -1,0 +1,54 @@
+{
+  "documents": [
+    {
+      "account_id": "SYN-65900001",
+      "document_id": "D-SYN-65900001-2026Q1",
+      "file": "statement-SYN-65900001-2026Q1.pdf",
+      "kind": "quarterly_statement",
+      "known_as_of": "2026-04-07",
+      "period_start": "2026-01-01",
+      "valuation_date": "2026-03-31"
+    },
+    {
+      "account_id": "SYN-65900002",
+      "document_id": "D-SYN-65900002-2026Q1",
+      "file": "statement-SYN-65900002-2026Q1.pdf",
+      "kind": "quarterly_statement",
+      "known_as_of": "2026-04-07",
+      "period_start": "2026-01-01",
+      "valuation_date": "2026-03-31"
+    },
+    {
+      "account_id": "SYN-65900001",
+      "document_id": "D-SYN-65900001-1099-2025",
+      "file": "SYN-65900001-1099-2025.pdf",
+      "kind": "form_1099_composite",
+      "known_as_of": "2026-02-17",
+      "valuation_date": "2025-12-31"
+    },
+    {
+      "account_id": "SYN-65900002",
+      "document_id": "D-SYN-65900002-1099R-Y7-2025",
+      "file": "SYN-65900002-1099R-Y7-2025.pdf",
+      "kind": "form_1099_r",
+      "known_as_of": "2026-01-30",
+      "valuation_date": "2025-12-31"
+    },
+    {
+      "account_id": "SYN-65900002",
+      "document_id": "D-SYN-65900002-1099R-7-2025",
+      "file": "SYN-65900002-1099R-7-2025.pdf",
+      "kind": "form_1099_r",
+      "known_as_of": "2026-01-30",
+      "valuation_date": "2025-12-31"
+    },
+    {
+      "document_id": "D-P-6590-1-SSA1099-1-2025",
+      "file": "P-6590-1-SSA1099-1-2025.pdf",
+      "kind": "form_ssa_1099",
+      "known_as_of": "2026-01-31",
+      "person_id": "P-6590-1",
+      "valuation_date": "2025-12-31"
+    }
+  ]
+}

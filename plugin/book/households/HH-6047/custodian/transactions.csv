@@ -1,0 +1,36 @@
+transaction_id,account_id,trade_date,settle_date,type,security_id,security,units,lot_id,price,price_label,amount,description,valuation_date,known_as_of
+T-6047-0003,SYN-60470002,2025-03-25,2025-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,532,,,,229.66,"Dividend Larkspur Core Bond Fund, 0.4317 per unit",2025-03-25,2025-03-25
+T-6047-0004,SYN-60470002,2025-03-25,2025-03-25,DIVIDEND,SEC-0006,Larkspur Developed Markets Fund,345,,,,134.48,"Dividend Larkspur Developed Markets Fund, 0.3898 per unit",2025-03-25,2025-03-25
+T-6047-0005,SYN-60470001,2025-03-25,2025-03-25,DIVIDEND,SEC-0008,Larkspur Tax-Exempt Bond Fund,678,,,,603.69,"Dividend Larkspur Tax-Exempt Bond Fund, 0.8904 per unit",2025-03-25,2025-03-25
+T-6047-0006,SYN-60470001,2025-03-25,2025-03-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,272,,,,344.43,"Dividend Larkspur High Dividend Yield Fund, 1.2663 per unit",2025-03-25,2025-03-25
+T-6047-0007,SYN-60470001,2025-04-02,2025-04-02,FEE,,,,,,,-1102.37,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-6047-0008,SYN-60470002,2025-04-02,2025-04-02,FEE,,,,,,,-1123.66,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-6047-0009,SYN-60470002,2025-06-25,2025-06-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,532,,,,222.59,"Dividend Larkspur Core Bond Fund, 0.4184 per unit",2025-06-25,2025-06-25
+T-6047-0010,SYN-60470002,2025-06-25,2025-06-25,DIVIDEND,SEC-0006,Larkspur Developed Markets Fund,345,,,,129.79,"Dividend Larkspur Developed Markets Fund, 0.3762 per unit",2025-06-25,2025-06-25
+T-6047-0011,SYN-60470001,2025-06-25,2025-06-25,DIVIDEND,SEC-0008,Larkspur Tax-Exempt Bond Fund,678,,,,638.95,"Dividend Larkspur Tax-Exempt Bond Fund, 0.9424 per unit",2025-06-25,2025-06-25
+T-6047-0012,SYN-60470001,2025-06-25,2025-06-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,272,,,,357.16,"Dividend Larkspur High Dividend Yield Fund, 1.3131 per unit",2025-06-25,2025-06-25
+T-6047-0013,SYN-60470001,2025-07-02,2025-07-02,FEE,,,,,,,-1159.83,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-6047-0014,SYN-60470002,2025-07-02,2025-07-02,FEE,,,,,,,-1134.89,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-6047-0015,SYN-60470002,2025-09-10,2025-09-11,SELL,SEC-0003,Larkspur Core Bond Fund,20,,350.66,synthetic,7013.20,Sell 20 Larkspur Core Bond Fund,2025-09-10,2025-09-10
+T-6047-0016,SYN-60470002,2025-09-15,2025-09-15,DISTRIBUTION,,,,,,,-12000.00,"Required minimum distribution for 2025, $0.00 federal tax withheld",2025-09-15,2025-09-15
+T-6047-0017,SYN-60470002,2025-09-25,2025-09-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,512,,,,216.88,"Dividend Larkspur Core Bond Fund, 0.4236 per unit",2025-09-25,2025-09-25
+T-6047-0018,SYN-60470002,2025-09-25,2025-09-25,DIVIDEND,SEC-0006,Larkspur Developed Markets Fund,345,,,,136.45,"Dividend Larkspur Developed Markets Fund, 0.3955 per unit",2025-09-25,2025-09-25
+T-6047-0019,SYN-60470001,2025-09-25,2025-09-25,DIVIDEND,SEC-0008,Larkspur Tax-Exempt Bond Fund,678,,,,624.03,"Dividend Larkspur Tax-Exempt Bond Fund, 0.9204 per unit",2025-09-25,2025-09-25
+T-6047-0020,SYN-60470001,2025-09-25,2025-09-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,272,,,,347.45,"Dividend Larkspur High Dividend Yield Fund, 1.2774 per unit",2025-09-25,2025-09-25
+T-6047-0021,SYN-60470001,2025-10-02,2025-10-02,FEE,,,,,,,-1133.01,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-6047-0022,SYN-60470002,2025-10-02,2025-10-02,FEE,,,,,,,-1100.00,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-6047-0023,SYN-60470002,2025-11-14,2025-11-17,SELL,SEC-0001,Larkspur Total Market Fund,35,,267.05,synthetic,9346.75,Sell 35 Larkspur Total Market Fund,2025-11-14,2025-11-14
+T-6047-0024,SYN-60470002,2025-11-18,2025-11-18,DISTRIBUTION,,,,,,,-9659.73,"Required minimum distribution for 2025, $965.97 federal tax withheld",2025-11-18,2025-11-18
+T-6047-0025,SYN-60470001,2025-12-15,2025-12-15,WITHDRAWAL,,,,,,,-10000.00,Withdrawal,2025-12-15,2025-12-15
+T-6047-0026,SYN-60470002,2025-12-25,2025-12-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,512,,,,216.78,"Dividend Larkspur Core Bond Fund, 0.4234 per unit",2025-12-25,2025-12-25
+T-6047-0027,SYN-60470002,2025-12-25,2025-12-25,DIVIDEND,SEC-0006,Larkspur Developed Markets Fund,345,,,,134.90,"Dividend Larkspur Developed Markets Fund, 0.3910 per unit",2025-12-25,2025-12-25
+T-6047-0028,SYN-60470001,2025-12-25,2025-12-25,DIVIDEND,SEC-0008,Larkspur Tax-Exempt Bond Fund,678,,,,672.64,"Dividend Larkspur Tax-Exempt Bond Fund, 0.9921 per unit",2025-12-25,2025-12-25
+T-6047-0029,SYN-60470001,2025-12-25,2025-12-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,272,,,,351.97,"Dividend Larkspur High Dividend Yield Fund, 1.2940 per unit",2025-12-25,2025-12-25
+T-6047-0030,SYN-60470001,2026-01-02,2026-01-02,FEE,,,,,,,-1159.62,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-6047-0031,SYN-60470002,2026-01-02,2026-01-02,FEE,,,,,,,-1092.86,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-6047-0032,SYN-60470002,2026-03-25,2026-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,512,,,,229.38,"Dividend Larkspur Core Bond Fund, 0.4480 per unit",2026-03-25,2026-03-25
+T-6047-0033,SYN-60470002,2026-03-25,2026-03-25,DIVIDEND,SEC-0006,Larkspur Developed Markets Fund,345,,,,127.62,"Dividend Larkspur Developed Markets Fund, 0.3699 per unit",2026-03-25,2026-03-25
+T-6047-0034,SYN-60470001,2026-03-25,2026-03-25,DIVIDEND,SEC-0008,Larkspur Tax-Exempt Bond Fund,678,,,,704.04,"Dividend Larkspur Tax-Exempt Bond Fund, 1.0384 per unit",2026-03-25,2026-03-25
+T-6047-0035,SYN-60470001,2026-03-25,2026-03-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,272,,,,355.40,"Dividend Larkspur High Dividend Yield Fund, 1.3066 per unit",2026-03-25,2026-03-25
+T-6047-0036,SYN-60470001,2026-04-02,2026-04-02,FEE,,,,,,,-1183.86,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02
+T-6047-0037,SYN-60470002,2026-04-02,2026-04-02,FEE,,,,,,,-1111.60,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02

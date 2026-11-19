@@ -15,6 +15,10 @@ uv run casebook site                # build the public site into out/site/
 
 `make check` runs every check the project has: lint, types, tests with the coverage floor, the import contracts, the licence check and the end-to-end tests.
 
+## The plugin
+
+The four advisor skills, with a sample book of the 20 featured households to try them on, install in Claude Code from this repo. `plugin/README.md` says how, and what its gate allows.
+
 ## Licences
 
 Code: Apache-2.0 (`LICENSE`). Data: CC BY 4.0 (`LICENSE-DATA`).

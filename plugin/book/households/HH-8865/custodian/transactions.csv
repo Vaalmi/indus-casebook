@@ -1,0 +1,39 @@
+transaction_id,account_id,trade_date,settle_date,type,security_id,security,units,lot_id,price,price_label,amount,description,valuation_date,known_as_of
+T-8865-0003,SYN-88650001,2025-02-10,2025-02-10,WITHDRAWAL,,,,,,,-7000.00,Withdrawal,2025-02-10,2025-02-10
+T-8865-0004,SYN-88650001,2025-03-25,2025-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,558,,,,240.89,"Dividend Larkspur Core Bond Fund, 0.4317 per unit",2025-03-25,2025-03-25
+T-8865-0005,SYN-88650001,2025-03-25,2025-03-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,689,,,,872.48,"Dividend Larkspur High Dividend Yield Fund, 1.2663 per unit",2025-03-25,2025-03-25
+T-8865-0006,SYN-88650002,2025-03-25,2025-03-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,685,,,,263.86,"Dividend Fernhollow Large Cap Index Fund, 0.3852 per unit",2025-03-25,2025-03-25
+T-8865-0007,SYN-88650002,2025-03-25,2025-03-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,10473,,,,381.22,"Dividend Fernhollow Aggregate Bond Fund, 0.0364 per unit",2025-03-25,2025-03-25
+T-8865-0008,SYN-88650001,2025-03-25,2025-03-25,DIVIDEND,SEC-0049,Fallowmere Utilities Group,589,,,,622.63,"Dividend Fallowmere Utilities Group, 1.0571 per unit",2025-03-25,2025-03-25
+T-8865-0009,SYN-88650001,2025-04-02,2025-04-02,FEE,,,,,,,-2563.01,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-8865-0010,SYN-88650002,2025-04-02,2025-04-02,FEE,,,,,,,-943.65,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-8865-0011,SYN-88650001,2025-05-28,2025-05-28,STEP_UP,,,,,,,0,"Basis step-up on the death of Vikram Arora, share 0.5",2025-05-28,2025-05-28
+T-8865-0012,SYN-88650001,2025-06-23,2025-06-23,WITHDRAWAL,,,,,,,-12000.00,Withdrawal,2025-06-23,2025-06-23
+T-8865-0013,SYN-88650001,2025-06-25,2025-06-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,558,,,,233.47,"Dividend Larkspur Core Bond Fund, 0.4184 per unit",2025-06-25,2025-06-25
+T-8865-0014,SYN-88650001,2025-06-25,2025-06-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,689.0,,,,904.73,"Dividend Larkspur High Dividend Yield Fund, 1.3131 per unit",2025-06-25,2025-06-25
+T-8865-0015,SYN-88650002,2025-06-25,2025-06-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,685,,,,281.26,"Dividend Fernhollow Large Cap Index Fund, 0.4106 per unit",2025-06-25,2025-06-25
+T-8865-0016,SYN-88650002,2025-06-25,2025-06-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,10473,,,,391.69,"Dividend Fernhollow Aggregate Bond Fund, 0.0374 per unit",2025-06-25,2025-06-25
+T-8865-0017,SYN-88650001,2025-06-25,2025-06-25,DIVIDEND,SEC-0049,Fallowmere Utilities Group,589.0,,,,617.63,"Dividend Fallowmere Utilities Group, 1.0486 per unit",2025-06-25,2025-06-25
+T-8865-0018,SYN-88650001,2025-07-02,2025-07-02,FEE,,,,,,,-2602.64,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-8865-0019,SYN-88650002,2025-07-02,2025-07-02,FEE,,,,,,,-981.13,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-8865-0020,SYN-88650001,2025-09-25,2025-09-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,558,,,,236.37,"Dividend Larkspur Core Bond Fund, 0.4236 per unit",2025-09-25,2025-09-25
+T-8865-0021,SYN-88650001,2025-09-25,2025-09-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,689.0,,,,880.13,"Dividend Larkspur High Dividend Yield Fund, 1.2774 per unit",2025-09-25,2025-09-25
+T-8865-0022,SYN-88650002,2025-09-25,2025-09-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,685,,,,298.87,"Dividend Fernhollow Large Cap Index Fund, 0.4363 per unit",2025-09-25,2025-09-25
+T-8865-0023,SYN-88650002,2025-09-25,2025-09-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,10473,,,,384.36,"Dividend Fernhollow Aggregate Bond Fund, 0.0367 per unit",2025-09-25,2025-09-25
+T-8865-0024,SYN-88650001,2025-09-25,2025-09-25,DIVIDEND,SEC-0049,Fallowmere Utilities Group,589.0,,,,626.81,"Dividend Fallowmere Utilities Group, 1.0642 per unit",2025-09-25,2025-09-25
+T-8865-0025,SYN-88650001,2025-10-02,2025-10-02,FEE,,,,,,,-2569.81,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-8865-0026,SYN-88650002,2025-10-02,2025-10-02,FEE,,,,,,,-990.01,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-8865-0027,SYN-88650001,2025-12-25,2025-12-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,558,,,,236.26,"Dividend Larkspur Core Bond Fund, 0.4234 per unit",2025-12-25,2025-12-25
+T-8865-0028,SYN-88650001,2025-12-25,2025-12-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,689.0,,,,891.57,"Dividend Larkspur High Dividend Yield Fund, 1.2940 per unit",2025-12-25,2025-12-25
+T-8865-0029,SYN-88650002,2025-12-25,2025-12-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,685,,,,335.51,"Dividend Fernhollow Large Cap Index Fund, 0.4898 per unit",2025-12-25,2025-12-25
+T-8865-0030,SYN-88650002,2025-12-25,2025-12-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,10473,,,,406.35,"Dividend Fernhollow Aggregate Bond Fund, 0.0388 per unit",2025-12-25,2025-12-25
+T-8865-0031,SYN-88650001,2025-12-25,2025-12-25,DIVIDEND,SEC-0049,Fallowmere Utilities Group,589.0,,,,622.81,"Dividend Fallowmere Utilities Group, 1.0574 per unit",2025-12-25,2025-12-25
+T-8865-0032,SYN-88650001,2026-01-02,2026-01-02,FEE,,,,,,,-2602.96,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-8865-0033,SYN-88650002,2026-01-02,2026-01-02,FEE,,,,,,,-1057.86,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-8865-0034,SYN-88650001,2026-03-25,2026-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,558,,,,249.98,"Dividend Larkspur Core Bond Fund, 0.4480 per unit",2026-03-25,2026-03-25
+T-8865-0035,SYN-88650001,2026-03-25,2026-03-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,689.0,,,,900.25,"Dividend Larkspur High Dividend Yield Fund, 1.3066 per unit",2026-03-25,2026-03-25
+T-8865-0036,SYN-88650002,2026-03-25,2026-03-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,685,,,,359.56,"Dividend Fernhollow Large Cap Index Fund, 0.5249 per unit",2026-03-25,2026-03-25
+T-8865-0037,SYN-88650002,2026-03-25,2026-03-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,10473,,,,412.64,"Dividend Fernhollow Aggregate Bond Fund, 0.0394 per unit",2026-03-25,2026-03-25
+T-8865-0038,SYN-88650001,2026-03-25,2026-03-25,DIVIDEND,SEC-0049,Fallowmere Utilities Group,589.0,,,,645.49,"Dividend Fallowmere Utilities Group, 1.0959 per unit",2026-03-25,2026-03-25
+T-8865-0039,SYN-88650001,2026-04-02,2026-04-02,FEE,,,,,,,-2656.28,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02
+T-8865-0040,SYN-88650002,2026-04-02,2026-04-02,FEE,,,,,,,-1100.17,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02

@@ -1,0 +1,82 @@
+{
+  "asset_classes": [
+    {
+      "asset_class": "US equity",
+      "known_as_of": "2026-04-15",
+      "security": "Larkspur Total Market Fund",
+      "security_id": "SEC-0001",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "asset_class": "International equity",
+      "known_as_of": "2026-04-15",
+      "security": "Larkspur World ex-US Fund",
+      "security_id": "SEC-0002",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "asset_class": "Fixed income",
+      "known_as_of": "2026-04-15",
+      "security": "Larkspur Core Bond Fund",
+      "security_id": "SEC-0003",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "asset_class": "US equity",
+      "known_as_of": "2026-04-15",
+      "security": "Fernhollow Large Cap Index Fund",
+      "security_id": "SEC-0013",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "asset_class": "Fixed income",
+      "known_as_of": "2026-04-15",
+      "security": "Fernhollow Aggregate Bond Fund",
+      "security_id": "SEC-0014",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "asset_class": "US equity",
+      "known_as_of": "2026-04-15",
+      "security": "Brackwater Broad Market Fund",
+      "security_id": "SEC-0019",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "asset_class": "US equity",
+      "known_as_of": "2026-04-15",
+      "security": "Bramwell Devices Group",
+      "security_id": "SEC-0028",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "concentration_limit": {
+    "known_as_of": "2026-04-15",
+    "share_of_household": "0.15",
+    "valuation_date": "2026-04-15"
+  },
+  "restrictions": [],
+  "targets": [
+    {
+      "asset_class": "US equity",
+      "band": "0.05",
+      "known_as_of": "2026-04-15",
+      "target": "0.60",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "asset_class": "International equity",
+      "band": "0.04",
+      "known_as_of": "2026-04-15",
+      "target": "0.10",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "asset_class": "Fixed income",
+      "band": "0.05",
+      "known_as_of": "2026-04-15",
+      "target": "0.28",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

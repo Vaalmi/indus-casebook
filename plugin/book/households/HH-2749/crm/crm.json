@@ -1,0 +1,93 @@
+{
+  "activities": [
+    {
+      "activity_id": "CA-2749-01",
+      "date": "2025-12-02",
+      "kind": "call",
+      "known_as_of": "2025-12-02",
+      "summary": "Patrick called to ask for cash from the joint account for a new car. Agreed to sell a small part of the broad market fund they have held since 2010.",
+      "valuation_date": "2025-12-02"
+    },
+    {
+      "activity_id": "CA-2749-02",
+      "date": "2026-02-11",
+      "kind": "document_received",
+      "known_as_of": "2026-02-11",
+      "summary": "2025 Forms W-2 received: Samira, Penhallow Structural Engineers, wages $131,000.00; Patrick, Ashgrove County Library District, wages $83,500.00. No other income outside the accounts.",
+      "valuation_date": "2026-02-11"
+    }
+  ],
+  "agreements": [
+    {
+      "account_ids": [
+        "SYN-27490001",
+        "SYN-27490002",
+        "SYN-27490003"
+      ],
+      "agreement_id": "AGR-2749-1",
+      "kind": "advisory",
+      "known_as_of": "2010-09-13",
+      "party_ids": [
+        "P-2749-1",
+        "P-2749-2"
+      ],
+      "signed": "2010-09-13",
+      "summary": "Advisory agreement for the joint account and both traditional IRAs on the standard fee schedule.",
+      "valuation_date": "2010-09-13"
+    }
+  ],
+  "contacts": [
+    {
+      "email": "samira.farouk@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Samira Farouk",
+      "person_id": "P-2749-1",
+      "phone": "555-0113",
+      "relationship": "primary",
+      "tax_id": "000-27-4901",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "email": "patrick.delaney@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Patrick Delaney",
+      "person_id": "P-2749-2",
+      "phone": "555-0114",
+      "relationship": "spouse",
+      "tax_id": "000-27-4902",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-2749",
+  "notes": [
+    {
+      "author": "template",
+      "date": "2010-09-13",
+      "known_as_of": "2010-09-13",
+      "note_id": "N-2749-01",
+      "slots": {
+        "accounts": "SYN-27490001, SYN-27490002, SYN-27490003",
+        "agreement_id": "AGR-2749-1",
+        "kind": "advisory",
+        "parties": "Samira Farouk and Patrick Delaney",
+        "summary": "Advisory agreement for the joint account and both traditional IRAs on the standard fee schedule."
+      },
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-2749-1 with Samira Farouk and Patrick Delaney, covering accounts SYN-27490001, SYN-27490002, SYN-27490003. Advisory agreement for the joint account and both traditional IRAs on the standard fee schedule.",
+      "valuation_date": "2010-09-13"
+    },
+    {
+      "author": "template",
+      "date": "2025-10-14",
+      "known_as_of": "2025-10-14",
+      "note_id": "N-2749-02",
+      "slots": {
+        "accounts": "SYN-27490001, SYN-27490002, SYN-27490003",
+        "parties": "Samira Farouk and Patrick Delaney"
+      },
+      "template": "annual_review",
+      "text": "Annual review with Samira Farouk and Patrick Delaney. Went through accounts SYN-27490001, SYN-27490002, SYN-27490003, the fee schedule and the IPS targets. No changes requested.",
+      "valuation_date": "2025-10-14"
+    }
+  ]
+}

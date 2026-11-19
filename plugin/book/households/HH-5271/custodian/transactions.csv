@@ -1,0 +1,66 @@
+transaction_id,account_id,trade_date,settle_date,type,security_id,security,units,lot_id,price,price_label,amount,description,valuation_date,known_as_of
+T-5271-0005,SYN-52710001,2025-03-10,2025-03-10,CONTRIBUTION,,,,,,,12000.00,Contribution,2025-03-10,2025-03-10
+T-5271-0006,SYN-52710001,2025-03-12,2025-03-13,BUY,SEC-0001,Larkspur Total Market Fund,20,L-E-5271-0006,247.87,synthetic,-4957.40,Buy 20 Larkspur Total Market Fund,2025-03-12,2025-03-12
+T-5271-0007,SYN-52710001,2025-03-25,2025-03-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,343,,,,409.23,"Dividend Larkspur World ex-US Fund, 1.1931 per unit",2025-03-25,2025-03-25
+T-5271-0008,SYN-52710002,2025-03-25,2025-03-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,392,,,,467.70,"Dividend Larkspur World ex-US Fund, 1.1931 per unit",2025-03-25,2025-03-25
+T-5271-0009,SYN-52710002,2025-03-25,2025-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,583,,,,251.68,"Dividend Larkspur Core Bond Fund, 0.4317 per unit",2025-03-25,2025-03-25
+T-5271-0010,SYN-52710001,2025-03-25,2025-03-25,DIVIDEND,SEC-0008,Larkspur Tax-Exempt Bond Fund,543,,,,483.49,"Dividend Larkspur Tax-Exempt Bond Fund, 0.8904 per unit",2025-03-25,2025-03-25
+T-5271-0011,SYN-52710003,2025-03-25,2025-03-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,548,,,,211.09,"Dividend Fernhollow Large Cap Index Fund, 0.3852 per unit",2025-03-25,2025-03-25
+T-5271-0012,SYN-52710004,2025-03-25,2025-03-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,868,,,,334.35,"Dividend Fernhollow Large Cap Index Fund, 0.3852 per unit",2025-03-25,2025-03-25
+T-5271-0013,SYN-52710003,2025-03-25,2025-03-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,3870,,,,140.87,"Dividend Fernhollow Aggregate Bond Fund, 0.0364 per unit",2025-03-25,2025-03-25
+T-5271-0014,SYN-52710004,2025-03-25,2025-03-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,6375,,,,232.05,"Dividend Fernhollow Aggregate Bond Fund, 0.0364 per unit",2025-03-25,2025-03-25
+T-5271-0015,SYN-52710001,2025-04-02,2025-04-02,FEE,,,,,,,-987.91,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-5271-0016,SYN-52710002,2025-04-02,2025-04-02,FEE,,,,,,,-1376.87,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-5271-0017,SYN-52710003,2025-04-02,2025-04-02,FEE,,,,,,,-506.61,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-5271-0018,SYN-52710004,2025-04-02,2025-04-02,FEE,,,,,,,-812.71,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-5271-0019,SYN-52710001,2025-06-25,2025-06-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,343,,,,421.31,"Dividend Larkspur World ex-US Fund, 1.2283 per unit",2025-06-25,2025-06-25
+T-5271-0020,SYN-52710002,2025-06-25,2025-06-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,392,,,,481.49,"Dividend Larkspur World ex-US Fund, 1.2283 per unit",2025-06-25,2025-06-25
+T-5271-0021,SYN-52710002,2025-06-25,2025-06-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,583,,,,243.93,"Dividend Larkspur Core Bond Fund, 0.4184 per unit",2025-06-25,2025-06-25
+T-5271-0022,SYN-52710001,2025-06-25,2025-06-25,DIVIDEND,SEC-0008,Larkspur Tax-Exempt Bond Fund,543,,,,511.72,"Dividend Larkspur Tax-Exempt Bond Fund, 0.9424 per unit",2025-06-25,2025-06-25
+T-5271-0023,SYN-52710003,2025-06-25,2025-06-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,548,,,,225.01,"Dividend Fernhollow Large Cap Index Fund, 0.4106 per unit",2025-06-25,2025-06-25
+T-5271-0024,SYN-52710004,2025-06-25,2025-06-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,868,,,,356.40,"Dividend Fernhollow Large Cap Index Fund, 0.4106 per unit",2025-06-25,2025-06-25
+T-5271-0025,SYN-52710003,2025-06-25,2025-06-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,3870,,,,144.74,"Dividend Fernhollow Aggregate Bond Fund, 0.0374 per unit",2025-06-25,2025-06-25
+T-5271-0026,SYN-52710004,2025-06-25,2025-06-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,6375,,,,238.43,"Dividend Fernhollow Aggregate Bond Fund, 0.0374 per unit",2025-06-25,2025-06-25
+T-5271-0027,SYN-52710001,2025-07-02,2025-07-02,FEE,,,,,,,-1034.81,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-5271-0028,SYN-52710002,2025-07-02,2025-07-02,FEE,,,,,,,-1404.12,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-5271-0029,SYN-52710003,2025-07-02,2025-07-02,FEE,,,,,,,-530.32,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-5271-0030,SYN-52710004,2025-07-02,2025-07-02,FEE,,,,,,,-850.52,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-5271-0031,SYN-52710001,2025-09-25,2025-09-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,343,,,,426.59,"Dividend Larkspur World ex-US Fund, 1.2437 per unit",2025-09-25,2025-09-25
+T-5271-0032,SYN-52710002,2025-09-25,2025-09-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,392,,,,487.53,"Dividend Larkspur World ex-US Fund, 1.2437 per unit",2025-09-25,2025-09-25
+T-5271-0033,SYN-52710002,2025-09-25,2025-09-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,583,,,,246.96,"Dividend Larkspur Core Bond Fund, 0.4236 per unit",2025-09-25,2025-09-25
+T-5271-0034,SYN-52710001,2025-09-25,2025-09-25,DIVIDEND,SEC-0008,Larkspur Tax-Exempt Bond Fund,543,,,,499.78,"Dividend Larkspur Tax-Exempt Bond Fund, 0.9204 per unit",2025-09-25,2025-09-25
+T-5271-0035,SYN-52710003,2025-09-25,2025-09-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,548,,,,239.09,"Dividend Fernhollow Large Cap Index Fund, 0.4363 per unit",2025-09-25,2025-09-25
+T-5271-0036,SYN-52710004,2025-09-25,2025-09-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,868,,,,378.71,"Dividend Fernhollow Large Cap Index Fund, 0.4363 per unit",2025-09-25,2025-09-25
+T-5271-0037,SYN-52710003,2025-09-25,2025-09-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,3870,,,,142.03,"Dividend Fernhollow Aggregate Bond Fund, 0.0367 per unit",2025-09-25,2025-09-25
+T-5271-0038,SYN-52710004,2025-09-25,2025-09-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,6375,,,,233.96,"Dividend Fernhollow Aggregate Bond Fund, 0.0367 per unit",2025-09-25,2025-09-25
+T-5271-0039,SYN-52710001,2025-10-02,2025-10-02,FEE,,,,,,,-1020.98,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-5271-0040,SYN-52710002,2025-10-02,2025-10-02,FEE,,,,,,,-1391.98,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-5271-0041,SYN-52710003,2025-10-02,2025-10-02,FEE,,,,,,,-544.28,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-5271-0042,SYN-52710004,2025-10-02,2025-10-02,FEE,,,,,,,-872.20,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-5271-0043,SYN-52710002,2025-12-01,2025-12-02,SELL,SEC-0003,Larkspur Core Bond Fund,110,,361.74,synthetic,39791.40,Sell 110 Larkspur Core Bond Fund,2025-12-01,2025-12-01
+T-5271-0044,SYN-52710002,2025-12-04,2025-12-04,DISTRIBUTION,,,,,,,-44202.50,"Required minimum distribution for 2025, $4,420.25 federal tax withheld",2025-12-04,2025-12-04
+T-5271-0045,SYN-52710001,2025-12-25,2025-12-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,343,,,,434.92,"Dividend Larkspur World ex-US Fund, 1.2680 per unit",2025-12-25,2025-12-25
+T-5271-0046,SYN-52710002,2025-12-25,2025-12-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,392,,,,497.06,"Dividend Larkspur World ex-US Fund, 1.2680 per unit",2025-12-25,2025-12-25
+T-5271-0047,SYN-52710002,2025-12-25,2025-12-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,473,,,,200.27,"Dividend Larkspur Core Bond Fund, 0.4234 per unit",2025-12-25,2025-12-25
+T-5271-0048,SYN-52710001,2025-12-25,2025-12-25,DIVIDEND,SEC-0008,Larkspur Tax-Exempt Bond Fund,543,,,,538.71,"Dividend Larkspur Tax-Exempt Bond Fund, 0.9921 per unit",2025-12-25,2025-12-25
+T-5271-0049,SYN-52710003,2025-12-25,2025-12-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,548,,,,268.41,"Dividend Fernhollow Large Cap Index Fund, 0.4898 per unit",2025-12-25,2025-12-25
+T-5271-0050,SYN-52710004,2025-12-25,2025-12-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,868,,,,425.15,"Dividend Fernhollow Large Cap Index Fund, 0.4898 per unit",2025-12-25,2025-12-25
+T-5271-0051,SYN-52710003,2025-12-25,2025-12-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,3870,,,,150.16,"Dividend Fernhollow Aggregate Bond Fund, 0.0388 per unit",2025-12-25,2025-12-25
+T-5271-0052,SYN-52710004,2025-12-25,2025-12-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,6375,,,,247.35,"Dividend Fernhollow Aggregate Bond Fund, 0.0388 per unit",2025-12-25,2025-12-25
+T-5271-0053,SYN-52710001,2026-01-02,2026-01-02,FEE,,,,,,,-1061.47,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-5271-0054,SYN-52710002,2026-01-02,2026-01-02,FEE,,,,,,,-1318.08,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-5271-0055,SYN-52710003,2026-01-02,2026-01-02,FEE,,,,,,,-584.80,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-5271-0056,SYN-52710004,2026-01-02,2026-01-02,FEE,,,,,,,-937.19,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-5271-0057,SYN-52710001,2026-02-17,2026-02-17,WITHDRAWAL,,,,,,,-9000.00,Withdrawal,2026-02-17,2026-02-17
+T-5271-0058,SYN-52710001,2026-03-25,2026-03-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,343,,,,423.47,"Dividend Larkspur World ex-US Fund, 1.2346 per unit",2026-03-25,2026-03-25
+T-5271-0059,SYN-52710002,2026-03-25,2026-03-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,392,,,,483.96,"Dividend Larkspur World ex-US Fund, 1.2346 per unit",2026-03-25,2026-03-25
+T-5271-0060,SYN-52710002,2026-03-25,2026-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,473,,,,211.90,"Dividend Larkspur Core Bond Fund, 0.4480 per unit",2026-03-25,2026-03-25
+T-5271-0061,SYN-52710001,2026-03-25,2026-03-25,DIVIDEND,SEC-0008,Larkspur Tax-Exempt Bond Fund,543,,,,563.85,"Dividend Larkspur Tax-Exempt Bond Fund, 1.0384 per unit",2026-03-25,2026-03-25
+T-5271-0062,SYN-52710003,2026-03-25,2026-03-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,548,,,,287.65,"Dividend Fernhollow Large Cap Index Fund, 0.5249 per unit",2026-03-25,2026-03-25
+T-5271-0063,SYN-52710004,2026-03-25,2026-03-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,868,,,,455.61,"Dividend Fernhollow Large Cap Index Fund, 0.5249 per unit",2026-03-25,2026-03-25
+T-5271-0064,SYN-52710003,2026-03-25,2026-03-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,3870,,,,152.48,"Dividend Fernhollow Aggregate Bond Fund, 0.0394 per unit",2026-03-25,2026-03-25
+T-5271-0065,SYN-52710004,2026-03-25,2026-03-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,6375,,,,251.18,"Dividend Fernhollow Aggregate Bond Fund, 0.0394 per unit",2026-03-25,2026-03-25
+T-5271-0066,SYN-52710001,2026-04-02,2026-04-02,FEE,,,,,,,-1050.77,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02
+T-5271-0067,SYN-52710002,2026-04-02,2026-04-02,FEE,,,,,,,-1336.36,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02
+T-5271-0068,SYN-52710003,2026-04-02,2026-04-02,FEE,,,,,,,-616.38,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02
+T-5271-0069,SYN-52710004,2026-04-02,2026-04-02,FEE,,,,,,,-987.38,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02

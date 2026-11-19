@@ -1,0 +1,4 @@
+account_id,account_type,registration,owners,opened,decedent,decedent_born,decedent_died,valuation_date,known_as_of
+SYN-23160001,joint_taxable,Joint tenants with right of survivorship,Ingrid Lindqvist; Kwame Osei,2008-05-19,,,,2026-04-15,2026-04-15
+SYN-23160002,traditional_ira,"Traditional IRA, Ingrid Lindqvist",Ingrid Lindqvist,2001-02-12,,,,2026-04-15,2026-04-15
+SYN-23160003,traditional_ira,"Traditional IRA, Kwame Osei",Kwame Osei,2003-08-25,,,,2026-04-15,2026-04-15

@@ -1,0 +1,2 @@
+transaction_id,account_id,lot_id,security_id,security,acquired_date,sold_date,units,cost_basis,proceeds,gain,valuation_date,known_as_of
+T-9571-0035,SYN-95710001,L-95710001-01,SEC-0025,Wexcombe Mid Cap Fund,2023-08-14,2025-11-03,812,261985.95,215277.44,-46708.51,2025-11-03,2025-11-03

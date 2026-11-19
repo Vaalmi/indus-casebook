@@ -1,0 +1,30 @@
+{
+  "documents": [
+    {
+      "account_id": "SYN-76830001",
+      "document_id": "D-SYN-76830001-2026Q1",
+      "file": "statement-SYN-76830001-2026Q1.pdf",
+      "kind": "quarterly_statement",
+      "known_as_of": "2026-04-07",
+      "period_start": "2026-01-01",
+      "valuation_date": "2026-03-31"
+    },
+    {
+      "account_id": "SYN-76830002",
+      "document_id": "D-SYN-76830002-2026Q1",
+      "file": "statement-SYN-76830002-2026Q1.pdf",
+      "kind": "quarterly_statement",
+      "known_as_of": "2026-04-07",
+      "period_start": "2026-01-01",
+      "valuation_date": "2026-03-31"
+    },
+    {
+      "account_id": "SYN-76830001",
+      "document_id": "D-SYN-76830001-1099-2025",
+      "file": "SYN-76830001-1099-2025.pdf",
+      "kind": "form_1099_composite",
+      "known_as_of": "2026-02-17",
+      "valuation_date": "2025-12-31"
+    }
+  ]
+}

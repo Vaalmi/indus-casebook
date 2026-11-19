@@ -1,0 +1,54 @@
+transaction_id,account_id,trade_date,settle_date,type,security_id,security,units,lot_id,price,price_label,amount,description,valuation_date,known_as_of
+T-2316-0004,SYN-23160002,2025-03-10,2025-03-11,BUY,SEC-0017,Fernhollow Small Cap Fund,8,L-E-2316-0004,392.04,synthetic,-3136.32,Buy 8 Fernhollow Small Cap Fund,2025-03-10,2025-03-10
+T-2316-0005,SYN-23160001,2025-03-25,2025-03-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,392,,,,467.70,"Dividend Larkspur World ex-US Fund, 1.1931 per unit",2025-03-25,2025-03-25
+T-2316-0006,SYN-23160001,2025-03-25,2025-03-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,344,,,,435.61,"Dividend Larkspur High Dividend Yield Fund, 1.2663 per unit",2025-03-25,2025-03-25
+T-2316-0007,SYN-23160002,2025-03-25,2025-03-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,960,,,,369.79,"Dividend Fernhollow Large Cap Index Fund, 0.3852 per unit",2025-03-25,2025-03-25
+T-2316-0008,SYN-23160002,2025-03-25,2025-03-25,DIVIDEND,SEC-0017,Fernhollow Small Cap Fund,257,,,,242.35,"Dividend Fernhollow Small Cap Fund, 0.9430 per unit",2025-03-25,2025-03-25
+T-2316-0009,SYN-23160001,2025-03-25,2025-03-25,DIVIDEND,SEC-0018,Fernhollow Corporate Bond Fund,1173,,,,1656.51,"Dividend Fernhollow Corporate Bond Fund, 1.4122 per unit",2025-03-25,2025-03-25
+T-2316-0010,SYN-23160001,2025-03-25,2025-03-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,1083,,,,780.73,"Dividend Brackwater Broad Market Fund, 0.7209 per unit",2025-03-25,2025-03-25
+T-2316-0011,SYN-23160003,2025-03-25,2025-03-25,DIVIDEND,SEC-0021,Brackwater International Equity Fund,200,,,,170.94,"Dividend Brackwater International Equity Fund, 0.8547 per unit",2025-03-25,2025-03-25
+T-2316-0012,SYN-23160001,2025-04-02,2025-04-02,FEE,,,,,,,-1826.81,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-2316-0013,SYN-23160002,2025-04-02,2025-04-02,FEE,,,,,,,-758.72,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-2316-0014,SYN-23160003,2025-04-02,2025-04-02,FEE,,,,,,,-471.68,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-2316-0015,SYN-23160001,2025-06-25,2025-06-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,392,,,,481.49,"Dividend Larkspur World ex-US Fund, 1.2283 per unit",2025-06-25,2025-06-25
+T-2316-0016,SYN-23160001,2025-06-25,2025-06-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,344,,,,451.71,"Dividend Larkspur High Dividend Yield Fund, 1.3131 per unit",2025-06-25,2025-06-25
+T-2316-0017,SYN-23160002,2025-06-25,2025-06-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,960,,,,394.18,"Dividend Fernhollow Large Cap Index Fund, 0.4106 per unit",2025-06-25,2025-06-25
+T-2316-0018,SYN-23160002,2025-06-25,2025-06-25,DIVIDEND,SEC-0017,Fernhollow Small Cap Fund,257,,,,246.51,"Dividend Fernhollow Small Cap Fund, 0.9592 per unit",2025-06-25,2025-06-25
+T-2316-0019,SYN-23160001,2025-06-25,2025-06-25,DIVIDEND,SEC-0018,Fernhollow Corporate Bond Fund,1173,,,,1771.23,"Dividend Fernhollow Corporate Bond Fund, 1.5100 per unit",2025-06-25,2025-06-25
+T-2316-0020,SYN-23160001,2025-06-25,2025-06-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,1083,,,,835.64,"Dividend Brackwater Broad Market Fund, 0.7716 per unit",2025-06-25,2025-06-25
+T-2316-0021,SYN-23160003,2025-06-25,2025-06-25,DIVIDEND,SEC-0021,Brackwater International Equity Fund,200,,,,168.70,"Dividend Brackwater International Equity Fund, 0.8435 per unit",2025-06-25,2025-06-25
+T-2316-0022,SYN-23160001,2025-07-02,2025-07-02,FEE,,,,,,,-1929.00,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-2316-0023,SYN-23160002,2025-07-02,2025-07-02,FEE,,,,,,,-791.59,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-2316-0024,SYN-23160003,2025-07-02,2025-07-02,FEE,,,,,,,-490.48,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-2316-0025,SYN-23160001,2025-09-25,2025-09-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,392,,,,487.53,"Dividend Larkspur World ex-US Fund, 1.2437 per unit",2025-09-25,2025-09-25
+T-2316-0026,SYN-23160001,2025-09-25,2025-09-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,344,,,,439.43,"Dividend Larkspur High Dividend Yield Fund, 1.2774 per unit",2025-09-25,2025-09-25
+T-2316-0027,SYN-23160002,2025-09-25,2025-09-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,960,,,,418.85,"Dividend Fernhollow Large Cap Index Fund, 0.4363 per unit",2025-09-25,2025-09-25
+T-2316-0028,SYN-23160002,2025-09-25,2025-09-25,DIVIDEND,SEC-0017,Fernhollow Small Cap Fund,257,,,,261.68,"Dividend Fernhollow Small Cap Fund, 1.0182 per unit",2025-09-25,2025-09-25
+T-2316-0029,SYN-23160001,2025-09-25,2025-09-25,DIVIDEND,SEC-0018,Fernhollow Corporate Bond Fund,1173,,,,1621.67,"Dividend Fernhollow Corporate Bond Fund, 1.3825 per unit",2025-09-25,2025-09-25
+T-2316-0030,SYN-23160001,2025-09-25,2025-09-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,1083,,,,899.76,"Dividend Brackwater Broad Market Fund, 0.8308 per unit",2025-09-25,2025-09-25
+T-2316-0031,SYN-23160003,2025-09-25,2025-09-25,DIVIDEND,SEC-0021,Brackwater International Equity Fund,200,,,,176.06,"Dividend Brackwater International Equity Fund, 0.8803 per unit",2025-09-25,2025-09-25
+T-2316-0032,SYN-23160001,2025-10-02,2025-10-02,FEE,,,,,,,-1889.95,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-2316-0033,SYN-23160002,2025-10-02,2025-10-02,FEE,,,,,,,-841.21,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-2316-0034,SYN-23160003,2025-10-02,2025-10-02,FEE,,,,,,,-484.73,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-2316-0035,SYN-23160001,2025-12-08,2025-12-09,SELL,SEC-0019,Brackwater Broad Market Fund,400,,258.23,synthetic,103292.00,Sell 400 Brackwater Broad Market Fund,2025-12-08,2025-12-08
+T-2316-0036,SYN-23160001,2025-12-15,2025-12-15,WITHDRAWAL,,,,,,,-60000.00,Withdrawal,2025-12-15,2025-12-15
+T-2316-0037,SYN-23160001,2025-12-25,2025-12-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,392,,,,497.06,"Dividend Larkspur World ex-US Fund, 1.2680 per unit",2025-12-25,2025-12-25
+T-2316-0038,SYN-23160001,2025-12-25,2025-12-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,344,,,,445.14,"Dividend Larkspur High Dividend Yield Fund, 1.2940 per unit",2025-12-25,2025-12-25
+T-2316-0039,SYN-23160002,2025-12-25,2025-12-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,960,,,,470.21,"Dividend Fernhollow Large Cap Index Fund, 0.4898 per unit",2025-12-25,2025-12-25
+T-2316-0040,SYN-23160002,2025-12-25,2025-12-25,DIVIDEND,SEC-0017,Fernhollow Small Cap Fund,257,,,,259.16,"Dividend Fernhollow Small Cap Fund, 1.0084 per unit",2025-12-25,2025-12-25
+T-2316-0041,SYN-23160001,2025-12-25,2025-12-25,DIVIDEND,SEC-0018,Fernhollow Corporate Bond Fund,1173,,,,1657.45,"Dividend Fernhollow Corporate Bond Fund, 1.4130 per unit",2025-12-25,2025-12-25
+T-2316-0042,SYN-23160001,2025-12-25,2025-12-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,683,,,,555.01,"Dividend Brackwater Broad Market Fund, 0.8126 per unit",2025-12-25,2025-12-25
+T-2316-0043,SYN-23160003,2025-12-25,2025-12-25,DIVIDEND,SEC-0021,Brackwater International Equity Fund,200,,,,174.86,"Dividend Brackwater International Equity Fund, 0.8743 per unit",2025-12-25,2025-12-25
+T-2316-0044,SYN-23160001,2026-01-02,2026-01-02,FEE,,,,,,,-1772.35,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-2316-0045,SYN-23160002,2026-01-02,2026-01-02,FEE,,,,,,,-895.03,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-2316-0046,SYN-23160003,2026-01-02,2026-01-02,FEE,,,,,,,-502.39,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-2316-0047,SYN-23160001,2026-03-25,2026-03-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,392,,,,483.96,"Dividend Larkspur World ex-US Fund, 1.2346 per unit",2026-03-25,2026-03-25
+T-2316-0048,SYN-23160001,2026-03-25,2026-03-25,DIVIDEND,SEC-0010,Larkspur High Dividend Yield Fund,344,,,,449.47,"Dividend Larkspur High Dividend Yield Fund, 1.3066 per unit",2026-03-25,2026-03-25
+T-2316-0049,SYN-23160002,2026-03-25,2026-03-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,960,,,,503.90,"Dividend Fernhollow Large Cap Index Fund, 0.5249 per unit",2026-03-25,2026-03-25
+T-2316-0050,SYN-23160002,2026-03-25,2026-03-25,DIVIDEND,SEC-0017,Fernhollow Small Cap Fund,257,,,,249.14,"Dividend Fernhollow Small Cap Fund, 0.9694 per unit",2026-03-25,2026-03-25
+T-2316-0051,SYN-23160001,2026-03-25,2026-03-25,DIVIDEND,SEC-0018,Fernhollow Corporate Bond Fund,1173,,,,1627.54,"Dividend Fernhollow Corporate Bond Fund, 1.3875 per unit",2026-03-25,2026-03-25
+T-2316-0052,SYN-23160001,2026-03-25,2026-03-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,683,,,,588.68,"Dividend Brackwater Broad Market Fund, 0.8619 per unit",2026-03-25,2026-03-25
+T-2316-0053,SYN-23160003,2026-03-25,2026-03-25,DIVIDEND,SEC-0021,Brackwater International Equity Fund,200,,,,178.82,"Dividend Brackwater International Equity Fund, 0.8941 per unit",2026-03-25,2026-03-25
+T-2316-0054,SYN-23160001,2026-04-02,2026-04-02,FEE,,,,,,,-1770.21,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02
+T-2316-0055,SYN-23160002,2026-04-02,2026-04-02,FEE,,,,,,,-944.10,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02
+T-2316-0056,SYN-23160003,2026-04-02,2026-04-02,FEE,,,,,,,-504.19,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02

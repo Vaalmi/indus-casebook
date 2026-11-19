@@ -1,0 +1,72 @@
+{
+  "documents": [
+    {
+      "account_id": "SYN-34620001",
+      "document_id": "D-SYN-34620001-2026Q1",
+      "file": "statement-SYN-34620001-2026Q1.pdf",
+      "kind": "quarterly_statement",
+      "known_as_of": "2026-04-07",
+      "period_start": "2026-01-01",
+      "valuation_date": "2026-03-31"
+    },
+    {
+      "account_id": "SYN-34620002",
+      "document_id": "D-SYN-34620002-2026Q1",
+      "file": "statement-SYN-34620002-2026Q1.pdf",
+      "kind": "quarterly_statement",
+      "known_as_of": "2026-04-07",
+      "period_start": "2026-01-01",
+      "valuation_date": "2026-03-31"
+    },
+    {
+      "account_id": "SYN-34620003",
+      "document_id": "D-SYN-34620003-2026Q1",
+      "file": "statement-SYN-34620003-2026Q1.pdf",
+      "kind": "quarterly_statement",
+      "known_as_of": "2026-04-07",
+      "period_start": "2026-01-01",
+      "valuation_date": "2026-03-31"
+    },
+    {
+      "account_id": "SYN-34620004",
+      "document_id": "D-SYN-34620004-2026Q1",
+      "file": "statement-SYN-34620004-2026Q1.pdf",
+      "kind": "quarterly_statement",
+      "known_as_of": "2026-04-07",
+      "period_start": "2026-01-01",
+      "valuation_date": "2026-03-31"
+    },
+    {
+      "account_id": "SYN-34620001",
+      "document_id": "D-SYN-34620001-1099-2025",
+      "file": "SYN-34620001-1099-2025.pdf",
+      "kind": "form_1099_composite",
+      "known_as_of": "2026-02-17",
+      "valuation_date": "2025-12-31"
+    },
+    {
+      "account_id": "SYN-34620002",
+      "document_id": "D-SYN-34620002-1099-2025",
+      "file": "SYN-34620002-1099-2025.pdf",
+      "kind": "form_1099_composite",
+      "known_as_of": "2026-02-17",
+      "valuation_date": "2025-12-31"
+    },
+    {
+      "document_id": "D-P-3462-1-W2-1-2025",
+      "file": "P-3462-1-W2-1-2025.pdf",
+      "kind": "form_w2",
+      "known_as_of": "2026-01-30",
+      "person_id": "P-3462-1",
+      "valuation_date": "2025-12-31"
+    },
+    {
+      "document_id": "D-P-3462-2-W2-1-2025",
+      "file": "P-3462-2-W2-1-2025.pdf",
+      "kind": "form_w2",
+      "known_as_of": "2026-01-30",
+      "person_id": "P-3462-2",
+      "valuation_date": "2025-12-31"
+    }
+  ]
+}

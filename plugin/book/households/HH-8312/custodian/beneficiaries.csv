@@ -1,0 +1,4 @@
+account_id,designation,name,relationship,share_percent,person_id,valuation_date,known_as_of
+SYN-83120002,primary,Rafael Mendoza,spouse,100,P-8312-2,2001-02-20,2001-02-20
+SYN-83120002,contingent,Sofia Mendoza,daughter,50,,2001-02-20,2001-02-20
+SYN-83120002,contingent,Mateo Mendoza,son,50,,2001-02-20,2001-02-20

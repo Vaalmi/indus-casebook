@@ -1,0 +1,92 @@
+{
+  "cash": [
+    {
+      "account_id": "SYN-65900001",
+      "basis": "trade date",
+      "cash": "13891.16",
+      "known_as_of": "2026-04-15",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-65900002",
+      "basis": "trade date",
+      "cash": "1493.65",
+      "known_as_of": "2026-04-15",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "positions": [
+    {
+      "account_id": "SYN-65900001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "166090.32",
+      "price": "275.44",
+      "price_label": "synthetic",
+      "security": "Larkspur Total Market Fund",
+      "security_id": "SEC-0001",
+      "units": "603",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-65900001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "159933.78",
+      "price": "252.66",
+      "price_label": "synthetic",
+      "security": "Larkspur Tax-Exempt Bond Fund",
+      "security_id": "SEC-0008",
+      "units": "633",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-65900001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "91360.92",
+      "price": "374.43",
+      "price_label": "synthetic",
+      "security": "Larkspur High Dividend Yield Fund",
+      "security_id": "SEC-0010",
+      "units": "244",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-65900002",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "217322.16",
+      "price": "275.44",
+      "price_label": "synthetic",
+      "security": "Larkspur Total Market Fund",
+      "security_id": "SEC-0001",
+      "units": "789",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-65900002",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "223839.84",
+      "price": "380.68",
+      "price_label": "synthetic",
+      "security": "Larkspur Core Bond Fund",
+      "security_id": "SEC-0003",
+      "units": "588",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-65900002",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "71150.46",
+      "price": "178.77",
+      "price_label": "synthetic",
+      "security": "Larkspur Developed Markets Fund",
+      "security_id": "SEC-0006",
+      "units": "398",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "billing_groups": [
+    {
+      "account_ids": [
+        "SYN-88650001",
+        "SYN-88650002"
+      ],
+      "billing_group_id": "BG-8865-1",
+      "known_as_of": "2026-04-15",
+      "last_changed": "1999-10-04",
+      "schedule_id": "FS-STD",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "disclosure_permissions": [
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-88650001",
+        "SYN-88650002"
+      ],
+      "person_id": "P-8865-1",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-88650001",
+        "SYN-88650002"
+      ],
+      "person_id": "P-8865-2",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-8865",
+  "household_membership": [
+    {
+      "born": "1955-04-12",
+      "known_as_of": "2026-04-15",
+      "name": "Helen Arora",
+      "person_id": "P-8865-1",
+      "relationship": "primary",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "born": "1950-09-03",
+      "died": "2025-05-28",
+      "known_as_of": "2026-04-15",
+      "name": "Vikram Arora",
+      "person_id": "P-8865-2",
+      "relationship": "spouse",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "legal_ownership": [
+    {
+      "account_id": "SYN-88650001",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-8865-1",
+        "P-8865-2"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-88650002",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-8865-1"
+      ],
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "name": "Arora household",
+  "tax_units": [
+    {
+      "filing_status": "married_filing_jointly",
+      "known_as_of": "2026-04-15",
+      "person_ids": [
+        "P-8865-1",
+        "P-8865-2"
+      ],
+      "tax_unit_id": "TU-8865-1",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

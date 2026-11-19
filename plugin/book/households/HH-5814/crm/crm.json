@@ -1,0 +1,102 @@
+{
+  "activities": [
+    {
+      "activity_id": "CA-5814-01",
+      "date": "2020-01-31",
+      "kind": "retirement",
+      "known_as_of": "2020-01-31",
+      "summary": "Prema Raghavan retired from Hollins and Reade Packaging. Her 401(k) stays in the plan as a former employee's account.",
+      "valuation_date": "2020-01-31"
+    },
+    {
+      "activity_id": "CA-5814-02",
+      "date": "2025-10-27",
+      "kind": "distribution_instruction",
+      "known_as_of": "2025-10-27",
+      "summary": "Prema Raghavan signed a distribution form with the 401(k) plan for its 2025 required minimum distribution, paid from the plan, with 10% federal tax withheld.",
+      "valuation_date": "2025-10-27"
+    },
+    {
+      "activity_id": "CA-5814-03",
+      "date": "2025-11-24",
+      "kind": "distribution_instruction",
+      "known_as_of": "2025-11-24",
+      "summary": "Prema Raghavan signed a distribution form for the 2025 required minimum distributions of both her IRAs, taken together from IRA SYN-58140002, with 10% federal tax withheld.",
+      "valuation_date": "2025-11-24"
+    }
+  ],
+  "agreements": [
+    {
+      "account_ids": [
+        "SYN-58140001",
+        "SYN-58140002",
+        "SYN-58140003",
+        "SYN-58140004"
+      ],
+      "agreement_id": "AGR-5814-1",
+      "kind": "advisory",
+      "known_as_of": "2017-10-23",
+      "party_ids": [
+        "P-5814-1",
+        "P-5814-2"
+      ],
+      "signed": "2017-10-23",
+      "summary": "Advisory agreement for the joint account, Prema's two IRAs and her former employer's 401(k) on the standard fee schedule.",
+      "valuation_date": "2017-10-23"
+    }
+  ],
+  "contacts": [
+    {
+      "email": "prema.raghavan@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Prema Raghavan",
+      "person_id": "P-5814-1",
+      "phone": "555-0129",
+      "relationship": "primary",
+      "tax_id": "000-58-1401",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "email": "martin.kessler@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Martin Kessler",
+      "person_id": "P-5814-2",
+      "phone": "555-0130",
+      "relationship": "spouse",
+      "tax_id": "000-58-1402",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-5814",
+  "notes": [
+    {
+      "author": "template",
+      "date": "2017-10-23",
+      "known_as_of": "2017-10-23",
+      "note_id": "N-5814-01",
+      "slots": {
+        "accounts": "SYN-58140001, SYN-58140002, SYN-58140003, SYN-58140004",
+        "agreement_id": "AGR-5814-1",
+        "kind": "advisory",
+        "parties": "Prema Raghavan and Martin Kessler",
+        "summary": "Advisory agreement for the joint account, Prema's two IRAs and her former employer's 401(k) on the standard fee schedule."
+      },
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-5814-1 with Prema Raghavan and Martin Kessler, covering accounts SYN-58140001, SYN-58140002, SYN-58140003, SYN-58140004. Advisory agreement for the joint account, Prema's two IRAs and her former employer's 401(k) on the standard fee schedule.",
+      "valuation_date": "2017-10-23"
+    },
+    {
+      "author": "template",
+      "date": "2025-10-14",
+      "known_as_of": "2025-10-14",
+      "note_id": "N-5814-02",
+      "slots": {
+        "accounts": "SYN-58140001, SYN-58140002, SYN-58140003, SYN-58140004",
+        "parties": "Prema Raghavan and Martin Kessler"
+      },
+      "template": "annual_review",
+      "text": "Annual review with Prema Raghavan and Martin Kessler. Went through accounts SYN-58140001, SYN-58140002, SYN-58140003, SYN-58140004, the fee schedule and the IPS targets. No changes requested.",
+      "valuation_date": "2025-10-14"
+    }
+  ]
+}

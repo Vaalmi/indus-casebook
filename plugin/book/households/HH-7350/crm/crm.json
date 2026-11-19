@@ -1,0 +1,115 @@
+{
+  "activities": [],
+  "agreements": [
+    {
+      "account_ids": [
+        "SYN-73500001",
+        "SYN-73500002"
+      ],
+      "agreement_id": "AGR-7350-1",
+      "kind": "advisory",
+      "known_as_of": "2015-09-21",
+      "party_ids": [
+        "P-7350-1",
+        "P-7350-2"
+      ],
+      "signed": "2015-09-21",
+      "summary": "Advisory agreement for the joint account and Kenji's IRA on the standard fee schedule.",
+      "valuation_date": "2015-09-21"
+    },
+    {
+      "account_ids": [
+        "SYN-73500003"
+      ],
+      "agreement_id": "AGR-7350-2",
+      "kind": "advisory",
+      "known_as_of": "2020-02-03",
+      "party_ids": [
+        "P-7350-3"
+      ],
+      "signed": "2020-02-03",
+      "summary": "Advisory agreement for Aiko's individual account on the standard fee schedule, billed on its own. Aiko has not agreed to household billing.",
+      "valuation_date": "2020-02-03"
+    }
+  ],
+  "contacts": [
+    {
+      "email": "maeve.brennansato@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Maeve Brennan-Sato",
+      "person_id": "P-7350-1",
+      "phone": "555-0161",
+      "relationship": "primary",
+      "tax_id": "000-73-5001",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "email": "kenji.sato@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Kenji Sato",
+      "person_id": "P-7350-2",
+      "phone": "555-0162",
+      "relationship": "spouse",
+      "tax_id": "000-73-5002",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "email": "aiko.sato@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Aiko Sato",
+      "person_id": "P-7350-3",
+      "phone": "555-0163",
+      "relationship": "daughter",
+      "tax_id": "000-73-5003",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-7350",
+  "notes": [
+    {
+      "author": "template",
+      "date": "2015-09-21",
+      "known_as_of": "2015-09-21",
+      "note_id": "N-7350-01",
+      "slots": {
+        "accounts": "SYN-73500001, SYN-73500002",
+        "agreement_id": "AGR-7350-1",
+        "kind": "advisory",
+        "parties": "Maeve Brennan-Sato and Kenji Sato",
+        "summary": "Advisory agreement for the joint account and Kenji's IRA on the standard fee schedule."
+      },
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-7350-1 with Maeve Brennan-Sato and Kenji Sato, covering accounts SYN-73500001, SYN-73500002. Advisory agreement for the joint account and Kenji's IRA on the standard fee schedule.",
+      "valuation_date": "2015-09-21"
+    },
+    {
+      "author": "template",
+      "date": "2020-02-03",
+      "known_as_of": "2020-02-03",
+      "note_id": "N-7350-02",
+      "slots": {
+        "accounts": "SYN-73500003",
+        "agreement_id": "AGR-7350-2",
+        "kind": "advisory",
+        "parties": "Aiko Sato",
+        "summary": "Advisory agreement for Aiko's individual account on the standard fee schedule, billed on its own. Aiko has not agreed to household billing."
+      },
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-7350-2 with Aiko Sato, covering accounts SYN-73500003. Advisory agreement for Aiko's individual account on the standard fee schedule, billed on its own. Aiko has not agreed to household billing.",
+      "valuation_date": "2020-02-03"
+    },
+    {
+      "author": "template",
+      "date": "2025-10-14",
+      "known_as_of": "2025-10-14",
+      "note_id": "N-7350-03",
+      "slots": {
+        "accounts": "SYN-73500001, SYN-73500002, SYN-73500003",
+        "parties": "Maeve Brennan-Sato and Kenji Sato"
+      },
+      "template": "annual_review",
+      "text": "Annual review with Maeve Brennan-Sato and Kenji Sato. Went through accounts SYN-73500001, SYN-73500002, SYN-73500003, the fee schedule and the IPS targets. No changes requested.",
+      "valuation_date": "2025-10-14"
+    }
+  ]
+}

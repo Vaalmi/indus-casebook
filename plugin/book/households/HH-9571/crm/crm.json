@@ -1,0 +1,76 @@
+{
+  "activities": [],
+  "agreements": [
+    {
+      "account_ids": [
+        "SYN-95710001",
+        "SYN-95710002",
+        "SYN-95710003"
+      ],
+      "agreement_id": "AGR-9571-1",
+      "kind": "advisory",
+      "known_as_of": "2012-05-07",
+      "party_ids": [
+        "P-9571-1",
+        "P-9571-2"
+      ],
+      "signed": "2012-05-07",
+      "summary": "Advisory agreement for the joint account and both IRAs, billed together as one group on the standard fee schedule.",
+      "valuation_date": "2012-05-07"
+    }
+  ],
+  "contacts": [
+    {
+      "email": "elena.castellanos@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Elena Castellanos",
+      "person_id": "P-9571-1",
+      "phone": "555-0176",
+      "relationship": "primary",
+      "tax_id": "000-95-7101",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "email": "graham.reid@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Graham Reid",
+      "person_id": "P-9571-2",
+      "phone": "555-0177",
+      "relationship": "spouse",
+      "tax_id": "000-95-7102",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-9571",
+  "notes": [
+    {
+      "author": "template",
+      "date": "2012-05-07",
+      "known_as_of": "2012-05-07",
+      "note_id": "N-9571-01",
+      "slots": {
+        "accounts": "SYN-95710001, SYN-95710002, SYN-95710003",
+        "agreement_id": "AGR-9571-1",
+        "kind": "advisory",
+        "parties": "Elena Castellanos and Graham Reid",
+        "summary": "Advisory agreement for the joint account and both IRAs, billed together as one group on the standard fee schedule."
+      },
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-9571-1 with Elena Castellanos and Graham Reid, covering accounts SYN-95710001, SYN-95710002, SYN-95710003. Advisory agreement for the joint account and both IRAs, billed together as one group on the standard fee schedule.",
+      "valuation_date": "2012-05-07"
+    },
+    {
+      "author": "template",
+      "date": "2025-10-14",
+      "known_as_of": "2025-10-14",
+      "note_id": "N-9571-02",
+      "slots": {
+        "accounts": "SYN-95710001, SYN-95710002, SYN-95710003",
+        "parties": "Elena Castellanos and Graham Reid"
+      },
+      "template": "annual_review",
+      "text": "Annual review with Elena Castellanos and Graham Reid. Went through accounts SYN-95710001, SYN-95710002, SYN-95710003, the fee schedule and the IPS targets. No changes requested.",
+      "valuation_date": "2025-10-14"
+    }
+  ]
+}

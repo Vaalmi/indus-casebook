@@ -1,0 +1,57 @@
+transaction_id,account_id,trade_date,settle_date,type,security_id,security,units,lot_id,price,price_label,amount,description,valuation_date,known_as_of
+T-9571-0004,SYN-95710001,2025-03-25,2025-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,482,,,,208.08,"Dividend Larkspur Core Bond Fund, 0.4317 per unit",2025-03-25,2025-03-25
+T-9571-0005,SYN-95710003,2025-03-25,2025-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,215,,,,92.82,"Dividend Larkspur Core Bond Fund, 0.4317 per unit",2025-03-25,2025-03-25
+T-9571-0006,SYN-95710001,2025-03-25,2025-03-25,DIVIDEND,SEC-0006,Larkspur Developed Markets Fund,584,,,,227.64,"Dividend Larkspur Developed Markets Fund, 0.3898 per unit",2025-03-25,2025-03-25
+T-9571-0007,SYN-95710002,2025-03-25,2025-03-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,571,,,,219.95,"Dividend Fernhollow Large Cap Index Fund, 0.3852 per unit",2025-03-25,2025-03-25
+T-9571-0008,SYN-95710002,2025-03-25,2025-03-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,7741,,,,281.77,"Dividend Fernhollow Aggregate Bond Fund, 0.0364 per unit",2025-03-25,2025-03-25
+T-9571-0009,SYN-95710003,2025-03-25,2025-03-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,1083,,,,780.73,"Dividend Brackwater Broad Market Fund, 0.7209 per unit",2025-03-25,2025-03-25
+T-9571-0010,SYN-95710001,2025-03-25,2025-03-25,DIVIDEND,SEC-0025,Wexcombe Mid Cap Fund,812,,,,716.51,"Dividend Wexcombe Mid Cap Fund, 0.8824 per unit",2025-03-25,2025-03-25
+T-9571-0011,SYN-95710001,2025-04-02,2025-04-02,FEE,,,,,,,-2215.53,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-9571-0012,SYN-95710002,2025-04-02,2025-04-02,FEE,,,,,,,-1034.72,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-9571-0013,SYN-95710003,2025-04-02,2025-04-02,FEE,,,,,,,-755.42,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-9571-0014,SYN-95710001,2025-06-25,2025-06-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,482,,,,201.67,"Dividend Larkspur Core Bond Fund, 0.4184 per unit",2025-06-25,2025-06-25
+T-9571-0015,SYN-95710003,2025-06-25,2025-06-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,215,,,,89.96,"Dividend Larkspur Core Bond Fund, 0.4184 per unit",2025-06-25,2025-06-25
+T-9571-0016,SYN-95710001,2025-06-25,2025-06-25,DIVIDEND,SEC-0006,Larkspur Developed Markets Fund,584,,,,219.70,"Dividend Larkspur Developed Markets Fund, 0.3762 per unit",2025-06-25,2025-06-25
+T-9571-0017,SYN-95710002,2025-06-25,2025-06-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,571,,,,234.45,"Dividend Fernhollow Large Cap Index Fund, 0.4106 per unit",2025-06-25,2025-06-25
+T-9571-0018,SYN-95710002,2025-06-25,2025-06-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,7741,,,,289.51,"Dividend Fernhollow Aggregate Bond Fund, 0.0374 per unit",2025-06-25,2025-06-25
+T-9571-0019,SYN-95710003,2025-06-25,2025-06-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,1083,,,,835.64,"Dividend Brackwater Broad Market Fund, 0.7716 per unit",2025-06-25,2025-06-25
+T-9571-0020,SYN-95710001,2025-06-25,2025-06-25,DIVIDEND,SEC-0025,Wexcombe Mid Cap Fund,812,,,,690.77,"Dividend Wexcombe Mid Cap Fund, 0.8507 per unit",2025-06-25,2025-06-25
+T-9571-0021,SYN-95710001,2025-07-02,2025-07-02,FEE,,,,,,,-2236.76,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-9571-0022,SYN-95710002,2025-07-02,2025-07-02,FEE,,,,,,,-1063.01,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-9571-0023,SYN-95710003,2025-07-02,2025-07-02,FEE,,,,,,,-792.83,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-9571-0024,SYN-95710001,2025-07-14,2025-07-14,WITHDRAWAL,,,,,,,-10000.00,Withdrawal,2025-07-14,2025-07-14
+T-9571-0025,SYN-95710001,2025-09-25,2025-09-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,482,,,,204.18,"Dividend Larkspur Core Bond Fund, 0.4236 per unit",2025-09-25,2025-09-25
+T-9571-0026,SYN-95710003,2025-09-25,2025-09-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,215,,,,91.07,"Dividend Larkspur Core Bond Fund, 0.4236 per unit",2025-09-25,2025-09-25
+T-9571-0027,SYN-95710001,2025-09-25,2025-09-25,DIVIDEND,SEC-0006,Larkspur Developed Markets Fund,584,,,,230.97,"Dividend Larkspur Developed Markets Fund, 0.3955 per unit",2025-09-25,2025-09-25
+T-9571-0028,SYN-95710002,2025-09-25,2025-09-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,571,,,,249.13,"Dividend Fernhollow Large Cap Index Fund, 0.4363 per unit",2025-09-25,2025-09-25
+T-9571-0029,SYN-95710002,2025-09-25,2025-09-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,7741,,,,284.09,"Dividend Fernhollow Aggregate Bond Fund, 0.0367 per unit",2025-09-25,2025-09-25
+T-9571-0030,SYN-95710003,2025-09-25,2025-09-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,1083,,,,899.76,"Dividend Brackwater Broad Market Fund, 0.8308 per unit",2025-09-25,2025-09-25
+T-9571-0031,SYN-95710001,2025-09-25,2025-09-25,DIVIDEND,SEC-0025,Wexcombe Mid Cap Fund,812,,,,675.91,"Dividend Wexcombe Mid Cap Fund, 0.8324 per unit",2025-09-25,2025-09-25
+T-9571-0032,SYN-95710001,2025-10-02,2025-10-02,FEE,,,,,,,-2178.52,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-9571-0033,SYN-95710002,2025-10-02,2025-10-02,FEE,,,,,,,-1071.02,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-9571-0034,SYN-95710003,2025-10-02,2025-10-02,FEE,,,,,,,-826.93,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-9571-0035,SYN-95710001,2025-11-03,2025-11-04,SELL,SEC-0025,Wexcombe Mid Cap Fund,812,,265.12,synthetic,215277.44,Sell 812 Wexcombe Mid Cap Fund,2025-11-03,2025-11-03
+T-9571-0036,SYN-95710001,2025-11-03,2025-11-04,BUY,SEC-0027,Ridgeholm Equal Weight Fund,4200,L-E-9571-0036,47.55,synthetic,-199710.00,Buy 4200 Ridgeholm Equal Weight Fund,2025-11-03,2025-11-03
+T-9571-0037,SYN-95710002,2025-12-04,2025-12-05,BUY,SEC-0025,Wexcombe Mid Cap Fund,500,L-E-9571-0037,261.03,synthetic,-130515.00,Buy 500 Wexcombe Mid Cap Fund,2025-12-04,2025-12-04
+T-9571-0038,SYN-95710001,2025-12-25,2025-12-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,482,,,,204.08,"Dividend Larkspur Core Bond Fund, 0.4234 per unit",2025-12-25,2025-12-25
+T-9571-0039,SYN-95710003,2025-12-25,2025-12-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,215,,,,91.03,"Dividend Larkspur Core Bond Fund, 0.4234 per unit",2025-12-25,2025-12-25
+T-9571-0040,SYN-95710001,2025-12-25,2025-12-25,DIVIDEND,SEC-0006,Larkspur Developed Markets Fund,584,,,,228.34,"Dividend Larkspur Developed Markets Fund, 0.3910 per unit",2025-12-25,2025-12-25
+T-9571-0041,SYN-95710002,2025-12-25,2025-12-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,571,,,,279.68,"Dividend Fernhollow Large Cap Index Fund, 0.4898 per unit",2025-12-25,2025-12-25
+T-9571-0042,SYN-95710002,2025-12-25,2025-12-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,7741,,,,300.35,"Dividend Fernhollow Aggregate Bond Fund, 0.0388 per unit",2025-12-25,2025-12-25
+T-9571-0043,SYN-95710003,2025-12-25,2025-12-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,1083,,,,880.05,"Dividend Brackwater Broad Market Fund, 0.8126 per unit",2025-12-25,2025-12-25
+T-9571-0044,SYN-95710002,2025-12-25,2025-12-25,DIVIDEND,SEC-0025,Wexcombe Mid Cap Fund,500,,,,380.15,"Dividend Wexcombe Mid Cap Fund, 0.7603 per unit",2025-12-25,2025-12-25
+T-9571-0045,SYN-95710001,2025-12-25,2025-12-25,DIVIDEND,SEC-0027,Ridgeholm Equal Weight Fund,4200,,,,605.64,"Dividend Ridgeholm Equal Weight Fund, 0.1442 per unit",2025-12-25,2025-12-25
+T-9571-0046,SYN-95710001,2026-01-02,2026-01-02,FEE,,,,,,,-2173.96,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-9571-0047,SYN-95710002,2026-01-02,2026-01-02,FEE,,,,,,,-1120.62,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-9571-0048,SYN-95710003,2026-01-02,2026-01-02,FEE,,,,,,,-828.70,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-9571-0049,SYN-95710001,2026-03-25,2026-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,482,,,,215.94,"Dividend Larkspur Core Bond Fund, 0.4480 per unit",2026-03-25,2026-03-25
+T-9571-0050,SYN-95710003,2026-03-25,2026-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,215,,,,96.32,"Dividend Larkspur Core Bond Fund, 0.4480 per unit",2026-03-25,2026-03-25
+T-9571-0051,SYN-95710001,2026-03-25,2026-03-25,DIVIDEND,SEC-0006,Larkspur Developed Markets Fund,584,,,,216.02,"Dividend Larkspur Developed Markets Fund, 0.3699 per unit",2026-03-25,2026-03-25
+T-9571-0052,SYN-95710002,2026-03-25,2026-03-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,571,,,,299.72,"Dividend Fernhollow Large Cap Index Fund, 0.5249 per unit",2026-03-25,2026-03-25
+T-9571-0053,SYN-95710002,2026-03-25,2026-03-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,7741,,,,305.00,"Dividend Fernhollow Aggregate Bond Fund, 0.0394 per unit",2026-03-25,2026-03-25
+T-9571-0054,SYN-95710003,2026-03-25,2026-03-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,1083,,,,933.44,"Dividend Brackwater Broad Market Fund, 0.8619 per unit",2026-03-25,2026-03-25
+T-9571-0055,SYN-95710002,2026-03-25,2026-03-25,DIVIDEND,SEC-0025,Wexcombe Mid Cap Fund,500,,,,364.75,"Dividend Wexcombe Mid Cap Fund, 0.7295 per unit",2026-03-25,2026-03-25
+T-9571-0056,SYN-95710001,2026-03-25,2026-03-25,DIVIDEND,SEC-0027,Ridgeholm Equal Weight Fund,4200,,,,624.54,"Dividend Ridgeholm Equal Weight Fund, 0.1487 per unit",2026-03-25,2026-03-25
+T-9571-0057,SYN-95710001,2026-04-02,2026-04-02,FEE,,,,,,,-2207.94,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02
+T-9571-0058,SYN-95710002,2026-04-02,2026-04-02,FEE,,,,,,,-1143.09,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02
+T-9571-0059,SYN-95710003,2026-04-02,2026-04-02,FEE,,,,,,,-854.69,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02

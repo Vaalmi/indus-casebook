@@ -1,0 +1,4 @@
+account_id,account_type,registration,owners,opened,decedent,decedent_born,decedent_died,valuation_date,known_as_of
+SYN-27490001,joint_taxable,Joint tenants with right of survivorship,Samira Farouk; Patrick Delaney,2010-09-13,,,,2026-04-15,2026-04-15
+SYN-27490002,traditional_ira,"Traditional IRA, Samira Farouk",Samira Farouk,2002-06-03,,,,2026-04-15,2026-04-15
+SYN-27490003,traditional_ira,"Traditional IRA, Patrick Delaney",Patrick Delaney,2004-11-15,,,,2026-04-15,2026-04-15

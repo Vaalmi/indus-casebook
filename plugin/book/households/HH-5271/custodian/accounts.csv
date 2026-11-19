@@ -1,0 +1,5 @@
+account_id,account_type,registration,owners,opened,decedent,decedent_born,decedent_died,valuation_date,known_as_of
+SYN-52710001,joint_taxable,Joint tenants with right of survivorship,Teodoro Villanueva; Marguerite Villanueva,2018-03-05,,,,2026-04-15,2026-04-15
+SYN-52710002,traditional_ira,"Traditional IRA, Teodoro Villanueva",Teodoro Villanueva,2003-06-16,,,,2026-04-15,2026-04-15
+SYN-52710003,traditional_ira,"Traditional IRA (rollover), Teodoro Villanueva",Teodoro Villanueva,2011-09-07,,,,2026-04-15,2026-04-15
+SYN-52710004,401k,"Calloway Turbine Works 401(k) Plan, Teodoro Villanueva (former employee)",Teodoro Villanueva,1998-02-02,,,,2026-04-15,2026-04-15

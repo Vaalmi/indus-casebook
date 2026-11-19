@@ -1,0 +1,82 @@
+{
+  "activities": [
+    {
+      "activity_id": "CA-4105-01",
+      "date": "2025-04-22",
+      "kind": "document_received",
+      "known_as_of": "2025-04-22",
+      "summary": "Rosalind's 2024 Form 1040 and Form 8606 received. The Form 8606 shows $38,500.00 of basis in her traditional IRAs, from nondeductible contributions she made in the 1990s and 2000s, carried to 2025.",
+      "valuation_date": "2025-04-22"
+    },
+    {
+      "activity_id": "CA-4105-02",
+      "date": "2025-10-20",
+      "kind": "meeting",
+      "known_as_of": "2025-10-20",
+      "summary": "Conversion planning with Rosalind: before RMDs begin, convert $60,000.00 from her traditional IRA SYN-41050002 to her Roth IRA SYN-41050003 this year, selling part of the large cap fund in the IRA to raise the cash.",
+      "valuation_date": "2025-10-20"
+    }
+  ],
+  "agreements": [
+    {
+      "account_ids": [
+        "SYN-41050001",
+        "SYN-41050002",
+        "SYN-41050003"
+      ],
+      "agreement_id": "AGR-4105-1",
+      "kind": "advisory",
+      "known_as_of": "2019-12-02",
+      "party_ids": [
+        "P-4105-1"
+      ],
+      "signed": "2019-12-02",
+      "summary": "Advisory agreement for Rosalind's individual account, traditional IRA and new Roth IRA on the standard fee schedule.",
+      "valuation_date": "2019-12-02"
+    }
+  ],
+  "contacts": [
+    {
+      "email": "rosalind.achterberg@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Rosalind Achterberg",
+      "person_id": "P-4105-1",
+      "phone": "555-0117",
+      "relationship": "primary",
+      "tax_id": "000-41-0501",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-4105",
+  "notes": [
+    {
+      "author": "template",
+      "date": "2019-12-02",
+      "known_as_of": "2019-12-02",
+      "note_id": "N-4105-01",
+      "slots": {
+        "accounts": "SYN-41050001, SYN-41050002, SYN-41050003",
+        "agreement_id": "AGR-4105-1",
+        "kind": "advisory",
+        "parties": "Rosalind Achterberg",
+        "summary": "Advisory agreement for Rosalind's individual account, traditional IRA and new Roth IRA on the standard fee schedule."
+      },
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-4105-1 with Rosalind Achterberg, covering accounts SYN-41050001, SYN-41050002, SYN-41050003. Advisory agreement for Rosalind's individual account, traditional IRA and new Roth IRA on the standard fee schedule.",
+      "valuation_date": "2019-12-02"
+    },
+    {
+      "author": "template",
+      "date": "2025-10-14",
+      "known_as_of": "2025-10-14",
+      "note_id": "N-4105-02",
+      "slots": {
+        "accounts": "SYN-41050001, SYN-41050002, SYN-41050003",
+        "parties": "Rosalind Achterberg"
+      },
+      "template": "annual_review",
+      "text": "Annual review with Rosalind Achterberg. Went through accounts SYN-41050001, SYN-41050002, SYN-41050003, the fee schedule and the IPS targets. No changes requested.",
+      "valuation_date": "2025-10-14"
+    }
+  ]
+}

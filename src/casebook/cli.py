@@ -13,6 +13,8 @@ DEFAULT_SEED = 2026
 DEFAULT_BOOK = Path("out/book") / BOOK_VERSION
 REAL_BOOK = Path("out/real") / BOOK_VERSION
 DEFAULT_SITE = Path("out/site")
+# The sample book, committed inside the plugin so that installing the plugin from the repo ships it.
+DEFAULT_SAMPLE_BOOK = Path("plugin/book")
 DEFAULT_SCRIPTS = Path("book/scripted")
 # Release files kept in the repo, so a tag builds the same site: mapped run records and the
 # keys that may be published (docs/SPEC.md, Running it: "Run records and transcripts are kept
@@ -91,6 +93,18 @@ def _site(args: argparse.Namespace) -> int:
         print(f"site build failed: {error}", file=sys.stderr)
         return 1
     print(f"built {pages} pages into {args.out}")
+    return 0
+
+
+def _sample_book(args: argparse.Namespace) -> int:
+    from casebook.publish.sample_book import SampleBookError, build_sample_book
+
+    try:
+        sample = build_sample_book(args.book, args.out)
+    except SampleBookError as error:
+        print(f"sample book failed: {error}", file=sys.stderr)
+        return 1
+    print(f"wrote the sample book: {len(sample.households)} households, {sample.files} files, into {args.out}")
     return 0
 
 
@@ -376,6 +390,12 @@ def parser() -> argparse.ArgumentParser:
     site.add_argument("--keys", type=Path, default=PUBLISHED_KEYS)
     site.add_argument("--errata", type=Path, default=Path("published/errata.json"), help="the errata log")
     site.set_defaults(run=_site)
+    sample = commands.add_parser(
+        "sample-book", help="write the sample book (the featured households, aliases only) into the plugin"
+    )
+    sample.add_argument("--book", type=Path, default=DEFAULT_BOOK)
+    sample.add_argument("--out", type=Path, default=DEFAULT_SAMPLE_BOOK)
+    sample.set_defaults(run=_sample_book)
     run = commands.add_parser("run", help="run one task under one arm on the CLI under test")
     run.add_argument("--task", required=True)
     run.add_argument("--arm", required=True, choices=("basic", "checklist", "skill"))

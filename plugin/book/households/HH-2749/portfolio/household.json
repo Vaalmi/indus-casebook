@@ -1,0 +1,97 @@
+{
+  "billing_groups": [
+    {
+      "account_ids": [
+        "SYN-27490001",
+        "SYN-27490002",
+        "SYN-27490003"
+      ],
+      "billing_group_id": "BG-2749-1",
+      "known_as_of": "2026-04-15",
+      "last_changed": "2010-09-13",
+      "schedule_id": "FS-STD",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "disclosure_permissions": [
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-27490001",
+        "SYN-27490002",
+        "SYN-27490003"
+      ],
+      "person_id": "P-2749-1",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-27490001",
+        "SYN-27490002",
+        "SYN-27490003"
+      ],
+      "person_id": "P-2749-2",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-2749",
+  "household_membership": [
+    {
+      "born": "1972-08-09",
+      "known_as_of": "2026-04-15",
+      "name": "Samira Farouk",
+      "person_id": "P-2749-1",
+      "relationship": "primary",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "born": "1970-01-24",
+      "known_as_of": "2026-04-15",
+      "name": "Patrick Delaney",
+      "person_id": "P-2749-2",
+      "relationship": "spouse",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "legal_ownership": [
+    {
+      "account_id": "SYN-27490001",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-2749-1",
+        "P-2749-2"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-27490002",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-2749-1"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-27490003",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-2749-2"
+      ],
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "name": "Farouk-Delaney household",
+  "tax_units": [
+    {
+      "filing_status": "married_filing_jointly",
+      "known_as_of": "2026-04-15",
+      "person_ids": [
+        "P-2749-1",
+        "P-2749-2"
+      ],
+      "tax_unit_id": "TU-2749-1",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

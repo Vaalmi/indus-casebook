@@ -1,0 +1,82 @@
+{
+  "activities": [
+    {
+      "activity_id": "CA-4633-01",
+      "date": "2025-04-23",
+      "kind": "document_received",
+      "known_as_of": "2025-04-23",
+      "summary": "Beatriz's 2024 Form 1040 received. It reports no IRA basis and no Form 8606 is attached.",
+      "valuation_date": "2025-04-23"
+    },
+    {
+      "activity_id": "CA-4633-02",
+      "date": "2025-10-21",
+      "kind": "meeting",
+      "known_as_of": "2025-10-21",
+      "summary": "Conversion planning with Beatriz: before RMDs begin, convert $60,000.00 from her traditional IRA SYN-46330002 to her Roth IRA SYN-46330003 this year, selling part of the large cap fund in the IRA to raise the cash. Beatriz says she made nondeductible contributions to the IRA in the late 1990s, when she could not deduct them, but no Form 8606 is on file with us or with her current preparer. She will look for her returns from those years.",
+      "valuation_date": "2025-10-21"
+    }
+  ],
+  "agreements": [
+    {
+      "account_ids": [
+        "SYN-46330001",
+        "SYN-46330002",
+        "SYN-46330003"
+      ],
+      "agreement_id": "AGR-4633-1",
+      "kind": "advisory",
+      "known_as_of": "2020-01-13",
+      "party_ids": [
+        "P-4633-1"
+      ],
+      "signed": "2020-01-13",
+      "summary": "Advisory agreement for Beatriz's individual account, traditional IRA and new Roth IRA on the standard fee schedule.",
+      "valuation_date": "2020-01-13"
+    }
+  ],
+  "contacts": [
+    {
+      "email": "beatriz.halloranmendes@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Beatriz Halloran-Mendes",
+      "person_id": "P-4633-1",
+      "phone": "555-0121",
+      "relationship": "primary",
+      "tax_id": "000-46-3301",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-4633",
+  "notes": [
+    {
+      "author": "template",
+      "date": "2020-01-13",
+      "known_as_of": "2020-01-13",
+      "note_id": "N-4633-01",
+      "slots": {
+        "accounts": "SYN-46330001, SYN-46330002, SYN-46330003",
+        "agreement_id": "AGR-4633-1",
+        "kind": "advisory",
+        "parties": "Beatriz Halloran-Mendes",
+        "summary": "Advisory agreement for Beatriz's individual account, traditional IRA and new Roth IRA on the standard fee schedule."
+      },
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-4633-1 with Beatriz Halloran-Mendes, covering accounts SYN-46330001, SYN-46330002, SYN-46330003. Advisory agreement for Beatriz's individual account, traditional IRA and new Roth IRA on the standard fee schedule.",
+      "valuation_date": "2020-01-13"
+    },
+    {
+      "author": "template",
+      "date": "2025-10-14",
+      "known_as_of": "2025-10-14",
+      "note_id": "N-4633-02",
+      "slots": {
+        "accounts": "SYN-46330001, SYN-46330002, SYN-46330003",
+        "parties": "Beatriz Halloran-Mendes"
+      },
+      "template": "annual_review",
+      "text": "Annual review with Beatriz Halloran-Mendes. Went through accounts SYN-46330001, SYN-46330002, SYN-46330003, the fee schedule and the IPS targets. No changes requested.",
+      "valuation_date": "2025-10-14"
+    }
+  ]
+}

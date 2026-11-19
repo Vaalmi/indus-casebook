@@ -31,4 +31,4 @@
 
 **If you don't decide.** Slice 15 waits, and so do slices 16 and 17, which depend on it. Nothing else in the plan is open to build. The owner items already in STATUS are unaffected.
 
-**Decision.** <The owner's answer, with the date.>
+**Decision.** Option 1, a code gate in the plugin with the skills unchanged. The owner chose it on 19 November 2026.

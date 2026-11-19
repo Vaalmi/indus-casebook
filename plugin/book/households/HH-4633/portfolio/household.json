@@ -1,0 +1,77 @@
+{
+  "billing_groups": [
+    {
+      "account_ids": [
+        "SYN-46330001",
+        "SYN-46330002",
+        "SYN-46330003"
+      ],
+      "billing_group_id": "BG-4633-1",
+      "known_as_of": "2026-04-15",
+      "last_changed": "2007-01-15",
+      "schedule_id": "FS-STD",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "disclosure_permissions": [
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-46330001",
+        "SYN-46330002",
+        "SYN-46330003"
+      ],
+      "person_id": "P-4633-1",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-4633",
+  "household_membership": [
+    {
+      "born": "1958-05-21",
+      "known_as_of": "2026-04-15",
+      "name": "Beatriz Halloran-Mendes",
+      "person_id": "P-4633-1",
+      "relationship": "primary",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "legal_ownership": [
+    {
+      "account_id": "SYN-46330001",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-4633-1"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-46330002",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-4633-1"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-46330003",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-4633-1"
+      ],
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "name": "Halloran-Mendes household",
+  "tax_units": [
+    {
+      "filing_status": "single",
+      "known_as_of": "2026-04-15",
+      "person_ids": [
+        "P-4633-1"
+      ],
+      "tax_unit_id": "TU-4633-1",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

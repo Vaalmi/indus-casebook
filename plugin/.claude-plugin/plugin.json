@@ -1,0 +1,6 @@
+{
+  "name": "indus-casebook",
+  "version": "0.0.1",
+  "description": "The Indus Casebook's four advisor skills, with its sample book of 20 invented client households to try them on. A session that uses a skill reads the sample book only; no real client's records.",
+  "license": "Apache-2.0"
+}

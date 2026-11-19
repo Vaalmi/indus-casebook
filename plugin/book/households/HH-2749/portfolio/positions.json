@@ -1,0 +1,123 @@
+{
+  "cash": [
+    {
+      "account_id": "SYN-27490001",
+      "basis": "trade date",
+      "cash": "17068.51",
+      "known_as_of": "2026-04-15",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-27490002",
+      "basis": "trade date",
+      "cash": "1463.16",
+      "known_as_of": "2026-04-15",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-27490003",
+      "basis": "trade date",
+      "cash": "1055.23",
+      "known_as_of": "2026-04-15",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "positions": [
+    {
+      "account_id": "SYN-27490001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "90529.92",
+      "price": "217.62",
+      "price_label": "synthetic",
+      "security": "Larkspur World ex-US Fund",
+      "security_id": "SEC-0002",
+      "units": "416",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-27490001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "123561.90",
+      "price": "374.43",
+      "price_label": "synthetic",
+      "security": "Larkspur High Dividend Yield Fund",
+      "security_id": "SEC-0010",
+      "units": "330",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-27490001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "258560.16",
+      "price": "229.22",
+      "price_label": "synthetic",
+      "security": "Fernhollow Corporate Bond Fund",
+      "security_id": "SEC-0018",
+      "units": "1128",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-27490001",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "258475.62",
+      "price": "264.29",
+      "price_label": "synthetic",
+      "security": "Brackwater Broad Market Fund",
+      "security_id": "SEC-0019",
+      "units": "978",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-27490002",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "283440.54",
+      "price": "310.11",
+      "price_label": "synthetic",
+      "security": "Fernhollow Large Cap Index Fund",
+      "security_id": "SEC-0013",
+      "units": "914",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-27490002",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "95701.32",
+      "price": "395.46",
+      "price_label": "synthetic",
+      "security": "Fernhollow Small Cap Fund",
+      "security_id": "SEC-0017",
+      "units": "242",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-27490003",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "145156.88",
+      "price": "275.44",
+      "price_label": "synthetic",
+      "security": "Larkspur Total Market Fund",
+      "security_id": "SEC-0001",
+      "units": "527",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-27490003",
+      "basis": "trade date",
+      "known_as_of": "2026-04-15",
+      "market_value": "60863.00",
+      "price": "276.65",
+      "price_label": "synthetic",
+      "security": "Brackwater International Equity Fund",
+      "security_id": "SEC-0021",
+      "units": "220",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

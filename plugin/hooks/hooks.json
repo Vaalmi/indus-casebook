@@ -1,0 +1,22 @@
+{
+  "description": "The household gate: once one of this plugin's skills is used in a session, that session reads the sample book only and every answer starts with the notice.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {"hooks": [{"type": "command", "command": "python3", "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/gate.py", "prompt"]}]}
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {"type": "command", "command": "python3", "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/gate.py", "tool"], "onFailure": "block"}
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {"matcher": "Skill", "hooks": [{"type": "command", "command": "python3", "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/gate.py", "skill"]}]}
+    ],
+    "Stop": [
+      {"hooks": [{"type": "command", "command": "python3", "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/gate.py", "stop"]}]}
+    ]
+  }
+}

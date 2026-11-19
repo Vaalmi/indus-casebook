@@ -53,7 +53,7 @@ select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "PTH", "DTZ"]
 [tool.pyright]
 pythonVersion = "3.13"
 typeCheckingMode = "strict"
-include = ["src", "tests", "tools"]
+include = ["src", "tests", "tools", "plugin"]
 reportMissingTypeStubs = false
 reportUnknownMemberType = false
 reportUnknownVariableType = false

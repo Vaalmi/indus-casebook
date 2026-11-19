@@ -1,0 +1,36 @@
+transaction_id,account_id,trade_date,settle_date,type,security_id,security,units,lot_id,price,price_label,amount,description,valuation_date,known_as_of
+T-7683-0003,SYN-76830001,2025-03-25,2025-03-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,367,,,,437.87,"Dividend Larkspur World ex-US Fund, 1.1931 per unit",2025-03-25,2025-03-25
+T-7683-0004,SYN-76830002,2025-03-25,2025-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,355,,,,153.25,"Dividend Larkspur Core Bond Fund, 0.4317 per unit",2025-03-25,2025-03-25
+T-7683-0005,SYN-76830002,2025-03-25,2025-03-25,DIVIDEND,SEC-0006,Larkspur Developed Markets Fund,239,,,,93.16,"Dividend Larkspur Developed Markets Fund, 0.3898 per unit",2025-03-25,2025-03-25
+T-7683-0006,SYN-76830001,2025-03-25,2025-03-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,3870,,,,140.87,"Dividend Fernhollow Aggregate Bond Fund, 0.0364 per unit",2025-03-25,2025-03-25
+T-7683-0007,SYN-76830001,2025-04-02,2025-04-02,FEE,,,,,,,-994.71,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-7683-0008,SYN-76830002,2025-04-02,2025-04-02,FEE,,,,,,,-833.91,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-7683-0009,SYN-76830001,2025-04-21,2025-04-21,CONTRIBUTION,,,,,,,12000.00,Contribution,2025-04-21,2025-04-21
+T-7683-0010,SYN-76830001,2025-04-23,2025-04-24,BUY,SEC-0001,Larkspur Total Market Fund,35,L-E-7683-0010,257.92,synthetic,-9027.20,Buy 35 Larkspur Total Market Fund,2025-04-23,2025-04-23
+T-7683-0011,SYN-76830001,2025-06-25,2025-06-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,367,,,,450.79,"Dividend Larkspur World ex-US Fund, 1.2283 per unit",2025-06-25,2025-06-25
+T-7683-0012,SYN-76830002,2025-06-25,2025-06-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,355,,,,148.53,"Dividend Larkspur Core Bond Fund, 0.4184 per unit",2025-06-25,2025-06-25
+T-7683-0013,SYN-76830002,2025-06-25,2025-06-25,DIVIDEND,SEC-0006,Larkspur Developed Markets Fund,239,,,,89.91,"Dividend Larkspur Developed Markets Fund, 0.3762 per unit",2025-06-25,2025-06-25
+T-7683-0014,SYN-76830001,2025-06-25,2025-06-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,3870,,,,144.74,"Dividend Fernhollow Aggregate Bond Fund, 0.0374 per unit",2025-06-25,2025-06-25
+T-7683-0015,SYN-76830001,2025-07-02,2025-07-02,FEE,,,,,,,-1077.15,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-7683-0016,SYN-76830002,2025-07-02,2025-07-02,FEE,,,,,,,-847.11,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-7683-0017,SYN-76830002,2025-09-08,2025-09-09,SELL,SEC-0003,Larkspur Core Bond Fund,35,,350.05,synthetic,12251.75,Sell 35 Larkspur Core Bond Fund,2025-09-08,2025-09-08
+T-7683-0018,SYN-76830002,2025-09-10,2025-09-11,BUY,SEC-0006,Larkspur Developed Markets Fund,55,L-E-7683-0018,186.13,synthetic,-10237.15,Buy 55 Larkspur Developed Markets Fund,2025-09-10,2025-09-10
+T-7683-0019,SYN-76830001,2025-09-25,2025-09-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,367,,,,456.44,"Dividend Larkspur World ex-US Fund, 1.2437 per unit",2025-09-25,2025-09-25
+T-7683-0020,SYN-76830002,2025-09-25,2025-09-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,320,,,,135.55,"Dividend Larkspur Core Bond Fund, 0.4236 per unit",2025-09-25,2025-09-25
+T-7683-0021,SYN-76830002,2025-09-25,2025-09-25,DIVIDEND,SEC-0006,Larkspur Developed Markets Fund,294,,,,116.28,"Dividend Larkspur Developed Markets Fund, 0.3955 per unit",2025-09-25,2025-09-25
+T-7683-0022,SYN-76830001,2025-09-25,2025-09-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,3870,,,,142.03,"Dividend Fernhollow Aggregate Bond Fund, 0.0367 per unit",2025-09-25,2025-09-25
+T-7683-0023,SYN-76830001,2025-10-02,2025-10-02,FEE,,,,,,,-1060.09,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-7683-0024,SYN-76830002,2025-10-02,2025-10-02,FEE,,,,,,,-842.17,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-7683-0025,SYN-76830001,2025-12-25,2025-12-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,367,,,,465.36,"Dividend Larkspur World ex-US Fund, 1.2680 per unit",2025-12-25,2025-12-25
+T-7683-0026,SYN-76830002,2025-12-25,2025-12-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,320,,,,135.49,"Dividend Larkspur Core Bond Fund, 0.4234 per unit",2025-12-25,2025-12-25
+T-7683-0027,SYN-76830002,2025-12-25,2025-12-25,DIVIDEND,SEC-0006,Larkspur Developed Markets Fund,294,,,,114.95,"Dividend Larkspur Developed Markets Fund, 0.3910 per unit",2025-12-25,2025-12-25
+T-7683-0028,SYN-76830001,2025-12-25,2025-12-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,3870,,,,150.16,"Dividend Fernhollow Aggregate Bond Fund, 0.0388 per unit",2025-12-25,2025-12-25
+T-7683-0029,SYN-76830001,2026-01-02,2026-01-02,FEE,,,,,,,-1095.38,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-7683-0030,SYN-76830002,2026-01-02,2026-01-02,FEE,,,,,,,-856.18,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-7683-0031,SYN-76830001,2026-02-09,2026-02-09,WITHDRAWAL,,,,,,,-9000.00,Withdrawal,2026-02-09,2026-02-09
+T-7683-0032,SYN-76830001,2026-03-25,2026-03-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,367,,,,453.10,"Dividend Larkspur World ex-US Fund, 1.2346 per unit",2026-03-25,2026-03-25
+T-7683-0033,SYN-76830002,2026-03-25,2026-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,320,,,,143.36,"Dividend Larkspur Core Bond Fund, 0.4480 per unit",2026-03-25,2026-03-25
+T-7683-0034,SYN-76830002,2026-03-25,2026-03-25,DIVIDEND,SEC-0006,Larkspur Developed Markets Fund,294,,,,108.75,"Dividend Larkspur Developed Markets Fund, 0.3699 per unit",2026-03-25,2026-03-25
+T-7683-0035,SYN-76830001,2026-03-25,2026-03-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,3870,,,,152.48,"Dividend Fernhollow Aggregate Bond Fund, 0.0394 per unit",2026-03-25,2026-03-25
+T-7683-0036,SYN-76830001,2026-04-02,2026-04-02,FEE,,,,,,,-1076.90,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02
+T-7683-0037,SYN-76830002,2026-04-02,2026-04-02,FEE,,,,,,,-866.53,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02

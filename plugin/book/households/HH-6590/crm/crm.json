@@ -1,0 +1,94 @@
+{
+  "activities": [
+    {
+      "activity_id": "CA-6590-01",
+      "date": "2025-05-29",
+      "kind": "qcd_request",
+      "known_as_of": "2025-05-29",
+      "summary": "QCD request signed by Celestine Abara: pay $15,000.00 from IRA SYN-65900002 directly to Arrowmere Valley Hospice, a public charity, as a qualified charitable distribution toward her 2025 required minimum distribution. Sent to the custodian the same day.",
+      "valuation_date": "2025-05-29"
+    },
+    {
+      "account_id": "SYN-65900002",
+      "activity_id": "CA-6590-02",
+      "amount": "15000.00",
+      "date": "2025-07-08",
+      "kind": "charity_acknowledgment",
+      "known_as_of": "2025-07-08",
+      "refers_to": "2025-06-10",
+      "summary": "Acknowledgment letter from Arrowmere Valley Hospice: received $15,000.00 from the IRA of Celestine Abara on 2025-06-10, paid by the custodian directly to the charity. No goods or services were provided in return. Filed with her 2025 tax papers.",
+      "valuation_date": "2025-07-08"
+    }
+  ],
+  "agreements": [
+    {
+      "account_ids": [
+        "SYN-65900001",
+        "SYN-65900002"
+      ],
+      "agreement_id": "AGR-6590-1",
+      "kind": "advisory",
+      "known_as_of": "2013-08-19",
+      "party_ids": [
+        "P-6590-1"
+      ],
+      "signed": "2013-08-19",
+      "summary": "Advisory agreement for Celestine's individual account and IRA on the standard fee schedule. Her daughter Ifeoma may be told about both accounts.",
+      "valuation_date": "2013-08-19"
+    }
+  ],
+  "contacts": [
+    {
+      "email": "celestine.abara@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Celestine Abara",
+      "person_id": "P-6590-1",
+      "phone": "555-0137",
+      "relationship": "primary",
+      "tax_id": "000-65-9001",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "email": "ifeoma.abaralowe@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Ifeoma Abara-Lowe",
+      "person_id": "P-6590-2",
+      "phone": "555-0138",
+      "relationship": "daughter",
+      "tax_id": "000-65-9002",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-6590",
+  "notes": [
+    {
+      "author": "template",
+      "date": "2013-08-19",
+      "known_as_of": "2013-08-19",
+      "note_id": "N-6590-01",
+      "slots": {
+        "accounts": "SYN-65900001, SYN-65900002",
+        "agreement_id": "AGR-6590-1",
+        "kind": "advisory",
+        "parties": "Celestine Abara",
+        "summary": "Advisory agreement for Celestine's individual account and IRA on the standard fee schedule. Her daughter Ifeoma may be told about both accounts."
+      },
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-6590-1 with Celestine Abara, covering accounts SYN-65900001, SYN-65900002. Advisory agreement for Celestine's individual account and IRA on the standard fee schedule. Her daughter Ifeoma may be told about both accounts.",
+      "valuation_date": "2013-08-19"
+    },
+    {
+      "author": "template",
+      "date": "2025-10-14",
+      "known_as_of": "2025-10-14",
+      "note_id": "N-6590-02",
+      "slots": {
+        "accounts": "SYN-65900001, SYN-65900002",
+        "parties": "Celestine Abara"
+      },
+      "template": "annual_review",
+      "text": "Annual review with Celestine Abara. Went through accounts SYN-65900001, SYN-65900002, the fee schedule and the IPS targets. No changes requested.",
+      "valuation_date": "2025-10-14"
+    }
+  ]
+}

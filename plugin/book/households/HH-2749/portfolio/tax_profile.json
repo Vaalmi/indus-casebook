@@ -1,0 +1,25 @@
+{
+  "ira_basis": [
+    {
+      "basis": "0.00",
+      "known_as_of": "2025-04-15",
+      "person_id": "P-2749-1",
+      "valuation_date": "2024-12-31"
+    },
+    {
+      "basis": "0.00",
+      "known_as_of": "2025-04-15",
+      "person_id": "P-2749-2",
+      "valuation_date": "2024-12-31"
+    }
+  ],
+  "loss_carryforwards": [
+    {
+      "known_as_of": "2025-04-15",
+      "long_term": "0.00",
+      "short_term": "0.00",
+      "tax_unit_id": "TU-2749-1",
+      "valuation_date": "2024-12-31"
+    }
+  ]
+}

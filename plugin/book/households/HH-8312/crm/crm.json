@@ -1,0 +1,103 @@
+{
+  "activities": [
+    {
+      "activity_id": "CA-8312-01",
+      "date": "2025-06-20",
+      "kind": "death_notification",
+      "known_as_of": "2025-06-20",
+      "person_id": "P-8312-2",
+      "refers_to": "2025-06-18",
+      "summary": "Eleanor Whitfield called to tell us that Rafael Mendoza died on 2025-06-18. A certified copy of the death certificate is on file.",
+      "valuation_date": "2025-06-20"
+    },
+    {
+      "activity_id": "CA-8312-02",
+      "date": "2025-06-24",
+      "kind": "custodian_request",
+      "known_as_of": "2025-06-24",
+      "summary": "Sent the custodian the death certificate for Rafael Mendoza and asked for date-of-death values on joint account SYN-83120001, and for the basis of his half of each lot to be stepped up to its value on 2025-06-18.",
+      "valuation_date": "2025-06-24"
+    },
+    {
+      "activity_id": "CA-8312-03",
+      "date": "2025-07-08",
+      "kind": "beneficiary_form_sent",
+      "known_as_of": "2025-07-08",
+      "summary": "Sent Eleanor Whitfield a beneficiary change form for her IRA SYN-83120002, which still names Rafael Mendoza as primary beneficiary. Not yet returned.",
+      "valuation_date": "2025-07-08"
+    }
+  ],
+  "agreements": [
+    {
+      "account_ids": [
+        "SYN-83120001",
+        "SYN-83120002"
+      ],
+      "agreement_id": "AGR-8312-1",
+      "kind": "advisory",
+      "known_as_of": "1998-05-11",
+      "party_ids": [
+        "P-8312-1",
+        "P-8312-2"
+      ],
+      "signed": "1998-05-11",
+      "summary": "Advisory agreement for the joint account and Eleanor's IRA, billed together as one group on the standard fee schedule.",
+      "valuation_date": "1998-05-11"
+    }
+  ],
+  "contacts": [
+    {
+      "email": "eleanor.whitfield@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Eleanor Whitfield",
+      "person_id": "P-8312-1",
+      "phone": "555-0164",
+      "relationship": "primary",
+      "tax_id": "000-83-1201",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "died": "2025-06-18",
+      "email": "rafael.mendoza@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Rafael Mendoza",
+      "person_id": "P-8312-2",
+      "phone": "555-0165",
+      "relationship": "spouse",
+      "tax_id": "000-83-1202",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-8312",
+  "notes": [
+    {
+      "author": "template",
+      "date": "1998-05-11",
+      "known_as_of": "1998-05-11",
+      "note_id": "N-8312-01",
+      "slots": {
+        "accounts": "SYN-83120001, SYN-83120002",
+        "agreement_id": "AGR-8312-1",
+        "kind": "advisory",
+        "parties": "Eleanor Whitfield and Rafael Mendoza",
+        "summary": "Advisory agreement for the joint account and Eleanor's IRA, billed together as one group on the standard fee schedule."
+      },
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-8312-1 with Eleanor Whitfield and Rafael Mendoza, covering accounts SYN-83120001, SYN-83120002. Advisory agreement for the joint account and Eleanor's IRA, billed together as one group on the standard fee schedule.",
+      "valuation_date": "1998-05-11"
+    },
+    {
+      "author": "template",
+      "date": "2025-10-14",
+      "known_as_of": "2025-10-14",
+      "note_id": "N-8312-02",
+      "slots": {
+        "accounts": "SYN-83120001, SYN-83120002",
+        "parties": "Eleanor Whitfield"
+      },
+      "template": "annual_review",
+      "text": "Annual review with Eleanor Whitfield. Went through accounts SYN-83120001, SYN-83120002, the fee schedule and the IPS targets. No changes requested.",
+      "valuation_date": "2025-10-14"
+    }
+  ]
+}

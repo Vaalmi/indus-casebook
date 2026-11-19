@@ -1,0 +1,129 @@
+{
+  "activities": [
+    {
+      "activity_id": "CA-7126-01",
+      "date": "2023-09-12",
+      "kind": "death_certificate",
+      "known_as_of": "2023-09-12",
+      "summary": "Certified death certificate received for Florence Adeyemi, Samuel's mother: born 1946-02-11, died 2023-07-19.",
+      "valuation_date": "2023-09-12"
+    },
+    {
+      "activity_id": "CA-7126-02",
+      "date": "2023-09-20",
+      "kind": "beneficiary_claim",
+      "known_as_of": "2023-09-20",
+      "summary": "Beneficiary claim signed by Samuel Adeyemi, son and sole primary beneficiary of Florence Adeyemi's traditional IRA, electing an inherited IRA in his name.",
+      "valuation_date": "2023-09-20"
+    },
+    {
+      "activity_id": "CA-7126-03",
+      "date": "2023-09-20",
+      "kind": "custodian_confirmation",
+      "known_as_of": "2023-09-20",
+      "summary": "The prior custodian confirms that Florence Adeyemi had taken required minimum distributions since 2017 and that her 2023 distribution was paid in full before her death.",
+      "valuation_date": "2023-09-20"
+    }
+  ],
+  "agreements": [
+    {
+      "account_ids": [
+        "SYN-71260001"
+      ],
+      "agreement_id": "AGR-7126-1",
+      "kind": "advisory",
+      "known_as_of": "2016-11-07",
+      "party_ids": [
+        "P-7126-1",
+        "P-7126-2"
+      ],
+      "signed": "2016-11-07",
+      "summary": "Advisory agreement for the joint account on the standard fee schedule.",
+      "valuation_date": "2016-11-07"
+    },
+    {
+      "account_ids": [
+        "SYN-71260002"
+      ],
+      "agreement_id": "AGR-7126-2",
+      "kind": "advisory",
+      "known_as_of": "2023-10-02",
+      "party_ids": [
+        "P-7126-1"
+      ],
+      "signed": "2023-10-02",
+      "summary": "Advisory agreement for Samuel's inherited IRA from his mother, Florence Adeyemi, on the standard fee schedule, billed with the joint account.",
+      "valuation_date": "2023-10-02"
+    }
+  ],
+  "contacts": [
+    {
+      "email": "samuel.adeyemi@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Samuel Adeyemi",
+      "person_id": "P-7126-1",
+      "phone": "555-0145",
+      "relationship": "primary",
+      "tax_id": "000-71-2601",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "email": "lena.adeyemi@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Lena Adeyemi",
+      "person_id": "P-7126-2",
+      "phone": "555-0146",
+      "relationship": "spouse",
+      "tax_id": "000-71-2602",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-7126",
+  "notes": [
+    {
+      "author": "template",
+      "date": "2016-11-07",
+      "known_as_of": "2016-11-07",
+      "note_id": "N-7126-01",
+      "slots": {
+        "accounts": "SYN-71260001",
+        "agreement_id": "AGR-7126-1",
+        "kind": "advisory",
+        "parties": "Samuel Adeyemi and Lena Adeyemi",
+        "summary": "Advisory agreement for the joint account on the standard fee schedule."
+      },
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-7126-1 with Samuel Adeyemi and Lena Adeyemi, covering accounts SYN-71260001. Advisory agreement for the joint account on the standard fee schedule.",
+      "valuation_date": "2016-11-07"
+    },
+    {
+      "author": "template",
+      "date": "2023-10-02",
+      "known_as_of": "2023-10-02",
+      "note_id": "N-7126-02",
+      "slots": {
+        "accounts": "SYN-71260002",
+        "agreement_id": "AGR-7126-2",
+        "kind": "advisory",
+        "parties": "Samuel Adeyemi",
+        "summary": "Advisory agreement for Samuel's inherited IRA from his mother, Florence Adeyemi, on the standard fee schedule, billed with the joint account."
+      },
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-7126-2 with Samuel Adeyemi, covering accounts SYN-71260002. Advisory agreement for Samuel's inherited IRA from his mother, Florence Adeyemi, on the standard fee schedule, billed with the joint account.",
+      "valuation_date": "2023-10-02"
+    },
+    {
+      "author": "template",
+      "date": "2025-10-14",
+      "known_as_of": "2025-10-14",
+      "note_id": "N-7126-03",
+      "slots": {
+        "accounts": "SYN-71260001, SYN-71260002",
+        "parties": "Samuel Adeyemi and Lena Adeyemi"
+      },
+      "template": "annual_review",
+      "text": "Annual review with Samuel Adeyemi and Lena Adeyemi. Went through accounts SYN-71260001, SYN-71260002, the fee schedule and the IPS targets. No changes requested.",
+      "valuation_date": "2025-10-14"
+    }
+  ]
+}

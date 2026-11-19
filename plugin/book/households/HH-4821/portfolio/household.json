@@ -1,0 +1,131 @@
+{
+  "billing_groups": [
+    {
+      "account_ids": [
+        "SYN-48210001",
+        "SYN-48210002"
+      ],
+      "billing_group_id": "BG-4821-1",
+      "known_as_of": "2026-04-15",
+      "last_changed": "2021-09-14",
+      "schedule_id": "FS-STD",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_ids": [
+        "SYN-48210003"
+      ],
+      "billing_group_id": "BG-4821-2",
+      "known_as_of": "2026-04-15",
+      "last_changed": "2021-09-14",
+      "schedule_id": "FS-STD",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "disclosure_permissions": [
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-48210001",
+        "SYN-48210002",
+        "SYN-48210003"
+      ],
+      "person_id": "P-4821-1",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-48210001",
+        "SYN-48210002",
+        "SYN-48210003"
+      ],
+      "person_id": "P-4821-2",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-48210003"
+      ],
+      "person_id": "P-4821-3",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-4821",
+  "household_membership": [
+    {
+      "born": "1967-02-11",
+      "known_as_of": "2026-04-15",
+      "name": "Adaeze Okafor-Lind",
+      "person_id": "P-4821-1",
+      "relationship": "primary",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "born": "1965-08-30",
+      "known_as_of": "2026-04-15",
+      "name": "Henrik Lind",
+      "person_id": "P-4821-2",
+      "relationship": "spouse",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "born": "1996-05-19",
+      "known_as_of": "2026-04-15",
+      "name": "Ngozi Lind",
+      "person_id": "P-4821-3",
+      "relationship": "daughter",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "legal_ownership": [
+    {
+      "account_id": "SYN-48210001",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-4821-1",
+        "P-4821-2"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-48210002",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-4821-2"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-48210003",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-4821-3"
+      ],
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "name": "Okafor-Lind household",
+  "tax_units": [
+    {
+      "filing_status": "married_filing_jointly",
+      "known_as_of": "2026-04-15",
+      "person_ids": [
+        "P-4821-1",
+        "P-4821-2"
+      ],
+      "tax_unit_id": "TU-4821-1",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "filing_status": "single",
+      "known_as_of": "2026-04-15",
+      "person_ids": [
+        "P-4821-3"
+      ],
+      "tax_unit_id": "TU-4821-2",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

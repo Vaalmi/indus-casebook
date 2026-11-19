@@ -1,0 +1,94 @@
+{
+  "activities": [
+    {
+      "activity_id": "CA-1587-01",
+      "date": "2024-12-10",
+      "kind": "meeting",
+      "known_as_of": "2024-12-10",
+      "summary": "Planning meeting with Sofia and Daniel. Their wages are above the Roth IRA income limit, so Daniel will make his 2025 IRA contribution to the new traditional IRA SYN-15870003, nondeductible, and convert it to his Roth IRA SYN-15870004. His pre-tax savings stay in his former employer's 401(k) SYN-15870002.",
+      "valuation_date": "2024-12-10"
+    },
+    {
+      "activity_id": "CA-1587-02",
+      "date": "2026-02-10",
+      "kind": "document_received",
+      "known_as_of": "2026-02-10",
+      "summary": "2025 Forms W-2 received: Sofia, Calloway Point Software, wages $198,000.00; Daniel, Brindlemoor Engineering, wages $179,000.00.",
+      "valuation_date": "2026-02-10"
+    }
+  ],
+  "agreements": [
+    {
+      "account_ids": [
+        "SYN-15870001",
+        "SYN-15870002",
+        "SYN-15870003",
+        "SYN-15870004"
+      ],
+      "agreement_id": "AGR-1587-1",
+      "kind": "advisory",
+      "known_as_of": "2024-12-10",
+      "party_ids": [
+        "P-1587-1",
+        "P-1587-2"
+      ],
+      "signed": "2024-12-10",
+      "summary": "Advisory agreement on the standard fee schedule, restated to add Daniel's new traditional IRA to the joint account, his former employer's 401(k) and his Roth IRA.",
+      "valuation_date": "2024-12-10"
+    }
+  ],
+  "contacts": [
+    {
+      "email": "sofia.reyesnakamura@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Sofia Reyes-Nakamura",
+      "person_id": "P-1587-1",
+      "phone": "555-0105",
+      "relationship": "primary",
+      "tax_id": "000-15-8701",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "email": "daniel.nakamura@mail.example",
+      "known_as_of": "2026-04-15",
+      "name": "Daniel Nakamura",
+      "person_id": "P-1587-2",
+      "phone": "555-0106",
+      "relationship": "spouse",
+      "tax_id": "000-15-8702",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-1587",
+  "notes": [
+    {
+      "author": "template",
+      "date": "2024-12-10",
+      "known_as_of": "2024-12-10",
+      "note_id": "N-1587-01",
+      "slots": {
+        "accounts": "SYN-15870001, SYN-15870002, SYN-15870003, SYN-15870004",
+        "agreement_id": "AGR-1587-1",
+        "kind": "advisory",
+        "parties": "Sofia Reyes-Nakamura and Daniel Nakamura",
+        "summary": "Advisory agreement on the standard fee schedule, restated to add Daniel's new traditional IRA to the joint account, his former employer's 401(k) and his Roth IRA."
+      },
+      "template": "agreement_signed",
+      "text": "Signed the advisory agreement AGR-1587-1 with Sofia Reyes-Nakamura and Daniel Nakamura, covering accounts SYN-15870001, SYN-15870002, SYN-15870003, SYN-15870004. Advisory agreement on the standard fee schedule, restated to add Daniel's new traditional IRA to the joint account, his former employer's 401(k) and his Roth IRA.",
+      "valuation_date": "2024-12-10"
+    },
+    {
+      "author": "template",
+      "date": "2025-10-14",
+      "known_as_of": "2025-10-14",
+      "note_id": "N-1587-02",
+      "slots": {
+        "accounts": "SYN-15870001, SYN-15870002, SYN-15870003, SYN-15870004",
+        "parties": "Sofia Reyes-Nakamura and Daniel Nakamura"
+      },
+      "template": "annual_review",
+      "text": "Annual review with Sofia Reyes-Nakamura and Daniel Nakamura. Went through accounts SYN-15870001, SYN-15870002, SYN-15870003, SYN-15870004, the fee schedule and the IPS targets. No changes requested.",
+      "valuation_date": "2025-10-14"
+    }
+  ]
+}

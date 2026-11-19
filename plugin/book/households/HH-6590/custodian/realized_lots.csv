@@ -1,0 +1,3 @@
+transaction_id,account_id,lot_id,security_id,security,acquired_date,sold_date,units,cost_basis,proceeds,gain,valuation_date,known_as_of
+T-6590-0009,SYN-65900002,L-65900002-02,SEC-0003,Larkspur Core Bond Fund,2011-10-10,2025-06-04,20,7883.00,7020.40,-862.60,2025-06-04,2025-06-04
+T-6590-0023,SYN-65900002,L-65900002-01,SEC-0001,Larkspur Total Market Fund,2007-03-19,2025-11-24,40,10608.40,10672.80,64.40,2025-11-24,2025-11-24

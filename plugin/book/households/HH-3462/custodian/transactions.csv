@@ -1,0 +1,71 @@
+transaction_id,account_id,trade_date,settle_date,type,security_id,security,units,lot_id,price,price_label,amount,description,valuation_date,known_as_of
+T-3462-0005,SYN-34620002,2025-02-20,2025-02-20,RSU_VEST,SEC-0030,Ellisar Search Holdings,400,L-E-3462-0005,392.54,synthetic,0,"RSU vesting, 400 Ellisar Search Holdings at 392.54",2025-02-20,2025-02-20
+T-3462-0006,SYN-34620001,2025-03-25,2025-03-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,931,,,,1110.78,"Dividend Larkspur World ex-US Fund, 1.1931 per unit",2025-03-25,2025-03-25
+T-3462-0007,SYN-34620001,2025-03-25,2025-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,837,,,,361.33,"Dividend Larkspur Core Bond Fund, 0.4317 per unit",2025-03-25,2025-03-25
+T-3462-0008,SYN-34620002,2025-03-25,2025-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,63,,,,27.20,"Dividend Larkspur Core Bond Fund, 0.4317 per unit",2025-03-25,2025-03-25
+T-3462-0009,SYN-34620004,2025-03-25,2025-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,202,,,,87.20,"Dividend Larkspur Core Bond Fund, 0.4317 per unit",2025-03-25,2025-03-25
+T-3462-0010,SYN-34620001,2025-03-25,2025-03-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,2788,,,,1073.94,"Dividend Fernhollow Large Cap Index Fund, 0.3852 per unit",2025-03-25,2025-03-25
+T-3462-0011,SYN-34620003,2025-03-25,2025-03-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,2148,,,,827.41,"Dividend Fernhollow Large Cap Index Fund, 0.3852 per unit",2025-03-25,2025-03-25
+T-3462-0012,SYN-34620003,2025-03-25,2025-03-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,10473,,,,381.22,"Dividend Fernhollow Aggregate Bond Fund, 0.0364 per unit",2025-03-25,2025-03-25
+T-3462-0013,SYN-34620004,2025-03-25,2025-03-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,948,,,,683.41,"Dividend Brackwater Broad Market Fund, 0.7209 per unit",2025-03-25,2025-03-25
+T-3462-0014,SYN-34620002,2025-03-25,2025-03-25,DIVIDEND,SEC-0030,Ellisar Search Holdings,400,,,,451.84,"Dividend Ellisar Search Holdings, 1.1296 per unit",2025-03-25,2025-03-25
+T-3462-0015,SYN-34620001,2025-04-02,2025-04-02,FEE,,,,,,,-3132.25,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-3462-0016,SYN-34620002,2025-04-02,2025-04-02,FEE,,,,,,,-387.41,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-3462-0017,SYN-34620003,2025-04-02,2025-04-02,FEE,,,,,,,-1507.98,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-3462-0018,SYN-34620004,2025-04-02,2025-04-02,FEE,,,,,,,-601.73,"Advisory fee, quarter to 2025-03-31",2025-04-02,2025-04-02
+T-3462-0019,SYN-34620002,2025-05-20,2025-05-20,RSU_VEST,SEC-0030,Ellisar Search Holdings,400,L-E-3462-0019,408.82,synthetic,0,"RSU vesting, 400 Ellisar Search Holdings at 408.82",2025-05-20,2025-05-20
+T-3462-0020,SYN-34620001,2025-06-25,2025-06-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,931,,,,1143.55,"Dividend Larkspur World ex-US Fund, 1.2283 per unit",2025-06-25,2025-06-25
+T-3462-0021,SYN-34620001,2025-06-25,2025-06-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,837,,,,350.20,"Dividend Larkspur Core Bond Fund, 0.4184 per unit",2025-06-25,2025-06-25
+T-3462-0022,SYN-34620002,2025-06-25,2025-06-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,63,,,,26.36,"Dividend Larkspur Core Bond Fund, 0.4184 per unit",2025-06-25,2025-06-25
+T-3462-0023,SYN-34620004,2025-06-25,2025-06-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,202,,,,84.52,"Dividend Larkspur Core Bond Fund, 0.4184 per unit",2025-06-25,2025-06-25
+T-3462-0024,SYN-34620001,2025-06-25,2025-06-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,2788,,,,1144.75,"Dividend Fernhollow Large Cap Index Fund, 0.4106 per unit",2025-06-25,2025-06-25
+T-3462-0025,SYN-34620003,2025-06-25,2025-06-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,2148,,,,881.97,"Dividend Fernhollow Large Cap Index Fund, 0.4106 per unit",2025-06-25,2025-06-25
+T-3462-0026,SYN-34620003,2025-06-25,2025-06-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,10473,,,,391.69,"Dividend Fernhollow Aggregate Bond Fund, 0.0374 per unit",2025-06-25,2025-06-25
+T-3462-0027,SYN-34620004,2025-06-25,2025-06-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,948,,,,731.48,"Dividend Brackwater Broad Market Fund, 0.7716 per unit",2025-06-25,2025-06-25
+T-3462-0028,SYN-34620002,2025-06-25,2025-06-25,DIVIDEND,SEC-0030,Ellisar Search Holdings,800,,,,925.76,"Dividend Ellisar Search Holdings, 1.1572 per unit",2025-06-25,2025-06-25
+T-3462-0029,SYN-34620001,2025-07-02,2025-07-02,FEE,,,,,,,-3190.55,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-3462-0030,SYN-34620002,2025-07-02,2025-07-02,FEE,,,,,,,-700.41,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-3462-0031,SYN-34620003,2025-07-02,2025-07-02,FEE,,,,,,,-1555.01,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-3462-0032,SYN-34620004,2025-07-02,2025-07-02,FEE,,,,,,,-616.64,"Advisory fee, quarter to 2025-06-30",2025-07-02,2025-07-02
+T-3462-0033,SYN-34620002,2025-08-20,2025-08-20,RSU_VEST,SEC-0030,Ellisar Search Holdings,400,L-E-3462-0033,393.07,synthetic,0,"RSU vesting, 400 Ellisar Search Holdings at 393.07",2025-08-20,2025-08-20
+T-3462-0034,SYN-34620001,2025-09-25,2025-09-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,931,,,,1157.88,"Dividend Larkspur World ex-US Fund, 1.2437 per unit",2025-09-25,2025-09-25
+T-3462-0035,SYN-34620001,2025-09-25,2025-09-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,837,,,,354.55,"Dividend Larkspur Core Bond Fund, 0.4236 per unit",2025-09-25,2025-09-25
+T-3462-0036,SYN-34620002,2025-09-25,2025-09-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,63,,,,26.69,"Dividend Larkspur Core Bond Fund, 0.4236 per unit",2025-09-25,2025-09-25
+T-3462-0037,SYN-34620004,2025-09-25,2025-09-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,202,,,,85.57,"Dividend Larkspur Core Bond Fund, 0.4236 per unit",2025-09-25,2025-09-25
+T-3462-0038,SYN-34620001,2025-09-25,2025-09-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,2788,,,,1216.40,"Dividend Fernhollow Large Cap Index Fund, 0.4363 per unit",2025-09-25,2025-09-25
+T-3462-0039,SYN-34620003,2025-09-25,2025-09-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,2148,,,,937.17,"Dividend Fernhollow Large Cap Index Fund, 0.4363 per unit",2025-09-25,2025-09-25
+T-3462-0040,SYN-34620003,2025-09-25,2025-09-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,10473,,,,384.36,"Dividend Fernhollow Aggregate Bond Fund, 0.0367 per unit",2025-09-25,2025-09-25
+T-3462-0041,SYN-34620004,2025-09-25,2025-09-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,948,,,,787.60,"Dividend Brackwater Broad Market Fund, 0.8308 per unit",2025-09-25,2025-09-25
+T-3462-0042,SYN-34620002,2025-09-25,2025-09-25,DIVIDEND,SEC-0030,Ellisar Search Holdings,1200,,,,1367.88,"Dividend Ellisar Search Holdings, 1.1399 per unit",2025-09-25,2025-09-25
+T-3462-0043,SYN-34620001,2025-10-02,2025-10-02,FEE,,,,,,,-3215.78,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-3462-0044,SYN-34620002,2025-10-02,2025-10-02,FEE,,,,,,,-1017.32,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-3462-0045,SYN-34620003,2025-10-02,2025-10-02,FEE,,,,,,,-1580.11,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-3462-0046,SYN-34620004,2025-10-02,2025-10-02,FEE,,,,,,,-630.34,"Advisory fee, quarter to 2025-09-30",2025-10-02,2025-10-02
+T-3462-0047,SYN-34620002,2025-11-20,2025-11-20,RSU_VEST,SEC-0030,Ellisar Search Holdings,400,L-E-3462-0047,410.22,synthetic,0,"RSU vesting, 400 Ellisar Search Holdings at 410.22",2025-11-20,2025-11-20
+T-3462-0048,SYN-34620002,2025-12-12,2025-12-15,SELL,SEC-0030,Ellisar Search Holdings,1000,,427.89,synthetic,427890.00,Sell 1000 Ellisar Search Holdings,2025-12-12,2025-12-12
+T-3462-0049,SYN-34620001,2025-12-25,2025-12-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,931,,,,1180.51,"Dividend Larkspur World ex-US Fund, 1.2680 per unit",2025-12-25,2025-12-25
+T-3462-0050,SYN-34620001,2025-12-25,2025-12-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,837,,,,354.39,"Dividend Larkspur Core Bond Fund, 0.4234 per unit",2025-12-25,2025-12-25
+T-3462-0051,SYN-34620002,2025-12-25,2025-12-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,63,,,,26.67,"Dividend Larkspur Core Bond Fund, 0.4234 per unit",2025-12-25,2025-12-25
+T-3462-0052,SYN-34620004,2025-12-25,2025-12-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,202,,,,85.53,"Dividend Larkspur Core Bond Fund, 0.4234 per unit",2025-12-25,2025-12-25
+T-3462-0053,SYN-34620001,2025-12-25,2025-12-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,2788,,,,1365.56,"Dividend Fernhollow Large Cap Index Fund, 0.4898 per unit",2025-12-25,2025-12-25
+T-3462-0054,SYN-34620003,2025-12-25,2025-12-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,2148,,,,1052.09,"Dividend Fernhollow Large Cap Index Fund, 0.4898 per unit",2025-12-25,2025-12-25
+T-3462-0055,SYN-34620003,2025-12-25,2025-12-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,10473,,,,406.35,"Dividend Fernhollow Aggregate Bond Fund, 0.0388 per unit",2025-12-25,2025-12-25
+T-3462-0056,SYN-34620004,2025-12-25,2025-12-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,948,,,,770.34,"Dividend Brackwater Broad Market Fund, 0.8126 per unit",2025-12-25,2025-12-25
+T-3462-0057,SYN-34620002,2025-12-25,2025-12-25,DIVIDEND,SEC-0030,Ellisar Search Holdings,600,,,,731.46,"Dividend Ellisar Search Holdings, 1.2191 per unit",2025-12-25,2025-12-25
+T-3462-0058,SYN-34620001,2026-01-02,2026-01-02,FEE,,,,,,,-3300.18,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-3462-0059,SYN-34620002,2026-01-02,2026-01-02,FEE,,,,,,,-1356.19,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-3462-0060,SYN-34620003,2026-01-02,2026-01-02,FEE,,,,,,,-1670.85,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-3462-0061,SYN-34620004,2026-01-02,2026-01-02,FEE,,,,,,,-619.34,"Advisory fee, quarter to 2025-12-31",2026-01-02,2026-01-02
+T-3462-0062,SYN-34620001,2026-03-25,2026-03-25,DIVIDEND,SEC-0002,Larkspur World ex-US Fund,931,,,,1149.41,"Dividend Larkspur World ex-US Fund, 1.2346 per unit",2026-03-25,2026-03-25
+T-3462-0063,SYN-34620001,2026-03-25,2026-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,837,,,,374.98,"Dividend Larkspur Core Bond Fund, 0.4480 per unit",2026-03-25,2026-03-25
+T-3462-0064,SYN-34620002,2026-03-25,2026-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,63,,,,28.22,"Dividend Larkspur Core Bond Fund, 0.4480 per unit",2026-03-25,2026-03-25
+T-3462-0065,SYN-34620004,2026-03-25,2026-03-25,DIVIDEND,SEC-0003,Larkspur Core Bond Fund,202,,,,90.50,"Dividend Larkspur Core Bond Fund, 0.4480 per unit",2026-03-25,2026-03-25
+T-3462-0066,SYN-34620001,2026-03-25,2026-03-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,2788,,,,1463.42,"Dividend Fernhollow Large Cap Index Fund, 0.5249 per unit",2026-03-25,2026-03-25
+T-3462-0067,SYN-34620003,2026-03-25,2026-03-25,DIVIDEND,SEC-0013,Fernhollow Large Cap Index Fund,2148,,,,1127.49,"Dividend Fernhollow Large Cap Index Fund, 0.5249 per unit",2026-03-25,2026-03-25
+T-3462-0068,SYN-34620003,2026-03-25,2026-03-25,DIVIDEND,SEC-0014,Fernhollow Aggregate Bond Fund,10473,,,,412.64,"Dividend Fernhollow Aggregate Bond Fund, 0.0394 per unit",2026-03-25,2026-03-25
+T-3462-0069,SYN-34620004,2026-03-25,2026-03-25,DIVIDEND,SEC-0019,Brackwater Broad Market Fund,948,,,,817.08,"Dividend Brackwater Broad Market Fund, 0.8619 per unit",2026-03-25,2026-03-25
+T-3462-0070,SYN-34620002,2026-03-25,2026-03-25,DIVIDEND,SEC-0030,Ellisar Search Holdings,600,,,,698.40,"Dividend Ellisar Search Holdings, 1.1640 per unit",2026-03-25,2026-03-25
+T-3462-0071,SYN-34620001,2026-04-02,2026-04-02,FEE,,,,,,,-3433.24,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02
+T-3462-0072,SYN-34620002,2026-04-02,2026-04-02,FEE,,,,,,,-1342.78,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02
+T-3462-0073,SYN-34620003,2026-04-02,2026-04-02,FEE,,,,,,,-1763.00,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02
+T-3462-0074,SYN-34620004,2026-04-02,2026-04-02,FEE,,,,,,,-635.34,"Advisory fee, quarter to 2026-03-31",2026-04-02,2026-04-02

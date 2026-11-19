@@ -1,0 +1,5 @@
+account_id,account_type,registration,owners,opened,decedent,decedent_born,decedent_died,valuation_date,known_as_of
+SYN-58140001,joint_taxable,Joint tenants with right of survivorship,Prema Raghavan; Martin Kessler,2017-10-23,,,,2026-04-15,2026-04-15
+SYN-58140002,traditional_ira,"Traditional IRA, Prema Raghavan",Prema Raghavan,2004-02-09,,,,2026-04-15,2026-04-15
+SYN-58140003,traditional_ira,"Traditional IRA (rollover), Prema Raghavan",Prema Raghavan,2012-04-16,,,,2026-04-15,2026-04-15
+SYN-58140004,401k,"Hollins and Reade Packaging 401(k) Plan, Prema Raghavan (former employee)",Prema Raghavan,1999-08-30,,,,2026-04-15,2026-04-15

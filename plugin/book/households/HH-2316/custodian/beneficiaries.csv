@@ -1,0 +1,5 @@
+account_id,designation,name,relationship,share_percent,person_id,valuation_date,known_as_of
+SYN-23160002,primary,Kwame Osei,spouse,100,P-2316-2,2001-02-12,2001-02-12
+SYN-23160002,contingent,Astrid Osei,daughter,100,,2006-10-30,2006-10-30
+SYN-23160003,primary,Ingrid Lindqvist,spouse,100,P-2316-1,2003-08-25,2003-08-25
+SYN-23160003,contingent,Astrid Osei,daughter,100,,2006-10-30,2006-10-30

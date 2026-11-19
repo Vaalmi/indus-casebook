@@ -1,0 +1,2 @@
+transaction_id,account_id,lot_id,security_id,security,acquired_date,sold_date,units,cost_basis,proceeds,gain,valuation_date,known_as_of
+T-5271-0043,SYN-52710002,L-52710002-02,SEC-0003,Larkspur Core Bond Fund,2012-10-15,2025-12-01,110,43356.50,39791.40,-3565.10,2025-12-01,2025-12-01

@@ -1,0 +1,87 @@
+{
+  "billing_groups": [
+    {
+      "account_ids": [
+        "SYN-83120001",
+        "SYN-83120002"
+      ],
+      "billing_group_id": "BG-8312-1",
+      "known_as_of": "2026-04-15",
+      "last_changed": "1998-05-11",
+      "schedule_id": "FS-STD",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "disclosure_permissions": [
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-83120001",
+        "SYN-83120002"
+      ],
+      "person_id": "P-8312-1",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "known_as_of": "2026-04-15",
+      "may_be_told_about": [
+        "SYN-83120001",
+        "SYN-83120002"
+      ],
+      "person_id": "P-8312-2",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "household_id": "HH-8312",
+  "household_membership": [
+    {
+      "born": "1956-08-21",
+      "known_as_of": "2026-04-15",
+      "name": "Eleanor Whitfield",
+      "person_id": "P-8312-1",
+      "relationship": "primary",
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "born": "1951-01-30",
+      "died": "2025-06-18",
+      "known_as_of": "2026-04-15",
+      "name": "Rafael Mendoza",
+      "person_id": "P-8312-2",
+      "relationship": "spouse",
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "legal_ownership": [
+    {
+      "account_id": "SYN-83120001",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-8312-1",
+        "P-8312-2"
+      ],
+      "valuation_date": "2026-04-15"
+    },
+    {
+      "account_id": "SYN-83120002",
+      "known_as_of": "2026-04-15",
+      "owner_ids": [
+        "P-8312-1"
+      ],
+      "valuation_date": "2026-04-15"
+    }
+  ],
+  "name": "Whitfield-Mendoza household",
+  "tax_units": [
+    {
+      "filing_status": "married_filing_jointly",
+      "known_as_of": "2026-04-15",
+      "person_ids": [
+        "P-8312-1",
+        "P-8312-2"
+      ],
+      "tax_unit_id": "TU-8312-1",
+      "valuation_date": "2026-04-15"
+    }
+  ]
+}

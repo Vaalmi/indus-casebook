@@ -1,0 +1,4 @@
+account_id,account_type,registration,owners,opened,decedent,decedent_born,decedent_died,valuation_date,known_as_of
+SYN-41050001,individual_taxable,"Individual, Rosalind Achterberg",Rosalind Achterberg,2006-03-20,,,,2026-04-15,2026-04-15
+SYN-41050002,traditional_ira,"Traditional IRA, Rosalind Achterberg",Rosalind Achterberg,1994-04-11,,,,2026-04-15,2026-04-15
+SYN-41050003,roth_ira,"Roth IRA, Rosalind Achterberg",Rosalind Achterberg,2019-12-02,,,,2026-04-15,2026-04-15
