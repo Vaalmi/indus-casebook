@@ -77,6 +77,7 @@ def test_every_hook_the_gate_needs_runs_it() -> None:
                 wired[event] = (group.get("matcher", "*"), argument)
     assert wired == {
         "UserPromptSubmit": ("*", "prompt"),
+        "UserPromptExpansion": ("*", "expansion"),
         "PreToolUse": ("*", "tool"),
         "PostToolUse": ("Skill", "skill"),
         "Stop": ("*", "stop"),

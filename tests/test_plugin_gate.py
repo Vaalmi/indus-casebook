@@ -64,7 +64,13 @@ def outside(tmp_path: Path) -> Path:
 
 
 def call(hook: str, data: dict[str, Any], book: Path) -> dict[str, Any] | None:
-    handlers = {"prompt": gate.on_prompt, "tool": gate.on_tool, "skill": gate.on_skill, "stop": gate.on_stop}
+    handlers = {
+        "prompt": gate.on_prompt,
+        "expansion": gate.on_expansion,
+        "tool": gate.on_tool,
+        "skill": gate.on_skill,
+        "stop": gate.on_stop,
+    }
     return handlers[hook]({"session_id": SESSION, **data}, book)
 
 
@@ -149,7 +155,62 @@ def test_a_skill_typed_as_a_command_gates_the_session_and_names_the_book(sample:
     assert gate.is_gated(SESSION)
 
 
-@pytest.mark.parametrize("prompt", ["/commit", "/other:tax-lot-rmd", "use reconciliation-as-of", "/tax-lot-rmdx"])
+@pytest.mark.parametrize(
+    "prompt",
+    [
+        "/summarize /indus-casebook:tax-lot-rmd HH-5271",
+        "/noop\n/compliance-review HH-1204",
+        "please run /indus-casebook:meeting-follow-up, then summarise",
+    ],
+)
+def test_a_skill_stacked_after_another_command_gates_the_session(sample: Path, prompt: str) -> None:
+    """Reviewers A and B, slice 15 round 1: Claude Code expands several skills typed in one message, so a plugin
+    skill typed second gates the session as surely as one typed first."""
+    out = call("prompt", {"prompt": prompt, "cwd": "/"}, sample)
+    assert out is not None and "HH-1204, HH-5271" in out["hookSpecificOutput"]["additionalContext"]
+    assert gate.is_gated(SESSION)
+
+
+def test_a_stacked_skill_with_an_outside_file_or_household_is_refused(sample: Path, outside: Path) -> None:
+    """The reviewers' probe: the prompt is blocked, the session gated, and what follows refused."""
+    prompt = f"/summarize /indus-casebook:tax-lot-rmd HH-5271 @{outside}"
+    out = call("prompt", {"prompt": prompt, "cwd": "/"}, sample)
+    assert out is not None and out["decision"] == "block" and "loads no file of yours" in out["reason"]
+    assert gate.is_gated(SESSION)
+    assert denied(tool("Read", sample, file_path=str(outside)))
+    assert denied(tool("Bash", sample, command=f"cat {outside}"))
+    sent_back = call("stop", {"last_assistant_message": "No discrepancy.", "stop_hook_active": False}, sample)
+    assert sent_back is not None and sent_back["decision"] == "block"
+    other = call("prompt", {"prompt": "/noop /indus-casebook:tax-lot-rmd HH-0001", "cwd": "/"}, sample)
+    assert other is not None and other["reason"].startswith("HH-0001 is not in the sample book")
+
+
+@pytest.mark.parametrize("name", ["indus-casebook:tax-lot-rmd", "reconciliation-as-of"])
+def test_a_skill_s_expansion_gates_the_session_once(sample: Path, name: str) -> None:
+    out = call("expansion", {"command_name": name, "command_args": "HH-5271"}, sample)
+    assert out is not None and out["hookSpecificOutput"]["hookEventName"] == "UserPromptExpansion"
+    assert NOTICE in out["hookSpecificOutput"]["additionalContext"]
+    assert gate.is_gated(SESSION)
+    assert call("expansion", {"command_name": name}, sample) is None
+
+
+@pytest.mark.parametrize("name", ["commit", "other-plugin:tax-lot-rmd", ""])
+def test_another_command_s_expansion_does_not_gate(sample: Path, name: str) -> None:
+    assert call("expansion", {"command_name": name}, sample) is None
+    assert not gate.is_gated(SESSION)
+
+
+@pytest.mark.parametrize(
+    "prompt",
+    [
+        "/commit",
+        "/other:tax-lot-rmd",
+        "use reconciliation-as-of",
+        "/tax-lot-rmdx",
+        "see @/tmp/tax-lot-rmd",
+        "a/tax-lot-rmd",
+    ],
+)
 def test_other_commands_do_not_gate(sample: Path, prompt: str) -> None:
     assert call("prompt", {"prompt": prompt, "cwd": "/"}, sample) is None
     assert not gate.is_gated(SESSION)

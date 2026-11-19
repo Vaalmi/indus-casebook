@@ -39,7 +39,8 @@ READERS = frozenset({"Read", "Glob", "Grep"})
 HARMLESS = frozenset({"Skill", "TodoWrite", "AskUserQuestion"})
 HOUSEHOLD = re.compile(r"\bHH-\d{4}\b")
 MENTION = re.compile(r"(?:^|\s)@(\"[^\"]+\"|\S+)")
-SKILL_COMMAND = re.compile(r"^\s*/(?:([\w.-]+):)?([\w.-]+)(?:\s|$)")
+# A command anywhere a command can stand: Claude Code expands several skills typed in one message.
+SKILL_COMMAND = re.compile(r"(?:^|(?<=\s))/(?:([\w.-]+):)?([\w.-]+)(?![\w.:-])")
 WILDCARD = re.compile(r"[*?\[{]")
 
 JSON = dict[str, Any]
@@ -127,8 +128,8 @@ def is_plugin_skill(name: str) -> bool:
 
 
 def skill_in_prompt(prompt: str) -> bool:
-    match = SKILL_COMMAND.match(prompt)
-    return match is not None and match.group(2) in SKILLS and match.group(1) in (None, PLUGIN)
+    """Whether the prompt types one of the plugin's skills as a command, first or stacked after another."""
+    return any(m.group(2) in SKILLS and m.group(1) in (None, PLUGIN) for m in SKILL_COMMAND.finditer(prompt))
 
 
 # ---- judging a call --------------------------------------------------------------------------------------------
@@ -280,6 +281,18 @@ def on_prompt(data: JSON, book_root: Path = BOOK) -> JSON | None:
     return _context("UserPromptSubmit", book) if starting else None
 
 
+def on_expansion(data: JSON, book_root: Path = BOOK) -> JSON | None:
+    """A typed skill expanding into the prompt, by its own name: the gate's second hold on a skill typed as a
+    command, whatever the prompt around it looks like."""
+    session = str(data.get("session_id", ""))
+    if not is_plugin_skill(str(data.get("command_name", ""))):
+        return None
+    book = SampleBook(book_root)
+    first = not is_gated(session)
+    gate_session(session)
+    return _context("UserPromptExpansion", book) if first else None
+
+
 def on_tool(data: JSON, book_root: Path = BOOK) -> JSON | None:
     session, tool = str(data.get("session_id", "")), str(data.get("tool_name", ""))
     tool_input = data.get("tool_input")
@@ -323,7 +336,7 @@ def on_stop(data: JSON, book_root: Path = BOOK) -> JSON | None:
     }
 
 
-HOOKS = {"prompt": on_prompt, "tool": on_tool, "skill": on_skill, "stop": on_stop}
+HOOKS = {"prompt": on_prompt, "expansion": on_expansion, "tool": on_tool, "skill": on_skill, "stop": on_stop}
 
 
 def main(argv: list[str], stdin: str, book_root: Path = BOOK) -> tuple[int, str, str]:

@@ -13,7 +13,7 @@ In Claude Code:
 /plugin install indus-casebook@indus-casebook
 ```
 
-The plugin needs `python3` on your PATH (macOS offers to install it the first time something asks for it). Its gate runs in Claude Code, and in Cowork on your own computer. Claude.ai chat loads the skills but not the gate, so use Claude Code.
+The plugin needs `python3` on your PATH (macOS offers to install it the first time something asks for it). Without it, Claude Code refuses every tool call, in every session, until you install `python3` or remove the plugin: the gate fails closed. Its gate runs in Claude Code, and in Cowork on your own computer. Claude.ai chat loads the skills but not the gate, so use Claude Code.
 
 ## Use
 
