@@ -344,14 +344,14 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 
 **Depends on:** 14, 15.
 
-- [ ] `uv run casebook release --preview` writes a versioned bundle and fails, each with a test, when the bundle holds: a tax or RMD answer key, a tax answer sheet, or a verdict on a tax-lot or RMD task; a combined score; a household with a failed check; a real ticker or security name; a private task, fixture or key; a filled-form page with no watermark; a file with no notice; a result with no tool, version, model or date; anything from `out/real/`
-- [ ] A changed household or task ID with no new version and errata entry fails the release
-- [ ] One zip per featured household holds its source files and a separate answer sheet; tax answer sheets are absent
-- [ ] The review packet holds ten featured returns, every tax and RMD boundary case, the mapping from inputs to form lines, and five further household files
-- [ ] The audit log for the 15 hand-checked households and the run records are in the release files
-- [ ] The README opens with the notice and gives one command each to build the book, check it and run a task
+- [x] `uv run casebook release --preview` writes a versioned bundle and fails, each with a test, when the bundle holds: a tax or RMD answer key, a tax answer sheet, or a verdict on a tax-lot or RMD task; a combined score; a household with a failed check; a real ticker or security name; a private task, fixture or key; a filled-form page with no watermark; a file with no notice; a result with no tool, version, model or date; anything from `out/real/`
+- [x] A changed household or task ID with no new version and errata entry fails the release
+- [x] One zip per featured household holds its source files and a separate answer sheet; tax answer sheets are absent
+- [x] The review packet holds ten featured returns, every tax and RMD boundary case, the mapping from inputs to form lines, and five further household files
+- [x] The audit log for the 15 hand-checked households and the run records are in the release files
+- [x] The README opens with the notice and gives one command each to build the book, check it and run a task
 - [ ] Runs in the real delivery environment: the owner pushes tag `v0.1.0`; the site serves it; a fresh clone builds the same manifest hashes from the seed and tag
-- [ ] The one check command passes
+- [x] The one check command passes
 
 ### Slice 17: Let a tax review release the held items (after the preview)
 
