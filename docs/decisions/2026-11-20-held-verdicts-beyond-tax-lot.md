@@ -30,4 +30,6 @@ Their keys go to `out/keys/` and are never published. Their pages show no verdic
 
 **If you don't decide.** The preview ships as built (option 1), and the results page says which tasks are held and why.
 
+**A second opinion** (Gemini 4 Neon, at your request; `review/branch-neon.md`). It agrees with option 1. It adds two documentation points: the spec's line naming only tax-lot and RMD pages would read "tasks whose key computes a tax or RMD figure" (the spec is yours to change), and the results page should say plainly that 7 of 24 public tasks are scored in the preview.
+
 **Decision.** <open>

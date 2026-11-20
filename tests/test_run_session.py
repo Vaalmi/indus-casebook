@@ -122,6 +122,23 @@ def test_the_mapper_maps_a_long_list_of_tickers() -> None:
     assert "msft" not in mapped["output"] and "vym" not in mapped["output"]
 
 
+def test_the_mapper_maps_tickers_beside_text_that_looks_encoded() -> None:
+    """Gemini 4 Neon, asked by the owner after the whole-branch review: a guess from the characters kept these."""
+    mapped = map_to_aliases({"output": "/reports/Portfolio2026Review/msft/aapl/nvda"})
+    assert mapped["output"] == (
+        "/reports/Portfolio2026Review/Orrin Software Group/Bramwell Devices Group/Corvane Semiconductor Holdings"
+    )
+
+
+def test_the_mapper_publishes_a_provider_signature_as_recorded_and_maps_the_thinking() -> None:
+    signature = "w7kkdYs3IWxE1sE5oIAIlVEta+T9W+5EDugH7Rew/Csco/eXKXqm2lijdYKC16NYPkd6a8uHrvk0ianKZGarcQ"
+    block = {"type": "thinking", "thinking": "Trim msft first.", "signature": signature}
+    mapped = map_to_aliases({"content": [block]})
+    assert mapped == {"content": [{**block, "thinking": "Trim Orrin Software Group first."}]}
+    # The same characters in a field the model writes are mapped like any text.
+    assert "Csco" not in map_to_aliases({"text": signature})["text"]
+
+
 def test_a_household_absent_from_the_manifest_is_refused_before_the_key_is_computed(
     tmp_path: Path, real_book: Path, standin_cli: StandIn, capsys: pytest.CaptureFixture[str]
 ) -> None:

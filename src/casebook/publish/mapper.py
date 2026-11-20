@@ -9,7 +9,7 @@ from importlib.resources import files
 from pathlib import Path
 from typing import Any
 
-from casebook.published_text import decoded_blob
+from casebook.published_text import decoded_blob, provider_signature, without_provider_signatures
 from casebook.securities.master import load_master
 from casebook.securities.scan import TickerFinder, default_scan
 
@@ -59,6 +59,9 @@ def _walk(value: Any, map_text: Callable[[str], str]) -> Any:
         # A file the run read, carried as base64 (a statement PDF, say), cannot be mapped in place.
         return OMITTED if decoded_blob(value) is not None else map_text(value)
     if isinstance(value, dict):
+        if provider_signature(value) is not None:
+            # A provider signature is the provider's encoded seal, not text: published as the CLI recorded it.
+            return {**value, "thinking": _walk(value["thinking"], map_text)}
         return {map_text(str(k)): _walk(v, map_text) for k, v in value.items()}
     if isinstance(value, list):
         return [_walk(v, map_text) for v in value]
@@ -68,7 +71,7 @@ def _walk(value: Any, map_text: Callable[[str], str]) -> Any:
 def map_to_aliases(value: Any) -> Any:
     """Every string in a record or transcript, mapped; refused if a real identifier remains."""
     mapped = _walk(value, alias_mapper())
-    leaks = default_scan().find(json.dumps(mapped, ensure_ascii=False))
+    leaks = default_scan().find(json.dumps(without_provider_signatures(mapped), ensure_ascii=False))
     if leaks:
         raise MappingError(f"real identifiers remain after mapping: {sorted({h.identifier for h in leaks})}")
     return mapped

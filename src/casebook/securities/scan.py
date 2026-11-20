@@ -18,25 +18,6 @@ PRODUCT_ACRONYMS = frozenset(
 )  # fmt: skip
 
 
-# Base64 (a signature or an attachment in a transcript) is a long run of these characters, in which any short
-# mixed-case run of letters can spell a ticker ("…EDugH7Rew/Csco/eXK…"). A ticker in prose is never inside one.
-_OPAQUE = frozenset("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=")
-OPAQUE_RUN = 40
-# What marks a run as encoded, not prose: a stretch between its separators long enough, and mixing digits with
-# upper- and lower-case letters, as random base64 always does and a list of tickers or words never does ("Msft/Aapl/
-# Csco/…", "vti/vxus/bnd/…": the whole-branch review's targeted check, both reviewers).
-_ENCODED_PIECE = re.compile(r"(?=[A-Za-z0-9]*[0-9])(?=[A-Za-z0-9]*[a-z])(?=[A-Za-z0-9]*[A-Z])[A-Za-z0-9]{16,}")
-
-
-def _in_opaque_run(text: str, start: int, end: int) -> bool:
-    while start > 0 and text[start - 1] in _OPAQUE:
-        start -= 1
-    while end < len(text) and text[end] in _OPAQUE:
-        end += 1
-    run = text[start:end]
-    return len(run) >= OPAQUE_RUN and any(_ENCODED_PIECE.fullmatch(p) for p in re.split(r"[+/=]", run))
-
-
 @dataclass(frozen=True)
 class TickerMatch:
     start: int
@@ -46,9 +27,9 @@ class TickerMatch:
 
 
 class TickerFinder:
-    """Real tickers in text, in any case: "MSFT", "msft", "Msft" (whole-branch review, both reviewers). A ticker
-    written other than in upper case is not counted inside a long run of base64 characters, where one turns up by
-    chance; upper case counts everywhere."""
+    """Real tickers in text, in any case: "MSFT", "msft", "Msft" (whole-branch review, both reviewers), everywhere.
+    Encoded data is not guessed from its characters here: the one encoded field a published file holds, a provider
+    signature, is left out by `published_text` before the text reaches the scan."""
 
     def __init__(self, master: tuple[Security, ...]) -> None:
         self._by_upper = {s.real_ticker: s.real_ticker for s in master}
@@ -61,8 +42,6 @@ class TickerFinder:
         found: list[TickerMatch] = []
         for m in self._pattern.finditer(text):
             written = m.group(1)
-            if written != written.upper() and _in_opaque_run(text, m.start(1), m.end(1)):
-                continue
             found.append(TickerMatch(m.start(1), m.end(1), written, self._by_upper[written.upper()]))
         return found
 

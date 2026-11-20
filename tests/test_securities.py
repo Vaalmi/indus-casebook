@@ -1,10 +1,12 @@
 import json
 import re
+from collections.abc import Mapping
 from importlib.resources import files
 from pathlib import Path
 
 import pytest
 
+from casebook.published_text import text_of
 from casebook.securities.master import MASTER_FIELDS, MasterFormatError, Security, load_master, parse_master
 from casebook.securities.scan import PRODUCT_ACRONYMS, RealIdentifier, default_scan
 
@@ -94,14 +96,55 @@ def test_the_scan_finds_a_real_ticker_written_in_any_case() -> None:
             assert scan.find(f"trim {written}.") == [RealIdentifier(written, "ticker")], (security, written)
 
 
-def test_a_ticker_spelled_by_chance_inside_base64_is_not_one_but_upper_case_still_counts() -> None:
-    """A committed transcript's base64 holds "/Csco/" (published/runs/T-REC-06, a basic run's line 165)."""
-    blob = "w7kkdYs3IWxE1sE5oIAIlVEta+T9W+5EDugH7Rew/Csco/eXKXqm2lijdYKC16NYPkd6a8uHrvk0ianKZGarcQ"
+# A provider signature from a committed transcript, whose base64 holds "/Csco/" (published/runs/T-REC-06, line 165).
+SIGNATURE = "w7kkdYs3IWxE1sE5oIAIlVEta+T9W+5EDugH7Rew/Csco/eXKXqm2lijdYKC16NYPkd6a8uHrvk0ianKZGarcQ"
+
+
+def transcript_line(block: Mapping[str, object]) -> bytes:
+    return json.dumps({"type": "assistant", "message": {"content": [block]}}).encode()
+
+
+def test_a_provider_signature_is_left_out_of_the_scan_by_where_it_sits() -> None:
     scan = default_scan()
-    assert scan.find(blob) == []
-    assert scan.find(blob.replace("/Csco/", "/CSCO/")) == [RealIdentifier("CSCO", "ticker")]
-    # A short run is prose, not base64: "Csco/Msft" is two tickers.
-    assert scan.find("trim Csco/Msft today") == [RealIdentifier("Csco", "ticker"), RealIdentifier("Msft", "ticker")]
+    block = {"type": "thinking", "thinking": "Reconcile the fees.", "signature": SIGNATURE}
+    assert scan.find(text_of("run.transcript.jsonl", transcript_line(block))) == []
+    # Escaped slashes, as some JSON writers write them, are the same signature.
+    escaped = transcript_line(block).replace(b"/", b"\\/")
+    assert scan.find(text_of("run.transcript.jsonl", escaped)) == []
+
+
+@pytest.mark.parametrize(
+    "block",
+    [
+        # The same characters anywhere but a thinking block's signature are text, and scanned.
+        {"type": "thinking", "thinking": SIGNATURE, "signature": "x" * 64},
+        {"type": "text", "text": SIGNATURE},
+        {"type": "thinking", "thinking": "", "signature": SIGNATURE, "note": "a block of another shape"},
+        {"type": "tool_use", "signature": SIGNATURE},
+        # A signature that is not base64 is not one: it is scanned as text.
+        {"type": "thinking", "thinking": "", "signature": "Trim Csco and msft, " + "x" * 64},
+    ],
+)
+def test_the_same_characters_anywhere_else_are_scanned(block: dict[str, object]) -> None:
+    found = {h.identifier for h in default_scan().find(text_of("run.transcript.jsonl", transcript_line(block)))}
+    assert "Csco" in found
+
+
+@pytest.mark.parametrize(
+    "written",
+    [
+        # Gemini 4 Neon, asked by the owner after the whole-branch review: a guess from the characters took
+        # these for base64, since one piece mixes digits with both cases.
+        "/reports/Portfolio2026Review/msft/aapl/nvda",
+        "https://docs.example.com/files/Ab3dEf7gHj9kLm2nPq/msft/aapl/summary",
+        "plan=Portfolio2026Target+msft+aapl+nvda+csco",
+        # And the base64 itself, outside a provider signature.
+        SIGNATURE,
+    ],
+)
+def test_a_ticker_beside_anything_that_looks_encoded_still_counts(written: str) -> None:
+    found = {h.identifier.upper() for h in default_scan().find(written)}
+    assert found >= ({"CSCO"} if written == SIGNATURE else {"MSFT", "AAPL"}), found
 
 
 @pytest.mark.parametrize(

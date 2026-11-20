@@ -24,4 +24,6 @@ With options 1 to 3 and 5, the key change, a new freeze and a rerun of T-MTG-05 
 
 **If you don't decide.** The whole-branch review stays open on this finding, so the branch isn't ready to merge. Nothing else changes: when you write notes, the build accepts them and T-MTG-05 stops on them, naming the note. The STATUS step for your notes says so.
 
+**A second opinion** (Gemini 4 Neon, at your request; `review/branch-neon.md`). It agrees with option 5. It adds one point, which I confirmed in the code: option 1 is not enough on its own. The key reads only six kinds of promised step (a contribution, conversion or sale agreed in a meeting or call, a QCD, a distribution, a basis step-up, a beneficiary form or claim; `src/casebook/keys/open_follow_ups.py:199-225`) and stops on any other. So "Raising it with billing." written as an activity would stop it too. When your notes come, the key also needs the kinds of step they promise.
+
 **Decision.** <open>

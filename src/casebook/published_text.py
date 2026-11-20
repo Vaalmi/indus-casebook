@@ -94,6 +94,44 @@ def pdf_field_values(data: bytes) -> tuple[str, ...]:
     return tuple(str(field["/V"]) for field in fields.values() if field.get("/V") and field.get("/FT") == "/Tx")
 
 
+# A provider signature: the model provider's encoded seal on a thinking block in a transcript, the block written
+# {"type": "thinking", "thinking": ..., "signature": ...}. The CLI records it as the provider sent it; it is never
+# text the model wrote, and its base64 spells a ticker by chance ("…EDugH7Rew/Csco/eXK…", published/runs/T-REC-06).
+# It is the one encoded field the real-identifier scan leaves out, named by where it sits, not guessed from its
+# characters (the whole-branch review: a guess from the characters let "Portfolio2026Review/msft/aapl" through).
+THINKING_BLOCK_KEYS = frozenset({"type", "thinking", "signature"})
+
+
+def provider_signature(value: Any) -> str | None:
+    """The provider signature `value` carries, if it is a thinking block whose signature is base64."""
+    if not isinstance(value, dict) or frozenset(value) != THINKING_BLOCK_KEYS or value["type"] != "thinking":
+        return None
+    signature = value["signature"]
+    if isinstance(signature, str) and len(signature) >= BLOB_MIN and _BASE64.fullmatch(signature):
+        return signature
+    return None
+
+
+def without_provider_signatures(value: Any) -> Any:
+    """`value` with every provider signature in it emptied: what the real-identifier scan reads."""
+    if isinstance(value, dict):
+        if provider_signature(value) is not None:
+            return {**value, "signature": ""}
+        return {k: without_provider_signatures(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [without_provider_signatures(v) for v in value]
+    return value
+
+
+def _provider_signatures(value: Any) -> list[str]:
+    if isinstance(value, dict):
+        signature = provider_signature(value)
+        return [signature] if signature is not None else [s for v in value.values() for s in _provider_signatures(v)]
+    if isinstance(value, list):
+        return [s for v in value for s in _provider_signatures(v)]
+    return []
+
+
 def _json_strings(value: Any) -> list[str]:
     if isinstance(value, dict):
         return [s for k, v in value.items() for s in (str(k), *_json_strings(v))]
@@ -125,8 +163,12 @@ def text_of(name: str, data: bytes) -> str:
     if name.endswith((".json", ".jsonl")):
         documents = [text] if name.endswith(".json") else [line for line in text.splitlines() if line.strip()]
         try:
-            decoded = [s for document in documents for s in _json_strings(json.loads(document))]
+            parsed = [json.loads(document) for document in documents]
         except json.JSONDecodeError as error:
             raise UnscannableFileError(f"{name}: not JSON ({error}), so it cannot be scanned") from error
+        # Every string is in `decoded`, so taking a provider signature out of the raw text hides nothing else.
+        for signature in {s for document in parsed for s in _provider_signatures(document)}:
+            text = text.replace(signature, "").replace(signature.replace("/", "\\/"), "")
+        decoded = [s for document in parsed for s in _json_strings(without_provider_signatures(document))]
         return text + "\n" + "\n".join(decoded)
     return text

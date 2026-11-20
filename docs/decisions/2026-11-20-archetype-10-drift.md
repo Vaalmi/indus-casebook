@@ -21,4 +21,6 @@
 
 **If you don't decide.** The preview ships as built (option 1's first half), and slice 5's first criterion stays unticked.
 
+**A second opinion** (Gemini 4 Neon, at your request; `review/branch-neon.md`). It agrees with option 1. It adds that the README's archetype table promised the drift item; that row now says book 0.0.1 plants the fee item only. The archetype's name, "Fee and IPS drift household", is part of the sealed book and shows on the site's household pages, so it stays until the next book version. Gemini also says the drift item will need an exception field in the IPS and a task that scores it; I haven't checked that against the code.
+
 **Decision.** <open>

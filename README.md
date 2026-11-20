@@ -86,7 +86,7 @@ make check
 | 2 | High-income household near thresholds | 7 | Inherited-IRA beneficiary |
 | 3 | Concentrated executive | 8 | Recently widowed investor |
 | 4 | Pre-RMD retiree | 9 | Cross-account tax-loss harvester |
-| 5 | First-RMD retiree | 10 | Fee and IPS drift household |
+| 5 | First-RMD retiree | 10 | Fee and IPS drift household (book 0.0.1 plants the fee item; the drift item comes later) |
 
 A featured household's page shows its four source sets side by side. Here is HH-4821, the trap of archetype 10:
 

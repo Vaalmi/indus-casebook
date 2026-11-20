@@ -17,4 +17,6 @@
 
 **If you don't decide.** The criterion stays unticked and is listed in STATUS. Nothing else waits on it.
 
+**A second opinion** (Gemini 4 Neon, at your request; `review/branch-neon.md`). It prefers option 3: a builder who runs the public command and gets 92 would think the build broken. Its worry that `--held-out` ignores the seed is wrong: `--seed` defaults to 2026 and applies to both commands. With option 1, the README should also say that the public command builds 92.
+
 **Decision.** <open>
