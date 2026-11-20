@@ -228,8 +228,12 @@ def test_a_held_key_written_into_a_text_file_fails(bundle: Path, held: HeldMater
     page = bundle / "site" / "tasks" / f"{HELD_TASK}.html"
     shown = escape(json.dumps(json.loads(key), indent=1))
     _write(page, page.read_text().replace("</main>", f"<pre>{shown}</pre></main>"))
+    # Round 2: in a comment, which no reader sees but the page's source carries.
+    results = bundle / "site" / "results.html"
+    _write(results, results.read_text().replace("</main>", f"<!-- debug {key} --></main>"))
     assert only(release_problems(bundle, held), "in its text") == [
         "README.md: holds a held task's answer key or a tax answer sheet in its text",
+        "site/results.html: holds a held task's answer key or a tax answer sheet in its text",
         f"site/tasks/{HELD_TASK}.html: holds a held task's answer key or a tax answer sheet in its text",
     ]
 

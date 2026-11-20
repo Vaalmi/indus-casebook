@@ -20,6 +20,7 @@ read a folder read the members too, and a member is named as `packets/HH-4821.zi
 
 import csv
 import hashlib
+import html
 import io
 import json
 import posixpath
@@ -396,8 +397,14 @@ def _file_problems(name: str, data: bytes, held: HeldMaterial, in_zip: bool) -> 
     page = _page_text(name, data)
     if page is not None and _SCORE_SHOWN.search(" ".join(page.split())):
         problems.append(f"{name}: shows a combined score")
-    if page is not None and any(_canonical(o) in held.answers for v in _embedded_json(page) for o in _objects(v)):
-        problems.append(f"{name}: holds a held task's answer key or a tax answer sheet in its text")
+    if page is not None:
+        # A page's source too, its markup's entities decoded: a key in a comment or an attribute downloads with it,
+        # though no reader sees it (whole-branch review, reviewer B, round 2).
+        texts = [page]
+        if name.endswith((".html", ".svg")):
+            texts.append(html.unescape(data.decode("utf-8", errors="replace")))
+        if any(_canonical(o) in held.answers for x in texts for v in _embedded_json(x) for o in _objects(v)):
+            problems.append(f"{name}: holds a held task's answer key or a tax answer sheet in its text")
     if _is_stamped_pdf(name, data):
         problems += [name + p for p in _stamp_problems(data)]
     home = _HOME.search(_scanned_text(name, data))

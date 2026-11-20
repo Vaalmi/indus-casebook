@@ -11,7 +11,7 @@ from typing import Any
 
 from casebook.published_text import decoded_blob
 from casebook.securities.master import load_master
-from casebook.securities.scan import default_scan, ticker_forms
+from casebook.securities.scan import TickerFinder, default_scan
 
 
 class MappingError(RuntimeError):
@@ -36,15 +36,17 @@ def alias_mapper() -> Callable[[str], str]:
         (re.compile(rf"(?<![A-Za-z0-9]){_flexible(n)}(?![A-Za-z0-9])", re.IGNORECASE), a)
         for n, a in raw["issuers"].items()
     ]
-    forms = ticker_forms(master)
-    tickers = re.compile(
-        r"(?<![A-Za-z0-9])(" + "|".join(map(re.escape, sorted(forms, key=len, reverse=True))) + r")(?![A-Za-z0-9])"
-    )
+    tickers = TickerFinder(master)
 
     def map_text(text: str) -> str:
         for pattern, alias in named + issuers:
             text = pattern.sub(alias, text)
-        return tickers.sub(lambda m: by_ticker[forms[m.group(1)]], text)
+        parts: list[str] = []
+        at = 0
+        for match in tickers.find(text):
+            parts += [text[at : match.start], by_ticker[match.ticker]]
+            at = match.end
+        return "".join(parts) + text[at:]
 
     return map_text
 

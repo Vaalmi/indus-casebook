@@ -107,10 +107,11 @@ def test_the_mapper_maps_names_tickers_and_issuers() -> None:
     }
 
 
-def test_the_mapper_maps_a_real_ticker_written_in_lower_case() -> None:
-    """Whole-branch review, reviewer B: "Trim msft." kept its real ticker."""
-    assert map_to_aliases({"output": "Trim msft and aapl."}) == {
-        "output": "Trim Orrin Software Group and Bramwell Devices Group."
+def test_the_mapper_maps_a_real_ticker_written_in_any_case() -> None:
+    """Whole-branch review, both reviewers: "Trim msft." and "Trim Msft and AaPl." kept their real tickers."""
+    assert map_to_aliases({"output": "Trim msft and aapl, then Msft and AaPl."}) == {
+        "output": "Trim Orrin Software Group and Bramwell Devices Group, then Orrin Software Group and Bramwell "
+        "Devices Group."
     }
 
 

@@ -86,9 +86,19 @@ def test_the_scan_finds_every_real_ticker_and_no_alias() -> None:
         assert scan.find(f"bought 10 {security.alias} today") == [], security
 
 
-def test_the_scan_finds_a_real_ticker_written_in_lower_case() -> None:
-    """Whole-branch review, reviewer B: "Trim msft." passed the scan."""
+def test_the_scan_finds_a_real_ticker_written_in_any_case() -> None:
+    """Whole-branch review, both reviewers: "Trim msft." and then "Trim Msft and AaPl." passed the scan."""
     scan = default_scan()
     for security in load_master():
-        lower = security.real_ticker.lower()
-        assert scan.find(f"trim {lower}.") == [RealIdentifier(lower, "ticker")], security
+        for written in (security.real_ticker.lower(), security.real_ticker.title(), security.real_ticker.swapcase()):
+            assert scan.find(f"trim {written}.") == [RealIdentifier(written, "ticker")], (security, written)
+
+
+def test_a_ticker_spelled_by_chance_inside_base64_is_not_one_but_upper_case_still_counts() -> None:
+    """A committed transcript's base64 holds "/Csco/" (published/runs/T-REC-06, a basic run's line 165)."""
+    blob = "w7kkdYs3IWxE1sE5oIAIlVEta+T9W+5EDugH7Rew/Csco/eXKXqm2lijdYKC16NYPkd6a8uHrvk0ianKZGarcQ"
+    scan = default_scan()
+    assert scan.find(blob) == []
+    assert scan.find(blob.replace("/Csco/", "/CSCO/")) == [RealIdentifier("CSCO", "ticker")]
+    # A short run is prose, not base64: "Csco/Msft" is two tickers.
+    assert scan.find("trim Csco/Msft today") == [RealIdentifier("Csco", "ticker"), RealIdentifier("Msft", "ticker")]

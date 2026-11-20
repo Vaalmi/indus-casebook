@@ -137,11 +137,11 @@ Release the preview: this is the slice's real delivery environment (its last cri
 
 **Decide** [whether to accept slice 15's last review fix without another round](decisions/2026-11-19-slice15-last-finding.md) (one page; my recommendation is to accept it).
 
-**Decide four things the docs-against-code check and the whole-branch review found** (20 November; one page each, none blocks the merge):
+**Decide four things the docs-against-code check and the whole-branch review found** (20 November; one page each; only the notes page holds the merge, since reviewer B keeps that finding open until you decide):
 - [Archetype 10 plants the missed fee breakpoint but not "approved exception versus real drift"](decisions/2026-11-20-archetype-10-drift.md) (my recommendation: ship as built, add the drift item in the next book version).
 - [Which command counts as the one that builds all 100 households](decisions/2026-11-20-the-100-household-command.md) (my recommendation: `casebook build --held-out`).
 - [Eleven meeting, compliance and reconciliation tasks are held besides the six tax-lot and RMD tasks](decisions/2026-11-20-held-verdicts-beyond-tax-lot.md) (my recommendation: keep it so for the preview).
-- [How your hand-written notes record a follow-up, so T-MTG-05's key can read them](decisions/2026-11-20-follow-ups-in-owner-notes.md) (the whole-branch review, reviewer B; my recommendation: a promised step is a CRM activity, and each note says `follow_up = false`).
+- [How your hand-written notes record a follow-up, so T-MTG-05's key can read them](decisions/2026-11-20-follow-ups-in-owner-notes.md) (the whole-branch review, reviewer B, who holds it as a blocker; my recommendation: accept the deferral now, and when you write notes, a promised step is a CRM activity and each note says `follow_up = false`).
 
 **Note, no action needed unless you disagree:** the plan bans float in `tax` ("A lint rule bans `float` in `model`, `replay`, `tax` and `keys`") and also chose Tax-Calculator, which computes in float. The float check now scans `tax` for the first time, with one file excepted by name, `tax/crosscheck.py`, the only module that calls Tax-Calculator; its `_run` turns every figure into a Decimal rounded half-up to the cent as it leaves. `docs/CODE_STANDARDS.md` and `docs/TECH_STACK.md` say so. If you would rather the plan's rule read that way, nothing else changes; if not, the alternative is running Tax-Calculator as a separate program, as the plan already allows for PolicyEngine.
 
