@@ -492,6 +492,25 @@ def test_a_run_record_outside_the_run_folders_fails_and_is_held_to_their_checks(
     ]
 
 
+def test_a_run_record_nested_in_another_file_is_held_to_their_checks(bundle: Path, held: HeldMaterial) -> None:
+    """Reviewer B, slice 16 round 2, S3: an open task's published key with a graded held record under an extra
+    field, and an unnamed record in a list, passed every gate."""
+    held_record = json.loads(sorted((bundle / "runs" / HELD_TASK).glob("*.json"))[0].read_text())
+    open_record = json.loads(sorted((bundle / "runs" / OPEN_TASK).glob("*.json"))[0].read_text())
+    key = bundle / "keys" / f"{OPEN_TASK}.json"
+    nested = {
+        **json.loads(key.read_text()),
+        "debug_run": {**held_record, "grade": {"score": 100}},
+        "debug_runs": [{**open_record, "cli_version": ""}],
+    }
+    _write(key, json_text(nested))
+    name = f"keys/{OPEN_TASK}.json"
+    problems = only(release_problems(bundle, held), "run record", "lacks")
+    assert f"{name}: a run record outside runs/ and site/data/runs/" in problems
+    assert f"{name}: a held task's run record carries its grade" in problems
+    assert any(p.startswith(f"{name} lacks the tool (cli_version)") for p in problems)
+
+
 # 11. A file the release does not put where it sits (A-S2, B-S3 to B-S6).
 
 

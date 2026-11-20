@@ -302,9 +302,12 @@ def _json_problems(name: str, documents: list[Any], held: HeldMaterial, in_zip: 
         problems.append(f"{name}: a combined score ({', '.join(scores)})")
     if any(_canonical(o) in held.answers for d in documents for o in _objects(d)):
         problems.append(f"{name}: holds a held task's answer key or a tax answer sheet")
-    # The records in the two run folders are read by held_page_problems and _result_problems; any other is read here.
-    records = [d for d in documents if _is_record(d)]
-    if records and (in_zip or not name.startswith((f"{RUNS}/", f"{SITE}/{SITE_RUNS}/"))):
+    # The records at the top of a file in the two run folders are read by held_page_problems and _result_problems;
+    # any other is read here, a record nested inside another file's JSON at any depth among them (reviewer B,
+    # slice 16 round 2, S3: a graded held record under an extra field of a published key shipped).
+    in_runs = not in_zip and name.startswith((f"{RUNS}/", f"{SITE}/{SITE_RUNS}/"))
+    records = [o for d in documents for o in _objects(d) if _is_record(o) and not (in_runs and o is d)]
+    if records:
         problems += _record_problems(name, records, held)
     if PurePosixPath(name).name == METADATA and isinstance(documents[0], dict):
         securities = documents[0].get("securities")  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
