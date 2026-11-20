@@ -25,11 +25,12 @@ import json
 import re
 import tomllib
 from collections.abc import Iterable, Iterator, Sequence
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 from casebook.model.archetypes import PRIVATE_PAIRS
 from casebook.model.ledger import PRIVATE_TASK_ID, is_private_task_id, load_ledger
+from casebook.publish.zips import ZipError, read_zip
 
 REPO = Path(__file__).resolve().parents[3]
 FINGERPRINTS = REPO / "book" / "private_fingerprints.json"
@@ -191,35 +192,55 @@ def _own_household(value: Any) -> Iterator[str]:
             yield f"HH-{account.group(1)}"
 
 
-def _parsed(path: Path, text: str) -> Iterable[Any]:
+def _parsed(suffix: str, text: str) -> Iterable[Any]:
     """The file's TOML or JSON values (a JSON Lines file's, line by line); nothing for another file."""
     try:
-        if path.suffix == ".toml":
+        if suffix == ".toml":
             return [tomllib.loads(text)]
-        if path.suffix == ".json":
+        if suffix == ".json":
             return [json.loads(text)]
-        if path.suffix == ".jsonl":
+        if suffix == ".jsonl":
             return [json.loads(line) for line in text.splitlines() if line.strip()]
-        if path.suffix == ".csv":
+        if suffix == ".csv":
             return [list(csv.DictReader(io.StringIO(text)))]
     except (tomllib.TOMLDecodeError, json.JSONDecodeError, UnicodeDecodeError):
         return []
     return []
 
 
+# Archives the gate cannot open: a private file packed in one would pass unread (whole-branch review, reviewer A).
+UNREADABLE_ARCHIVES = (".tar", ".gz", ".tgz", ".bz2", ".xz", ".7z", ".rar", ".jar", ".whl")
+
+
 def file_problems(
     name: str, path: Path, files: frozenset[str], lines: frozenset[str], households: frozenset[str] = frozenset()
 ) -> list[str]:
-    """What of the private set one file holds."""
+    """What of the private set one file holds; a zip's members are read one by one, at any depth."""
+    return _data_problems(name, path.read_bytes(), files, lines, households)
+
+
+def _data_problems(
+    name: str, data: bytes, files: frozenset[str], lines: frozenset[str], households: frozenset[str]
+) -> list[str]:
     problems: list[str] = []
     named = PRIVATE_TASK_ID.search(name)
     if named:
         problems.append(f"{name}: its path names private task {named.group(0)}")
-    data = path.read_bytes()
     if _digest(data) in files:
         problems.append(f"{name}: a copy of a private file")
+    suffix = PurePosixPath(name).suffix.lower()
+    if suffix == ".zip":
+        try:
+            members = read_zip(data)
+        except ZipError as error:
+            return [*problems, f"{name}: a zip the gate cannot read ({error})"]
+        for member, content in sorted(members.items()):
+            problems += _data_problems(f"{name}!{member}", content, files, lines, households)
+        return problems
+    if suffix in UNREADABLE_ARCHIVES:
+        return [*problems, f"{name}: an archive the gate cannot read; unpack it or leave it out"]
     text = data.decode("utf-8", errors="ignore")
-    parsed = list(_parsed(path, text))
+    parsed = list(_parsed(suffix, text))
     private_ids = sorted({t for value in parsed for t in _field(value, "task_id") if is_private_task_id(t)})
     if private_ids:
         problems.append(f"{name}: it is private task {', '.join(private_ids)}'s (its task_id)")

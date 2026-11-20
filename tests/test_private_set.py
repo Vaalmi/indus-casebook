@@ -21,6 +21,7 @@ from casebook.publish.private_set import (
     private_set_problems,
 )
 from casebook.publish.site_build import SiteBuildError, build_site
+from casebook.publish.zips import write_zip
 from casebook.runner.run import private_root
 from casebook.runner.session import PrivateTaskError, refuse_private_pairs
 from casebook.tasks.matrix import load_matrix
@@ -91,6 +92,19 @@ def test_a_copied_private_key_is_found_under_any_name(tmp_path: Path, private_fo
     problems = private_set_problems(public, prints)
     assert f"docs/{PRIVATE_ID}.json: its path names private task {PRIVATE_ID}" in problems
     assert "docs/answer.json: a copy of a private file" in problems
+
+
+def test_a_private_task_packed_in_an_archive_is_found(tmp_path: Path, private_folder: Path) -> None:
+    """Whole-branch review, reviewer A: a private task in a zip committed to the repo passed its check."""
+    public, prints = public_tree(tmp_path, private_folder)
+    task = (private_folder / "tasks" / f"{PRIVATE_ID}.toml").read_bytes()
+    inner = write_zip({"task.toml": task})
+    (public / "docs" / "backup.zip").write_bytes(write_zip({"notes.md": b"nothing\n", "old/inner.zip": inner}))
+    (public / "docs" / "backup.tar.gz").write_bytes(b"not read")
+    problems = private_set_problems(public, prints)
+    assert "docs/backup.zip!old/inner.zip!task.toml: a copy of a private file" in problems
+    assert f"docs/backup.zip!old/inner.zip!task.toml: it is private task {PRIVATE_ID}'s (its task_id)" in problems
+    assert "docs/backup.tar.gz: an archive the gate cannot read; unpack it or leave it out" in problems
 
 
 def test_a_private_run_s_folder_and_record_are_found(tmp_path: Path, private_folder: Path) -> None:

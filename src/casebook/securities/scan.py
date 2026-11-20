@@ -18,6 +18,12 @@ PRODUCT_ACRONYMS = frozenset(
 )  # fmt: skip
 
 
+def ticker_forms(master: tuple[Security, ...]) -> dict[str, str]:
+    """Each way a real ticker is written in text, with its ticker: upper case and lower case ("MSFT", "msft";
+    whole-branch review, reviewer B). Mixed case is left out: base64 in a transcript holds runs like "Csco"."""
+    return {form: s.real_ticker for s in master for form in (s.real_ticker, s.real_ticker.lower())}
+
+
 @dataclass(frozen=True)
 class RealIdentifier:
     identifier: str
@@ -26,7 +32,7 @@ class RealIdentifier:
 
 class RealIdentifierScan:
     def __init__(self, master: tuple[Security, ...], names: dict[str, list[str]], issuers: dict[str, str]):
-        tickers = sorted((s.real_ticker for s in master), key=len, reverse=True)
+        tickers = sorted(ticker_forms(master), key=len, reverse=True)
         self._tickers = re.compile(r"(?<![A-Za-z0-9])(" + "|".join(map(re.escape, tickers)) + r")(?![A-Za-z0-9])")
         phrases = sorted({n for ns in names.values() for n in ns} | set(issuers), key=len, reverse=True)
         # Any run of whitespace between a name's words still spells the name.

@@ -540,10 +540,20 @@ def test_a_task_page_refuses_arms_from_two_freezes(book: Path, tmp_path: Path) -
     new = a_graded_record("T-REC-05") | {"arm": "skill", "freeze": "b" * 64, "run_id": "T-REC-05-skill-later"}
     for record in (old, new):
         (runs / f"{record['run_id']}.json").write_text(json.dumps(record))
-    with pytest.raises(MixedFreezeError, match="ran under different freezes"):
+    with pytest.raises(MixedFreezeError, match="ran or were graded under different freezes"):
         build_site(book, tmp_path / "site", README, tmp_path / "runs", TASKS, None)
     new["freeze"] = "a" * 64
     (runs / f"{new['run_id']}.json").write_text(json.dumps(new))
+    build_site(book, tmp_path / "site", README, tmp_path / "runs", TASKS, None)
+    # Whole-branch review, reviewer A: a regrade cut short leaves one arm graded under the new freeze and the
+    # other under the one both ran under.
+    regraded = {"utc": "2026-11-19T00:00:00Z", "freeze": "c" * 64, "decision": "d", "grader_before": "e" * 64}
+    new["regraded"] = regraded | {"grade_before": new["grade"]}
+    (runs / f"{new['run_id']}.json").write_text(json.dumps(new))
+    with pytest.raises(MixedFreezeError, match=r"ran aaaaaaaaaaaa, graded cccccccccccc"):
+        build_site(book, tmp_path / "site", README, tmp_path / "runs", TASKS, None)
+    old["regraded"] = regraded | {"grade_before": old["grade"]}
+    (runs / f"{old['run_id']}.json").write_text(json.dumps(old))
     build_site(book, tmp_path / "site", README, tmp_path / "runs", TASKS, None)
 
 

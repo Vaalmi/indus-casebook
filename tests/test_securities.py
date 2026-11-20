@@ -84,3 +84,11 @@ def test_the_scan_finds_every_real_ticker_and_no_alias() -> None:
         found = scan.find(f"bought 10 {security.real_ticker} today")
         assert found == [RealIdentifier(security.real_ticker, "ticker")], security
         assert scan.find(f"bought 10 {security.alias} today") == [], security
+
+
+def test_the_scan_finds_a_real_ticker_written_in_lower_case() -> None:
+    """Whole-branch review, reviewer B: "Trim msft." passed the scan."""
+    scan = default_scan()
+    for security in load_master():
+        lower = security.real_ticker.lower()
+        assert scan.find(f"trim {lower}.") == [RealIdentifier(lower, "ticker")], security

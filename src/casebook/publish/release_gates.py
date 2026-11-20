@@ -358,6 +358,25 @@ def _csv_score_problems(name: str, data: bytes) -> list[str]:
     return [f"{name}: a combined score ({', '.join(scores)})"] if scores else []
 
 
+_DECODER = json.JSONDecoder()
+
+
+def _embedded_json(text: str) -> list[Any]:
+    """Every JSON object written out whole inside a text: a key pasted into a README's code block, say (whole-branch
+    review, reviewer B)."""
+    found: list[Any] = []
+    start = text.find("{")
+    while start != -1:
+        try:
+            value, end = _DECODER.raw_decode(text, start)
+        except json.JSONDecodeError:
+            start = text.find("{", start + 1)
+            continue
+        found.append(value)
+        start = text.find("{", end)
+    return found
+
+
 def _file_problems(name: str, data: bytes, held: HeldMaterial, in_zip: bool) -> list[str]:
     problems: list[str] = []
     digest = _digest(data)
@@ -377,6 +396,8 @@ def _file_problems(name: str, data: bytes, held: HeldMaterial, in_zip: bool) -> 
     page = _page_text(name, data)
     if page is not None and _SCORE_SHOWN.search(" ".join(page.split())):
         problems.append(f"{name}: shows a combined score")
+    if page is not None and any(_canonical(o) in held.answers for v in _embedded_json(page) for o in _objects(v)):
+        problems.append(f"{name}: holds a held task's answer key or a tax answer sheet in its text")
     if _is_stamped_pdf(name, data):
         problems += [name + p for p in _stamp_problems(data)]
     home = _HOME.search(_scanned_text(name, data))

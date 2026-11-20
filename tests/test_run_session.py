@@ -107,6 +107,13 @@ def test_the_mapper_maps_names_tickers_and_issuers() -> None:
     }
 
 
+def test_the_mapper_maps_a_real_ticker_written_in_lower_case() -> None:
+    """Whole-branch review, reviewer B: "Trim msft." kept its real ticker."""
+    assert map_to_aliases({"output": "Trim msft and aapl."}) == {
+        "output": "Trim Orrin Software Group and Bramwell Devices Group."
+    }
+
+
 def test_a_household_absent_from_the_manifest_is_refused_before_the_key_is_computed(
     tmp_path: Path, real_book: Path, standin_cli: StandIn, capsys: pytest.CaptureFixture[str]
 ) -> None:

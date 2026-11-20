@@ -3,7 +3,7 @@
 It speaks the same stream-json as `claude -p --output-format stream-json --verbose`.
 The runner gives the CLI a minimal environment, so the stand-in takes its settings from a
 JSON file named by `--standin-config PATH`, which CASEBOOK_CLAUDE puts first on the command
-line: "mode" is answer (default), error, timeout, quota, no_skill, leak or follow_up; "answer"
+line: "mode" is answer (default), error, timeout, quota, quota_in_errors, no_skill, leak or follow_up; "answer"
 names a file whose text becomes the final answer; "log" names a file that gets one JSON line
 per call with the arguments, the working folder and the environment keys; "skill" names the
 skill to load from `--plugin-dir` when the plugin holds it (otherwise the plugin's first,
@@ -134,6 +134,18 @@ def main(argv: list[str]) -> int:
                 "subtype": "success",
                 "is_error": True,
                 "result": "Claude AI usage limit reached|1794830400",
+                "usage": usage,
+            }
+        )
+        return 1
+    if mode == "quota_in_errors":
+        # The CLI's error result can give the reason only in `errors`, with no result text.
+        emit(
+            {
+                "type": "result",
+                "subtype": "error_during_execution",
+                "is_error": True,
+                "errors": ["You have hit your limit; try again after the quota resets."],
                 "usage": usage,
             }
         )

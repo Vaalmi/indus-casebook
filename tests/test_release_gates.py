@@ -6,6 +6,7 @@ import io
 import json
 import os
 import shutil
+from html import escape
 from pathlib import Path
 
 import pytest
@@ -216,6 +217,20 @@ def test_a_held_key_fails_by_its_bytes_its_content_or_its_place(
         "site/data/extra.json: a held task's answer key or a tax answer sheet",
         "site/data/extra.json: holds a held task's answer key or a tax answer sheet",
         f"keys/{HELD_TASK}.json: the key of held task {HELD_TASK}",
+    ]
+
+
+def test_a_held_key_written_into_a_text_file_fails(bundle: Path, held: HeldMaterial, held_keys: Path) -> None:
+    """Whole-branch review, reviewer B: a held key fenced inside the README shipped."""
+    key = (held_keys / VERSION / f"{HELD_TASK}.json").read_text()
+    readme = bundle / "README.md"
+    _write(readme, readme.read_text() + f"\n```json\n{key}\n```\n")
+    page = bundle / "site" / "tasks" / f"{HELD_TASK}.html"
+    shown = escape(json.dumps(json.loads(key), indent=1))
+    _write(page, page.read_text().replace("</main>", f"<pre>{shown}</pre></main>"))
+    assert only(release_problems(bundle, held), "in its text") == [
+        "README.md: holds a held task's answer key or a tax answer sheet in its text",
+        f"site/tasks/{HELD_TASK}.html: holds a held task's answer key or a tax answer sheet in its text",
     ]
 
 

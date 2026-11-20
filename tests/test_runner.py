@@ -226,7 +226,13 @@ def test_a_record_s_skills_loaded_must_be_skill_names(real_book: Path, standin: 
 
 @pytest.mark.parametrize(
     ("mode", "reason", "attempts"),
-    [("error", "CLI error (exit code 1): API Error: overloaded", 4), ("quota", "quota", 1), ("timeout", "timeout", 4)],
+    [
+        ("error", "CLI error (exit code 1): API Error: overloaded", 4),
+        ("quota", "quota", 1),
+        # Whole-branch review, both reviewers: a quota stop given only in the result's `errors`.
+        ("quota_in_errors", "quota", 1),
+        ("timeout", "timeout", 4),
+    ],
 )
 def test_a_cli_that_errors_times_out_or_stops_on_quota_gives_a_failed_record_and_no_score(
     real_book: Path, standin_cli: StandIn, mode: str, reason: str, attempts: int

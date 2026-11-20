@@ -28,7 +28,7 @@ from casebook.model.ledger import PRIVATE_TASK_ID, is_private_task_id
 from casebook.notice import NOTICE
 from casebook.publish.private_set import private_set_problems
 from casebook.runner.record import REGRADED, SLOT
-from casebook.site.tasks import ARM_NAMES, ARM_ORDER, cli_name, is_held, require_named
+from casebook.site.tasks import ARM_NAMES, ARM_ORDER, cli_name, graded_under, is_held, require_named
 from casebook.tasks.matrix import BOOK, load_matrix
 from casebook.tasks.task import HELD_WORKFLOWS, WORKFLOWS, Task, find_task, load_task
 
@@ -105,7 +105,7 @@ def run_name(record: dict[str, Any]) -> RunName:
         version=version or "unknown version",
         models=models,
         effort=str((record.get("settings") or {}).get("effort") or ""),
-        freeze=(record.get(REGRADED) or {}).get("freeze", record.get("freeze")),
+        freeze=graded_under(record),
     )
 
 
