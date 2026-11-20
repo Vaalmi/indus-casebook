@@ -44,7 +44,9 @@ def alias_mapper() -> Callable[[str], str]:
         parts: list[str] = []
         at = 0
         for match in tickers.find(text):
-            parts += [text[at : match.start], by_ticker[match.ticker]]
+            # A quantity written onto the ticker ("100MSFT") keeps a space before the alias: "100 Orrin Software Group".
+            space = " " if match.start and text[match.start - 1].isdigit() else ""
+            parts += [text[at : match.start], space + by_ticker[match.ticker]]
             at = match.end
         return "".join(parts) + text[at:]
 

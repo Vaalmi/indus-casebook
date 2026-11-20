@@ -130,6 +130,13 @@ def test_the_mapper_maps_tickers_beside_text_that_looks_encoded() -> None:
     )
 
 
+def test_the_mapper_maps_a_quantity_written_onto_a_ticker() -> None:
+    """The whole-branch review's second targeted check, reviewer B: "custodian 100MSFT" kept its real ticker."""
+    assert map_to_aliases({"output": "custodian 100MSFT; portfolio 90msft"}) == {
+        "output": "custodian 100 Orrin Software Group; portfolio 90 Orrin Software Group"
+    }
+
+
 def test_the_mapper_publishes_a_provider_signature_as_recorded_and_maps_the_thinking() -> None:
     signature = "w7kkdYs3IWxE1sE5oIAIlVEta+T9W+5EDugH7Rew/Csco/eXKXqm2lijdYKC16NYPkd6a8uHrvk0ianKZGarcQ"
     block = {"type": "thinking", "thinking": "Trim msft first.", "signature": signature}

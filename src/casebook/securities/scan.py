@@ -35,7 +35,10 @@ class TickerFinder:
         self._by_upper = {s.real_ticker: s.real_ticker for s in master}
         tickers = sorted(self._by_upper, key=len, reverse=True)
         self._pattern = re.compile(
-            r"(?<![A-Za-z0-9])(" + "|".join(map(re.escape, tickers)) + r")(?![A-Za-z0-9])", re.IGNORECASE
+            # A quantity written onto the ticker counts too: "custodian 100MSFT; portfolio 90MSFT" (the whole-branch
+            # review's second targeted check, reviewer B). The token is then digits and the ticker, nothing else.
+            r"(?<![A-Za-z0-9])[0-9]*(" + "|".join(map(re.escape, tickers)) + r")(?![A-Za-z0-9])",
+            re.IGNORECASE,
         )
 
     def find(self, text: str) -> list[TickerMatch]:

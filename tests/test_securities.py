@@ -147,6 +147,15 @@ def test_a_ticker_beside_anything_that_looks_encoded_still_counts(written: str) 
     assert found >= ({"CSCO"} if written == SIGNATURE else {"MSFT", "AAPL"}), found
 
 
+def test_a_quantity_written_onto_a_ticker_still_counts() -> None:
+    """The whole-branch review's second targeted check, reviewer B: "100MSFT" passed the scan."""
+    scan = default_scan()
+    found = scan.find("Quantity discrepancy: custodian 100MSFT; portfolio 90MSFT, then 1,000msft and 2.5Aapl.")
+    assert [h.identifier for h in found] == ["MSFT", "MSFT", "msft", "Aapl"]
+    # The token is digits and the ticker, nothing else: a longer identifier is not a ticker.
+    assert scan.find("x100MSFT and toolu_01MSFT2") == []
+
+
 @pytest.mark.parametrize(
     "listed",
     [
