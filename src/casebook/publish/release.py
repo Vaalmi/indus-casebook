@@ -30,7 +30,8 @@ from casebook.publish.release_record import (
 )
 from casebook.publish.site_build import SiteBuildError, build_site
 from casebook.site.errata import ErrataError, load_errata
-from casebook.site.tasks import UnnamedResultError
+from casebook.site.tasks import UnnamedResultError, is_held
+from casebook.tasks.task import load_task
 
 NOTICE_FILE = "NOTICE.txt"
 RELEASE_JSON = "release.json"
@@ -81,6 +82,45 @@ def _with_notice(source: Path, target: Path) -> None:
     target.write_text(json_text({**data, "notice": NOTICE}), encoding="utf-8")
 
 
+# The files the release takes from each published folder, and nothing else (reviewers A and B, slice 16 round 1:
+# a file copied into published/audit/ shipped whatever it held). Any other file there stops the release.
+AUDIT_FILES = ("audit-log.csv", AUDIT_NOTES)
+RESULTS_FILES = ("private-outcomes.json",)
+IMAGES = "docs/images"
+
+
+def stray_problems(inputs: ReleaseInputs) -> list[str]:
+    """Files in the published folders the release copies from that it would not take: each is named, so a key, a
+    record or an export dropped there is seen, not silently left behind."""
+    published = inputs.published
+    version = read_manifest(inputs.book).version
+    open_tasks = {load_task(p).task_id for p in inputs.tasks.glob("*.toml") if not is_held(load_task(p))}
+    keys = published / "keys"
+    problems = [
+        f"published/keys/{p.relative_to(keys).as_posix()}: not the published key of an open task"
+        for p in sorted(keys.rglob("*"))
+        if p.is_file() and not (p.parent == keys / version and p.suffix == ".json" and p.stem in open_tasks)
+    ]
+    for folder, allowed in (("audit", AUDIT_FILES), ("results", RESULTS_FILES)):
+        problems += [
+            f"published/{folder}/{p.relative_to(published / folder).as_posix()}: not a file the release publishes"
+            for p in sorted((published / folder).rglob("*"))
+            if p.is_file() and p.relative_to(published / folder).as_posix() not in allowed
+        ]
+    return problems
+
+
+def book_problems(book: Path) -> list[str]:
+    """Every file the book's manifest lists, with the bytes it lists (reviewer B, slice 16 round 1, S6: a sealed
+    file changed after the build kept every ID's digest, which trusts the manifest)."""
+    manifest = read_manifest(book)
+    return [
+        f"{name}: its bytes are not the ones the book's manifest lists"
+        for name, digest in sorted(manifest.files.items())
+        if not (book / name).is_file() or _digest((book / name).read_bytes()) != digest
+    ]
+
+
 def _stage(inputs: ReleaseInputs, staging: Path) -> None:
     """Write every file of the bundle into `staging`."""
     published = inputs.published
@@ -117,11 +157,15 @@ def _stage(inputs: ReleaseInputs, staging: Path) -> None:
         _with_notice(key, staging / "keys" / key.name)
     _with_notice(published / "freeze.json", staging / "freeze.json")
     shutil.copyfile(published / "errata.json", staging / "errata.json")
-    _copy_tree(published / "results", staging / "results")
-    _copy_tree(published / "audit", staging / "audit")
+    for folder, names in (("results", RESULTS_FILES), ("audit", AUDIT_FILES)):
+        for name in names:
+            (staging / folder).mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(published / folder / name, staging / folder / name)
+    # The README's images, so the bundle's README shows them (reviewer A, slice 16 round 1, D2).
+    _copy_tree(inputs.repo / IMAGES, staging / IMAGES)
     audit = staging / "audit" / AUDIT_NOTES
     audit.write_text(f"> **{NOTICE_HEADLINE}**{NOTICE.removeprefix(NOTICE_HEADLINE)}\n\n" + audit.read_text(), "utf-8")
-    for folder in ("keys", "audit", "site"):
+    for folder in ("keys", "audit", "site", IMAGES):
         (staging / folder / NOTICE_FILE).write_text(NOTICE + "\n", encoding="utf-8")
     for name in REPO_FILES:
         shutil.copyfile(inputs.repo / name, staging / name)
@@ -164,8 +208,12 @@ def build_release(inputs: ReleaseInputs, out: Path, record_on: date | None = Non
     except (ErrataError, ReleaseRecordError) as error:
         raise ReleaseError(str(error)) from error
     ledger = load_ledger(LEDGER)
-    # The stable-ID rule and the record need only the book and the tasks: refuse before building anything.
-    ids = id_digests(inputs.book, inputs.tasks)
+    # What the release is built from is checked first, before anything is built: the book against its manifest,
+    # the published folders for files the release would not take, then the stable-ID rule and the record.
+    problems = book_problems(inputs.book) + stray_problems(inputs)
+    if problems:
+        raise ReleaseError("the release's inputs are not as published:\n  " + "\n  ".join(problems))
+    ids = id_digests(inputs.book, inputs.tasks, inputs.published / "keys")
     before = [r for r in recorded if r.tag != tag()]
     problems = stable_id_problems(ids, BOOK_VERSION, before, errata, ledger)
     this = next((r for r in recorded if r.tag == tag()), None)
@@ -185,7 +233,7 @@ def build_release(inputs: ReleaseInputs, out: Path, record_on: date | None = Non
         _stage(inputs, staging)
         _release_json(staging, inputs, ids)
         problems = release_problems(
-            staging, held_material(inputs.book, inputs.real_book, inputs.tasks, inputs.held_keys)
+            staging, held_material(inputs.book, inputs.real_book, inputs.tasks, inputs.held_keys, inputs.repo / IMAGES)
         )
         if problems:
             raise ReleaseError("the release fails its gates:\n  " + "\n  ".join(problems))

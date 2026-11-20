@@ -16,7 +16,7 @@
 <rect x="32" y="262" width="196" height="92" rx="8" fill="#f5f7f9" stroke="#d9dee3"/>
 <text x="46" y="286" font-size="15" fill="#1d2329" font-weight="700">Real-ticker build</text>
 <text x="46" y="308" font-size="13" fill="#5b6670">out/real/: real tickers,</text>
-<text x="46" y="326" font-size="13" fill="#5b6670">invented prices</text>
+<text x="46" y="326" font-size="13" fill="#5b6670">synthetic prices</text>
 <path d="M228 174 L268 174" stroke="#5b6670" stroke-width="1.6" fill="none" marker-end="url(#arrow)"/>
 <path d="M228 308 L248 308 L248 190 L268 190" stroke="#5b6670" stroke-width="1.6" fill="none" marker-end="url(#arrow)"/>
 <rect x="268" y="110" width="250" height="244" rx="8" fill="#e8f1f8" stroke="#1f5f8b"/>

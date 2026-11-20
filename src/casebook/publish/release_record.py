@@ -49,8 +49,10 @@ class Release:
         return {"tag": self.tag, "book_version": self.book_version, "date": self.date.isoformat(), "ids": self.ids}
 
 
-def id_digests(book: Path, tasks: Path) -> Digests:
-    """What each household of the book (its version folder) and each task file in `tasks` means, as a sha256."""
+def id_digests(book: Path, tasks: Path, keys: Path | None = None) -> Digests:
+    """What each household of the book (its version folder) and each task file in `tasks` means, as a sha256.
+    `keys`: the published keys (`published/keys`); a task's published key is part of what it means, so a key
+    changed under the same book version changes the task's digest (reviewer A, slice 16 round 1, S3)."""
     manifest = json.loads((book / MANIFEST).read_text(encoding="utf-8"))
     files: dict[str, str] = manifest["files"]
     registry: list[dict[str, Any]] = read_json(book, REGISTRY)["entries"]
@@ -76,9 +78,11 @@ def id_digests(book: Path, tasks: Path) -> Digests:
         if task.grader not in GRADERS:
             raise ReleaseRecordError(f"{path.name}: grader {task.grader!r} is not registered")
         # The task's own sha256 is of its file's bytes (tasks.task.load_task).
-        task_digests[task.task_id] = hashlib.sha256(
-            f"task\0{task.sha256}\ngrader\0{GRADERS[task.grader].sha256()}\n".encode()
-        ).hexdigest()
+        lines = f"task\0{task.sha256}\ngrader\0{GRADERS[task.grader].sha256()}\n"
+        key = keys / manifest["version"] / f"{task.task_id}.json" if keys is not None else None
+        if key is not None and key.is_file():
+            lines += f"key\0{hashlib.sha256(key.read_bytes()).hexdigest()}\n"
+        task_digests[task.task_id] = hashlib.sha256(lines.encode()).hexdigest()
     return {"households": households, "tasks": task_digests}
 
 

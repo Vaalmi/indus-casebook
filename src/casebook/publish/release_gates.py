@@ -4,17 +4,21 @@ A release bundle fails on: a tax or RMD answer key, a tax answer sheet or a verd
 combined score; a household with a failed check; a real ticker or security name; a private task, fixture or key; a
 filled-form page with no watermark; a file with no notice; a result with no tool, version, model or date; anything
 from `out/real/`; and a home-folder path (the owner's decision of 19 November 2026,
-docs/decisions/2026-11-19-slice16-release-choices.md, choices 2 and 5a).
+docs/decisions/2026-11-19-slice16-release-choices.md, choices 2 and 5a). It also fails on any file the release does
+not put where it sits (`layout_problems`): what is not one of the release's own files does not ship, whatever it holds
+(reviewers A and B, slice 16 round 1).
 
 The gate tells held material from what may ship by where it comes from (docs/PLAN.md, "What stays held for tax and
-RMD"): a held task's key from `out/keys/` and a household's tax summary are refused by their bytes, and by their
-content wherever it is copied into a JSON document; the registry's justified conclusions are not.
+RMD"): each held task's key, computed here as the runner computes it on both builds, and a household's tax summary are
+refused by their bytes, and by their content wherever it is copied into a JSON document; the registry's justified
+conclusions are not.
 
 Every file of the bundle is read, and every member of every zip in it. The bundle is read through a scan tree, a
 folder of links to its files in which each zip is unpacked into a folder named for it with a `!`, so the gates that
 read a folder read the members too, and a member is named as `packets/HH-4821.zip!households/...`.
 """
 
+import csv
 import hashlib
 import io
 import json
@@ -32,30 +36,37 @@ from reportlab.lib.pagesizes import LETTER
 from reportlab.lib.utils import simpleSplit
 
 from casebook.checks import check_book
+from casebook.graders.registry import grader
 from casebook.model.files import (
     ALIASES,
     MANIFEST,
     METADATA,
+    PRICES_CSV,
+    SEALED_HOUSEHOLDS,
+    SECURITIES_CSV,
     TAX_SUMMARY,
     FileFormatError,
     Manifest,
     is_tax_summary,
+    json_text,
     read_manifest,
 )
 from casebook.notice import NOTICE, contains_notice
 from casebook.publish.gates import (
     held_page_problems,
     real_identifier_problems,
+    run_layout_problems,
     synthetic_problems,
     unmapped_record_problems,
 )
 from casebook.publish.private_set import private_set_problems
 from casebook.publish.zips import ZipError, read_zip
 from casebook.published_text import UnscannableFileError, html_visible_text, pdf_pages_text, text_of
+from casebook.site import FEATURED, data_root
 from casebook.site.results import private_outcomes_problems
 from casebook.site.tasks import UnnamedResultError, is_held, require_named
 from casebook.sources.pdf import FOOTER_SIZE, MARGIN
-from casebook.tasks.task import load_task
+from casebook.tasks import task as task_files
 from casebook.watermark import stamped_problems
 
 NOTICE_FILE = "NOTICE.txt"
@@ -67,6 +78,10 @@ RESULTS = "results"
 KEYS = "keys"
 SITE_RUNS = "data/runs"
 HOUSEHOLDS = "households"
+PACKETS = "packets"
+IMAGES = "docs/images"
+RETURNS = "returns"
+DOCUMENTS = "documents"
 # The book's own JSON: what a build writes under these folders, and its manifest and metadata. It cannot carry the
 # notice without changing book bytes, so the metadata.json or NOTICE.txt of the folder it ships in covers it.
 BOOK_FOLDERS = frozenset({HOUSEHOLDS, "securities", "sealed"})
@@ -84,16 +99,44 @@ _SCORE_SHOWN = re.compile(
 # A path in someone's home folder (choice 5a); not the same words inside a URL or a longer path.
 _HOME = re.compile(r"(?<![\w.~/-])(?:/Users/[^/\s\"'<>]+/|/home/[^/\s\"'<>]+/)|(?<!\w)[A-Za-z]:\\+Users\\+", re.I)
 
+# The bundle's layout, as `_stage` in release.py writes it: every file the release puts there, and nothing else.
+TOP_FILES = frozenset(
+    {"README.md", "LICENSE", "LICENSE-DATA", NOTICE_FILE, "release.json", "errata.json", "freeze.json"}
+)
+FIXED_FILES = frozenset(
+    {
+        f"{RESULTS}/private-outcomes.json",
+        "audit/audit-log.csv",
+        "audit/AUDIT.md",
+        f"audit/{NOTICE_FILE}",
+        f"{KEYS}/{NOTICE_FILE}",
+        f"{SITE}/{NOTICE_FILE}",
+        f"{IMAGES}/{NOTICE_FILE}",
+    }
+)
+_SITE_PAGE = re.compile(r"(?:(?:tasks|households)/)?[^/]+\.html")
+_PACKET_ZIP = re.compile(r"(?P<household>HH-\d{4})\.zip")
+# A case packet's members (publish/packets.py): its household's source sets, the shared securities files and metadata,
+# its notice and its answer sheet.
+PACKET_FILES = frozenset({SECURITIES_CSV, PRICES_CSV, METADATA, NOTICE_FILE, "answer-sheet.json"})
+SOURCE_SETS = ("custodian", "portfolio", "crm", DOCUMENTS)
+# Where a PDF may sit: a household's documents and a sealed return, in the book and in the site's copy of it.
+_BOOK_PDF = re.compile(rf"{HOUSEHOLDS}/HH-\d{{4}}/{DOCUMENTS}/.+\.pdf|sealed/HH-\d{{4}}/{RETURNS}/.+\.pdf")
+
 
 @dataclass(frozen=True)
 class HeldMaterial:
-    """What the preview release never ships. `tasks`: each held task's ID and its justified conclusion. `answers`:
-    the sha256 of each held key's and each tax summary's bytes, and of its content as canonical JSON less any
-    notice. `real_only`: the sha256 of each file of the real-ticker build that the default build does not have."""
+    """What the preview release never ships, and the little it ships that the gate cannot read. `tasks`: each held
+    task's ID and its justified conclusion. `answers`: the sha256 of each held key's and each tax summary's bytes,
+    and of its content as canonical JSON less any notice. `real_only`: the sha256 of each file of the real-ticker
+    build that the default build does not have. `open_tasks`: the public tasks that are not held, whose keys ship.
+    `images`: the sha256 of each of the README's committed PNG screenshots, by file name."""
 
     tasks: dict[str, str]
     answers: frozenset[str]
     real_only: frozenset[str]
+    open_tasks: frozenset[str]
+    images: dict[str, str]
 
 
 def _digest(data: bytes) -> str:
@@ -112,19 +155,37 @@ def _book_files(book: Path) -> dict[str, bytes]:
     return {name: (book / name).read_bytes() for name in read_manifest(book).files}
 
 
-def held_material(book: Path, real_book: Path | None, tasks: Path, held_keys: Path) -> HeldMaterial:
+def _key_bytes(task: task_files.Task, book: Path) -> bytes:
+    """A task's key as `casebook run` computes and writes it (runner/session.py, `write_key`)."""
+    return json_text(grader(task.grader).key(book, task.household_id, task.grader_params).to_dict()).encode()
+
+
+def held_material(book: Path, real_book: Path | None, tasks: Path, held_keys: Path, images: Path) -> HeldMaterial:
     """`book`: the default build; `real_book`: the real-ticker build (out/real/<version>), if there is one; `tasks`:
-    the public task files; `held_keys`: where `casebook run` writes held keys (out/keys), under the book's version."""
-    held = {t.task_id: t.justified_conclusion for t in map(load_task, sorted(tasks.glob("T-*.toml"))) if is_held(t)}
+    the public task files; `held_keys`: where `casebook run` writes held keys (out/keys), under the book's version;
+    `images`: the repo's docs/images, the README's committed images.
+
+    Each held task's key is computed here on both builds, as the runner computes it, so a fresh clone with no
+    out/keys/ still knows it (reviewers A and B, slice 16 round 1); a key in out/keys/ counts as well."""
+    loaded = [task_files.load_task(path) for path in sorted(tasks.glob("T-*.toml"))]
+    held_tasks = [t for t in loaded if is_held(t)]
     version = read_manifest(book).version
-    keys = [held_keys / version / f"{task_id}.json" for task_id in sorted(held)]
+    builds = [book, *([real_book] if real_book is not None else [])]
+    answers = [_key_bytes(task, build) for task in held_tasks for build in builds]
+    keys = [held_keys / version / f"{task.task_id}.json" for task in held_tasks]
+    answers += [key.read_bytes() for key in keys if key.is_file()]
     default = _book_files(book)
     real = _book_files(real_book) if real_book is not None else {}
-    answers = [key.read_bytes() for key in keys if key.is_file()]
     answers += [data for files in (default, real) for name, data in files.items() if is_tax_summary(name)]
     digests = {_digest(a) for a in answers} | {_canonical(json.loads(a)) for a in answers}
     real_only = {_digest(d) for d in real.values()} - {_digest(d) for d in default.values()}
-    return HeldMaterial(held, frozenset(digests), frozenset(real_only))
+    return HeldMaterial(
+        tasks={t.task_id: t.justified_conclusion for t in held_tasks},
+        answers=frozenset(digests),
+        real_only=frozenset(real_only),
+        open_tasks=frozenset(t.task_id for t in loaded if not is_held(t)),
+        images={p.name: _digest(p.read_bytes()) for p in sorted(images.glob("*.png"))},
+    )
 
 
 # The scan tree.
@@ -196,10 +257,16 @@ def _walk(value: Any) -> Iterator[tuple[str, Any]]:
 
 
 def _objects(value: Any) -> Iterator[Any]:
-    """The value, if it is an object, and every object inside it."""
+    """The value, if it is an object, and every object inside it at any depth, a list's elements among them."""
     if isinstance(value, dict):
         yield value
-    yield from (child for _, child in _walk(value) if isinstance(child, dict))
+        children: Any = value.values()  # pyright: ignore[reportUnknownMemberType]
+    elif isinstance(value, list):
+        children = value
+    else:
+        return
+    for child in children:
+        yield from _objects(child)
 
 
 def _graded(record: Any) -> bool:
@@ -209,6 +276,25 @@ def _graded(record: Any) -> bool:
     return record.get("grade") is not None or regraded.get("grade_before") is not None  # pyright: ignore[reportUnknownMemberType]
 
 
+def _is_record(document: Any) -> bool:
+    """A run record's shape: an object naming its run and its task."""
+    return isinstance(document, dict) and "run_id" in document and "task_id" in document
+
+
+def _record_problems(name: str, records: list[dict[str, Any]], held: HeldMaterial) -> list[str]:
+    """A run record outside the two run folders: refused for where it sits, and held to the checks the records in
+    them pass (reviewers A and B, slice 16 round 1), so its other faults are named too."""
+    problems = [f"{name}: a run record outside {RUNS}/ and {SITE}/{SITE_RUNS}/"]
+    if any(r.get("task_id") in held.tasks and _graded(r) for r in records):
+        problems.append(f"{name}: a held task's run record carries its grade")
+    for record in records:
+        try:
+            require_named(record, name)
+        except UnnamedResultError as error:
+            problems.append(str(error))
+    return problems
+
+
 def _json_problems(name: str, documents: list[Any], held: HeldMaterial, in_zip: bool) -> list[str]:
     problems: list[str] = []
     scores = sorted({k for d in documents for k, _ in _walk(d) if _SCORE_KEY.fullmatch(k)})
@@ -216,12 +302,10 @@ def _json_problems(name: str, documents: list[Any], held: HeldMaterial, in_zip: 
         problems.append(f"{name}: a combined score ({', '.join(scores)})")
     if any(_canonical(o) in held.answers for d in documents for o in _objects(d)):
         problems.append(f"{name}: holds a held task's answer key or a tax answer sheet")
-    # The run records beside the site and in it are read by held_page_problems; one in a zip is read here.
-    if in_zip and any(
-        isinstance(d, dict) and d.get("task_id") in held.tasks and _graded(d)  # pyright: ignore[reportUnknownMemberType]
-        for d in documents
-    ):
-        problems.append(f"{name}: a held task's run record carries its grade")
+    # The records in the two run folders are read by held_page_problems and _result_problems; any other is read here.
+    records = [d for d in documents if _is_record(d)]
+    if records and (in_zip or not name.startswith((f"{RUNS}/", f"{SITE}/{SITE_RUNS}/"))):
+        problems += _record_problems(name, records, held)
     if PurePosixPath(name).name == METADATA and isinstance(documents[0], dict):
         securities = documents[0].get("securities")  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
         if securities != ALIASES:
@@ -237,8 +321,9 @@ def _scanned_text(name: str, data: bytes) -> str:
 
 
 def _page_text(name: str, data: bytes) -> str | None:
-    """The words a reader sees in a page, a Markdown file or a text file; None for any other file."""
-    if name.endswith(".html"):
+    """The words a reader sees in a page, an image drawn as SVG, a Markdown file or a text file; None for any other
+    file."""
+    if name.endswith((".html", ".svg")):
         return html_visible_text(data.decode("utf-8"))
     if name.endswith((".md", ".txt")):
         return data.decode("utf-8")
@@ -257,6 +342,19 @@ def _stamp_problems(data: bytes) -> tuple[str, ...]:
     return tuple(stamped_problems("", data))
 
 
+def _is_stamped_pdf(name: str, data: bytes) -> bool:
+    """A PDF that must carry the watermark and the notice on every page: one under any `returns/` folder, a zip's
+    among them, and any with a form, wherever it sits. A flattened return has no form (reviewer B, slice 16 round 1)."""
+    return name.endswith(".pdf") and (RETURNS in re.split(rf"[/{ZIP_MARK}]", name)[:-1] or _is_filled_form(data))
+
+
+def _csv_score_problems(name: str, data: bytes) -> list[str]:
+    """A CSV column named for a combined score (reviewer B, slice 16 round 1)."""
+    header = next(csv.reader(io.StringIO(data.decode("utf-8", errors="replace"))), [])
+    scores = sorted({h.strip() for h in header if re.fullmatch(_SCORE_WORDS, h.strip(), re.I)})
+    return [f"{name}: a combined score ({', '.join(scores)})"] if scores else []
+
+
 def _file_problems(name: str, data: bytes, held: HeldMaterial, in_zip: bool) -> list[str]:
     problems: list[str] = []
     digest = _digest(data)
@@ -271,10 +369,12 @@ def _file_problems(name: str, data: bytes, held: HeldMaterial, in_zip: bool) -> 
             problems += _json_problems(name, _json_documents(name, data), held, in_zip)
         except (UnicodeDecodeError, json.JSONDecodeError) as error:
             problems.append(f"{name}: not JSON ({error}), so it cannot be read")
+    if name.endswith(".csv"):
+        problems += _csv_score_problems(name, data)
     page = _page_text(name, data)
     if page is not None and _SCORE_SHOWN.search(" ".join(page.split())):
         problems.append(f"{name}: shows a combined score")
-    if name.endswith(".pdf") and _is_filled_form(data):
+    if _is_stamped_pdf(name, data):
         problems += [name + p for p in _stamp_problems(data)]
     home = _HOME.search(_scanned_text(name, data))
     if home:
@@ -295,8 +395,8 @@ def _notice_problem(name: str, relative: str, data: bytes, covered: Callable[[],
     """`relative`: the file's path from the root it ships in (the bundle, or its zip); `covered`: whether a
     metadata.json or NOTICE.txt carrying the notice sits at the root of the folder it ships in."""
     if name.endswith(".pdf"):
-        if _is_filled_form(data):
-            return None  # stamped_problems names each page of a filled form without the notice
+        if _is_stamped_pdf(name, data):
+            return None  # stamped_problems names each page of a return or a form without the notice
         bare = [n for n, t in enumerate(pdf_pages_text(data), 1) if not (contains_notice(t) or _has_footer(t))]
         return f"{name}: page {', '.join(map(str, bare))} without the notice" if bare else None
     try:
@@ -371,17 +471,170 @@ def _notice_problems(tree: Path, names: list[str], roots: list[str]) -> list[str
 # The bundle's parts.
 
 
-def _held_key_problems(names: list[str], held: HeldMaterial) -> list[str]:
-    return [
-        f"{_shown(n)}: the key of held task {PurePosixPath(n).stem}"
-        for n in names
-        if KEYS in PurePosixPath(n).parts[:-1] and PurePosixPath(n).stem in held.tasks
+# The layout (reviewers A and B, slice 16 round 1: anything copied into a published folder shipped).
+
+
+@dataclass(frozen=True)
+class _Layout:
+    """What the layout is read against: the bundle, its book's manifest (None if it cannot be read: named by
+    _household_problems), its featured households and the held material."""
+
+    bundle: Path
+    manifest: Manifest | None
+    featured: frozenset[str]
+    held: HeldMaterial
+
+    def same(self, name: str, other: str) -> bool:
+        """Whether the bundle's file `name` has the bytes of its file `other`."""
+        twin = self.bundle / other
+        return twin.is_file() and twin.read_bytes() == (self.bundle / name).read_bytes()
+
+
+def _featured(bundle: Path) -> frozenset[str]:
+    try:
+        households = json.loads((bundle / BOOK / SEALED_HOUSEHOLDS).read_text(encoding="utf-8"))["households"]
+        return frozenset(str(h["household_id"]) for h in households if h.get("set") == FEATURED)
+    except (OSError, ValueError, KeyError, TypeError, AttributeError):
+        return frozenset()
+
+
+def _book_problems(layout: _Layout, files: list[str]) -> list[str]:
+    """`book/` is exactly the files its manifest lists, less the tax summaries, and the manifest, each with the
+    bytes the manifest lists for it (reviewer B, slice 16 round 1: a sealed file changed under an old manifest)."""
+    if layout.manifest is None:
+        return []
+    listed = {n: d for n, d in layout.manifest.files.items() if not is_tax_summary(n)}
+    problems: list[str] = []
+    shipped = {name.removeprefix(f"{BOOK}/") for name in files if name.startswith(f"{BOOK}/")}
+    for own in sorted(shipped - {MANIFEST}):
+        name = f"{BOOK}/{own}"
+        if own not in listed:
+            problems.append(f"{name}: not a file the release's book ships (its manifest's, less the tax summaries)")
+        elif listed[own] != _digest((layout.bundle / name).read_bytes()):
+            problems.append(f"{name}: not the bytes the book's manifest lists for {own}")
+    problems += [f"{BOOK}/{own}: listed in the book's manifest, but missing" for own in sorted(listed.keys() - shipped)]
+    return problems
+
+
+def _pdf_problem(name: str, own: str) -> str | None:
+    """`own`: the PDF's path in the book (or the packet). A PDF ships only as a household's document or a sealed
+    return; any other is refused (reviewer B, slice 16 round 1: a flattened return copied into audit/)."""
+    if not name.endswith(".pdf") or _BOOK_PDF.fullmatch(own):
+        return None
+    return f"{name}: a PDF outside the book's {DOCUMENTS}/ and sealed {RETURNS}/"
+
+
+def _site_problem(layout: _Layout, name: str) -> str | None:
+    own = name.removeprefix(f"{SITE}/")
+    data = f"{data_root(layout.manifest.version)}/" if layout.manifest is not None else None
+    if data is not None and own.startswith(data):
+        book = f"{BOOK}/{own.removeprefix(data)}"
+        return _pdf_problem(name, own.removeprefix(data)) or (
+            None if layout.same(name, book) else f"{name}: not the release's {book}"
+        )
+    if own.startswith(f"{SITE_RUNS}/"):
+        runs = f"{RUNS}/{own.removeprefix(f'{SITE_RUNS}/')}"
+        return None if layout.same(name, runs) else f"{name}: not the release's {runs}"
+    if own.startswith(f"{PACKETS}/"):
+        return None if layout.same(name, own) else f"{name}: not the release's {own}"
+    if own == NOTICE_FILE or own.startswith("static/") or _SITE_PAGE.fullmatch(own):
+        return _pdf_problem(name, "")
+    return _pdf_problem(name, "") or f"{name}: not a file the release puts in {SITE}/"
+
+
+def _packet_problems(layout: _Layout, name: str) -> list[str]:
+    """A case packet: named for a featured household, holding its source sets, the shared securities files and
+    metadata as the release's book has them, its notice and its answer sheet, and nothing else."""
+    found = _PACKET_ZIP.fullmatch(name.removeprefix(f"{PACKETS}/"))
+    if found is None or found["household"] not in layout.featured:
+        return [f"{name}: not a featured household's case packet"]
+    try:
+        members = read_zip((layout.bundle / name).read_bytes())
+    except ZipError:
+        return []  # named by the scan tree
+    prefix = f"{HOUSEHOLDS}/{found['household']}/"
+    problems: list[str] = []
+    for member in sorted(members):
+        shown, parts = f"{name}{ZIP_MARK}{member}", member.split("/")
+        sourced = member.startswith(prefix) and len(parts) > 3 and parts[2] in SOURCE_SETS
+        if not (sourced or member in PACKET_FILES):
+            problems.append(f"{shown}: not a file a case packet holds")
+        elif problem := _pdf_problem(shown, member):
+            problems.append(problem)
+        elif member not in (NOTICE_FILE, "answer-sheet.json"):
+            twin = layout.bundle / BOOK / member
+            if not (twin.is_file() and twin.read_bytes() == members[member]):
+                problems.append(f"{shown}: not the release's {BOOK}/{member}")
+    return problems
+
+
+def _place_problems(layout: _Layout, name: str) -> list[str]:
+    """One file of the bundle, outside `book/` and `runs/` (read whole by _book_problems and run_layout_problems)."""
+    path = PurePosixPath(name)
+    top = path.parts[0]
+    if len(path.parts) == 1:
+        return [] if name in TOP_FILES else [f"{name}: not a file the release puts at its root"]
+    if name in FIXED_FILES:
+        return []
+    if top == SITE:
+        problem = _site_problem(layout, name)
+        return [problem] if problem else []
+    if top == PACKETS:
+        return _packet_problems(layout, name)
+    if top == KEYS:
+        if path.suffix == ".json" and path.stem in layout.held.tasks and len(path.parts) == 2:
+            return [f"{name}: the key of held task {path.stem}"]
+        if path.suffix == ".json" and path.stem in layout.held.open_tasks and len(path.parts) == 2:
+            return []
+        return [f"{name}: not the key of a public task that is not held"]
+    if name.startswith(f"{IMAGES}/") and len(path.parts) == 3:
+        if path.suffix == ".svg":
+            return []
+        if path.suffix == ".png" and _is_committed_image(name, (layout.bundle / name).read_bytes(), layout.held):
+            return []
+        if path.suffix == ".png":
+            return [f"{name}: not the committed {IMAGES}/{path.name}"]
+    return [_pdf_problem(name, "") or f"{name}: not a file the release puts there"]
+
+
+def _is_committed_image(name: str, data: bytes, held: HeldMaterial) -> bool:
+    """A PNG the gate cannot read ships only as one of the README's committed screenshots of the gated site
+    (tools/readme_images.py), at its place and with its bytes."""
+    path = PurePosixPath(name)
+    return str(path.parent) == IMAGES and path.suffix == ".png" and held.images.get(path.name) == _digest(data)
+
+
+def layout_problems(bundle: Path, held: HeldMaterial) -> list[str]:
+    """Every file of the bundle that is not one the release puts where it sits, named; members of the case packets
+    included. The layout is `_stage`'s in release.py."""
+    files = sorted(p.relative_to(bundle).as_posix() for p in bundle.rglob("*") if p.is_file())
+    try:
+        manifest: Manifest | None = read_manifest(bundle / BOOK)
+    except FileFormatError:
+        manifest = None
+    layout = _Layout(bundle, manifest, _featured(bundle), held)
+    problems = _book_problems(layout, files)
+    problems += [
+        p
+        for name in files
+        if name.startswith(f"{BOOK}/") and name != f"{BOOK}/{MANIFEST}"
+        for p in [_pdf_problem(name, name.removeprefix(f"{BOOK}/"))]
+        if p
     ]
+    if (bundle / RUNS).is_dir():
+        try:
+            problems += [f"{RUNS}/{p}" for p in run_layout_problems(bundle / RUNS)]
+        except (UnicodeDecodeError, json.JSONDecodeError, AttributeError) as error:
+            problems.append(f"{RUNS}/: a run's file cannot be read ({error})")
+    for name in files:
+        if not name.startswith((f"{BOOK}/", f"{RUNS}/")):
+            problems += _place_problems(layout, name)
+    return problems
 
 
-def _household_problems(bundle: Path, tree: Path, names: list[str]) -> list[str]:
-    """Every household the book's checks fail, and every household folder anywhere in the bundle that is not one
-    of the checked book's: a household its manifest does not list, or a file that is not the book's."""
+def _household_problems(bundle: Path, names: list[str]) -> list[str]:
+    """Every household the book's checks fail, and every household folder anywhere in the bundle that its manifest
+    does not list. That each file is the checked book's is the layout's to say (layout_problems)."""
     try:
         manifest: Manifest = read_manifest(bundle / BOOK)
     except FileFormatError as error:
@@ -396,11 +649,8 @@ def _household_problems(bundle: Path, tree: Path, names: list[str]) -> list[str]
         if HOUSEHOLDS not in parts[:-2]:
             continue
         at = parts.index(HOUSEHOLDS)
-        household, own = parts[at + 1], "/".join(parts[at:])
-        if household not in listed:
+        if parts[at + 1] not in listed:
             unlisted.add("/".join(parts[: at + 2]))
-        elif manifest.files.get(own) != _digest((tree / name).read_bytes()):
-            problems.append(f"{_shown(name)}: not the checked book's {own}")
     problems += [f"{_shown(f)}: a household the book's manifest does not list" for f in sorted(unlisted)]
     return problems
 
@@ -419,6 +669,8 @@ def _result_problems(bundle: Path) -> list[str]:
                 require_named(json.loads(path.read_text(encoding="utf-8")), f"{where}/{path.relative_to(runs)}")
             except UnnamedResultError as error:
                 problems.append(str(error))
+            except (UnicodeDecodeError, ValueError, AttributeError):
+                continue  # not a record: named by _file_problems and the layout
         problems += [f"{where}/{p}" for p in unmapped_record_problems(runs)]
     for path in sorted((bundle / RESULTS).rglob("*.json")):
         name = path.relative_to(bundle).as_posix()
@@ -444,10 +696,14 @@ def release_problems(bundle: Path, held: HeldMaterial) -> list[str]:
             in_zip = bool(_root_of(name, roots))
             problems += _file_problems(_shown(name), (tree / name).read_bytes(), held, in_zip)
         problems += _notice_problems(tree, names, roots)
-        problems += _held_key_problems(names, held)
+        problems += layout_problems(bundle, held)
         problems += _verdict_problems(bundle, held)
-        problems += _household_problems(bundle, tree, names)
+        problems += _household_problems(bundle, names)
         problems += _result_problems(bundle)
+        # The README's committed screenshots are known by their bytes; no gate can read a PNG's text.
+        for name in (n for n in names if n.startswith(f"{IMAGES}/") and n.endswith(".png")):
+            if _is_committed_image(name, (tree / name).read_bytes(), held):
+                (tree / name).unlink()
         for gate in (real_identifier_problems, synthetic_problems, private_set_problems):
             try:
                 problems += [_shown(p) for p in gate(tree)]

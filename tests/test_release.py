@@ -4,6 +4,7 @@ in tests/test_release_gates.py; here, that the release runs them and refuses on 
 
 import hashlib
 import json
+import re
 import shutil
 from datetime import date
 from pathlib import Path
@@ -24,12 +25,18 @@ ROOT = Path(__file__).resolve().parents[1]
 DAY = date(2026, 11, 19)
 
 
+def _empty_record(path: Path) -> None:
+    """A record of no release, whatever the owner has recorded in the committed one (reviewers A and B, slice 16
+    round 1, D1)."""
+    path.write_text(json.dumps({"notice": NOTICE, "releases": []}), encoding="utf-8")
+
+
 @pytest.fixture(scope="module")
 def released(full_book: Path, real_book: Path, tmp_path_factory: pytest.TempPathFactory) -> tuple[Path, Path]:
     """The bundle, built and recorded once from the committed release files against an empty record."""
     work = tmp_path_factory.mktemp("release")
     releases = work / "releases.json"
-    shutil.copyfile(ROOT / "published" / "releases.json", releases)
+    _empty_record(releases)
     inputs = ReleaseInputs(book=full_book, real_book=real_book, repo=ROOT, held_keys=work / "held-keys")
     return build_release(inputs, work / "out", DAY, releases), releases
 
@@ -44,6 +51,7 @@ def test_the_bundle_is_laid_out_as_the_owner_chose(released: tuple[Path, Path]) 
         "README.md",
         "audit",
         "book",
+        "docs",
         "errata.json",
         "freeze.json",
         "keys",
@@ -58,6 +66,10 @@ def test_the_bundle_is_laid_out_as_the_owner_chose(released: tuple[Path, Path]) 
     assert sorted(p.name for p in (bundle / "site" / "packets").iterdir()) == packets
     assert not list((bundle / "book").rglob("tax_summary.json"))
     assert (bundle / "audit" / "audit-log.csv").is_file()
+    # The README's images ship with it (reviewer A, slice 16 round 1, D2).
+    assert {p.name for p in (bundle / "docs" / "images").iterdir()} == {
+        p.name for p in (ROOT / "docs" / "images").iterdir()
+    } | {"NOTICE.txt"}
     assert contains_notice((bundle / "audit" / "AUDIT.md").read_text().split("\n\n")[0])
     assert len(list((bundle / "runs").rglob("*.json"))) == len(list((ROOT / "published" / "runs").rglob("*.json")))
 
@@ -126,7 +138,7 @@ def test_an_unrecorded_tag_is_refused_before_anything_is_built(
     full_book: Path, real_book: Path, tmp_path: Path
 ) -> None:
     releases = tmp_path / "releases.json"
-    shutil.copyfile(ROOT / "published" / "releases.json", releases)
+    _empty_record(releases)
     with pytest.raises(ReleaseError, match=r"v0\.1\.0 is not recorded in releases\.json"):
         build_release(_inputs(full_book, real_book, tmp_path), tmp_path / "out", releases=releases)
     assert not (tmp_path / "out").exists()
@@ -151,7 +163,7 @@ def test_a_bundle_failing_a_gate_is_refused_and_leaves_nothing(
     full_book: Path, real_book: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     releases = tmp_path / "releases.json"
-    shutil.copyfile(ROOT / "published" / "releases.json", releases)
+    _empty_record(releases)
     monkeypatch.setattr(release_module, "_stage", _stage_nothing)
     monkeypatch.setattr(release_module, "release_problems", _a_held_key)
     with pytest.raises(ReleaseError, match="a held key"):
@@ -179,6 +191,44 @@ def test_the_review_packet_copied_into_the_bundle_is_refused(
     shutil.copytree(bundle, copy)
     folder = write_review_packet(full_book, tmp_path / "review")
     shutil.copyfile(packet_zip(folder), copy / "review-packet.zip")
-    held = held_material(full_book, real_book, ROOT / "tasks" / "public", tmp_path / "keys")
+    held = held_material(full_book, real_book, ROOT / "tasks" / "public", tmp_path / "keys", ROOT / "docs" / "images")
     problems = release_problems(copy, held)
     assert any(p.startswith("review-packet.zip!tax_summaries/") for p in problems), problems[:5]
+
+
+def _repo_with(tmp_path: Path, stray: str) -> Path:
+    """A copy of the repo's published folders and tasks with one stray file added."""
+    repo = tmp_path / "repo"
+    shutil.copytree(ROOT / "published", repo / "published")
+    shutil.copytree(ROOT / "tasks" / "public", repo / "tasks" / "public")
+    (repo / "published" / stray).parent.mkdir(parents=True, exist_ok=True)
+    (repo / "published" / stray).write_text('{"task_id": "T-TAX-01", "grade": {"score": 100}}')
+    return repo
+
+
+@pytest.mark.parametrize(
+    "stray",
+    ["audit/held-result.json", "audit/export.zip", "results/summary.csv", "keys/0.0.1/T-TAX-01.json", "keys/x.json"],
+)
+def test_a_stray_file_in_a_published_folder_stops_the_release(
+    full_book: Path, real_book: Path, tmp_path: Path, stray: str
+) -> None:
+    """Reviewers A and B, slice 16 round 1: a file copied into published/audit/ shipped whatever it held."""
+    repo = _repo_with(tmp_path, stray)
+    _empty_record(tmp_path / "releases.json")
+    inputs = ReleaseInputs(book=full_book, real_book=real_book, repo=repo, held_keys=tmp_path / "keys")
+    with pytest.raises(ReleaseError, match=re.escape(f"published/{stray}: not")):
+        build_release(inputs, tmp_path / "out", DAY, tmp_path / "releases.json")
+
+
+def test_a_book_file_changed_after_its_build_stops_the_release(
+    full_book: Path, real_book: Path, tmp_path: Path
+) -> None:
+    """Reviewer B, slice 16 round 1, S6: a sealed fee changed without its manifest kept every ID's digest."""
+    _empty_record(tmp_path / "releases.json")
+    book = tmp_path / "0.0.1"
+    shutil.copytree(full_book, book)
+    events = book / "sealed" / "HH-7350" / "events.json"
+    events.write_text(events.read_text().replace("-1855.93", "1.00", 1))
+    with pytest.raises(ReleaseError, match=r"sealed/HH-7350/events\.json: its bytes"):
+        build_release(_inputs(book, real_book, tmp_path), tmp_path / "out", DAY, tmp_path / "releases.json")

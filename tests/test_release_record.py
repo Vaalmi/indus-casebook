@@ -147,8 +147,10 @@ def record(tmp_path: Path) -> Path:
     return path
 
 
-def test_the_published_record_holds_no_release_yet_and_carries_the_notice() -> None:
-    assert load_releases(RELEASES) == []
+def test_the_published_record_reads_and_carries_the_notice() -> None:
+    """Whatever the owner has recorded (reviewers A and B, slice 16 round 1, D1: recording a release before tagging
+    must not break the check)."""
+    load_releases(RELEASES)
     assert json.loads(RELEASES.read_text())["notice"] == NOTICE
 
 
@@ -271,3 +273,16 @@ def test_id_digests_cover_each_household_s_files_and_each_task_s_file_and_grader
     after = id_digests(book, TASKS)["tasks"]
     assert "T-REC-01" in {t for t in after if after[t] != digests["tasks"][t]}
     assert after["T-MTG-01"] == digests["tasks"]["T-MTG-01"]
+
+
+def test_a_task_s_published_key_is_part_of_what_it_means(book: Path, tmp_path: Path) -> None:
+    """Reviewer A, slice 16 round 1, S3: T-REC-01's published key edited (290.25 to 291.25) under the same book
+    version changed no digest, so the stable-ID rule let it ship."""
+    keys = tmp_path / "keys"
+    shutil.copytree(ROOT / "published" / "keys", keys)
+    before = id_digests(book, TASKS, keys)["tasks"]
+    assert before != id_digests(book, TASKS)["tasks"]
+    key = keys / "0.0.1" / "T-REC-01.json"
+    key.write_text(key.read_text().replace("290.25", "291.25"))
+    after = id_digests(book, TASKS, keys)["tasks"]
+    assert {t for t in after if after[t] != before[t]} == {"T-REC-01"}

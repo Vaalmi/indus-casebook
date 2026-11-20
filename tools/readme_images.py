@@ -314,7 +314,7 @@ def run_diagram(held: int, public: int) -> str:
         ),
     ]
     body += _box(32, 110, 196, 128, "Task file", ["prompt, fixtures,", "cutoff date,", "allowed tools"])
-    body += _box(32, 262, 196, 92, "Real-ticker build", ["out/real/: real tickers,", "invented prices"])
+    body += _box(32, 262, 196, 92, "Real-ticker build", ["out/real/: real tickers,", "synthetic prices"])
     body += _arrow(228, 174, 268, 174)
     body += [_elbow([(228, 308), (248, 308), (248, 190), (268, 190)])]
     body += _box(

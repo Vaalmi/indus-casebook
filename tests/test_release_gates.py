@@ -1,6 +1,7 @@
 """The preview release's gates (docs/PLAN.md, slice 16, criterion 1): each refusal planted into a small real bundle
 built from the book fixture and the committed published files, and the clean bundle passing."""
 
+import hashlib
 import io
 import json
 import os
@@ -33,6 +34,8 @@ PACKET = "HH-4821"
 NOTICE_TEXT = NOTICE + "\n"
 # A blank official form: a fillable PDF with no watermark and no notice.
 BLANK_FORM = Path(casebook.tax.forms.__file__).parent / "pdfs" / "f1040--2025.pdf"
+# The README's committed images (A-D2: the release ships them beside the README).
+IMAGES = ROOT / "docs" / "images"
 
 
 def _plain(text: str) -> str:
@@ -56,6 +59,19 @@ def _write(path: Path, data: str | bytes) -> None:
         path.write_bytes(data)
 
 
+def _pdf(text: str) -> bytes:
+    """A PDF with no form whose one page says `text`: what a filled return is once flattened."""
+    out = io.BytesIO()
+    SimpleDocTemplate(out).build([Paragraph(text, getSampleStyleSheet()["Normal"])])
+    return out.getvalue()
+
+
+def _key(task_id: str, book: Path) -> str:
+    """A task's key as `casebook run` writes it, computed on `book`."""
+    task = load_task(TASKS / f"{task_id}.toml")
+    return json_text(grader(task.grader).key(book, task.household_id, task.grader_params).to_dict())
+
+
 def _packet(book: Path, household: str, extra: dict[str, bytes] | None = None) -> bytes:
     manifest = read_manifest(book)
     files = {n: (book / n).read_bytes() for n in manifest.files if n.startswith(f"households/{household}/")}
@@ -75,8 +91,9 @@ def held_keys(book: Path, tmp_path_factory: pytest.TempPathFactory) -> Path:
 
 
 @pytest.fixture(scope="module")
-def held(book: Path, real_book: Path, held_keys: Path) -> HeldMaterial:
-    return held_material(book, real_book, TASKS, held_keys)
+def held(book: Path, real_book: Path, tmp_path_factory: pytest.TempPathFactory) -> HeldMaterial:
+    """As a fresh clone has it: no out/keys/ (reviewers A and B, slice 16 round 1)."""
+    return held_material(book, real_book, TASKS, tmp_path_factory.mktemp("no-held-keys"), IMAGES)
 
 
 @pytest.fixture(scope="module")
@@ -115,6 +132,9 @@ def clean(book: Path, tmp_path_factory: pytest.TempPathFactory) -> Path:
         errata=PUBLISHED / "errata.json",
     )
     _write(bundle / "site" / "NOTICE.txt", NOTICE_TEXT)  # the stylesheet carries no notice of its own
+    for path in sorted(IMAGES.iterdir()):
+        _write(bundle / "docs" / "images" / path.name, path.read_bytes())
+    _write(bundle / "docs" / "images" / "NOTICE.txt", NOTICE_TEXT)
     packet = _packet(book, PACKET)
     _write(bundle / "packets" / f"{PACKET}.zip", packet)
     _write(bundle / "site" / "packets" / f"{PACKET}.zip", packet)
@@ -138,23 +158,46 @@ def test_the_clean_bundle_passes(clean: Path, held: HeldMaterial) -> None:
     assert release_problems(clean, held) == []
 
 
-def test_the_held_material_is_the_held_tasks_keys_and_tax_summaries(held: HeldMaterial) -> None:
+def test_the_held_material_is_the_held_tasks_keys_and_tax_summaries(
+    held: HeldMaterial, book: Path, real_book: Path, tmp_path: Path
+) -> None:
     # 17 of the 24 public tasks are held (review/slice16-contract.md; docs/STATUS.md, slice 14).
     assert len(held.tasks) == 17
     assert {"T-TAX-01", "T-TAX-06", "T-REC-03", "T-MTG-01", "T-CMP-01"} <= held.tasks.keys()
     assert {"T-REC-01", "T-REC-02", "T-CMP-05"}.isdisjoint(held.tasks)
+    assert len(held.open_tasks) == 7 and {"T-REC-01", "T-REC-02", "T-CMP-05"} <= held.open_tasks
     assert held.real_only
+    assert sorted(held.images) == [
+        "household-planted-item.png",
+        "household-source-sets.png",
+        "results-page.png",
+        "site-home.png",
+        "task-arms.png",
+    ]
+    # A held key in out/keys/ still counts, though the gate computes every held key itself.
+    stale = tmp_path / VERSION / f"{HELD_TASK}.json"
+    stale.parent.mkdir()
+    stale.write_text(json_text({"stale": "a held key from an older book"}), encoding="utf-8")
+    assert hashlib.sha256(stale.read_bytes()).hexdigest() not in held.answers
+    with_stale = held_material(book, real_book, TASKS, tmp_path, IMAGES)
+    assert hashlib.sha256(stale.read_bytes()).hexdigest() in with_stale.answers
 
 
 # 1. A tax or RMD answer key, a tax answer sheet, or a verdict on a tax-lot or RMD task.
 
 
 def test_a_held_key_fails_by_its_bytes_its_content_or_its_place(
-    bundle: Path, held: HeldMaterial, held_keys: Path, book: Path
+    bundle: Path, held: HeldMaterial, held_keys: Path, book: Path, real_book: Path
 ) -> None:
+    # The gate's held material comes from no out/keys/, as in a fresh clone (A-S1, B-S1): each key is known from
+    # either build, and inside a list (B-S2).
     key_file = held_keys / VERSION / f"{HELD_TASK}.json"
     _write(bundle / "site" / "data" / "extra.json", key_file.read_bytes())
     _write(bundle / "keys" / f"{HELD_TASK}.json", _noticed(key_file))
+    _write(bundle / "audit" / "T-TAX-06.json", json_text({**json.loads(_key("T-TAX-06", book)), "notice": NOTICE}))
+    _write(bundle / "keys" / "old-tax-key.json", _key("T-REC-03", real_book))
+    export = {"notice": NOTICE, "answers": [json.loads(_key("T-MTG-01", book))]}
+    _write(bundle / "results" / "export.json", json_text(export))
     sheet = {
         "notice": NOTICE,
         "household_id": PACKET,
@@ -164,8 +207,12 @@ def test_a_held_key_fails_by_its_bytes_its_content_or_its_place(
         bundle / "packets" / f"{PACKET}.zip", _packet(book, PACKET, {"answer-sheet.json": json_text(sheet).encode()})
     )
     assert only(release_problems(bundle, held), "held task's answer key", "key of held task") == [
+        "audit/T-TAX-06.json: holds a held task's answer key or a tax answer sheet",
         f"keys/{HELD_TASK}.json: holds a held task's answer key or a tax answer sheet",
+        "keys/old-tax-key.json: a held task's answer key or a tax answer sheet",
+        "keys/old-tax-key.json: holds a held task's answer key or a tax answer sheet",
         f"packets/{PACKET}.zip!answer-sheet.json: holds a held task's answer key or a tax answer sheet",
+        "results/export.json: holds a held task's answer key or a tax answer sheet",
         "site/data/extra.json: a held task's answer key or a tax answer sheet",
         "site/data/extra.json: holds a held task's answer key or a tax answer sheet",
         f"keys/{HELD_TASK}.json: the key of held task {HELD_TASK}",
@@ -179,6 +226,7 @@ def test_a_tax_summary_fails(bundle: Path, held: HeldMaterial, book: Path) -> No
         f"book/{summary}: a held task's answer key or a tax answer sheet",
         f"book/{summary}: a tax summary, a tax answer sheet held until the tax review",
         f"book/{summary}: holds a held task's answer key or a tax answer sheet",
+        f"book/{summary}: not a file the release's book ships (its manifest's, less the tax summaries)",
     ]
 
 
@@ -204,6 +252,7 @@ def test_a_combined_score_fails(bundle: Path, held: HeldMaterial) -> None:
     keys = ["combined_score", "Overall-Score", "aggregatescore", "totalScore", "mean_score"]
     workflows = [{"workflow": "reconciliation", key: 87} for key in keys]
     _write(bundle / "results" / "scores.json", json_text({"notice": NOTICE, "workflows": workflows}))
+    _write(bundle / "audit" / "summary.csv", "workflow,Overall Score\nreconciliation,87\n")  # B-S4
     shown = {
         "results.html": "<p>Combined score: 87</p>",
         "index.html": "<table><tr><td>Overall score</td><td>92.5</td></tr></table>",
@@ -213,6 +262,7 @@ def test_a_combined_score_fails(bundle: Path, held: HeldMaterial) -> None:
         page = bundle / "site" / name
         _write(page, page.read_text().replace("</main>", html + "</main>"))
     assert only(release_problems(bundle, held), "combined score") == [
+        "audit/summary.csv: a combined score (Overall Score)",
         "results/scores.json: a combined score (Overall-Score, aggregatescore, combined_score, mean_score, totalScore)",
         "site/errata.html: shows a combined score",
         "site/index.html: shows a combined score",
@@ -228,10 +278,11 @@ def test_a_household_that_fails_a_check_fails(bundle: Path, held: HeldMaterial) 
         bundle / "book" / "households" / "HH-7350" / "custodian" / "positions.csv",
         "account_id,security_id,security,units,price,price_label,market_value,valuation_date,known_as_of\n",
     )
+    positions = "households/HH-7350/custodian/positions.csv"
     assert only(release_problems(bundle, held), "HH-7350") == [
+        f"book/{positions}: not the bytes the book's manifest lists for {positions}",
+        f"site/data/{VERSION}/{positions}: not the release's book/{positions}",
         "book/households/HH-7350: fails its checks",
-        "book/households/HH-7350/custodian/positions.csv: not the checked book's "
-        "households/HH-7350/custodian/positions.csv",
     ]
 
 
@@ -240,8 +291,10 @@ def test_a_household_the_checked_book_does_not_hold_fails(bundle: Path, held: He
     _write(bundle / "book" / "households" / "HH-0001" / "custodian" / "accounts.csv", (book / accounts).read_bytes())
     changed = (book / accounts).read_text().replace("joint_taxable", "individual_taxable", 1).encode()
     _write(bundle / "packets" / f"{PACKET}.zip", _packet(book, PACKET, {accounts: changed}))
-    assert only(release_problems(bundle, held), "HH-0001", "checked book") == [
-        f"packets/{PACKET}.zip!{accounts}: not the checked book's {accounts}",
+    assert only(release_problems(bundle, held), "HH-0001", "accounts.csv") == [
+        "book/households/HH-0001/custodian/accounts.csv: not a file the release's book ships (its manifest's, "
+        "less the tax summaries)",
+        f"packets/{PACKET}.zip!{accounts}: not the release's book/{accounts}",
         "book/households/HH-0001: a household the book's manifest does not list",
     ]
 
@@ -283,9 +336,22 @@ def test_a_private_task_file_fails(bundle: Path, held: HeldMaterial) -> None:
 
 def test_an_unstamped_filled_form_fails_wherever_it_sits(bundle: Path, held: HeldMaterial) -> None:
     _write(bundle / "site" / "data" / "form.pdf", BLANK_FORM.read_bytes())
-    problems = only(release_problems(bundle, held), "form.pdf")
+    # A filled return flattened has no form: under returns/ it is still held to the watermark, and anywhere but the
+    # book's documents and returns it is refused (B-S5).
+    flattened = _pdf(f"Form 1040, filled. {NOTICE}")
+    _write(bundle / "audit" / "returns" / "f1040.pdf", flattened)
+    _write(bundle / "audit" / "export.pdf", flattened)
+    problems = release_problems(bundle, held)
     assert "site/data/form.pdf: page 1 has no 'UNREVIEWED' watermark" in problems
     assert "site/data/form.pdf: page 1 does not carry the notice" in problems
+    assert only(problems, "watermark", "PDF") == [
+        "audit/returns/f1040.pdf: page 1 has no 'UNREVIEWED' watermark",
+        "site/data/form.pdf: page 1 has no 'UNREVIEWED' watermark",
+        "site/data/form.pdf: page 2 has no 'UNREVIEWED' watermark",
+        "audit/export.pdf: a PDF outside the book's documents/ and sealed returns/",
+        "audit/returns/f1040.pdf: a PDF outside the book's documents/ and sealed returns/",
+        "site/data/form.pdf: a PDF outside the book's documents/ and sealed returns/",
+    ]
 
 
 # 6. A file with no notice (choice 2).
@@ -305,9 +371,7 @@ def test_a_page_markdown_transcript_or_pdf_without_the_notice_fails(bundle: Path
     transcript = sorted((bundle / "runs" / OPEN_TASK).glob("*.transcript.jsonl"))[0]
     lines = transcript.read_text().splitlines()
     _write(transcript, "\n".join([*lines[1:], lines[0]]) + "\n")
-    out = io.BytesIO()
-    SimpleDocTemplate(out).build([Paragraph("A statement with no footer", getSampleStyleSheet()["Normal"])])
-    _write(bundle / "book" / "households" / PACKET / "documents" / "extra.pdf", out.getvalue())
+    _write(bundle / "book" / "households" / PACKET / "documents" / "extra.pdf", _pdf("A statement with no footer"))
     missing = "no notice, and no metadata.json or NOTICE.txt with it where it ships"
     assert only(release_problems(bundle, held), "notice") == [
         f"audit/AUDIT.md: {missing}",
@@ -404,4 +468,77 @@ def test_a_home_folder_path_fails(bundle: Path, held: HeldMaterial) -> None:
         f"runs/{OPEN_TASK}/{records[0].name}: a home-folder path ('/Users/someone/')",
         f"runs/{OPEN_TASK}/{records[1].name}: a home-folder path ('/home/someone/')",
         f"runs/{OPEN_TASK}/{records[2].name}: a home-folder path ('C:\\\\\\\\Users\\\\\\\\')",
+    ]
+
+
+# 10. A run record wherever it sits (A-S2, B-S3).
+
+
+def test_a_run_record_outside_the_run_folders_fails_and_is_held_to_their_checks(
+    bundle: Path, held: HeldMaterial
+) -> None:
+    held_record = json.loads(sorted((bundle / "runs" / HELD_TASK).glob("*.json"))[0].read_text())
+    _write(bundle / "audit" / "held-result.json", json_text({**held_record, "grade": {"score": 100}}))
+    open_record = json.loads(sorted((bundle / "runs" / OPEN_TASK).glob("*.json"))[0].read_text())
+    unnamed = json_text({**open_record, "cli_version": ""}).encode()
+    _write(bundle / "audit" / "export.zip", write_zip({"NOTICE.txt": NOTICE_TEXT.encode(), "record.json": unnamed}))
+    outside = "a run record outside runs/ and site/data/runs/"
+    assert only(release_problems(bundle, held), "run record", "lacks") == [
+        f"audit/export.zip!record.json: {outside}",
+        "audit/export.zip!record.json lacks the tool (cli_version), the version (cli_version), "
+        "so it cannot be published",
+        f"audit/held-result.json: {outside}",
+        "audit/held-result.json: a held task's run record carries its grade",
+    ]
+
+
+# 11. A file the release does not put where it sits (A-S2, B-S3 to B-S6).
+
+
+def test_a_file_the_release_does_not_put_there_fails(bundle: Path, held: HeldMaterial, book: Path) -> None:
+    _write(bundle / "audit" / "notes.txt", NOTICE_TEXT)
+    _write(bundle / "notes.txt", NOTICE_TEXT)
+    _write(bundle / "site" / "data" / "notes.txt", NOTICE_TEXT)
+    _write(bundle / "keys" / "T-XYZ-99.json", json_text({"notice": NOTICE}))
+    _write(bundle / "runs" / OPEN_TASK / "notes.txt", NOTICE_TEXT)
+    # A sealed file changed under the old manifest (B-S6): the site's copy is still the book's as built.
+    events = "sealed/HH-7350/events.json"
+    _write(bundle / "book" / events, (book / events).read_text().replace("-1855.93", "1.00"))
+    # A case packet for a household that is not featured, and a featured one's with files a packet never holds.
+    _write(bundle / "packets" / "HH-0001.zip", _packet(book, PACKET))
+    extra = {"keys/T-REC-01.json": b"{}", f"households/{PACKET}/notes.txt": NOTICE_TEXT.encode()}
+    packet = _packet(book, PACKET, extra)
+    _write(bundle / "packets" / f"{PACKET}.zip", packet)
+    _write(bundle / "site" / "packets" / f"{PACKET}.zip", packet)
+    assert only(release_problems(bundle, held), "not ", "listed") == [
+        f"book/{events}: not the bytes the book's manifest lists for {events}",
+        f"runs/{OPEN_TASK}/notes.txt: not <task>/<run id>.json or <task>/<run id>.transcript.jsonl",
+        "audit/notes.txt: not a file the release puts there",
+        "keys/T-XYZ-99.json: not the key of a public task that is not held",
+        "notes.txt: not a file the release puts at its root",
+        "packets/HH-0001.zip: not a featured household's case packet",
+        f"packets/{PACKET}.zip!households/{PACKET}/notes.txt: not a file a case packet holds",
+        f"packets/{PACKET}.zip!keys/T-REC-01.json: not a file a case packet holds",
+        f"site/data/{VERSION}/{events}: not the release's book/{events}",
+        "site/data/notes.txt: not a file the release puts in site/",
+    ]
+
+
+# 12. The README's images (A-D2): an SVG is read as text; a PNG ships only as a committed screenshot.
+
+
+def test_the_readme_images_are_read_or_known_by_their_bytes(bundle: Path, held: HeldMaterial) -> None:
+    images = bundle / "docs" / "images"
+    _write(images / "site-home.png", (IMAGES / "task-arms.png").read_bytes())
+    _write(bundle / "site" / "static" / "results-page.png", (IMAGES / "results-page.png").read_bytes())
+    chart = images / "results-chart.svg"
+    drawn = "<text>Overall score: 87</text><text>Johnson &amp; Johnson</text><text>/Users/someone/casebook</text>"
+    _write(chart, chart.read_text().replace("</svg>", drawn + "</svg>"))
+    assert only(release_problems(bundle, held), "results-chart.svg", ".png") == [
+        "docs/images/results-chart.svg: shows a combined score",
+        "docs/images/results-chart.svg: a home-folder path ('/Users/someone/')",
+        "docs/images/site-home.png: not the committed docs/images/site-home.png",
+        "docs/images/results-chart.svg: real name 'Johnson & Johnson'",
+        "site-home.png: no way to read this file's text, so it cannot be published",
+        "results-page.png: no way to read this file's text, so it cannot be published",
     ]
