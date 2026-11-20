@@ -39,8 +39,11 @@ READERS = frozenset({"Read", "Glob", "Grep"})
 HARMLESS = frozenset({"Skill", "TodoWrite", "AskUserQuestion"})
 HOUSEHOLD = re.compile(r"\bHH-\d{4}\b")
 MENTION = re.compile(r"(?:^|\s)@(\"[^\"]+\"|\S+)")
-# One command of the run that opens a prompt: Claude Code expands several skills typed together at its start.
-SKILL_COMMAND = re.compile(r"\s*/(?:([\w.-]+):)?([\w.-]+)(?![\w.:-])")
+# One command of the run that opens a prompt: Claude Code expands several skills typed together at its start. A
+# command is a whole word, ended by whitespace or the prompt's end, and each after the first follows whitespace, so
+# the folders of a path are never read as commands (reviewer A, slice 15's targeted check).
+FIRST_COMMAND = re.compile(r"\s*/(?:([\w.-]+):)?([\w.-]+)(?=\s|$)")
+NEXT_COMMAND = re.compile(r"\s+/(?:([\w.-]+):)?([\w.-]+)(?=\s|$)")
 WILDCARD = re.compile(r"[*?\[{]")
 
 JSON = dict[str, Any]
@@ -131,14 +134,12 @@ def skill_in_prompt(prompt: str) -> bool:
     """Whether the run of commands opening the prompt types one of the plugin's skills, first or stacked after
     another. A skill only named later in the prompt, or quoted, is not invoked by it (reviewer A, slice 15 round 2);
     one that does run is held by its expansion or its Skill call."""
-    position = 0
-    while True:
-        match = SKILL_COMMAND.match(prompt, position)
-        if match is None:
-            return False
+    match = FIRST_COMMAND.match(prompt)
+    while match is not None:
         if match.group(2) in SKILLS and match.group(1) in (None, PLUGIN):
             return True
-        position = match.end()
+        match = NEXT_COMMAND.match(prompt, match.end())
+    return False
 
 
 # ---- judging a call --------------------------------------------------------------------------------------------

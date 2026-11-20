@@ -215,6 +215,10 @@ def test_another_command_s_expansion_does_not_gate(sample: Path, name: str) -> N
         "please run /indus-casebook:meeting-follow-up, then summarise",
         "/commit with args /indus-casebook:tax-lot-rmd",
         "Try `/tax-lot-rmd HH-5271` later",
+        # Reviewer A, slice 15's targeted check: the folders of a path are not commands.
+        f"/summarize {ROOT / 'plugin' / 'skills' / 'tax-lot-rmd' / 'SKILL.md'}",
+        "/summarize/tax-lot-rmd",
+        "/tax-lot-rmd/SKILL.md",
     ],
 )
 def test_other_commands_do_not_gate(sample: Path, prompt: str) -> None:

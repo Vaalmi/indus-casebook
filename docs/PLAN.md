@@ -336,9 +336,9 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 
 - [ ] The plugin installs in Claude from the repo and ships the sample book (the 20 featured households, aliases only) inside it
 - [ ] Each of the four skills runs on a sample household and its output shows the sources it used and the notice
-- [ ] The plugin accepts only household IDs in the sample book's manifest and offers no way to load other files (a test passes a path outside the book)
+- [x] The plugin accepts only household IDs in the sample book's manifest and offers no way to load other files (a test passes a path outside the book)
 - [ ] Runs in the real delivery environment: the owner installs the plugin in Claude and runs each skill once
-- [ ] The one check command passes
+- [x] The one check command passes
 
 ### Slice 16: Release the preview v0.1 (week 14)
 
