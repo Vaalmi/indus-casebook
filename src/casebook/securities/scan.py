@@ -22,6 +22,10 @@ PRODUCT_ACRONYMS = frozenset(
 # mixed-case run of letters can spell a ticker ("…EDugH7Rew/Csco/eXK…"). A ticker in prose is never inside one.
 _OPAQUE = frozenset("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=")
 OPAQUE_RUN = 40
+# What marks a run as encoded, not prose: a stretch between its separators long enough, and mixing digits with
+# upper- and lower-case letters, as random base64 always does and a list of tickers or words never does ("Msft/Aapl/
+# Csco/…", "vti/vxus/bnd/…": the whole-branch review's targeted check, both reviewers).
+_ENCODED_PIECE = re.compile(r"(?=[A-Za-z0-9]*[0-9])(?=[A-Za-z0-9]*[a-z])(?=[A-Za-z0-9]*[A-Z])[A-Za-z0-9]{16,}")
 
 
 def _in_opaque_run(text: str, start: int, end: int) -> bool:
@@ -29,7 +33,8 @@ def _in_opaque_run(text: str, start: int, end: int) -> bool:
         start -= 1
     while end < len(text) and text[end] in _OPAQUE:
         end += 1
-    return end - start >= OPAQUE_RUN
+    run = text[start:end]
+    return len(run) >= OPAQUE_RUN and any(_ENCODED_PIECE.fullmatch(p) for p in re.split(r"[+/=]", run))
 
 
 @dataclass(frozen=True)

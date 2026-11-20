@@ -102,3 +102,17 @@ def test_a_ticker_spelled_by_chance_inside_base64_is_not_one_but_upper_case_stil
     assert scan.find(blob.replace("/Csco/", "/CSCO/")) == [RealIdentifier("CSCO", "ticker")]
     # A short run is prose, not base64: "Csco/Msft" is two tickers.
     assert scan.find("trim Csco/Msft today") == [RealIdentifier("Csco", "ticker"), RealIdentifier("Msft", "ticker")]
+
+
+@pytest.mark.parametrize(
+    "listed",
+    [
+        # The whole-branch review's targeted check: a list of tickers as long as base64 is still a list.
+        "Compare Msft/Aapl/Csco/Nvda/Amzn/Googl/Avgo/Qcom/Jnj holdings.",
+        "Security tickers: vti/vxus/bnd/msft/jnj/vea/vwo/vteb/vnq/vym",
+        "Vti/Vxus/Bnd/Msft/Jnj/Vea/Vwo/Vteb/Vnq/Vym/2025",
+    ],
+)
+def test_a_long_list_of_tickers_is_not_taken_for_base64(listed: str) -> None:
+    found = default_scan().find(listed)
+    assert len(found) == listed.count("/") + 1 - listed.count("/2025"), found

@@ -115,6 +115,13 @@ def test_the_mapper_maps_a_real_ticker_written_in_any_case() -> None:
     }
 
 
+def test_the_mapper_maps_a_long_list_of_tickers() -> None:
+    """The whole-branch review's targeted check, both reviewers: a slash list as long as base64 kept its tickers."""
+    mapped = map_to_aliases({"output": "Security tickers: vti/vxus/bnd/msft/jnj/vea/vwo/vteb/vnq/vym"})
+    assert mapped["output"].startswith("Security tickers: Larkspur Total Market Fund/")
+    assert "msft" not in mapped["output"] and "vym" not in mapped["output"]
+
+
 def test_a_household_absent_from_the_manifest_is_refused_before_the_key_is_computed(
     tmp_path: Path, real_book: Path, standin_cli: StandIn, capsys: pytest.CaptureFixture[str]
 ) -> None:
