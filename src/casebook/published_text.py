@@ -14,6 +14,8 @@ from typing import Any
 from pypdf import PdfReader
 
 TEXT_SUFFIXES = (".csv", ".json", ".jsonl", ".md", ".txt", ".css", ".js")
+# Plain-text files a release ships by these names, with no suffix: the code's and the data's licences.
+TEXT_NAMES = ("LICENSE", "LICENSE-DATA")
 logging.getLogger("pypdf").setLevel(logging.ERROR)
 
 
@@ -110,7 +112,7 @@ def text_of(name: str, data: bytes) -> str:
     if name.endswith(".pdf"):
         # A filled form's values are in its fields, not its pages' text: both are read.
         return "\n".join((*pdf_pages_text(data), *pdf_field_values(data)))
-    if not name.endswith((".html", *TEXT_SUFFIXES)):
+    if not name.endswith((".html", *TEXT_SUFFIXES)) and name.rsplit("/", 1)[-1] not in TEXT_NAMES:
         raise UnscannableFileError(f"{name}: no way to read this file's text, so it cannot be published")
     text = data.decode("utf-8")
     if name.endswith(".html"):

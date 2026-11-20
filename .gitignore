@@ -1,5 +1,5 @@
 # Raw review and debate prompts and answers (docs/REVIEW_PROTOCOL.md §7)
-review/
+/review/
 .env
 .env.*
 !.env.example

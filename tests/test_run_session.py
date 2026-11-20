@@ -152,4 +152,5 @@ def test_release_files_are_kept_in_the_repo_so_a_tag_builds_the_task_pages() -> 
         str(PUBLISHED_RUNS).startswith(i.rstrip("/")) or str(PUBLISHED_KEYS).startswith(i.rstrip("/")) for i in ignored
     )
     workflow = (ROOT / ".github" / "workflows" / "pages.yml").read_text()
-    assert "uv run casebook site\n" in workflow
+    # Since slice 16 the release builds the site inside its bundle, from the same committed files.
+    assert "uv run casebook release --preview\n" in workflow

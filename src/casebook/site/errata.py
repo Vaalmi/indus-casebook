@@ -7,6 +7,8 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
+from casebook.notice import NOTICE
+
 ERRATA_FIELDS = ("version", "date", "correction", "ids")
 
 
@@ -51,8 +53,16 @@ def load_errata(path: Path | None) -> list[Correction]:
         data = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as error:
         raise ErrataError(f"{path.name} is not JSON: {error}") from error
-    if not isinstance(data, dict) or sorted(data) != ["entries"] or not isinstance(data["entries"], list):  # pyright: ignore[reportUnknownArgumentType]
-        raise ErrataError(f'{path.name}: the log is {{"entries": [...]}}')
+    # The published log carries the notice, as JSON the release copies from published/ does (the owner's decision
+    # of 19 November 2026, choice 2); where a log has one, it is the notice word for word.
+    if (
+        not isinstance(data, dict)
+        or not {"entries"} <= set(data) <= {"entries", "notice"}  # pyright: ignore[reportUnknownArgumentType]
+        or not isinstance(data["entries"], list)
+    ):
+        raise ErrataError(f'{path.name}: the log is {{"notice": ..., "entries": [...]}}')
+    if data.get("notice", NOTICE) != NOTICE:  # pyright: ignore[reportUnknownMemberType]
+        raise ErrataError(f"{path.name}: its notice is not the notice")
     entries: list[Any] = data["entries"]  # pyright: ignore[reportUnknownVariableType]
     corrections = [_correction(e, f"{path.name} entry {i + 1}") for i, e in enumerate(entries)]
     return sorted(corrections, key=lambda c: (c.date, c.version), reverse=True)

@@ -96,6 +96,37 @@ def _site(args: argparse.Namespace) -> int:
     return 0
 
 
+def _release(args: argparse.Namespace) -> int:
+    from datetime import date
+
+    from casebook.publish.release import ReleaseError, ReleaseInputs, build_release, bundle_summary
+    from casebook.runner.session import HELD_KEYS
+
+    if args.record and args.date is None:
+        print("release failed: --record needs --date YYYY-MM-DD, the release's date", file=sys.stderr)
+        return 1
+    inputs = ReleaseInputs(book=args.book, real_book=args.real_book, repo=Path(), held_keys=HELD_KEYS)
+    try:
+        bundle = build_release(inputs, args.out, date.fromisoformat(args.date) if args.record else None)
+    except ReleaseError as error:
+        print(f"release failed: {error}", file=sys.stderr)
+        return 1
+    print(f"{'recorded and wrote' if args.record else 'wrote'} the preview release {bundle_summary(bundle)}")
+    return 0
+
+
+def _review_packet(args: argparse.Namespace) -> int:
+    from casebook.publish.review_packet import ReviewPacketError, packet_zip, write_review_packet
+
+    try:
+        folder = write_review_packet(args.book, args.out)
+    except ReviewPacketError as error:
+        print(f"review packet failed: {error}", file=sys.stderr)
+        return 1
+    print(f"wrote the review packet into {folder} and {packet_zip(folder)}; it is never part of the public release")
+    return 0
+
+
 def _sample_book(args: argparse.Namespace) -> int:
     from casebook.publish.sample_book import SampleBookError, build_sample_book
 
@@ -396,6 +427,20 @@ def parser() -> argparse.ArgumentParser:
     sample.add_argument("--book", type=Path, default=DEFAULT_BOOK)
     sample.add_argument("--out", type=Path, default=DEFAULT_SAMPLE_BOOK)
     sample.set_defaults(run=_sample_book)
+    about = "write the preview release's bundle into out/release/<tag>/, gated whole (docs/PLAN.md, slice 16)"
+    release = commands.add_parser("release", help=about, description=about)
+    release.add_argument("--preview", action="store_true", required=True, help="the preview release, the only kind yet")
+    release.add_argument("--book", type=Path, default=DEFAULT_BOOK)
+    release.add_argument("--real-book", type=Path, default=REAL_BOOK, help="the real-ticker build the gate compares")
+    release.add_argument("--out", type=Path, default=Path("out/release"))
+    release.add_argument("--record", action="store_true", help="record this tag's IDs in published/releases.json")
+    release.add_argument("--date", help="the release's date, with --record (YYYY-MM-DD)")
+    release.set_defaults(run=_release)
+    about = "write the tax reviewer's packet into out/review/<book version>/ and its zip (never published)"
+    packet = commands.add_parser("review-packet", help=about, description=about)
+    packet.add_argument("--book", type=Path, default=DEFAULT_BOOK)
+    packet.add_argument("--out", type=Path, default=Path("out/review"))
+    packet.set_defaults(run=_review_packet)
     run = commands.add_parser("run", help="run one task under one arm on the CLI under test")
     run.add_argument("--task", required=True)
     run.add_argument("--arm", required=True, choices=("basic", "checklist", "skill"))

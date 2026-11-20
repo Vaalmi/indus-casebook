@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "indus-casebook"
-version = "0.0.1"
+version = "0.1.0"
 description = "A seeded book of synthetic households and graded advisor tasks, with the evidence published under aliases"
 requires-python = ">=3.13,<3.14"
 license = "Apache-2.0"

@@ -179,11 +179,12 @@ _EXPLANATION_TEXT = re.compile(r"justified conclusion", re.I)
 _CONCLUSION_SHOWN = 60
 
 
-def held_page_problems(site: Path, held: dict[str, str]) -> list[str]:
+def held_page_problems(site: Path, held: dict[str, str], runs: Path | None = None) -> list[str]:
     """Every held task's page and published run records: no verdict, no failure marking, no explanation of the
     expected output. `held`: each held task's ID and its justified conclusion. The page's words are read as a
     visitor sees them, entities decoded; a record is a held task's by its folder or by the task it names (reviewers
-    A and B, slice 14 round 1)."""
+    A and B, slice 14 round 1). `runs`: the run records' folder, the site's own (`data/runs`) by default; a release
+    also ships them beside the site."""
     problems: list[str] = []
     for task_id, conclusion in sorted(held.items()):
         page = site / "tasks" / f"{task_id}.html"
@@ -198,12 +199,13 @@ def held_page_problems(site: Path, held: dict[str, str]) -> list[str]:
             shown = " ".join(conclusion.split())[:_CONCLUSION_SHOWN]
             if _EXPLANATION.search(own) or _EXPLANATION_TEXT.search(text) or (shown and shown in text):
                 problems.append(f"{where}: a held task's page explains its expected output")
-    for record in sorted((site / "data" / "runs").rglob("*.json")):
+    for record in sorted((runs or site / "data" / "runs").rglob("*.json")):
         data = json.loads(record.read_text(encoding="utf-8"))
         if record.parent.name not in held and data.get("task_id") not in held:
             continue
         if data.get("grade") is not None or (data.get("regraded") or {}).get("grade_before") is not None:
-            problems.append(f"{record.relative_to(site).as_posix()}: a held task's run record carries its grade")
+            where = record.relative_to(site if runs is None else runs.parent).as_posix()
+            problems.append(f"{where}: a held task's run record carries its grade")
     return problems
 
 

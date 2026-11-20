@@ -68,6 +68,8 @@ def test_the_site_loads_with_no_account_or_install(published_site: Path) -> None
 
 def test_the_errata_log_has_its_page_saying_there_is_no_correction_yet(published_site: Path) -> None:
     assert load_errata(ERRATA) == []
+    # The release copies the log from published/, so it carries the notice (the owner's decision, 19 November 2026).
+    assert json.loads(ERRATA.read_text())["notice"] == NOTICE
     html = (published_site / "errata.html").read_text()
     assert 'data-correction="none"' in html and "No corrections yet" in html
 
@@ -84,7 +86,7 @@ def test_the_errata_log_lists_each_correction_with_its_version(book: Path, tmp_p
         {"version": "0.0.2", "date": "2026-12-01", "correction": "HH-4821's fee schedule.", "ids": ["HH-4821"]},
         {"version": "0.0.3", "date": "2027-01-10", "correction": "T-REC-01's key.", "ids": ["T-REC-01"]},
     ]
-    errata.write_text(json.dumps({"entries": entries}))
+    errata.write_text(json.dumps({"notice": NOTICE, "entries": entries}))
     build_site(book, tmp_path / "site", README, errata=errata)
     html = (tmp_path / "site" / "errata.html").read_text()
     assert re.findall(r'data-correction="([^"]+)"', html) == ["0.0.3", "0.0.2"]  # newest first
@@ -101,6 +103,9 @@ def test_the_errata_log_lists_each_correction_with_its_version(book: Path, tmp_p
         '{"entries": [{"version": "0.0.2", "date": "2026-12-01", "correction": "", "ids": []}]}',
         '{"entries": [{"version": "0.0.2", "date": "2026-12-01", "correction": "x", "ids": "HH-4821"}]}',
         "not json",
+        '{"notice": "UNVALIDATED SYNTHETIC RESEARCH PREVIEW.", "entries": []}',
+        '{"notice": null, "entries": []}',
+        '{"entries": [], "corrections": []}',
     ],
 )
 def test_a_malformed_errata_log_fails_the_site_build(book: Path, tmp_path: Path, log: str) -> None:

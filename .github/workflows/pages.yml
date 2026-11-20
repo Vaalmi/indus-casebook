@@ -37,10 +37,21 @@ jobs:
         run: test "v$(uv version --short)" = "${GITHUB_REF_NAME}"
       - run: uv run casebook build --seed 2026
       - run: uv run casebook check
-      - run: uv run casebook site
+      # The real-ticker build is read only by the release's gate, which refuses any file that came from it.
+      - run: uv run casebook build --real-tickers
+      # The release builds the site inside its bundle and gates the whole bundle (docs/PLAN.md, slice 16); it refuses
+      # a tag the owner has not recorded in published/releases.json with `casebook release --preview --record`.
+      - run: uv run casebook release --preview
+      - name: The release's site
+        run: echo "site=out/release/${GITHUB_REF_NAME}/site" >> "${GITHUB_OUTPUT}"
+        id: release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ github.ref_name }}
+          path: out/release/${{ github.ref_name }}
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: out/site
+          path: ${{ steps.release.outputs.site }}
 
   deploy:
     needs: build

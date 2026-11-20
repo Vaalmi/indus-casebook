@@ -13,9 +13,9 @@ from casebook.model.crm import parse_crm_diff
 from casebook.model.files import json_text, read_manifest
 from casebook.model.ledger import is_private_task_id
 from casebook.notice import NOTICE
-from casebook.publish.mapper import map_to_aliases
+from casebook.publish.mapper import map_to_aliases, path_rewriter, without_home_paths
 from casebook.publish.private_set import private_households
-from casebook.runner.config import SharedConfig
+from casebook.runner.config import REPO, SharedConfig
 from casebook.runner.freeze import require_freeze
 from casebook.runner.preflight import RunRefusedError, require_book_files, require_household, require_real_tickers
 from casebook.runner.record import REGRADED
@@ -168,7 +168,10 @@ def finish_run(
     if secret:
         # Nothing of a private run is published: its unmapped record stays in the private run folder.
         return record
-    mapped = map_to_aliases(record)
+    # Published with no home-folder path: the repo's own folders relative to it, the rest as placeholders (the
+    # owner's choice 5(a) of 19 November 2026). The private run folder keeps the record and transcript as run.
+    local = path_rewriter(REPO, private_root())
+    mapped = map_to_aliases(without_home_paths(record, local))
     if mapped["state"] == "graded":
         mapped["state"] = "mapped"
     out = published / task.task_id
@@ -178,7 +181,9 @@ def finish_run(
     transcript = folder / record["transcript"]["file"]
     if transcript.is_file():
         lines = [
-            json.dumps(map_to_aliases(json.loads(line))) for line in transcript.read_text().splitlines() if line.strip()
+            json.dumps(map_to_aliases(without_home_paths(json.loads(line), local)))
+            for line in transcript.read_text().splitlines()
+            if line.strip()
         ]
         (out / f"{record['run_id']}.transcript.jsonl").write_text(transcript_text(lines), encoding="utf-8")
     return public

@@ -65,4 +65,4 @@ The featured households' CRM notes are still template notes, which you were to w
 
 **If you don't decide.** Slice 16 waits, and slice 17 after it. Nothing is published either way.
 
-**Decision.** <The owner's answer, with the date.>
+**Decision.** As recommended: 1(b), 2 as written, 3(a), 4 as written, 5(a) and 6(a) (the owner, 19 November 2026). The owner added, in the same answer: "we need a really good readme with good visuals, not only mermaid diagrams but more". That joins slice 16's README criterion.

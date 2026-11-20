@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1272" height="1100" viewBox="0 0 1272 1100" role="img" font-family='system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif'>
+<title>Committed results by workflow and arm</title>
+<desc>For each named run set (tool, version, model, freeze and dates), the number of runs per workflow and arm that passed, failed, failed to run or are held, public tasks beside the private set's counts. No combined score.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#5b6670"/></marker>
+<pattern id="held" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#d5dbe0"/><line x1="0" y1="0" x2="0" y2="6" stroke="#8b96a0" stroke-width="2"/></pattern>
+</defs>
+<rect x="0.5" y="0.5" width="1271" height="1099" rx="12" fill="#ffffff" stroke="#d9dee3"/>
+<text x="32" y="44" font-size="22" fill="#1d2329" font-weight="700">Committed results: runs by workflow and arm</text>
+<text x="32" y="70" font-size="13" fill="#5b6670">Counted as the results page counts them, from published/runs and published/results/private-outcomes.json.</text>
+<text x="32" y="90" font-size="13" fill="#5b6670">Each workflow is counted on its own: there is no combined score. Runs under two names are never pooled.</text>
+<rect x="32" y="110" width="14" height="14" rx="2" fill="#1f6fb2"/>
+<text x="52" y="122" font-size="13" fill="#1d2329">passed</text>
+<rect x="122" y="110" width="14" height="14" rx="2" fill="#c43d2b"/>
+<text x="142" y="122" font-size="13" fill="#1d2329">failed</text>
+<rect x="212" y="110" width="14" height="14" rx="2" fill="#d9a21b"/>
+<text x="232" y="122" font-size="13" fill="#1d2329">failed run (never scored)</text>
+<rect x="435" y="110" width="14" height="14" rx="2" fill="url(#held)"/>
+<text x="455" y="122" font-size="13" fill="#1d2329">held: no verdict until the tax review</text>
+<line x1="32" y1="142" x2="1240" y2="142" stroke="#d9dee3"/>
+<text x="32" y="164" font-size="16" fill="#1d2329" font-weight="700">Claude Code 2.1.304 · model claude-opus-5-5</text>
+<text x="32" y="186" font-size="13" fill="#5b6670">high effort · before the freeze · 2026-11-16 to 2026-11-17</text>
+<text x="280" y="216" font-size="13" fill="#5b6670" font-weight="700">Public tasks</text>
+<text x="830" y="216" font-size="13" fill="#5b6670" font-weight="700">Private set (counts only)</text>
+<text x="32" y="248" font-size="14" fill="#1d2329" font-weight="700">Reconciliation and as-of</text>
+<text x="48" y="272.5" font-size="13" fill="#5b6670">Basic prompt</text>
+<rect x="280" y="262" width="10" height="12" rx="2" fill="#1f6fb2"/>
+<text x="300" y="272.5" font-size="13" fill="#1d2329">1 passed</text>
+<text x="830" y="272.5" font-size="13" fill="#5b6670">no private runs</text>
+<text x="48" y="296.5" font-size="13" fill="#5b6670">Checklist</text>
+<rect x="280" y="286" width="10" height="12" rx="2" fill="#1f6fb2"/>
+<text x="300" y="296.5" font-size="13" fill="#1d2329">1 passed</text>
+<text x="830" y="296.5" font-size="13" fill="#5b6670">no private runs</text>
+<text x="48" y="320.5" font-size="13" fill="#5b6670">Skill</text>
+<rect x="280" y="310" width="10" height="12" rx="2" fill="#1f6fb2"/>
+<text x="300" y="320.5" font-size="13" fill="#1d2329">1 passed</text>
+<text x="830" y="320.5" font-size="13" fill="#5b6670">no private runs</text>
+<text x="32" y="352" font-size="14" fill="#1d2329" font-weight="700">Meeting prep and follow-up</text>
+<text x="48" y="376.5" font-size="13" fill="#5b6670">Basic prompt</text>
+<rect x="280" y="366" width="10" height="12" rx="2" fill="url(#held)"/>
+<text x="300" y="376.5" font-size="13" fill="#1d2329">1 held</text>
+<text x="830" y="376.5" font-size="13" fill="#5b6670">no private runs</text>
+<text x="48" y="400.5" font-size="13" fill="#5b6670">Checklist</text>
+<rect x="280" y="390" width="10" height="12" rx="2" fill="url(#held)"/>
+<text x="300" y="400.5" font-size="13" fill="#1d2329">1 held</text>
+<text x="830" y="400.5" font-size="13" fill="#5b6670">no private runs</text>
+<text x="48" y="424.5" font-size="13" fill="#5b6670">Skill</text>
+<rect x="280" y="414" width="10" height="12" rx="2" fill="url(#held)"/>
+<text x="300" y="424.5" font-size="13" fill="#1d2329">1 held</text>
+<text x="830" y="424.5" font-size="13" fill="#5b6670">no private runs</text>
+<text x="32" y="456" font-size="13" fill="#5b6670">No runs under this name: Tax-lot and RMD review, Compliance review.</text>
+<line x1="32" y1="492" x2="1240" y2="492" stroke="#d9dee3"/>
+<text x="32" y="514" font-size="16" fill="#1d2329" font-weight="700">Claude Code 2.1.304 · model claude-opus-5-5</text>
+<text x="32" y="536" font-size="13" fill="#5b6670">high effort · freeze fb6e130a6022 · 2026-11-18 to 2026-11-19</text>
+<text x="280" y="566" font-size="13" fill="#5b6670" font-weight="700">Public tasks</text>
+<text x="830" y="566" font-size="13" fill="#5b6670" font-weight="700">Private set (counts only)</text>
+<text x="32" y="598" font-size="14" fill="#1d2329" font-weight="700">Reconciliation and as-of</text>
+<text x="48" y="622.5" font-size="13" fill="#5b6670">Basic prompt</text>
+<rect x="280" y="612" width="118" height="12" rx="2" fill="#1f6fb2"/>
+<rect x="400" y="612" width="22" height="12" rx="2" fill="#c43d2b"/>
+<rect x="424" y="612" width="70" height="12" rx="2" fill="url(#held)"/>
+<text x="504" y="622.5" font-size="13" fill="#1d2329">10 passed · 2 failed · 6 held</text>
+<rect x="830" y="612" width="58" height="12" rx="2" fill="#1f6fb2"/>
+<rect x="890" y="612" width="10" height="12" rx="2" fill="#c43d2b"/>
+<text x="910" y="622.5" font-size="13" fill="#1d2329">5 passed · 1 failed</text>
+<text x="48" y="646.5" font-size="13" fill="#5b6670">Checklist</text>
+<rect x="280" y="636" width="106" height="12" rx="2" fill="#1f6fb2"/>
+<rect x="388" y="636" width="34" height="12" rx="2" fill="#c43d2b"/>
+<rect x="424" y="636" width="70" height="12" rx="2" fill="url(#held)"/>
+<text x="504" y="646.5" font-size="13" fill="#1d2329">9 passed · 3 failed · 6 held</text>
+<rect x="830" y="636" width="70" height="12" rx="2" fill="#c43d2b"/>
+<text x="910" y="646.5" font-size="13" fill="#1d2329">6 failed</text>
+<text x="48" y="670.5" font-size="13" fill="#5b6670">Skill</text>
+<rect x="280" y="660" width="118" height="12" rx="2" fill="#1f6fb2"/>
+<rect x="400" y="660" width="22" height="12" rx="2" fill="#c43d2b"/>
+<rect x="424" y="660" width="70" height="12" rx="2" fill="url(#held)"/>
+<text x="504" y="670.5" font-size="13" fill="#1d2329">10 passed · 2 failed · 6 held</text>
+<rect x="830" y="660" width="46" height="12" rx="2" fill="#1f6fb2"/>
+<rect x="878" y="660" width="22" height="12" rx="2" fill="#c43d2b"/>
+<text x="910" y="670.5" font-size="13" fill="#1d2329">4 passed · 2 failed</text>
+<text x="32" y="702" font-size="14" fill="#1d2329" font-weight="700">Meeting prep and follow-up</text>
+<text x="48" y="726.5" font-size="13" fill="#5b6670">Basic prompt</text>
+<rect x="280" y="716" width="34" height="12" rx="2" fill="#1f6fb2"/>
+<rect x="316" y="716" width="178" height="12" rx="2" fill="url(#held)"/>
+<text x="504" y="726.5" font-size="13" fill="#1d2329">3 passed · 15 held</text>
+<rect x="830" y="716" width="70" height="12" rx="2" fill="url(#held)"/>
+<text x="910" y="726.5" font-size="13" fill="#1d2329">6 held</text>
+<text x="48" y="750.5" font-size="13" fill="#5b6670">Checklist</text>
+<rect x="280" y="740" width="34" height="12" rx="2" fill="#1f6fb2"/>
+<rect x="316" y="740" width="178" height="12" rx="2" fill="url(#held)"/>
+<text x="504" y="750.5" font-size="13" fill="#1d2329">3 passed · 15 held</text>
+<rect x="830" y="740" width="70" height="12" rx="2" fill="url(#held)"/>
+<text x="910" y="750.5" font-size="13" fill="#1d2329">6 held</text>
+<text x="48" y="774.5" font-size="13" fill="#5b6670">Skill</text>
+<rect x="280" y="764" width="34" height="12" rx="2" fill="#1f6fb2"/>
+<rect x="316" y="764" width="178" height="12" rx="2" fill="url(#held)"/>
+<text x="504" y="774.5" font-size="13" fill="#1d2329">3 passed · 15 held</text>
+<rect x="830" y="764" width="70" height="12" rx="2" fill="url(#held)"/>
+<text x="910" y="774.5" font-size="13" fill="#1d2329">6 held</text>
+<text x="32" y="806" font-size="14" fill="#1d2329" font-weight="700">Tax-lot and RMD review</text>
+<text x="48" y="830.5" font-size="13" fill="#5b6670">Basic prompt</text>
+<rect x="280" y="820" width="214" height="12" rx="2" fill="url(#held)"/>
+<text x="504" y="830.5" font-size="13" fill="#1d2329">18 held</text>
+<rect x="830" y="820" width="70" height="12" rx="2" fill="url(#held)"/>
+<text x="910" y="830.5" font-size="13" fill="#1d2329">6 held</text>
+<text x="48" y="854.5" font-size="13" fill="#5b6670">Checklist</text>
+<rect x="280" y="844" width="214" height="12" rx="2" fill="url(#held)"/>
+<text x="504" y="854.5" font-size="13" fill="#1d2329">18 held</text>
+<rect x="830" y="844" width="70" height="12" rx="2" fill="url(#held)"/>
+<text x="910" y="854.5" font-size="13" fill="#1d2329">6 held</text>
+<text x="48" y="878.5" font-size="13" fill="#5b6670">Skill</text>
+<rect x="280" y="868" width="214" height="12" rx="2" fill="url(#held)"/>
+<text x="504" y="878.5" font-size="13" fill="#1d2329">18 held</text>
+<rect x="830" y="868" width="70" height="12" rx="2" fill="url(#held)"/>
+<text x="910" y="878.5" font-size="13" fill="#1d2329">6 held</text>
+<text x="32" y="910" font-size="14" fill="#1d2329" font-weight="700">Compliance review</text>
+<text x="48" y="934.5" font-size="13" fill="#5b6670">Basic prompt</text>
+<rect x="280" y="924" width="34" height="12" rx="2" fill="#1f6fb2"/>
+<rect x="316" y="924" width="34" height="12" rx="2" fill="#d9a21b"/>
+<rect x="352" y="924" width="142" height="12" rx="2" fill="url(#held)"/>
+<text x="504" y="934.5" font-size="13" fill="#1d2329">3 passed · 3 failed run · 12 held</text>
+<rect x="830" y="924" width="70" height="12" rx="2" fill="url(#held)"/>
+<text x="910" y="934.5" font-size="13" fill="#1d2329">6 held</text>
+<text x="48" y="958.5" font-size="13" fill="#5b6670">Checklist</text>
+<rect x="280" y="948" width="46" height="12" rx="2" fill="#1f6fb2"/>
+<rect x="328" y="948" width="22" height="12" rx="2" fill="#d9a21b"/>
+<rect x="352" y="948" width="142" height="12" rx="2" fill="url(#held)"/>
+<text x="504" y="958.5" font-size="13" fill="#1d2329">4 passed · 2 failed run · 12 held</text>
+<rect x="830" y="948" width="70" height="12" rx="2" fill="url(#held)"/>
+<text x="910" y="958.5" font-size="13" fill="#1d2329">6 held</text>
+<text x="48" y="982.5" font-size="13" fill="#5b6670">Skill</text>
+<rect x="280" y="972" width="58" height="12" rx="2" fill="#1f6fb2"/>
+<rect x="340" y="972" width="10" height="12" rx="2" fill="#c43d2b"/>
+<rect x="352" y="972" width="142" height="12" rx="2" fill="url(#held)"/>
+<text x="504" y="982.5" font-size="13" fill="#1d2329">5 passed · 1 failed · 12 held</text>
+<rect x="830" y="972" width="70" height="12" rx="2" fill="url(#held)"/>
+<text x="910" y="982.5" font-size="13" fill="#1d2329">6 held</text>
+<text x="32" y="1036" font-size="13" fill="#1d2329" font-weight="700">UNVALIDATED SYNTHETIC RESEARCH PREVIEW. No performance claims are established.</text>
+<text x="32" y="1056" font-size="13" fill="#5b6670">Held: 17 of the 24 public tasks (every tax-lot and RMD task, and any whose key computes a tax figure).</text>
+<text x="32" y="1076" font-size="13" fill="#5b6670">Drawn by tools/readme_images.py. The results page has every run by task, arm and repeat.</text>
+</svg>

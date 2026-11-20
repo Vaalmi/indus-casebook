@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1272" height="620" viewBox="0 0 1272 620" role="img" font-family='system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif'>
+<title>How a task is run and graded</title>
+<desc>A task file and the real-ticker build give a sealed workspace that holds only the household's files known by the cutoff. The basic prompt, checklist and skill arms run on it under one configuration. Each answer is graded against an answer key computed by independent code. The run record is published under aliases; 17 of the 24 public tasks are held, with no verdict until the tax review.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#5b6670"/></marker>
+
+</defs>
+<rect x="0.5" y="0.5" width="1271" height="619" rx="12" fill="#ffffff" stroke="#d9dee3"/>
+<text x="32" y="44" font-size="22" fill="#1d2329" font-weight="700">How a task is run and graded</text>
+<text x="32" y="70" font-size="13" fill="#1d2329">One run is one task under one arm. The three arms share one configuration: only the instruction differs.</text>
+<rect x="32" y="110" width="196" height="128" rx="8" fill="#f5f7f9" stroke="#d9dee3"/>
+<text x="46" y="134" font-size="15" fill="#1d2329" font-weight="700">Task file</text>
+<text x="46" y="156" font-size="13" fill="#5b6670">prompt, fixtures,</text>
+<text x="46" y="174" font-size="13" fill="#5b6670">cutoff date,</text>
+<text x="46" y="192" font-size="13" fill="#5b6670">allowed tools</text>
+<rect x="32" y="262" width="196" height="92" rx="8" fill="#f5f7f9" stroke="#d9dee3"/>
+<text x="46" y="286" font-size="15" fill="#1d2329" font-weight="700">Real-ticker build</text>
+<text x="46" y="308" font-size="13" fill="#5b6670">out/real/: real tickers,</text>
+<text x="46" y="326" font-size="13" fill="#5b6670">invented prices</text>
+<path d="M228 174 L268 174" stroke="#5b6670" stroke-width="1.6" fill="none" marker-end="url(#arrow)"/>
+<path d="M228 308 L248 308 L248 190 L268 190" stroke="#5b6670" stroke-width="1.6" fill="none" marker-end="url(#arrow)"/>
+<rect x="268" y="110" width="250" height="244" rx="8" fill="#e8f1f8" stroke="#1f5f8b"/>
+<text x="282" y="134" font-size="15" fill="#1f5f8b" font-weight="700">Sealed workspace</text>
+<text x="282" y="156" font-size="13" fill="#5b6670">Only this household's files,</text>
+<text x="282" y="174" font-size="13" fill="#5b6670">each known by the cutoff</text>
+<text x="282" y="192" font-size="13" fill="#5b6670"></text>
+<text x="282" y="210" font-size="13" fill="#5b6670">No event log, registry or</text>
+<text x="282" y="228" font-size="13" fill="#5b6670">answer key reachable:</text>
+<text x="282" y="246" font-size="13" fill="#5b6670">the run refuses to start</text>
+<text x="282" y="264" font-size="13" fill="#5b6670"></text>
+<text x="282" y="282" font-size="13" fill="#5b6670">Held-out pairs refused</text>
+<text x="282" y="300" font-size="13" fill="#5b6670">unless the freeze matches</text>
+<text x="562" y="102" font-size="13" fill="#5b6670" font-weight="700">Three arms, same model, tools, limits</text>
+<rect x="562" y="110" width="230" height="72" rx="8" fill="#f5f7f9" stroke="#d9dee3"/>
+<text x="576" y="138" font-size="15" fill="#1d2329" font-weight="700">Basic prompt</text>
+<text x="576" y="160" font-size="13" fill="#5b6670">the task alone</text>
+<path d="M518 232 L562 146" stroke="#5b6670" stroke-width="1.6" fill="none" marker-end="url(#arrow)"/>
+<path d="M792 146 L836 232" stroke="#5b6670" stroke-width="1.6" fill="none" marker-end="url(#arrow)"/>
+<rect x="562" y="194" width="230" height="72" rx="8" fill="#f5f7f9" stroke="#d9dee3"/>
+<text x="576" y="222" font-size="15" fill="#1d2329" font-weight="700">Checklist</text>
+<text x="576" y="244" font-size="13" fill="#5b6670">the generic checklist</text>
+<path d="M518 232 L562 230" stroke="#5b6670" stroke-width="1.6" fill="none" marker-end="url(#arrow)"/>
+<path d="M792 230 L836 232" stroke="#5b6670" stroke-width="1.6" fill="none" marker-end="url(#arrow)"/>
+<rect x="562" y="278" width="230" height="72" rx="8" fill="#f5f7f9" stroke="#d9dee3"/>
+<text x="576" y="306" font-size="15" fill="#1d2329" font-weight="700">Skill</text>
+<text x="576" y="328" font-size="13" fill="#5b6670">the advisor skill</text>
+<path d="M518 232 L562 314" stroke="#5b6670" stroke-width="1.6" fill="none" marker-end="url(#arrow)"/>
+<path d="M792 314 L836 232" stroke="#5b6670" stroke-width="1.6" fill="none" marker-end="url(#arrow)"/>
+<rect x="836" y="172" width="170" height="120" rx="8" fill="#f5f7f9" stroke="#d9dee3"/>
+<text x="850" y="196" font-size="15" fill="#1d2329" font-weight="700">Answer</text>
+<text x="850" y="218" font-size="13" fill="#5b6670">fenced JSON:</text>
+<text x="850" y="236" font-size="13" fill="#5b6670">the finding, every</text>
+<text x="850" y="254" font-size="13" fill="#5b6670">figure and its file</text>
+<rect x="836" y="320" width="170" height="100" rx="8" fill="#ffffff" stroke="#d9dee3" stroke-dasharray="6 4"/>
+<text x="850" y="344" font-size="15" fill="#1d2329" font-weight="700">Answer key</text>
+<text x="850" y="366" font-size="13" fill="#5b6670">computed by code</text>
+<text x="850" y="384" font-size="13" fill="#5b6670">that never imports</text>
+<text x="850" y="402" font-size="13" fill="#5b6670">the generator</text>
+<rect x="1050" y="172" width="190" height="120" rx="8" fill="#f5f7f9" stroke="#d9dee3"/>
+<text x="1064" y="196" font-size="15" fill="#1d2329" font-weight="700">Grader</text>
+<text x="1064" y="218" font-size="13" fill="#5b6670">score out of 100,</text>
+<text x="1064" y="236" font-size="13" fill="#5b6670">three counts,</text>
+<text x="1064" y="254" font-size="13" fill="#5b6670">critical fails zero it</text>
+<path d="M1006 232 L1050 232" stroke="#5b6670" stroke-width="1.6" fill="none" marker-end="url(#arrow)"/>
+<path d="M1006 370 L1080 370 L1080 292" stroke="#5b6670" stroke-width="1.6" fill="none" marker-end="url(#arrow)"/>
+<rect x="562" y="488" width="444" height="100" rx="8" fill="#f5f7f9" stroke="#d9dee3"/>
+<text x="576" y="512" font-size="15" fill="#1d2329" font-weight="700">Published</text>
+<text x="576" y="534" font-size="13" fill="#5b6670">The run record, mapped back to aliases, in published/runs/.</text>
+<text x="576" y="552" font-size="13" fill="#5b6670">The task page and the results page show it.</text>
+<rect x="1050" y="488" width="190" height="100" rx="8" fill="#fff4d6" stroke="#c99a1a"/>
+<text x="1064" y="512" font-size="15" fill="#1d2329" font-weight="700">Held</text>
+<text x="1064" y="534" font-size="13" fill="#5b6670">17 of 24 tasks: tax-lot,</text>
+<text x="1064" y="552" font-size="13" fill="#5b6670">RMD or a tax figure.</text>
+<text x="1064" y="570" font-size="13" fill="#5b6670">No verdict until review.</text>
+<path d="M1200 292 L1200 488" stroke="#5b6670" stroke-width="1.6" fill="none" marker-end="url(#arrow)"/>
+<path d="M1160 292 L1160 455 L784 455 L784 488" stroke="#5b6670" stroke-width="1.6" fill="none" marker-end="url(#arrow)"/>
+</svg>
