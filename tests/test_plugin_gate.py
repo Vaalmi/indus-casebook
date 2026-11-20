@@ -160,7 +160,7 @@ def test_a_skill_typed_as_a_command_gates_the_session_and_names_the_book(sample:
     [
         "/summarize /indus-casebook:tax-lot-rmd HH-5271",
         "/noop\n/compliance-review HH-1204",
-        "please run /indus-casebook:meeting-follow-up, then summarise",
+        "/a /b:c\t/indus-casebook:meeting-follow-up",
     ],
 )
 def test_a_skill_stacked_after_another_command_gates_the_session(sample: Path, prompt: str) -> None:
@@ -209,6 +209,12 @@ def test_another_command_s_expansion_does_not_gate(sample: Path, name: str) -> N
         "/tax-lot-rmdx",
         "see @/tmp/tax-lot-rmd",
         "a/tax-lot-rmd",
+        # Reviewer A, slice 15 round 2: a skill named in a question, after a command's arguments, or quoted is
+        # not invoked by the prompt.
+        "What does /indus-casebook:tax-lot-rmd do? Explain without running it.",
+        "please run /indus-casebook:meeting-follow-up, then summarise",
+        "/commit with args /indus-casebook:tax-lot-rmd",
+        "Try `/tax-lot-rmd HH-5271` later",
     ],
 )
 def test_other_commands_do_not_gate(sample: Path, prompt: str) -> None:
