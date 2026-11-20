@@ -3,9 +3,11 @@
 the release workflow runs, fail on a private task, a private key, a private run's folder or record, or a line
 of a private file, copied in."""
 
+import io
 import json
 import os
 import shutil
+import zipfile
 from pathlib import Path
 
 import pytest
@@ -99,12 +101,17 @@ def test_a_private_task_packed_in_an_archive_is_found(tmp_path: Path, private_fo
     public, prints = public_tree(tmp_path, private_folder)
     task = (private_folder / "tasks" / f"{PRIVATE_ID}.toml").read_bytes()
     inner = write_zip({"task.toml": task})
-    (public / "docs" / "backup.zip").write_bytes(write_zip({"notes.md": b"nothing\n", "old/inner.zip": inner}))
+    packed = io.BytesIO()
+    with zipfile.ZipFile(packed, "w", zipfile.ZIP_DEFLATED) as archive:  # compressed: no line of it shows as it is
+        archive.writestr("notes.md", "nothing\n")
+        archive.writestr("old/inner.zip", inner)
+    (public / "docs" / "backup.zip").write_bytes(packed.getvalue())
     (public / "docs" / "backup.tar.gz").write_bytes(b"not read")
     problems = private_set_problems(public, prints)
     assert "docs/backup.zip!old/inner.zip!task.toml: a copy of a private file" in problems
     assert f"docs/backup.zip!old/inner.zip!task.toml: it is private task {PRIVATE_ID}'s (its task_id)" in problems
     assert "docs/backup.tar.gz: an archive the gate cannot read; unpack it or leave it out" in problems
+    assert not any(p.startswith("docs/backup.zip:") for p in problems), problems
 
 
 def test_a_private_run_s_folder_and_record_are_found(tmp_path: Path, private_folder: Path) -> None:
