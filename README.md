@@ -176,6 +176,9 @@ The four advisor skills install in Claude Code from this repo, with the **sample
 | `runs/`, `keys/`, `results/` | the published run records, the keys that may be published, and the private set's outcome counts |
 | `audit/` | the hand audit of 15 households: its log and `AUDIT.md` |
 | `errata.json`, `freeze.json` | the errata log and the freeze record |
+| `docs/images/` | this README's images |
+
+Each folder whose files can't carry the notice themselves (the keys, the audit log, the images, the site) holds a `NOTICE.txt`.
 
 A **case packet** is a zip of one featured household's source sets, with a separate answer sheet (`answer-sheet.json`): the planted item's justified conclusion with its figures, or the twin's explanation, and the keys of the household's tasks that aren't held. Tax answer sheets are absent until review. Every zip carries `NOTICE.txt` at its root.
 

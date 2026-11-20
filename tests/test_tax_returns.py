@@ -18,6 +18,7 @@ from casebook.securities.market import build_market
 from casebook.securities.master import load_master
 from casebook.sources.context import SNAPSHOT_DAYS
 from casebook.tax.engine import compute
+from casebook.tax.forms.maps import FormsError
 from casebook.tax.forms.returns import (
     BOXES,
     amount,
@@ -278,3 +279,13 @@ def test_form_8606_stops_at_line_3_without_a_distribution_or_conversion(book: Pa
     values = form_8606(read_household(book, "HH-4821"), form).values
     assert {k for k in values if k[0].isdigit()} == {"1", "2", "3", "14"}
     assert (values["1"], values["3"], values["14"]) == ("8,000.00", "8,000.00", "8,000.00")
+
+
+def test_a_unit_that_itemizes_is_refused_since_the_book_fills_no_schedule_a(book: Path) -> None:
+    """Found by the docs-against-code check before the whole-branch review: Schedule A was triggered but
+    never filled, so an itemizer would have filed a 1040 without it."""
+    unit = unit_of(book, "TU-5271-1")
+    result = compute(unit)
+    itemizing = dataclasses.replace(result, deductions=dataclasses.replace(result.deductions, itemized=True))
+    with pytest.raises(FormsError, match="TU-5271-1 itemizes, and the book fills no Schedule A"):
+        return_forms(read_household(book, "HH-5271"), unit, itemizing)

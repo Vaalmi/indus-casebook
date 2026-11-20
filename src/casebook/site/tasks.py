@@ -68,7 +68,7 @@ class TaskView:
 
     @property
     def held(self) -> bool:
-        """A tax-lot and RMD task, or a reconciliation task whose key computes an RMD: its page shows
+        """A tax-lot and RMD task, or another task whose key computes a tax figure: its page shows
         sources and outputs only, with no verdict, no failure marking and no conclusion, until review."""
         return is_held(self.task)
 

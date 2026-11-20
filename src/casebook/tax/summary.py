@@ -1,7 +1,9 @@
 """The 2025 tax summary per household, and the comparison that holds it to two other calculators.
 
 A household's summary is the in-house engine's. Tax-Calculator recomputes income, tax and net
-investment income tax and the bracket from the same tax-unit facts; the keys' own Form 8606 and
+investment income tax and the bracket from the same tax-unit facts, except the taxable part of IRA,
+401(k) and inherited-IRA distributions, which it takes from the keys' own Form 8606 (so for a unit
+with a distribution or conversion, income agrees engine against keys there); the keys' own Form 8606 and
 Capital Loss Carryover Worksheet recompute each person's IRA basis and the loss carried to 2026,
 which no outside tool computes. A figure more than $2 apart, or a different bracket, is a
 disagreement, and the build refuses a book with one (SPEC: "Two calculators agree on each summary

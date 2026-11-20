@@ -15,6 +15,7 @@ from casebook.model.tax import TAX_YEAR, ZERO, Sale, TaxUnitFacts, age_for_the_y
 from casebook.rules import Rules, load_rules
 from casebook.tax.engine import EngineResult
 from casebook.tax.engine.form_8606 import Form8606
+from casebook.tax.forms.maps import FormsError
 
 type Value = str | bool
 
@@ -459,6 +460,9 @@ def return_forms(household: Household, facts: TaxUnitFacts, result: EngineResult
     triggered = triggers(facts, result, primary)
     if not triggered["f1040"]:
         return []
+    if triggered["f1040sa"]:
+        # The book has no itemizer (see `triggers`), so no Schedule A filler exists; a return without it is wrong.
+        raise FormsError(f"{facts.tax_unit_id} itemizes, and the book fills no Schedule A")
     rules = load_rules(TAX_YEAR)
     forms = [form_1040(household, facts, result)]
     if triggered["f1040s1a"]:

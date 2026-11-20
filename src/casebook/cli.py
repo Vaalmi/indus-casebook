@@ -504,7 +504,7 @@ def parser() -> argparse.ArgumentParser:
     prints.set_defaults(run=_fingerprint_private)
     about = (
         "record the freeze: the hashes of every skill, the checklist and every grader, refused while a grader's "
-        "self-test (tests/test_grader_<name>.py) fails. Held-out runs are refused unless it matches. Then "
+        "self-test (the tests of its key and grade modules) fails. Held-out runs are refused unless it matches. Then "
         "`casebook freeze --move-in` moves the held-out pairs into the repo"
     )
     freeze = commands.add_parser("freeze", help=about, description=about)

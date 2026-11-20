@@ -218,7 +218,7 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 
 **Depends on:** 4.
 
-- [x] Each of the ten archetypes has a scripted featured pair whose planted item matches the archetype's core situation in the spec's table; every twin is clean, a near miss or unresolved
+- [ ] Each of the ten archetypes has a scripted featured pair whose planted item matches the archetype's core situation in the spec's table; every twin is clean, a near miss or unresolved
 - [ ] The owner has written the CRM notes for all 20 featured households from the fact sheets; the notes check ties every amount and date to an asserted fact and every fact to the event log or the registry
 - [x] The featured pairs for archetypes 7 and 8 are in `$CASEBOOK_PRIVATE` only; a test fails the build if either appears in the repo or the site before a freeze is recorded
 - [ ] The task matrix places all 24 public and 8 private tasks on households, meets the per-workflow shape, and the owner has approved it

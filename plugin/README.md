@@ -32,7 +32,7 @@ The plugin's hooks fire in every session once it is installed, but they do nothi
 
 - name the sample book and its households to Claude;
 - refuse a prompt that names a household the sample book doesn't hold, or mentions (`@`) a file outside it;
-- allow reading inside the sample book only (Read, Glob and Grep), and refuse every other tool: Bash, writes and edits, web fetches and searches, subagents and MCP tools;
+- allow reading inside the sample book only (Read, Glob and Grep), plus the skills themselves, a to-do list and a question to you (Skill, TodoWrite, AskUserQuestion), and refuse every other tool: Bash, writes and edits, web fetches and searches, subagents and MCP tools;
 - send an answer back once if it doesn't start with the notice, and show you the notice if it still doesn't.
 
 Start a new session for other work. The gate guards against mistakes; hooks can be switched off, so it isn't a guard against you.

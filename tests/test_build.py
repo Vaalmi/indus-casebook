@@ -139,3 +139,27 @@ def test_a_household_that_overdraws_an_account_fails_the_build(tmp_path: Path) -
     path.write_text(text.replace('cash = "5000.00"', 'cash = "3500.00"'))
     with pytest.raises(BuildError, match=r"HH-2749: SYN-27490002 holds -19\.78 in cash on 2026-04-15"):
         build_book(SEED, tmp_path / "book", scripts)
+
+
+def test_a_build_whose_file_dates_a_value_after_it_was_known_is_refused(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """docs/PLAN.md, the household state machine: emit is refused when a valuation date is later than its
+    known-as-of date (found by the docs-against-code check before the whole-branch review)."""
+    generate = casebook.build.generate_book
+    ips = "households/HH-7350/portfolio/ips.json"
+
+    def with_a_late_valuation(*args: object, **kwargs: object) -> dict[str, bytes]:
+        files = generate(*args, **kwargs)  # type: ignore[arg-type]
+        text = files[ips].decode("utf-8")
+        files[ips] = text.replace('"valuation_date": "2026-04-15"', '"valuation_date": "2026-04-16"', 1).encode()
+        return files
+
+    monkeypatch.setattr(casebook.build, "generate_book", with_a_late_valuation)
+    with pytest.raises(
+        BuildError,
+        match=r"HH-7350: portfolio/ips\.json\.asset_classes\[0\]: valuation_date 2026-04-16 is later than "
+        r"known_as_of 2026-04-15",
+    ):
+        build_book(SEED, tmp_path / "book", SCRIPTS)
+    assert not (tmp_path / "book").exists()

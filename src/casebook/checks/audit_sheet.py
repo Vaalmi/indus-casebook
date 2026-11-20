@@ -3,7 +3,7 @@ statement their files make that a person can check with a calculator, one number
 
 A line gives the figures it rests on and the result the files state, each with the file and row (or
 document and page) it comes from; it never gives a result of its own, so the owner works each one by
-hand. Tax figures are left to the review (docs/SPEC.md, Review).
+hand. Tax figures are left to the review (docs/SPEC.md, What people see).
 """
 
 import io

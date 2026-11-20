@@ -1,15 +1,13 @@
-"""Archetype 7, an inherited IRA under the ten-year rule: the held-out pair builds clean from the
-private folder, and the registry's figures follow from the emitted files, worked by hand.
+"""Archetype 7, an inherited IRA under the ten-year rule: the featured pair builds clean, and the
+registry's figures follow from the emitted files, worked by hand.
 
-The pair lives in $CASEBOOK_PRIVATE until the freeze, and so does `expected.json` beside it: the
-hand-worked figures, with their working, kept out of this public file so the answer is not
-published before the pair is. These tests skip where the folder is absent (CI).
+The pair was held out in $CASEBOOK_PRIVATE until the freeze; the freeze moved it, and `expected.json`
+beside it (the hand-worked figures, with their working), into `book/scripted/archetype-7`.
 """
 
 import csv
 import dataclasses
 import json
-import os
 import re
 from datetime import date
 from decimal import Decimal
@@ -28,13 +26,10 @@ from casebook.securities.market import build_market
 from casebook.securities.master import load_master
 from casebook.sources.context import SNAPSHOT_DAYS
 
-from .conftest import SEED
+from .conftest import ROOT, SEED
 
 D = Decimal
-PAIR = Path(os.environ.get("CASEBOOK_PRIVATE", "/nonexistent")) / "book" / "scripted" / "archetype-7"
-pytestmark = pytest.mark.skipif(
-    not PAIR.is_dir(), reason="the held-out pair for archetype 7 lives in $CASEBOOK_PRIVATE, absent here"
-)
+PAIR = ROOT / "book" / "scripted" / "archetype-7"
 INHERITED = "inherited_ira"
 PAID_OUT = ("DISTRIBUTION", "QCD", "WITHDRAWAL")
 

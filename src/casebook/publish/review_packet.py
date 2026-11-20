@@ -189,8 +189,8 @@ def _readme(version: str, returns: list[dict[str, Any]], cases: list[dict[str, A
 
 {NOTICE}
 
-**Nothing in this packet has been reviewed.** It is the material for the CPA or EA review (docs/SPEC.md, Review):
-every return, tax summary, answer and reading in it is the builder's work, unchecked by a qualified practitioner.
+**Nothing in this packet has been reviewed.** It is the material for the CPA or EA review (docs/SPEC.md, What people
+see): every return, tax summary, answer and reading in it is the builder's work, unchecked by a qualified practitioner.
 It holds the tax summaries the public release refuses, so it is never part of the public release.
 
 ## What is inside
@@ -206,7 +206,8 @@ It holds the tax summaries the public release refuses, so it is never part of th
   all, each naming its tax summary.
 - `boundary/in_house_lines.csv`: the two lines of every tax summary in the book that only in-house code computes,
   the loss carryover and IRA basis, as the engine and the keys' own code each give them. No outside calculator
-  computes either, so the two in-house implementations are the only check on them.
+  computes either, so the two in-house implementations are the only check on them. The same holds for the taxable
+  part of IRA, 401(k) and inherited-IRA distributions: Tax-Calculator takes it from the keys' own Form 8606.
 - `boundary/rule_readings.md`: the readings of tax and RMD rules the builder made in building the book, each with
   where it is recorded.
 - `households/<household>/`: five further background households of tax archetypes, with their four source sets:

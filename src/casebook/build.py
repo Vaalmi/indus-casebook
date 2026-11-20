@@ -15,6 +15,7 @@ from typing import Any
 
 from casebook import BOOK_VERSION
 from casebook.checks.agreement import check_sources_agree
+from casebook.checks.dates import check_dates
 from casebook.generate.background import BackgroundError, generate_background
 from casebook.generate.notes import NotesError, check_notes, load_notes, notes_path
 from casebook.generate.script import HouseholdScript, load_scripts
@@ -383,6 +384,15 @@ def refuse_unregistered_differences(out: Path, households: tuple[str, ...]) -> N
         raise BuildError(f"two sources disagree with no registry entry ({shown})")
 
 
+def refuse_dates_after_known(out: Path, households: tuple[str, ...]) -> None:
+    """docs/PLAN.md, the household state machine: emit is refused when a valuation date is later than its
+    known-as-of date."""
+    problems = [f"{h}: {p}" for h in households for p in check_dates(out / household_dir(h))]
+    if problems:
+        shown = "; ".join(problems[:10])
+        raise BuildError(f"a valuation date is later than its known-as-of date ({shown})")
+
+
 def build_book(
     seed: int,
     out: Path,
@@ -428,6 +438,7 @@ def build_book(
         )
     )
     try:
+        refuse_dates_after_known(out, households)
         refuse_unregistered_differences(out, households)
     except BaseException:
         # A refused or broken build leaves no book behind to be mistaken for a good one.

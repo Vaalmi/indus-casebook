@@ -4,8 +4,8 @@
 # workflow, are in the private repo's matrix, on background pairs.
 #
 # role: "trap" or "twin" for a task on a featured pair (`pair_task` is its partner on the other
-# household of the pair), "book" for a task over the whole book. Tasks are written in slices 9
-# and 10; only T-REC-01 exists so far.
+# household of the pair), "book" for a task over the whole book. Each task's file is in
+# tasks/public/.
 
 # Reconciliation and as-of: what the records say against each other, as of a date.
 

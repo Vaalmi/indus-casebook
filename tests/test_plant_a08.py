@@ -1,15 +1,12 @@
 """Archetype 8, the recently widowed investor: the step-up lagging at the custodian; a stale beneficiary.
 
-The pair is held out until the freeze, so its scripts live in $CASEBOOK_PRIVATE only, and so does
-`expected.json` beside them: the hand-worked figures and the pair's names and IDs, kept out of
-this public file so the answer is not published before the pair is. The tests skip where the
-folder is absent (CI).
+The pair was held out in $CASEBOOK_PRIVATE until the freeze; the freeze moved it, and `expected.json`
+beside it (the hand-worked figures and the pair's names and IDs), into `book/scripted/archetype-8`.
 """
 
 import csv
 import dataclasses
 import json
-import os
 from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 from typing import Any
@@ -27,15 +24,11 @@ from casebook.securities.market import build_market
 from casebook.securities.master import load_master
 from casebook.sources.context import SNAPSHOT_DAYS
 
-from .conftest import SEED
+from .conftest import ROOT, SEED
 
 D = Decimal
-PAIR = Path(os.environ.get("CASEBOOK_PRIVATE", "/nonexistent")) / "book" / "scripted" / "archetype-8"
+PAIR = ROOT / "book" / "scripted" / "archetype-8"
 SCENARIO = "2026-04-15"
-
-pytestmark = pytest.mark.skipif(
-    not PAIR.is_dir(), reason="the held-out pair for archetype 8 lives in $CASEBOOK_PRIVATE, absent here"
-)
 
 
 def expected() -> dict[str, Any]:
