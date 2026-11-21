@@ -9,7 +9,7 @@ The Indus Casebook's four advisor skills, and its sample book to try them on: th
 In Claude Code:
 
 ```
-/plugin marketplace add <owner>/<repo>
+/plugin marketplace add Vaalmi/indus-casebook
 /plugin install indus-casebook@indus-casebook
 ```
 

@@ -6,7 +6,7 @@ The Indus Casebook is a public book of invented client households and graded adv
 
 It is for two people:
 
-- **An independent US advisor** who wants to see, with nothing to install, whether an AI assistant handles a client's messy records safely. Open the site and read a household, a task and what each arm produced.
+- **An independent US advisor** who wants to see, with nothing to install, whether an AI assistant handles a client's messy records safely. Open [the site](https://vaalmi.github.io/indus-casebook/) and read a household, a task and what each arm produced.
 - **A builder** who wants to rebuild the same book from a seed and rerun the same test with one command.
 
 This is the preview, v0.1.0: unvalidated, and no performance claims are established.
@@ -184,7 +184,7 @@ A **case packet** is a zip of one featured household's source sets, with a separ
 
 The release fails if the bundle holds a tax or RMD answer key, a tax answer sheet, a verdict on a held task, a combined score, a household that failed a check, a real ticker or security name, any of the private set, a filled-form page without its watermark, a file without the notice, an unnamed result, or anything from `out/real/`. A changed household or task ID with no new version and errata entry fails it too.
 
-The site is published from a release tag by `.github/workflows/pages.yml`.
+The site is published at <https://vaalmi.github.io/indus-casebook/>, from a release tag, by `.github/workflows/pages.yml`.
 
 ## The images here
 
