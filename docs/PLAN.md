@@ -159,7 +159,7 @@ One stream, in order. The week beside each slice is the Background tab's milesto
 
 The thinnest path through every layer an outsider sees: one scripted pair for archetype 10 (fee and IPS drift), built by the real build command, checked, and published under aliases on GitHub Pages. It comes first because it proves the delivery route and puts the notice and alias gates in place before anything else is public.
 
-- [ ] `make setup` on a fresh clone installs everything; `make check` passes; a pre-commit hook and a GitHub Action run it
+- [x] `make setup` on a fresh clone installs everything; `make check` passes; a pre-commit hook and a GitHub Action run it (the Action half seen 21 November 2026: "Check" on `main` at `2a749cd`, run 44948467660 on `Vaalmi/indus-casebook`, 2,004 passed, 8 skipped without the private set, four contracts kept, 48m30s)
 - [x] `docs/TECH_STACK.md`, the one check command in `docs/PROCESS.md`, the hard-constraint table in `docs/CODE_STANDARDS.md`, `review.config.yaml` (owner, high-stakes paths) and the placeholders in `AGENTS.md` are filled in
 - [x] `uv run casebook build --seed 2026` writes the pair's four source sets, an event log and one registry entry; a second build with the same seed is byte-identical (a test compares tree hashes)
 - [x] `uv run casebook check` prints pass or fail per check per household for units, cash and valuation-date-not-after-known-as-of, and exits non-zero on a fail
@@ -197,7 +197,7 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 - [x] Carry-in history is present and checked: acquisition dates, loss carryforwards, IRA basis, prior 31 December balances
 - [x] `casebook check` reports all nine checks in the spec per household. For each check a seeded defect makes that check fail and the report names the household, the line, and the account, lot or file
 - [x] The wash-sale check looks 30 days either side across taxpayer, spouse and IRA accounts, and passes only when the repurchase has a registry entry
-- [ ] The household checks and the grader tests run on every commit (the hook) and every push (the Action)
+- [x] The household checks and the grader tests run on every commit (the hook) and every push (the Action) (the Action half seen 21 November 2026: "Check" on `main` at `2a749cd`, run 44948467660 on `Vaalmi/indus-casebook`, 2,004 passed, 8 skipped without the private set, four contracts kept, 48m30s)
 - [x] The one check command passes
 
 ### Slice 4: Emit the four source sets in full, with aliases and the registry (week 4)
