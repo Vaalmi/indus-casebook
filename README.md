@@ -196,4 +196,6 @@ uv run python tools/readme_images.py
 
 ## Licences
 
+Copyright 2026 Vaalmika Platforms Inc.
+
 Code: Apache-2.0 (`LICENSE`). Data: CC BY 4.0 (`LICENSE-DATA`).

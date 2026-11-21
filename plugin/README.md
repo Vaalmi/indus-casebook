@@ -39,4 +39,6 @@ Start a new session for other work. The gate guards against mistakes; hooks can 
 
 ## Licences
 
+Copyright 2026 Vaalmika Platforms Inc.
+
 Code: Apache-2.0 (`LICENSE`). Data: CC BY 4.0 (`LICENSE-DATA`).

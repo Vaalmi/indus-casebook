@@ -49,6 +49,18 @@ def test_the_index_lists_the_public_featured_households(site: Path) -> None:
     assert sorted(set(re.findall(r"households/(HH-\d{4})\.html", index))) == list(FEATURED)
 
 
+# The owner, 21 November 2026: the copyright holder is "Vaalmika Platforms Inc.".
+COPYRIGHT = "Copyright 2026 Vaalmika Platforms Inc."
+
+
+def test_every_page_s_footer_names_the_copyright_holder(site: Path) -> None:
+    pages = sorted(site.rglob("*.html"))
+    assert pages
+    for page in pages:
+        footer = page.read_text(encoding="utf-8").split('<footer class="footer">', 1)[1]
+        assert COPYRIGHT in footer, page
+
+
 def test_archetype_7_s_events_layer_shows_the_inherited_ira_s_events(site: Path) -> None:
     """Its trap is a distribution that never left the inherited IRA, so no kind of event carries it: the layer
     shows the inherited IRA's own events, among which no 2025 distribution appears."""

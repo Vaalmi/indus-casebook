@@ -124,3 +124,9 @@ def test_the_readme_names_the_commands_it_should() -> None:
 @pytest.mark.parametrize("command", sorted(named_commands()))
 def test_each_command_named_is_a_casebook_subcommand(command: str, capsys: pytest.CaptureFixture[str]) -> None:
     assert command in subcommands(capsys)
+
+
+def test_the_licences_section_names_the_copyright_holder() -> None:
+    # The owner, 21 November 2026: the copyright holder is "Vaalmika Platforms Inc.".
+    licences = text().split("## Licences", 1)[1]
+    assert "Copyright 2026 Vaalmika Platforms Inc." in licences

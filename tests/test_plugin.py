@@ -114,6 +114,8 @@ def test_the_plugin_s_readme_opens_with_the_notice_and_its_licences_are_the_repo
     assert re.search(r"python3", readme)
     for name in ("LICENSE", "LICENSE-DATA"):
         assert (PLUGIN / name).read_bytes() == (ROOT / name).read_bytes()
+    # The owner, 21 November 2026: the copyright holder is "Vaalmika Platforms Inc.".
+    assert "Copyright 2026 Vaalmika Platforms Inc." in readme.split("## Licences", 1)[1]
 
 
 # ---- the gate on the real sample book --------------------------------------------------------------------------
