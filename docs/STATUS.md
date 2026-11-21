@@ -61,11 +61,11 @@ Open `out/site/index.html` in a browser, or serve `out/site/` with any static se
 
 ### What the owner does for slice 1's last criterion
 
-1. Create the public GitHub repo and push this branch (or merge it first; the builder never pushes).
-2. In the repo's Settings → Pages, set Source to "GitHub Actions".
-3. In Settings → Environments → `github-pages` → "Deployment branches and tags", add a tag rule `v*`. Without it GitHub refuses to deploy from a tag.
-4. Tag the slice 1 commit and push the tag: `git tag v0.0.1 <commit>` then `git push origin v0.0.1`. The "Publish site" workflow builds, checks and publishes it; it refuses a tag that does not match the package version (`uv version --short`).
-5. Open `https://vaalmi.github.io/indus-casebook/households/HH-4821.html` in a private window: it should load with no account, the notice banner on top.
+1. **Done** (21 November 2026): the public repo is `Vaalmi/indus-casebook`, `main` pushed (merged from `build/preview`). Create the public GitHub repo and push this branch (or merge it first; the builder never pushes).
+2. **Done** (21 November 2026): Pages builds from GitHub Actions. In the repo's Settings → Pages, set Source to "GitHub Actions".
+3. **Done** (21 November 2026): `v*` is a tag rule (it was first added as a branch rule, which refuses a tag). In Settings → Environments → `github-pages` → "Deployment branches and tags", add a tag rule `v*`. Without it GitHub refuses to deploy from a tag.
+4. **Done** (21 November 2026): `v0.0.1` on slice 1's commit `9ff3429`; "Publish site" passed (run 44938521817). Tag the slice 1 commit and push the tag: `git tag v0.0.1 <commit>` then `git push origin v0.0.1`. The "Publish site" workflow builds, checks and publishes it; it refuses a tag that does not match the package version (`uv version --short`).
+5. **Seen** (21 November 2026): HH-4821's page loads from `https://vaalmi.github.io/indus-casebook/` with no account, the notice banner on top, and the home page lists slice 1's pair only. Open `https://vaalmi.github.io/indus-casebook/households/HH-4821.html` in a private window: it should load with no account, the notice banner on top.
 6. Rollback: the plan names a `v0.0.2`, but the package is now 0.1.0 and the workflow refuses a tag that is not the package version, so the later tag is `v0.1.0` (slice 16's steps below). Once it is published, run Actions → "Publish site" → Run workflow → "Use workflow from" tag `v0.0.1`: the site goes back to slice 1's one pair (HH-4821 and HH-7350 only; the footer reads "Book 0.0.1" in both releases, so look at the household list). Then run it from `v0.1.0` again. Say if you want a literal `v0.0.2` instead.
 
 The "Check" workflow runs `make check` on every push; its first run is the evidence for the Action half of slice 1's first criterion.
@@ -123,7 +123,7 @@ Release the preview: this is the slice's real delivery environment (its last cri
 
 1. **Decided** (21 November 2026): the preview ships without your notes. They come later as a correction: a new book version and 20 errata entries, with the T-MTG-05 key change, a new freeze and a rerun of that task.
 2. **Build both books:** `uv run casebook build --seed 2026` then `uv run casebook build --real-tickers`.
-3. **Record the release:** `uv run casebook release --preview --record --date <today, YYYY-MM-DD>`. It builds and gates the whole bundle into `out/release/v0.1.0/`, then records v0.1.0's household and task IDs in `published/releases.json`.
+3. **Recorded** (21 November 2026): `casebook release --preview --record --date 2026-11-21`, without `$CASEBOOK_PRIVATE` as the workflow runs it: v0.1.0, book 0.0.1, 5,000 files, 92 households, 24 tasks, every gate passing; the book manifest `fb27059f…` as before; all 47 site pages and the README carry the copyright line. **Record the release:** `uv run casebook release --preview --record --date <today, YYYY-MM-DD>`. It builds and gates the whole bundle into `out/release/v0.1.0/`, then records v0.1.0's household and task IDs in `published/releases.json`.
 4. **Commit `published/releases.json`,** merge to `main`, and push.
 5. **Tag and push the tag:** `git tag v0.1.0` then `git push origin v0.1.0`. The "Publish site" workflow builds both books, runs the release (it refuses a tag that isn't recorded), uploads the bundle as an artifact and publishes the release's site.
 6. **Open the site** in a private window: the home page, a household, a task page and `packets/HH-4821.zip` should load with no account, the notice on top.
