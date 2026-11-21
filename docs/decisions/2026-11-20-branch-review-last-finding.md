@@ -34,4 +34,4 @@
 
 **If you don't decide.** The whole-branch review stays open on H1, and the branch isn't ready to merge.
 
-**Decision.** <open>
+**Decision.** Option 1, accept the last fix (`a7a9988`) without another round (the owner, 20 November 2026: "Yes, as recommended"). The whole-branch review closes on H1. The limit above stays: a ticker with a letter or digit after it is not counted.

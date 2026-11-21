@@ -26,4 +26,4 @@ With options 1 to 3 and 5, the key change, a new freeze and a rerun of T-MTG-05 
 
 **A second opinion** (Gemini 4 Neon, at your request; `review/branch-neon.md`). It agrees with option 5. It adds one point, which I confirmed in the code: option 1 is not enough on its own. The key reads only six kinds of promised step (a contribution, conversion or sale agreed in a meeting or call, a QCD, a distribution, a basis step-up, a beneficiary form or claim; `src/casebook/keys/open_follow_ups.py:199-225`) and stops on any other. So "Raising it with billing." written as an activity would stop it too. When your notes come, the key also needs the kinds of step they promise.
 
-**Decision.** <open>
+**Decision.** Option 5, accept the deferral, with option 1 as the format when the notes are written (the owner, 20 November 2026: "Yes, as recommended"). The branch merges and tags as built. With the notes come: each note saying `follow_up = false`, a promised step written as a CRM activity, the key reading the kinds of step those activities promise (the second opinion above), a new freeze and a rerun of T-MTG-05. Until then T-MTG-05 stops on a note it cannot read, naming it.
