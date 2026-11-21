@@ -8,6 +8,7 @@ from typing import Any
 
 from jinja2 import Environment, PackageLoader, StrictUndefined, select_autoescape
 
+from casebook.model.archetypes import PARTLY_PLANTED
 from casebook.model.dates import SCENARIO_DATE
 from casebook.model.files import (
     ACCOUNTS_COLUMNS,
@@ -141,6 +142,7 @@ class HouseholdView:
     name: str
     archetype: int
     archetype_name: str
+    partly_planted: str | None
     pair: int
     role: str
     twin_kind: str | None
@@ -218,6 +220,7 @@ def load_household(
         name=read_json(root, PORTFOLIO_HOUSEHOLD)["name"],
         archetype=int(sealed["archetype"]),
         archetype_name=str(sealed["archetype_name"]),
+        partly_planted=PARTLY_PLANTED.get(int(sealed["archetype"])),
         pair=int(sealed["pair"]),
         role=str(sealed["role"]),
         twin_kind=sealed["twin_kind"],

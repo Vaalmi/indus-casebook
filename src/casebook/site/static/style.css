@@ -71,5 +71,6 @@ details { margin-top: 0.75rem; font-size: 0.85rem; }
 .repeats td, .repeats th, .counts-table td, .counts-table th { font-size: 0.8rem; }
 .repeats tr.paired th, .repeats tr.paired td { color: var(--muted); }
 .task-result .held { color: var(--muted); font-style: italic; }
+.partly-planted { color: var(--muted); font-size: 0.9rem; }
 .run-set > h3 { margin-top: 1.5rem; }
 .counts-table [data-count] { white-space: nowrap; }

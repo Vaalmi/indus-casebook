@@ -23,4 +23,4 @@
 
 **A second opinion** (Gemini 4 Neon, at your request; `review/branch-neon.md`). It agrees with option 1. It adds that the README's archetype table promised the drift item; that row now says book 0.0.1 plants the fee item only. The archetype's name, "Fee and IPS drift household", is part of the sealed book and shows on the site's household pages, so it stays until the next book version. Gemini also says the drift item will need an exception field in the IPS and a task that scores it; I haven't checked that against the code.
 
-**Decision.** <open>
+**Decision.** Option 1, ship the preview as built and add the drift item in the next book version (the owner, 21 November 2026: "Yes, accept all six"). Archetype 10's two household pages now say that this book version plants the missed fee breakpoint only. Slice 5's first criterion stays unticked: the drift half is not planted, and it ticks when the next book version plants it.

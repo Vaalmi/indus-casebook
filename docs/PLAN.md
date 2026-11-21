@@ -229,7 +229,7 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 
 **Depends on:** 5.
 
-- [ ] `uv run casebook build --seed 2026` builds 100 households: ten archetypes, five pairs each; the same seed and version give byte-identical files
+- [x] `uv run casebook build --seed 2026` builds 100 households: ten archetypes, five pairs each; the same seed and version give byte-identical files (the whole book, from `--held-out`: the owner's decision of 21 November 2026, `docs/decisions/2026-11-20-the-100-household-command.md`; the public command builds 92)
 - [x] Every background note re-renders byte-for-byte from its named template and slot values, and the build makes no model call (a test blocks the network and the CLIs)
 - [x] No background household crosses a drift, RMD or concentration threshold without a registry entry (a seeded crossing fails the check)
 - [x] All 100 households pass all nine checks; the report shows 900 passing lines

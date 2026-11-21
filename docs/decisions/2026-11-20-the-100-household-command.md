@@ -19,4 +19,4 @@
 
 **A second opinion** (Gemini 4 Neon, at your request; `review/branch-neon.md`). It prefers option 3: a builder who runs the public command and gets 92 would think the build broken. Its worry that `--held-out` ignores the seed is wrong: `--seed` defaults to 2026 and applies to both commands. With option 1, the README should also say that the public command builds 92.
 
-**Decision.** <open>
+**Decision.** Option 1, `casebook build --held-out` with `$CASEBOOK_PRIVATE` set is the one command for the whole book (the owner, 21 November 2026: "Yes, accept all six"). The public command stays at 92. Slice 6's first criterion ticks as "the whole book, from `--held-out`" once I have rerun it and seen the 100, its byte-identity and its checks (STATUS records the run).

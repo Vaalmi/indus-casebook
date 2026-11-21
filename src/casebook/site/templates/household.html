@@ -11,6 +11,7 @@
 <header class="household-head">
   <h1>{{ household.household_id }} · {{ household.name }}</h1>
   <p>Archetype {{ household.archetype }}: {{ household.archetype_name }} · pair {{ household.pair }} · {{ household.role }}{% if household.twin_kind %} ({{ household.twin_kind|replace("_", " ") }}){% endif %}</p>
+  {% if household.partly_planted %}<p class="partly-planted">{{ household.partly_planted }}</p>{% endif %}
 </header>
 
 <section aria-labelledby="sources-heading">

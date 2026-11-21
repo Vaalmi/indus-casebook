@@ -25,6 +25,16 @@ ARCHETYPES: dict[int, str] = {
     10: "Fee and IPS drift household",
 }
 
+# A partly planted archetype: one whose core situation in the spec's table this book version plants only in part.
+# Its household pages say what is left out. Archetype 10 by the owner's decision of 21 November 2026
+# (docs/decisions/2026-11-20-archetype-10-drift.md): ship as built, the drift item in the next book version.
+PARTLY_PLANTED: dict[int, str] = {
+    10: (
+        "This book version plants the missed fee breakpoint only. The archetype's other half, an approved IPS "
+        "exception against real drift, comes in a later book version."
+    ),
+}
+
 # A private pair is a background pair the private set runs on (docs/SPEC.md, Private set): drawn only with
 # the private salt, which lives in $CASEBOOK_PRIVATE, into $CASEBOOK_PRIVATE, and never published. Its
 # household IDs, archetype, pair and roles stay in the public ID ledger; its content is secret. The public

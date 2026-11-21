@@ -15,4 +15,4 @@
 
 **If you don't decide.** The fix stays in, and slice 9 is recorded as closed by this page with the finding fixed but unreviewed.
 
-**Decision.** <The owner's answer, with the date.>
+**Decision.** Option 1, accept the fix as it stands (the owner, 21 November 2026: "Yes, accept all six"). The whole-branch review (20 November 2026) reviewed the branch with this fix in it.

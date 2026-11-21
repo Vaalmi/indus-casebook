@@ -1,5 +1,6 @@
 """Slice 5: every public featured household has its page, with its item and three truth layers."""
 
+import html as markup
 import json
 import re
 from pathlib import Path
@@ -26,6 +27,21 @@ def test_each_public_featured_household_has_a_page_with_its_item_and_layers(site
         assert f"{entry['item_id']}: " in html
     else:
         assert "This household is the twin in pair 1" in html
+
+
+@pytest.mark.parametrize("household", FEATURED)
+def test_a_partly_planted_archetype_s_pages_say_what_this_book_leaves_out(site: Path, household: str) -> None:
+    """Archetype 10 plants the missed fee breakpoint only (the owner's decision of 21 November 2026); its two
+    pages say so, and no other archetype's page carries the line."""
+    html = (site / "households" / f"{household}.html").read_text()
+    shown = [markup.unescape(line) for line in re.findall(r'<p class="partly-planted">([^<]*)</p>', html)]
+    if household in ("HH-4821", "HH-7350"):
+        assert shown == [
+            "This book version plants the missed fee breakpoint only. The archetype's other half, an approved IPS "
+            "exception against real drift, comes in a later book version."
+        ]
+    else:
+        assert shown == []
 
 
 def test_the_index_lists_the_public_featured_households(site: Path) -> None:
