@@ -166,7 +166,7 @@ The thinnest path through every layer an outsider sees: one scripted pair for ar
 - [x] The household page shows the four source sets side by side, the planted item and the three truth layers; Playwright asserts each is present and the console is clean
 - [x] The build fails when the notice is removed from the README, a page or the data metadata (one test each), when a price file lacks "synthetic", and when a real ticker or security name is planted in a page
 - [x] `LICENSE` (Apache-2.0) and `LICENSE-DATA` (CC BY 4.0) exist, and the dependency check fails on a planted GPL package
-- [ ] Runs in the real delivery environment: the owner pushes tag `v0.0.1` and the pair's page loads from the GitHub Pages URL with no account. Publishing `v0.0.2`, then the workflow for `v0.0.1` again, restores the first version (the rollback). Spends nothing
+- [x] Runs in the real delivery environment: the owner pushes tag `v0.0.1` and the pair's page loads from the GitHub Pages URL with no account. Publishing `v0.0.2`, then the workflow for `v0.0.1` again, restores the first version (the rollback). Spends nothing (seen 21–22 November 2026, with `v0.1.0` standing in for `v0.0.2` as `docs/STATUS.md` records: after `v0.1.0` was published, the owner's run 44986412757 of the workflow on `v0.0.1` restored the first version, all 40 live files byte-identical to a build of the tag, the two households only, HH-4821 loading with no account; run 44986837983 on `v0.1.0` then put the preview back, all 2,511 live files byte-identical to the local release. Both runs on a public repo's standard runners, 0 ms billable)
 - [x] The one check command passes
 
 ### Slice 2: Run one task for real under three arms (week 2)
@@ -350,7 +350,7 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 - [x] The review packet holds ten featured returns, every tax and RMD boundary case, the mapping from inputs to form lines, and five further household files
 - [x] The audit log for the 15 hand-checked households and the run records are in the release files
 - [x] The README opens with the notice and gives one command each to build the book, check it and run a task
-- [ ] Runs in the real delivery environment: the owner pushes tag `v0.1.0`; the site serves it; a fresh clone builds the same manifest hashes from the seed and tag
+- [x] Runs in the real delivery environment: the owner pushes tag `v0.1.0`; the site serves it; a fresh clone builds the same manifest hashes from the seed and tag (seen 21 November 2026: the owner pushed `v0.1.0` on `f19f4c8`; "Publish site" run 44954339628 built, gated and deployed it; `https://vaalmi.github.io/indus-casebook/` serves the home page with 20 households, HH-4821, T-REC-01 with its three arms, the results and errata pages and `packets/HH-4821.zip`, the notice on top; a fresh clone of the tag from GitHub built manifest `fb27059f…`, all 2,080 files identical to this checkout's)
 - [x] The one check command passes
 
 ### Slice 17: Let a tax review release the held items (after the preview)
