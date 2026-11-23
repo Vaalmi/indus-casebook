@@ -334,10 +334,10 @@ One reconciliation task on the trap household, attempted by Claude Code under ea
 
 **Depends on:** 13.
 
-- [ ] The plugin installs in Claude from the repo and ships the sample book (the 20 featured households, aliases only) inside it
-- [ ] Each of the four skills runs on a sample household and its output shows the sources it used and the notice
+- [x] The plugin installs in Claude from the repo and ships the sample book (the 20 featured households, aliases only) inside it (seen 23 November 2026: the owner ran `/plugin marketplace add Vaalmi/indus-casebook` and `/plugin install indus-casebook@indus-casebook` in Claude Code; Claude Code recorded the marketplace's source as GitHub `Vaalmi/indus-casebook` and the install at commit `0ce88fb`; the installed copy's `book/` holds 400 files for 20 households, each byte-identical to `plugin/book/`, and the rest of the plugin is identical to `plugin/`)
+- [x] Each of the four skills runs on a sample household and its output shows the sources it used and the notice (seen 23 November 2026: `reconciliation-as-of` on HH-4821, `tax-lot-rmd` on HH-5271, `meeting-follow-up` on HH-1204 and `compliance-review` on HH-3058; each answer opens with the notice and lists the sample-book files it used; the sessions' transcripts show 57, 31, 37 and 45 reads, every one inside the installed sample book and none in another household's files, and no other tool)
 - [x] The plugin accepts only household IDs in the sample book's manifest and offers no way to load other files (a test passes a path outside the book)
-- [ ] Runs in the real delivery environment: the owner installs the plugin in Claude and runs each skill once
+- [x] Runs in the real delivery environment: the owner installs the plugin in Claude and runs each skill once (seen 23 November 2026, in Claude Code, each skill in its own session in an empty folder; asked to read `~/Desktop/anything.txt` and to run `ls`, the gated session declined both, naming the sample book)
 - [x] The one check command passes
 
 ### Slice 16: Release the preview v0.1 (week 14)
