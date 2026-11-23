@@ -25,6 +25,7 @@ from casebook.runner.session import write_key
 from casebook.tasks.task import load_task
 
 from .conftest import README, ROOT
+from .forms import FORMS
 
 PUBLISHED = ROOT / "published"
 TASKS = ROOT / "tasks" / "public"
@@ -580,3 +581,27 @@ def test_the_readme_images_are_read_or_known_by_their_bytes(bundle: Path, held: 
         "site-home.png: no way to read this file's text, so it cannot be published",
         "results-page.png: no way to read this file's text, so it cannot be published",
     ]
+
+
+# Every form published content takes (tests/forms.py): what the release refuses, planted in each.
+
+TICKER_TEXT = "The client holds 100 shares of JNJ in the IRA."
+NAME_TEXT = "The client holds Johnson & Johnson in the IRA."
+REFUSED = {"a held key": "answer key", "a real ticker": "real ticker", "a real name": "real name"}
+
+
+@pytest.mark.parametrize("form", sorted(FORMS))
+@pytest.mark.parametrize("content", sorted(REFUSED))
+def test_what_the_release_refuses_fails_in_every_form(
+    bundle: Path, held: HeldMaterial, held_keys: Path, content: str, form: str
+) -> None:
+    text = {
+        "a held key": (held_keys / VERSION / f"{HELD_TASK}.json").read_text(),
+        "a real ticker": TICKER_TEXT,
+        "a real name": NAME_TEXT,
+    }[content]
+    planted = FORMS[form](text)
+    for name, data in planted.items():
+        _write(bundle / name, data)
+    caught = [p for p in release_problems(bundle, held) if p.startswith("planted/") and REFUSED[content] in p]
+    assert caught, f"{content} in {form} ({', '.join(planted)}) passed the release"

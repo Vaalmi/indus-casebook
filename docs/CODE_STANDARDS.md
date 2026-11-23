@@ -23,6 +23,8 @@ The rules for code in Indus Casebook (Python 3.13, `docs/TECH_STACK.md`). A rule
 11. Tests check what a user or caller can observe, so they fail when that behavior breaks and keep passing when only the internals change.
 12. Expected values come from the spec, a worked example or a known-good literal, never recomputed the way the code does.
 13. No real model, network or outside service in the checks. Use the stand-ins.
+14. **A gate on published content is tested in every form the content takes.** Its test plants what it refuses in each form of `tests/forms.py` (`FORMS`): a file kind, a container, an encoding, page source as well as visible text, a folder depth, a letter case. A form a review finds goes into `FORMS`, so every gate's test meets it, not into a one-off test for the gate that missed it.
+15. **A fix answers the rule a finding breaks, not the probe.** Before fixing a confirmed blocker, write down the rule it breaks and the other inputs that break it the same way; test those too. A fix that adds an exemption or a special case names, in the round-2 prompt, what else the exemption lets through.
 
 ## Lessons
 
@@ -30,10 +32,14 @@ Every mistake the owner has corrected, so a repeat is visible. A lesson is guida
 
 "When" names the kind of situation, so the lesson fires on a different case: not "the invoice export", but "any export another system imports". "Observed result" is what happened the last time that situation came up (`docs/PROCESS.md`, Correcting): "not yet observed" until it does.
 
-None yet: the owner's first correction adds the first row.
-
 | Lesson | When | From (the correction, with its date) | Prevention | Observed result |
 | --- | --- | --- | --- | --- |
+| A gate on published content misses a form the content takes (37 misses: an HTML entity, a tag inside a name, a comment in the page source, a Markdown fence, a zip and a zip in a zip, base64 in JSON, a JSON list, a CSV cell, a flattened PDF, a folder not walked, lower and mixed case, a glued quantity) | Any check that refuses content before it is published: the site's gates, the release's, the sample book's, the private set's | Reviews of slices 1, 2, 4, 5, 8, 9, 11, 13, 14, 15 and 16 and the whole branch (`docs/STATUS.md`, review log); the `correct` pass of 23 November 2026 | Rule 14. A check: `tests/forms.py` and the forms tests in `tests/test_gates.py` and `tests/test_release_gates.py`, in `make check`. Against the site's gate before the whole-branch review (`d1479d1^`) it fails on a ticker in lower and mixed case, the branch review's H1. On its first run it found seven forms the release's gate still let a held key through in (a CSV cell, a PDF's text, a string inside JSON, base64 in JSON, a tag inside each word, lower and mixed case); the gate now reads every text the shared reader gives and folds case and spacing (`publish/release_gates.py`), and the published `v0.1.0` bundle passes it with no problem | A catch: the check found seven open forms the day it was written (23 November 2026). Slice 17's release gates are the next case |
+| A fix for a confirmed blocker fixes the probe, not the rule, and brings in a new defect (about 20, among them every finding still open after a targeted check: slices 5, 9, 12, 13, 15 and the branch) | Fixing any confirmed review finding | The review log, slices 3 to 16 and the whole branch; the `correct` pass of 23 November 2026 | Rule 15, a written rule for the builder and the reviewer: judgment no check can make | Not yet observed: slice 17's review is the next |
+| A run's state or provenance is read at the wrong moment: after the CLI ended, from an earlier attempt, before a resume, across an interrupted regrade (8) | Any step that can stop part-way: a quota stop, a retry, a resume, a regrade | Slices 12 and 13, the whole branch (P14, P15, P20 in the `correct` pass of 23 November 2026) | Written: a test stops the step at each point it can stop and resumes it; state is read when it is used | Not yet observed |
+| A test shares the code's derivation or assumes its state, so it agrees with the code's mistake (5) | Any test of a key, a calculation or a stored record | Slices 2, 6, 7 and 16, the derivation fix (the `correct` pass of 23 November 2026) | Rule 12 (hard, review only); no check can tell a recomputed value from a literal | Escaped 5 times in this build; rule 12 stays the guard |
+| The copier and the gate walk different sets of files, so a file the gate never read is published (4) | Anything that copies files into a site, a bundle or a sample book and gates them | Slices 8, 11, 13 and 16 | The gate reads what the copier wrote: the site's gates run on the staging folder (`publish/site_build.py`), the release's on the staged bundle | No escape since slice 16 |
+| A list kept by hand falls out of step with what it lists (3) | A word list, a list of compared facts, a layout literal written in two places | Slices 4 and 5 (`vig` missing from the word list; comparisons not added for new facts); the slice 16 note on `release.py` and `release_gates.py` | Rule 7: name a shared literal once; a test that the list covers what it lists, where one is cheap | Not yet observed |
 
 ## Hard constraints and what enforces them
 
@@ -59,4 +65,4 @@ The rules a review may block on. Mechanical ones get a check whose error names t
 
 Mistakes whose cause is master's own text: a doc this product copied from the template, or a skill (`docs/PROCESS.md`, Correcting). Each is fixed here first. Master decides separately whether it changes.
 
-None yet.
+- **Fixing a confirmed review finding** (process version: master `4878883`). The `cross-review` skill, step 4, says "Confirmed: fix it, with a test that fails before the fix". Fixes here answered the probe the reviewer gave, and about 20 brought in a new defect, among them every finding still open after a targeted check. Local fix: rule 15 in this file. For master to weigh: ask the fix to name the rule the finding breaks and test the other inputs that break it, and the round-2 prompt to name what any new exemption lets through.

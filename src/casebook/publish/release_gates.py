@@ -20,7 +20,6 @@ read a folder read the members too, and a member is named as `packets/HH-4821.zi
 
 import csv
 import hashlib
-import html
 import io
 import json
 import posixpath
@@ -144,12 +143,24 @@ def _digest(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def _folded(value: Any) -> Any:
+    """A parsed JSON value with every key and string case-folded and its spacing taken out."""
+    if isinstance(value, str):
+        return "".join(value.split()).casefold()
+    if isinstance(value, dict):
+        return {_folded(k): _folded(v) for k, v in value.items()}  # pyright: ignore[reportUnknownVariableType]
+    if isinstance(value, list):
+        return [_folded(v) for v in value]  # pyright: ignore[reportUnknownVariableType]
+    return value
+
+
 def _canonical(value: Any) -> str:
-    """The digest of a parsed JSON value written canonically, a top-level notice left out: a held key copied with a
-    notice added, or written with other spacing, is still the key."""
+    """The digest of a parsed JSON value written canonically, a top-level notice left out, its letters folded to one
+    case and its spacing taken out: a held key copied with a notice added, re-spaced, wrapped across a PDF's lines or
+    re-cased is still the key (the `correct` pass, 23 November 2026: tests/forms.py)."""
     if isinstance(value, dict):
         value = {k: v for k, v in value.items() if k != "notice"}  # pyright: ignore[reportUnknownVariableType]
-    return _digest(json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode())
+    return _digest(json.dumps(_folded(value), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode())
 
 
 def _book_files(book: Path) -> dict[str, bytes]:
@@ -359,7 +370,8 @@ def _csv_score_problems(name: str, data: bytes) -> list[str]:
     return [f"{name}: a combined score ({', '.join(scores)})"] if scores else []
 
 
-_DECODER = json.JSONDecoder()
+# Not strict: a string wrapped across a PDF's lines holds a line break.
+_DECODER = json.JSONDecoder(strict=False)
 
 
 def _embedded_json(text: str) -> list[Any]:
@@ -376,6 +388,17 @@ def _embedded_json(text: str) -> list[Any]:
         found.append(value)
         start = text.find("{", end)
     return found
+
+
+def _text_views(name: str, data: bytes) -> list[str]:
+    """Every text a file holds: what the shared reader gives (raw, its markup's entities
+    decoded, as a page shows it with and without breaks between tags, every JSON string and every base64 blob decoded,
+    a PDF's text and fields), and a CSV's cells unquoted."""
+    views = [_scanned_text(name, data)]
+    if name.endswith(".csv"):
+        rows = csv.reader(io.StringIO(data.decode("utf-8", errors="replace")))
+        views.append("\n".join(cell for row in rows for cell in row))
+    return views
 
 
 def _file_problems(name: str, data: bytes, held: HeldMaterial, in_zip: bool) -> list[str]:
@@ -397,17 +420,16 @@ def _file_problems(name: str, data: bytes, held: HeldMaterial, in_zip: bool) -> 
     page = _page_text(name, data)
     if page is not None and _SCORE_SHOWN.search(" ".join(page.split())):
         problems.append(f"{name}: shows a combined score")
-    if page is not None:
-        # A page's source too, its markup's entities decoded: a key in a comment or an attribute downloads with it,
-        # though no reader sees it (whole-branch review, reviewer B, round 2).
-        texts = [page]
-        if name.endswith((".html", ".svg")):
-            texts.append(html.unescape(data.decode("utf-8", errors="replace")))
-        if any(_canonical(o) in held.answers for x in texts for v in _embedded_json(x) for o in _objects(v)):
-            problems.append(f"{name}: holds a held task's answer key or a tax answer sheet in its text")
+    # A key written out in any text the file holds: a page's source as well as what it shows (whole-branch review,
+    # reviewer B), a string inside JSON, base64, a CSV cell, a PDF's text, any case (`correct`: tests/forms.py).
+    views = _text_views(name, data)
+    if not any("answer key" in p for p in problems) and any(
+        _canonical(o) in held.answers for x in views for v in _embedded_json(x.casefold()) for o in _objects(v)
+    ):
+        problems.append(f"{name}: holds a held task's answer key or a tax answer sheet in its text")
     if _is_stamped_pdf(name, data):
         problems += [name + p for p in _stamp_problems(data)]
-    home = _HOME.search(_scanned_text(name, data))
+    home = _HOME.search(views[0])
     if home:
         problems.append(f"{name}: a home-folder path ({home.group(0)!r})")
     return problems

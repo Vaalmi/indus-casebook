@@ -256,9 +256,9 @@ One line per unit of work (`docs/REVIEW_PROTOCOL.md`).
   - the whole branch: a key in a README or a page's comment, a private task in a zip, a ticker in lower or mixed case, then in a long list, then beside an ordinary path (each fix a guess from the characters);
   - slice 15: a skill stacked after another command.
 
-  Each was patched where found. Nothing prevents the class.
-- **The `correct` skill never ran,** though the process calls for it whenever a review still has a blocker after round 2. That is a miss in this build. It should run before the next gate work (slice 17's release gates). A likely outcome is a judgment rule in `docs/CODE_STANDARDS.md` for the reviewer to read: a gate on published content names every form the content takes on its surface (each file kind and container, page source as well as visible text, every letter case), and its tests plant the content in each form.
-- **Lessons rows:** none to update. The owner corrected no mistake in this build, so the table is empty.
+  Each was patched where found. Since the `correct` pass of 23 November 2026, a check does: rule 14 and `tests/forms.py` (below).
+- **The `correct` skill ran on 23 November 2026,** before slice 17's release gates (it should have run after the first review that kept a blocker past round 2; that was a miss in this build). It found six classes in the review log (`docs/CODE_STANDARDS.md`, Lessons). The largest, a gate on published content missing a form (37 misses), now has a check: `tests/forms.py` lists every form, and the site's and the release's gate tests plant a held key, a real ticker and a real name in each; against the site's gate before the whole-branch review it fails on a ticker in lower and mixed case. On its first run it found seven forms the release's gate still let a held key through in (a CSV cell, a PDF's text, a string inside JSON, base64 in JSON, a tag inside each word, lower and mixed case); the gate now reads every text a file holds and folds case and spacing, and the local `v0.1.0` bundle, rechecked with it, has no problem, so nothing of the kind shipped. The second, a fix that answers the probe and not the rule (about 20), has a written rule (rule 15) and an entry for master. Always-read lines added: none; `AGENTS.md` is unchanged.
+- **Lessons rows:** six, added by the `correct` pass of 23 November 2026 from the review log; the owner corrected no mistake in this build.
 
 ## Milestones
 

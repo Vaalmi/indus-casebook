@@ -12,6 +12,7 @@ from casebook.publish.gates import real_identifier_problems, run_gates, syntheti
 from casebook.publish.site_build import SiteBuildError, build_site
 
 from .conftest import README
+from .forms import FORMS
 
 
 def test_the_built_site_passes_every_gate(site: Path) -> None:
@@ -212,3 +213,24 @@ def test_a_price_written_in_a_records_prose_needs_the_label(book_copy: Path, tmp
     path.write_text(path.read_text().replace("Annual review with", f"{prose} Annual review with", 1))
     with pytest.raises(SiteBuildError, match=r"crm/crm\.json: shows prices without the word 'synthetic'"):
         build_site(book_copy, tmp_path / "site", README)
+
+
+# Every form published content takes (tests/forms.py): a real ticker or name, planted in each.
+
+REAL = {
+    "a real ticker": ("The client holds 100 shares of JNJ in the IRA.", "real ticker"),
+    "a real name": ("The client holds Johnson & Johnson in the IRA.", "real name"),
+}
+
+
+@pytest.mark.parametrize("form", sorted(FORMS))
+@pytest.mark.parametrize("content", sorted(REAL))
+def test_a_real_identifier_fails_the_site_in_every_form(tmp_path: Path, content: str, form: str) -> None:
+    text, kind = REAL[content]
+    planted = FORMS[form](text)
+    for name, data in planted.items():
+        (tmp_path / name).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / name).write_bytes(data)
+    # A file the gate cannot read is refused whole (the site publishes no zip), which also keeps the content out.
+    caught = [p for p in real_identifier_problems(tmp_path) if kind in p or p.endswith("cannot be published")]
+    assert caught, f"{content} in {form} ({', '.join(planted)}) passed the site's gate"
