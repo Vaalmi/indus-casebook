@@ -28,7 +28,7 @@ Why each part is what it is. Versions are pinned in `pyproject.toml` and `uv.loc
 
 ## Checks
 
-- **`make check`** runs ruff (lint and format), pyright in strict mode, import-linter, the float check, the licence check and pytest with an 85% coverage floor. The pytest run includes the end-to-end tests: a seeded build, the checks, the site build with its gates, and Playwright on the built site.
+- **`make check`** runs ruff (lint and format), pyright in strict mode, import-linter, the float check, the licence check and pytest with an 85% coverage floor, in four worker processes (pytest-xdist, MIT, each test file on one worker so its fixtures build once; the owner's decision of 24 November 2026, after the Check job outgrew its 90 minutes). The pytest run includes the end-to-end tests: a seeded build, the checks, the site build with its gates, and Playwright on the built site.
 - **import-linter** holds the import contracts in `docs/PLAN.md`: contract 1 (keys and graders import no generator code) and contract 2 (`checks` imports only `model`). Contract 3, one module per outside program, is a test that only `runner/cli.py` imports `subprocess`.
 - **The licence check** (`tools/check_licences.py`) reads every installed package's declared licence and also refuses known offenders by name, since `tenforty` declares MIT and bundles GPL code. LGPL passes: the rule names GPL and AGPL, and an LGPL library may be imported. A package that declares no licence fails until someone checks it by hand.
 - **Playwright (Apache-2.0)**, Chromium only, from pytest against a local server. Turned down: Node Playwright, a second toolchain.
