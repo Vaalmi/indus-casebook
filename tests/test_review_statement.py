@@ -236,7 +236,9 @@ def test_the_site_s_gates_hold_each_return_and_page_to_its_own_notice_and_waterm
     copy_ = tmp_path / "site"
     shutil.copytree(reviewed_site, copy_)
     # A return in scope still stamped "unreviewed", and one outside it stamped as reviewed, each fail.
-    data = next(copy_.glob("data/*"))
+    # The book's own folder under data/, named by its metadata: data/ also holds runs/, which a Linux runner lists
+    # first (Check run 45405673580, 24 November 2026).
+    data = copy_ / metadata.parent.relative_to(reviewed_site)
     inside = _returns(data, IN_SCOPE)[0]
     shutil.copyfile(book / inside.relative_to(data), inside)
     outside = _returns(data, OUT_OF_SCOPE)[0]
