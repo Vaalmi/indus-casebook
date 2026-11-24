@@ -1,0 +1,9 @@
+{
+  "date": "2027-03-01",
+  "reviewer": "Pat Example, EA",
+  "scope": {
+    "summary": "the RMD review of HH-5271 and its 2025 return",
+    "tasks": ["T-TAX-01"],
+    "households": ["HH-5271"]
+  }
+}

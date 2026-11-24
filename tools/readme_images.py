@@ -24,6 +24,7 @@ from playwright.sync_api import Page, sync_playwright
 from casebook import cli
 from casebook.model.files import SEALED_HOUSEHOLDS, read_json
 from casebook.notice import NOTICE_HEADLINE
+from casebook.review_statement import ReviewStatement, is_held, statement_of
 from casebook.site.results import (
     OUTCOME_NAMES,
     OUTCOMES,
@@ -33,7 +34,7 @@ from casebook.site.results import (
     private_outcomes_path,
     results,
 )
-from casebook.site.tasks import ARM_NAMES, ARM_ORDER, is_held, load_records
+from casebook.site.tasks import ARM_NAMES, ARM_ORDER, load_records
 from casebook.tasks.task import WORKFLOWS, load_task
 
 REPO = Path(__file__).resolve().parents[1]
@@ -520,9 +521,9 @@ def results_chart(sections: Sequence[RunSetResult], held: int, public: int) -> s
     )
 
 
-def committed_results(runs: Path, tasks: Path) -> list[RunSetResult]:
+def committed_results(runs: Path, tasks: Path, statement: ReviewStatement | None = None) -> list[RunSetResult]:
     private = load_private_outcomes(private_outcomes_path(runs))
-    return results(load_records(runs), tasks, private)
+    return results(load_records(runs), tasks, private, statement)
 
 
 # ---------------------------------------------------------------- main
@@ -532,13 +533,14 @@ def draw(book: Path, site: Path, out: Path) -> list[Path]:
     """Every image, from a default book and the site built from it and the committed runs."""
     runs, tasks = cli.PUBLISHED_RUNS, Path("tasks/public")
     public = sorted(tasks.glob("T-*.toml"))
-    held = sum(is_held(load_task(path)) for path in public)
+    statement = statement_of(book)
+    held = sum(is_held(load_task(path), statement) for path in public)
     households = read_json(book, SEALED_HOUSEHOLDS)["households"]
     featured = sum(h["set"] == "featured" for h in households)
     drawn = {
         "book-made-and-checked.svg": book_diagram(len(households), featured),
         "task-run-and-graded.svg": run_diagram(held, len(public)),
-        "results-chart.svg": results_chart(committed_results(runs, tasks), held, len(public)),
+        "results-chart.svg": results_chart(committed_results(runs, tasks, statement), held, len(public)),
     }
     written: list[Path] = []
     for name, svg in drawn.items():

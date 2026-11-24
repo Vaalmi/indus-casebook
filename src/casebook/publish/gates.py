@@ -5,6 +5,7 @@ import csv
 import io
 import json
 import re
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
@@ -12,6 +13,7 @@ from casebook.model.files import METADATA, SYNTHETIC
 from casebook.notice import NOTICE, contains_notice
 from casebook.publish.private_set import private_set_problems
 from casebook.published_text import UnscannableFileError, html_visible_text, text_of
+from casebook.review_statement import ReviewStatement, household_of, return_marks
 from casebook.securities.scan import RealIdentifierScan, default_scan
 from casebook.watermark import stamped_problems
 
@@ -28,13 +30,20 @@ def _files(root: Path) -> list[Path]:
     return sorted(p for p in root.rglob("*") if p.is_file())
 
 
-def notice_problems(site: Path, readme: Path, metadata: Path) -> list[str]:
+def notice_problems(
+    site: Path, readme: Path, metadata: Path, page_notices: Mapping[str, str] | None = None
+) -> list[str]:
+    """`page_notices`: the notice a page carries in place of the notice, by its path in the site: the reviewed notice
+    on the page of a tax task a review statement covers (docs/SPEC.md, Notice everywhere). Every other page carries
+    the notice itself."""
     problems: list[str] = []
     if not readme.is_file() or not contains_notice(readme.read_text(encoding="utf-8")):
         problems.append(f"{readme.name} lacks the notice")
     for page in (p for p in _files(site) if p.suffix == ".html"):
-        if not contains_notice(html_visible_text(page.read_text(encoding="utf-8"))):
-            problems.append(f"{page.relative_to(site).as_posix()} lacks the notice")
+        relative = page.relative_to(site).as_posix()
+        notice = (page_notices or {}).get(relative, NOTICE)
+        if not contains_notice(html_visible_text(page.read_text(encoding="utf-8")), notice):
+            problems.append(f"{relative} lacks the {'notice' if notice == NOTICE else 'reviewed notice'}")
     try:
         if json.loads(metadata.read_text(encoding="utf-8")).get("notice") != NOTICE:
             problems.append(f"{METADATA} lacks the notice")
@@ -108,13 +117,15 @@ def real_identifier_problems(site: Path, scan: RealIdentifierScan | None = None)
     return problems
 
 
-def return_problems(site: Path) -> list[str]:
-    """Every page of every filled return the site would publish carries the watermark and the notice,
-    drawn so that they show (SPEC: "Filled returns: shown ... with an 'unreviewed' watermark on every
-    page"). A return damaged after the build is caught here, before it is published."""
+def return_problems(site: Path, statement: ReviewStatement | None = None) -> list[str]:
+    """Every page of every filled return the site would publish carries its watermark and notice, drawn so that they
+    show (SPEC: "Filled returns: shown ... with a watermark on every page"): "unreviewed" and the notice, or the
+    reviewed ones on a household `statement` covers. A return damaged after the build is caught here, before it is
+    published."""
     problems: list[str] = []
     for pdf in (p for p in _files(site) if p.suffix == ".pdf" and "/returns/" in p.as_posix()):
-        problems += stamped_problems(pdf.relative_to(site).as_posix(), pdf.read_bytes())
+        marks = return_marks(household_of(pdf.as_posix()), statement)
+        problems += stamped_problems(pdf.relative_to(site).as_posix(), pdf.read_bytes(), marks)
     return problems
 
 
@@ -209,12 +220,19 @@ def held_page_problems(site: Path, held: dict[str, str], runs: Path | None = Non
     return problems
 
 
-def run_gates(site: Path, readme: Path, metadata: Path, held: dict[str, str] | None = None) -> list[str]:
+def run_gates(
+    site: Path,
+    readme: Path,
+    metadata: Path,
+    held: dict[str, str] | None = None,
+    statement: ReviewStatement | None = None,
+    page_notices: Mapping[str, str] | None = None,
+) -> list[str]:
     return (
-        notice_problems(site, readme, metadata)
+        notice_problems(site, readme, metadata, page_notices)
         + synthetic_problems(site)
         + real_identifier_problems(site)
-        + return_problems(site)
+        + return_problems(site, statement)
         + private_set_problems(site)
         + held_page_problems(site, held or {})
     )

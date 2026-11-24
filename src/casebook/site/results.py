@@ -27,8 +27,9 @@ from casebook.model.files import json_text
 from casebook.model.ledger import PRIVATE_TASK_ID, is_private_task_id
 from casebook.notice import NOTICE
 from casebook.publish.private_set import private_set_problems
+from casebook.review_statement import ReviewStatement, is_held, is_reviewed
 from casebook.runner.record import REGRADED, SLOT
-from casebook.site.tasks import ARM_NAMES, ARM_ORDER, cli_name, graded_under, is_held, require_named
+from casebook.site.tasks import ARM_NAMES, ARM_ORDER, cli_name, graded_under, require_named
 from casebook.tasks.matrix import BOOK, load_matrix
 from casebook.tasks.task import HELD_WORKFLOWS, WORKFLOWS, Task, find_task, load_task
 
@@ -140,7 +141,12 @@ def outcome(record: dict[str, Any], held: bool) -> Outcome:
         return Outcome("failed_run", run_id, reason=str(record["failure_reason"]))
     grade = record.get("grade")
     if not grade:
-        raise ResultsError(f"run {run_id} is {record['state']} with no grade, on a task whose verdict is not held")
+        # A tax task a review statement has since released was published held, with no grade: `casebook regrade`
+        # publishes it again with its grade, which the private run folder kept.
+        raise ResultsError(
+            f"run {run_id} is {record['state']} with no grade, on a task whose verdict is not held "
+            "(a task a review statement released is published again with its grade by `casebook regrade`)"
+        )
     return Outcome("passed" if grade["passed"] else "failed", run_id, score=int(grade["score"]))
 
 
@@ -193,11 +199,16 @@ def _column_labels(columns: Sequence[Column]) -> tuple[str, ...]:
     return tuple(f"Repeat {n}, {source or 'outside a pass'}" for source, n in columns)
 
 
-def held_count_problems(where: str, counts: dict[str, dict[str, dict[str, int]]]) -> list[str]:
-    """A held workflow counted as anything but held: a verdict or a failure before the tax review."""
+def held_count_problems(
+    where: str, counts: dict[str, dict[str, dict[str, int]]], released: frozenset[str] = frozenset()
+) -> list[str]:
+    """A held workflow counted as anything but held: a verdict or a failure before the tax review. `released`: the
+    workflows a review statement released a task of, whose counts may hold that task's verdicts; each run of a task
+    still held is counted held all the same (`outcome`)."""
     return [
         f"{where}: {workflow} {arm} counts {counts[workflow][arm][kind]} {OUTCOME_NAMES[kind]}, but it is held"
         for workflow in HELD_WORKFLOWS
+        if workflow not in released
         for arm in ARM_ORDER
         for kind in OUTCOMES
         if kind not in HELD_OUTCOMES and counts[workflow][arm][kind]
@@ -333,11 +344,10 @@ def _date(record: dict[str, Any]) -> str:
 
 
 def _task_result(
-    task: Task, role: str, arms: dict[str, dict[Column, dict[str, Any]]], columns: Sequence[Column]
+    task: Task, role: str, arms: dict[str, dict[Column, dict[str, Any]]], columns: Sequence[Column], held: bool
 ) -> TaskResult:
     """Each arm's outcome in each repeat's column, a gap where that repeat's run is under another name, and the
     pairs of the same repeat (reviewers A and B, slice 13 round 1: never one arm's repeat 2 against another's 1)."""
-    held = is_held(task)
     rows: list[ArmResult] = []
     for arm in ARM_ORDER:
         placed = arms.get(arm, {})
@@ -352,10 +362,14 @@ def _task_result(
 
 
 def results(
-    records: dict[str, list[dict[str, Any]]], tasks: Path, private: Sequence[PrivateRunSet] = ()
+    records: dict[str, list[dict[str, Any]]],
+    tasks: Path,
+    private: Sequence[PrivateRunSet] = (),
+    statement: ReviewStatement | None = None,
 ) -> list[RunSetResult]:
     """The results page's sections, one per run name, from the published run records by task (`load_records`),
-    the public task files and their matrix, and the private set's counts."""
+    the public task files and their matrix, and the private set's counts. `statement`: the review statement the book
+    was built under, whose scope releases its tax tasks' verdicts."""
     placements = {p.task_id: p for p in load_matrix(tasks.parent / MATRIX).placements}
     loaded = {task_id: load_task(tasks / f"{task_id}.toml") for task_id in records}
     # A task's runs under one arm, by name: a slot's retries are followed across names, then each run that stands
@@ -376,7 +390,9 @@ def results(
         }
         columns = sorted({c for arms in by_task.values() for placed in arms.values() for c in placed})
         task_results = {
-            task_id: _task_result(loaded[task_id], placements[task_id].role, arms, columns)
+            task_id: _task_result(
+                loaded[task_id], placements[task_id].role, arms, columns, is_held(loaded[task_id], statement)
+            )
             for task_id, arms in by_task.items()
         }
         workflows: list[WorkflowResult] = []
@@ -399,7 +415,8 @@ def results(
             if groups:
                 workflows.append(WorkflowResult(workflow, WORKFLOW_NAMES[workflow], tuple(groups)))
         # The rule the private summary is held to (`private_outcomes_problems`), on the public counts too.
-        held_problems = held_count_problems(f"the public runs under {name.label}", public)
+        released = frozenset(t.workflow for t in loaded.values() if is_reviewed(t, statement))
+        held_problems = held_count_problems(f"the public runs under {name.label}", public, released)
         if held_problems:
             raise ResultsError("; ".join(held_problems))
         dates = [_date(r) for arms in by_task.values() for placed in arms.values() for r in placed.values()]
@@ -452,7 +469,8 @@ def private_outcomes(private_runs: Path, private_tasks: Path, run_ids: Iterable[
         for arm in ARM_ORDER:
             for record in standing([r for r in task_records if r["arm"] == arm]):
                 name = run_name(record)
-                kind = outcome(record, is_held(task)).kind
+                # A public statement never names a private task, so a private tax task's verdict stays held.
+                kind = outcome(record, is_held(task, None)).kind
                 counts.setdefault(name, _empty_counts())[task.workflow][arm][kind] += 1
                 dates.setdefault(name, []).append(_date(record))
                 if (ran := ran_under(record)) is not None:

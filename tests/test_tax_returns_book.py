@@ -24,6 +24,7 @@ from casebook.tax import forms
 from casebook.tax.engine import compute
 from casebook.tax.forms.maps import official_pdf
 from casebook.tax.forms.returns import return_forms
+from casebook.watermark import UNREVIEWED, Marks
 
 from .conftest import README, SCRIPTS, SEED, built
 
@@ -88,8 +89,8 @@ def test_a_return_page_without_the_watermark_or_the_notice_fails_the_build(
 ) -> None:
     real_fill = forms.fill
 
-    def page_two_unstamped(form: str, values: dict[str, str | bool], title: str) -> bytes:
-        filled = real_fill(form, values, title)
+    def page_two_unstamped(form: str, values: dict[str, str | bool], title: str, marks: Marks = UNREVIEWED) -> bytes:
+        filled = real_fill(form, values, title, marks)
         if form != "f1040":
             return filled
         writer = PdfWriter()
@@ -110,8 +111,8 @@ def test_a_return_page_without_the_watermark_or_the_notice_fails_the_build(
 def test_a_form_that_does_not_read_back_fails_the_build(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     real_fill = forms.fill
 
-    def drops_a_value(form: str, values: dict[str, str | bool], title: str) -> bytes:
-        return real_fill(form, {k: v for k, v in values.items() if k != "15"}, title)
+    def drops_a_value(form: str, values: dict[str, str | bool], title: str, marks: Marks = UNREVIEWED) -> bytes:
+        return real_fill(form, {k: v for k, v in values.items() if k != "15"}, title, marks)
 
     scripts = tmp_path / "scripts" / "archetype-1"
     scripts.mkdir(parents=True)

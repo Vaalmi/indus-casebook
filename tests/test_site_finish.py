@@ -12,8 +12,8 @@ from playwright.sync_api import Browser
 from casebook.notice import NOTICE
 from casebook.publish.gates import held_page_problems
 from casebook.publish.site_build import SiteBuildError, build_site
+from casebook.review_statement import is_held
 from casebook.site.errata import ErrataError, load_errata
-from casebook.site.tasks import is_held
 from casebook.tasks.task import load_task
 
 from .conftest import FEATURED, README, ROOT
@@ -119,7 +119,7 @@ def test_a_malformed_errata_log_fails_the_site_build(book: Path, tmp_path: Path,
 
 def held_tasks() -> dict[str, str]:
     tasks = [load_task(p) for p in sorted(TASKS.glob("*.toml"))]
-    return {t.task_id: t.justified_conclusion for t in tasks if is_held(t)}
+    return {t.task_id: t.justified_conclusion for t in tasks if is_held(t, None)}
 
 
 def test_every_held_task_page_shows_its_sources_and_outputs_and_nothing_else(published_site: Path) -> None:

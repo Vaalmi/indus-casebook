@@ -8,6 +8,7 @@ the site carries the case packets; the review packet is never part of it."""
 import hashlib
 import json
 import shutil
+from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import date
 from importlib.metadata import version
@@ -22,6 +23,7 @@ from casebook.publish.private_set import LEDGER
 from casebook.publish.release_gates import held_material, release_problems
 from casebook.publish.release_record import (
     RELEASES,
+    Release,
     ReleaseRecordError,
     id_digests,
     load_releases,
@@ -29,8 +31,9 @@ from casebook.publish.release_record import (
     stable_id_problems,
 )
 from casebook.publish.site_build import SiteBuildError, build_site
+from casebook.review_statement import is_held, notice_for_task, statement_of
 from casebook.site.errata import ErrataError, load_errata
-from casebook.site.tasks import UnnamedResultError, is_held
+from casebook.site.tasks import UnnamedResultError
 from casebook.tasks.task import load_task
 
 NOTICE_FILE = "NOTICE.txt"
@@ -76,10 +79,10 @@ def _copy_tree(source: Path, target: Path) -> None:
         shutil.copyfile(path, destination)
 
 
-def _with_notice(source: Path, target: Path) -> None:
+def _with_notice(source: Path, target: Path, notice: str = NOTICE) -> None:
     data = json.loads(source.read_text(encoding="utf-8"))
     target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(json_text({**data, "notice": NOTICE}), encoding="utf-8")
+    target.write_text(json_text({**data, "notice": notice}), encoding="utf-8")
 
 
 # The files the release takes from each published folder, and nothing else (reviewers A and B, slice 16 round 1:
@@ -89,17 +92,22 @@ RESULTS_FILES = ("private-outcomes.json",)
 IMAGES = "docs/images"
 
 
-def stray_problems(inputs: ReleaseInputs) -> list[str]:
+def stray_problems(inputs: ReleaseInputs, recorded: Sequence[Release] = ()) -> list[str]:
     """Files in the published folders the release copies from that it would not take: each is named, so a key, a
-    record or an export dropped there is seen, not silently left behind."""
+    record or an export dropped there is seen, not silently left behind. The keys of an earlier release's book
+    version stay, as that release published them, for a task that is open today (reviewer A, slice 17 round 1, D2:
+    a new version, after a review statement say, left the earlier keys behind)."""
     published = inputs.published
     version = read_manifest(inputs.book).version
-    open_tasks = {load_task(p).task_id for p in inputs.tasks.glob("*.toml") if not is_held(load_task(p))}
+    versions = {version} | {r.book_version for r in recorded}
+    statement = statement_of(inputs.book)
+    open_tasks = {t.task_id for t in map(load_task, inputs.tasks.glob("*.toml")) if not is_held(t, statement)}
     keys = published / "keys"
     problems = [
         f"published/keys/{p.relative_to(keys).as_posix()}: not the published key of an open task"
         for p in sorted(keys.rglob("*"))
-        if p.is_file() and not (p.parent == keys / version and p.suffix == ".json" and p.stem in open_tasks)
+        if p.is_file()
+        and not (p.parent.parent == keys and p.parent.name in versions and p.suffix == ".json" and p.stem in open_tasks)
     ]
     for folder, allowed in (("audit", AUDIT_FILES), ("results", RESULTS_FILES)):
         problems += [
@@ -153,8 +161,12 @@ def _stage(inputs: ReleaseInputs, staging: Path) -> None:
     _copy_tree(published / "runs", staging / "runs")
     # The release's copies of the published keys and the freeze record carry the notice as a field (the owner's
     # choice 2); the committed files stay as the runner and `casebook freeze` wrote them.
+    # A tax task's key a review statement covers carries the reviewed notice (docs/SPEC.md, Notice everywhere).
+    statement = statement_of(inputs.book)
+    tasks = {t.task_id: t for t in map(load_task, inputs.tasks.glob("*.toml"))}
     for key in sorted((published / "keys" / manifest.version).glob("*.json")):
-        _with_notice(key, staging / "keys" / key.name)
+        task = tasks.get(key.stem)
+        _with_notice(key, staging / "keys" / key.name, NOTICE if task is None else notice_for_task(task, statement))
     _with_notice(published / "freeze.json", staging / "freeze.json")
     shutil.copyfile(published / "errata.json", staging / "errata.json")
     for folder, names in (("results", RESULTS_FILES), ("audit", AUDIT_FILES)):
@@ -210,7 +222,7 @@ def build_release(inputs: ReleaseInputs, out: Path, record_on: date | None = Non
     ledger = load_ledger(LEDGER)
     # What the release is built from is checked first, before anything is built: the book against its manifest,
     # the published folders for files the release would not take, then the stable-ID rule and the record.
-    problems = book_problems(inputs.book) + stray_problems(inputs)
+    problems = book_problems(inputs.book) + stray_problems(inputs, recorded)
     if problems:
         raise ReleaseError("the release's inputs are not as published:\n  " + "\n  ".join(problems))
     ids = id_digests(inputs.book, inputs.tasks, inputs.published / "keys")

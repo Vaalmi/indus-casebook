@@ -52,6 +52,13 @@ from casebook.notice import NOTICE
 from casebook.plant import PlantContext, plant
 from casebook.published_text import text_of
 from casebook.replay import ReplayResult, Snapshot, overdrawn, replay
+from casebook.review_statement import (
+    REVIEW_STATEMENT,
+    ReviewStatement,
+    ReviewStatementError,
+    load_review_statement,
+    return_marks,
+)
 from casebook.securities.market import Market, build_market
 from casebook.securities.master import Security, by_id, load_master
 from casebook.securities.scan import default_scan
@@ -66,6 +73,8 @@ from casebook.tax.summary import TaxReport, tax_report
 DATA_LICENCE = "CC-BY-4.0"
 REPO = Path(__file__).resolve().parents[2]
 ID_LEDGER = REPO / "book" / "id_ledger.json"
+# The owner adds the reviewer's statement here once a tax review is done (docs/PLAN.md, slice 17); none before.
+REVIEW_STATEMENT_FILE = REPO / "book" / REVIEW_STATEMENT
 
 
 class BuildError(RuntimeError):
@@ -159,7 +168,12 @@ def generate_book(
     extra_scripts: Path | None = None,
     background_archetypes: frozenset[int] | None = None,
     private_salt: str | None = None,
+    review_statement: Path = REVIEW_STATEMENT_FILE,
 ) -> dict[str, bytes]:
+    try:
+        statement = load_review_statement(review_statement)
+    except ReviewStatementError as error:
+        raise BuildError(f"{review_statement}: {error}") from error
     master = load_master()
     market = build_market(master, seed)
     found = [(scripts_dir, script) for script in load_scripts(scripts_dir)]
@@ -251,7 +265,14 @@ def generate_book(
         files[event_log_path(script.household.household_id)] = json_text(log).encode()
     files.update(_tax_files(units))
     featured = {s.household.household_id: s.household for s in scripts if not s.background}
-    files.update(_returns(featured, units, real_names(master) if real_tickers else None))
+    if statement is not None:
+        # A review covers returns the book fills: a featured household's. An ID the book does not feature is a
+        # statement for another book, not one to publish under.
+        unknown = sorted(statement.households - set(featured))
+        if unknown:
+            raise BuildError(f"{review_statement}: its scope names households this book fills no return for: {unknown}")
+        files[REVIEW_STATEMENT] = json_text(statement.to_dict()).encode()
+    files.update(_returns(featured, units, real_names(master) if real_tickers else None, statement))
     files[REGISTRY] = json_text({"entries": [e.to_dict() for e in sorted(entries, key=lambda e: e.item_id)]}).encode()
     files[SEALED_HOUSEHOLDS] = json_text({"households": [_sealed_household(s) for s in scripts]}).encode()
     files[METADATA] = json_text(
@@ -313,11 +334,15 @@ def _tax_files(units: list[TaxUnitFacts]) -> dict[str, bytes]:
 
 
 def _returns(
-    featured: dict[str, Household], units: list[TaxUnitFacts], named: Callable[[str], str] | None
+    featured: dict[str, Household],
+    units: list[TaxUnitFacts],
+    named: Callable[[str], str] | None,
+    statement: ReviewStatement | None,
 ) -> dict[str, bytes]:
     """The featured households' filled 2025 returns, each form only where the unit's facts trigger it. A
-    form whose fields do not read back as filled, or a page without the watermark and the notice, is
-    refused. `named` renames securities in a real-ticker build, as its other files are."""
+    form whose fields do not read back as filled, or a page without its watermark and notice, is refused:
+    "unreviewed" and the notice, or the reviewed ones on a household the review statement covers. `named`
+    renames securities in a real-ticker build, as its other files are."""
     files: dict[str, bytes] = {}
     for unit in units:
         household = featured.get(unit.household_id)
@@ -329,8 +354,9 @@ def _returns(
                     form, values={k: named(v) if isinstance(v, str) else v for k, v in form.values.items()}
                 )
             name = return_path(unit.household_id, unit.tax_unit_id, form.file)
-            pdf = forms.fill(form.form, form.values, title=f"{TAX_YEAR} {form.file} {unit.tax_unit_id}")
-            problems = forms.stamped_problems(name, pdf)
+            marks = return_marks(unit.household_id, statement)
+            pdf = forms.fill(form.form, form.values, title=f"{TAX_YEAR} {form.file} {unit.tax_unit_id}", marks=marks)
+            problems = forms.stamped_problems(name, pdf, marks)
             try:
                 if forms.read_back(form.form, pdf) != form.values:
                     problems.append(f"{name}: its fields do not read back as filled")
@@ -404,6 +430,7 @@ def build_book(
     extra_scripts: Path | None = None,
     background_archetypes: frozenset[int] | None = None,
     private_salt: str | None = None,
+    review_statement: Path = REVIEW_STATEMENT_FILE,
 ) -> BuildResult:
     """Build the book. Real-ticker mode is for runs only: its output goes to out/real/, never published.
     A held-out build (the featured pairs kept back until the freeze) is written outside the repo only, and so
@@ -421,6 +448,7 @@ def build_book(
         extra_scripts,
         background_archetypes,
         private_salt,
+        review_statement,
     )
     texts = {name: text_of(name, data) for name, data in files.items()}
     if not real_tickers:

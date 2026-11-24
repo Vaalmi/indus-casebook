@@ -16,7 +16,7 @@ from casebook.notice import NOTICE, contains_notice
 from casebook.publish import release as release_module
 from casebook.publish.release import ReleaseError, ReleaseInputs, build_release, tag
 from casebook.publish.release_gates import HeldMaterial, held_material, release_problems
-from casebook.publish.release_record import load_releases
+from casebook.publish.release_record import Release, load_releases
 from casebook.publish.review_packet import packet_zip, write_review_packet
 from casebook.publish.zips import read_zip
 from tests.conftest import FEATURED
@@ -232,3 +232,25 @@ def test_a_book_file_changed_after_its_build_stops_the_release(
     events.write_text(events.read_text().replace("-1855.93", "1.00", 1))
     with pytest.raises(ReleaseError, match=r"sealed/HH-7350/events\.json: its bytes"):
         build_release(_inputs(book, real_book, tmp_path), tmp_path / "out", DAY, tmp_path / "releases.json")
+
+
+def test_an_earlier_release_s_keys_stay_for_its_open_tasks_and_nothing_else(tmp_path: Path) -> None:
+    """Reviewer A, slice 17 round 1, D2: a new book version (after a review statement, say) leaves the earlier
+    version's published keys behind; they are the earlier release's, not strays."""
+    repo, book = tmp_path / "repo", tmp_path / "book"
+    shutil.copytree(ROOT / "tasks" / "public", repo / "tasks" / "public")
+    book.mkdir()
+    (book / "manifest.json").write_text(json.dumps({"version": "0.0.2", "seed": 2026, "households": [], "files": {}}))
+    keys = repo / "published" / "keys"
+    for path in ("0.0.1/T-REC-01.json", "0.0.2/T-REC-01.json", "0.0.1/T-TAX-02.json", "0.0.9/T-REC-01.json"):
+        (keys / path).parent.mkdir(parents=True, exist_ok=True)
+        (keys / path).write_text("{}\n")
+    inputs = ReleaseInputs(book=book, real_book=None, repo=repo, held_keys=tmp_path / "held")
+    earlier = Release("v0.1.0", "0.0.1", date(2026, 11, 21), {"households": {}, "tasks": {}})
+    assert release_module.stray_problems(inputs, [earlier]) == [
+        "published/keys/0.0.1/T-TAX-02.json: not the published key of an open task",
+        "published/keys/0.0.9/T-REC-01.json: not the published key of an open task",
+    ]
+    assert "published/keys/0.0.1/T-REC-01.json: not the published key of an open task" in (
+        release_module.stray_problems(inputs)
+    )

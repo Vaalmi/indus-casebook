@@ -13,7 +13,8 @@ import pytest
 from casebook.keys.billing_groups import billing_groups_key
 from casebook.model.files import json_text, read_manifest
 from casebook.publish.site_build import SiteBuildError, build_site
-from casebook.runner.session import held, published_record
+from casebook.review_statement import is_held
+from casebook.runner.session import published_record
 from casebook.tasks.task import find_task
 
 from .conftest import README, ROOT
@@ -34,17 +35,17 @@ def a_graded_record(task_id: str) -> dict[str, Any]:
 @pytest.mark.parametrize("task_id", ["T-TAX-01", "T-TAX-05", "T-REC-03", "T-REC-04"])
 def test_a_held_task_s_published_record_carries_no_grade(task_id: str) -> None:
     task = find_task(TASKS, task_id)
-    assert held(task)
-    public = published_record(task, a_graded_record(task_id))
+    assert is_held(task, None)
+    public = published_record(task, a_graded_record(task_id), None)
     assert public["grade"] is None and public["verdict_held"] is True
     assert public["output"]  # the output is shown
 
 
 def test_a_reconciliation_task_s_record_is_published_with_its_grade() -> None:
     task = find_task(TASKS, "T-REC-05")
-    assert not held(task)
+    assert not is_held(task, None)
     record = a_graded_record("T-REC-05")
-    assert published_record(task, record) == record
+    assert published_record(task, record, None) == record
 
 
 def runs_with(tmp_path: Path, record: dict[str, Any]) -> Path:
@@ -86,7 +87,7 @@ def test_a_book_level_reconciliation_task_s_page_renders_its_key(book: Path, tmp
 def test_the_index_builds_with_a_held_run_and_shows_no_verdict(book: Path, tmp_path: Path) -> None:
     """Reviewer A, slice 9 round 2: the index read the grade of a held run published without one."""
     task = find_task(TASKS, "T-TAX-01")
-    runs = runs_with(tmp_path, published_record(task, a_graded_record("T-TAX-01")))
+    runs = runs_with(tmp_path, published_record(task, a_graded_record("T-TAX-01"), None))
     build_site(book, tmp_path / "site", README, runs, TASKS, None)
     index = (tmp_path / "site" / "index.html").read_text()
     assert "not scored until the tax review" in index
@@ -168,7 +169,7 @@ def test_the_site_build_runs_the_gate_on_every_held_task_s_page(
     import casebook.publish.site_build as site_build
 
     task = find_task(TASKS, "T-TAX-01")
-    runs = runs_with(tmp_path, published_record(task, a_graded_record("T-TAX-01")))
+    runs = runs_with(tmp_path, published_record(task, a_graded_record("T-TAX-01"), None))
     render = site_build.render_site
 
     def leaky(*args: Any, **kwargs: Any) -> dict[str, str]:

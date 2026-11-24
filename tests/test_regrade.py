@@ -4,6 +4,7 @@ stored votes, each record keeping its earlier grade (the owner, 18 November 2026
 again under the new freeze (option 1a), whose counts replace the earlier pass's."""
 
 import json
+import shutil
 from pathlib import Path
 from typing import Any
 
@@ -101,6 +102,23 @@ def test_a_pass_s_public_answers_are_graded_again_with_their_earlier_grade_kept(
     # A second regrade keeps the grade the run first had, not the regrade's own.
     assert main(["regrade", done.pass_id]) == 0
     assert all(_record(run_id)[REGRADED]["grade_before"] == zeroed[run_id] for run_id in public)
+
+
+def test_a_regrade_on_a_rebuilt_book_grades_on_it_and_writes_its_keys_under_its_version(
+    tmp_path: Path, real_book: Path, standin_cli: StandIn, frozen: Path
+) -> None:
+    """Reviewers A and B, slice 17 round 1, D1: after a review statement the book is rebuilt under a new version;
+    the regrade grades the pass's public runs on that book, so its statement and version decide where the keys go."""
+    done = _pass(tmp_path, real_book, standin_cli)
+    rebuilt = tmp_path / "rebuilt" / "0.0.2"
+    shutil.copytree(real_book, rebuilt)
+    manifest = json.loads((rebuilt / "manifest.json").read_text())
+    (rebuilt / "manifest.json").write_text(json_text({**manifest, "version": "0.0.2"}))
+    assert not (tmp_path / "keys" / "0.0.2").exists()
+    assert main(["regrade", done.pass_id, "--book", str(rebuilt)]) == 0
+    assert (tmp_path / "keys" / "0.0.2" / "T-REC-01.json").read_text() == (
+        tmp_path / "keys" / "0.0.1" / "T-REC-01.json"
+    ).read_text()
 
 
 def test_a_pass_s_failed_run_stands_under_the_regrade_s_freeze_never_graded(
@@ -240,7 +258,7 @@ def test_a_regraded_record_names_when_and_what_it_had_before() -> None:
 def test_a_held_task_s_regraded_record_is_published_without_its_earlier_grade() -> None:
     task = find_task(TASKS, "T-TAX-01")
     mapped = {"state": "mapped", "grade": {"score": 100}, REGRADED: {"freeze": "f", "grade_before": {"score": 0}}}
-    public = published_record(task, mapped)
+    public = published_record(task, mapped, None)
     assert public["grade"] is None and public[REGRADED] == {"freeze": "f", "grade_before": None}
 
 

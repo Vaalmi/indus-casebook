@@ -16,10 +16,10 @@ from casebook.model.files import (
 )
 from casebook.publish.gates import run_gates, run_layout_problems, unmapped_record_problems
 from casebook.publish.private_set import private_set_problems
+from casebook.review_statement import is_held, notice_for_task, statement_of
 from casebook.site import STATIC_DIR, data_root, render_site
 from casebook.site.errata import ErrataError
 from casebook.site.results import ResultsError, private_outcomes_path
-from casebook.site.tasks import is_held
 from casebook.tasks.task import load_task
 
 
@@ -102,8 +102,10 @@ def build_site(
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(path, target)
     shown = [load_task(tasks / f"{Path(n).stem}.toml") for n in pages if n.startswith("tasks/")] if tasks else []
-    held = {t.task_id: t.justified_conclusion for t in shown if is_held(t)}
-    problems = run_gates(staging, readme, data / METADATA, held)
+    statement = statement_of(book)
+    held = {t.task_id: t.justified_conclusion for t in shown if is_held(t, statement)}
+    notices = {f"tasks/{t.task_id}.html": notice_for_task(t, statement) for t in shown}
+    problems = run_gates(staging, readme, data / METADATA, held, statement, notices)
     if problems:
         raise SiteBuildError("the site fails its gates:\n  " + "\n  ".join(problems))
     if out.exists():

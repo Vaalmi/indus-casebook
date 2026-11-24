@@ -23,14 +23,19 @@ from casebook.model.files import (
     json_text,
     read_json,
     read_manifest,
+    tax_summary_path,
 )
 from casebook.notice import NOTICE
 from casebook.publish.zips import write_zip
+from casebook.review_statement import is_held, statement_of
 from casebook.site import FEATURED
-from casebook.site.tasks import is_held
 from casebook.tasks.task import load_task
 
 ANSWER_SHEET = "answer-sheet.json"
+# The household's tax answer sheet, once a review statement covers its return: its 2025 tax summary under the
+# reviewed notice (docs/PLAN.md, What stays held: "the tax answer sheets in the case packets"; reviewers A and B,
+# slice 17 round 1, S2).
+TAX_ANSWER_SHEET = "tax-answer-sheet.json"
 NOTICE_FILE = "NOTICE.txt"
 # What a packet's answer sheet says is held until the tax review, besides the held tasks' keys.
 TAX_SUMMARY_HELD = "the household's 2025 tax summary"
@@ -62,10 +67,15 @@ def _planted_item(entry: dict[str, Any]) -> dict[str, Any]:
 
 
 def answer_sheet(
-    household: dict[str, Any], entries: list[dict[str, Any]], keys: dict[str, dict[str, Any]], held: list[str]
+    household: dict[str, Any],
+    entries: list[dict[str, Any]],
+    keys: dict[str, dict[str, Any]],
+    held: list[str],
+    tax_reviewed: bool = False,
 ) -> dict[str, Any]:
     """`keys`: the published key of each of the household's tasks that is not held, by task ID; `held`: the IDs of
-    its held tasks, whose keys stay out."""
+    its held tasks, whose keys stay out; `tax_reviewed`: whether a review statement covers its return, so its tax
+    answer sheet ships beside this one."""
     planted = [e for e in entries if e["household_id"] == household["household_id"]]
     return {
         "notice": NOTICE,
@@ -78,7 +88,9 @@ def answer_sheet(
         "planted_items": [_planted_item(e) for e in planted],
         "explanation": household["explanation"],
         "keys": [{"task_id": task_id, "key": keys[task_id]} for task_id in sorted(keys)],
-        "held_until_review": {"task_keys": sorted(held), "tax_summary": TAX_SUMMARY_HELD},
+        "held_until_review": {"task_keys": sorted(held), "tax_summary": None if tax_reviewed else TAX_SUMMARY_HELD},
+        # Only once reviewed, so a sheet before any review stays byte for byte what the preview shipped.
+        **({"tax_answer_sheet": TAX_ANSWER_SHEET} if tax_reviewed else {}),
     }
 
 
@@ -91,6 +103,8 @@ def case_packets(book: Path, keys: Path, tasks: Path) -> dict[str, bytes]:
     entries: list[dict[str, Any]] = read_json(book, REGISTRY)["entries"]
     loaded = [load_task(path) for path in sorted(tasks.glob("*.toml"))]
     keys_dir = keys / manifest.version
+    # A tax task a review statement covers is no longer held: its key joins the answer sheet.
+    statement = statement_of(book)
     packets: dict[str, bytes] = {}
     featured = [h for h in read_json(book, SEALED_HOUSEHOLDS)["households"] if h["set"] == FEATURED]
     for household in sorted(featured, key=lambda h: str(h["household_id"])):
@@ -101,14 +115,19 @@ def case_packets(book: Path, keys: Path, tasks: Path) -> dict[str, bytes]:
             raise PacketError(f"{household_id} is featured but the book's {MANIFEST} lists none of its files")
         mine = [t for t in loaded if t.household_id == household_id]
         published: dict[str, dict[str, Any]] = {}
-        for task in (t for t in mine if not is_held(t)):
+        for task in (t for t in mine if not is_held(t, statement)):
             key = keys_dir / f"{task.task_id}.json"
             if not key.is_file():
                 raise PacketError(f"{task.task_id} is not held, but {key} is missing")
             published[task.task_id] = json.loads(key.read_text(encoding="utf-8"))
-        sheet = answer_sheet(household, entries, published, [t.task_id for t in mine if is_held(t)])
+        reviewed = statement is not None and statement.covers_return(household_id)
+        held = [t.task_id for t in mine if is_held(t, statement)]
+        sheet = answer_sheet(household, entries, published, held, reviewed)
         files |= shared
         files[NOTICE_FILE] = (NOTICE + "\n").encode("utf-8")
         files[ANSWER_SHEET] = json_text(sheet).encode("utf-8")
+        if statement is not None and reviewed:
+            summary = read_json(book, tax_summary_path(household_id))
+            files[TAX_ANSWER_SHEET] = json_text({**summary, "notice": statement.notice}).encode("utf-8")
         packets[f"{household_id}.zip"] = write_zip(files)
     return packets

@@ -7,8 +7,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from casebook.review_statement import ReviewStatement, is_held, notice_for_task
 from casebook.runner.record import REGRADED
-from casebook.tasks.task import HELD_GRADERS, HELD_WORKFLOWS, Task, load_task
+from casebook.tasks.task import Task, find_task
 
 ARM_ORDER = ("basic", "checklist", "skill")
 ARM_NAMES = {"basic": "Basic prompt", "checklist": "Checklist", "skill": "Skill"}
@@ -57,6 +58,11 @@ class TaskView:
     task: Task
     arms: tuple[ArmView, ...]
     key: dict[str, Any] | None
+    # A tax task until a review statement's scope names it: its page shows sources and outputs only, with no
+    # verdict, no failure marking and no conclusion (`casebook.review_statement.is_held`).
+    held: bool
+    # The notice its page carries: the reviewed notice for a tax task a review statement covers.
+    notice: str
 
     @property
     def file_tools(self) -> tuple[str, ...]:
@@ -66,17 +72,6 @@ class TaskView:
     def crm_tools(self) -> tuple[str, ...]:
         """The CRM sandbox's tools the task allows, by the names the sandbox gives them."""
         return tuple(t.removeprefix(CRM_PREFIX) for t in self.task.allowed_tools if t.startswith(CRM_PREFIX))
-
-    @property
-    def held(self) -> bool:
-        """A tax-lot and RMD task, or another task whose key computes a tax figure: its page shows
-        sources and outputs only, with no verdict, no failure marking and no conclusion, until review."""
-        return is_held(self.task)
-
-
-def is_held(task: Task) -> bool:
-    """A tax-lot and RMD task, or another task whose key computes a tax figure: no verdict until review."""
-    return task.workflow in HELD_WORKFLOWS or task.grader in HELD_GRADERS
 
 
 # How the CLI names itself and its version: `claude --version` prints "2.1.304 (Claude Code)".
@@ -143,13 +138,13 @@ class MixedFreezeError(UnnamedResultError):
     """A page whose arms ran under different freezes."""
 
 
-def task_views(tasks: Path, runs: Path, keys: Path | None) -> list[TaskView]:
+def task_views(tasks: Path, runs: Path, keys: Path | None, statement: ReviewStatement | None = None) -> list[TaskView]:
     if not runs.is_dir():
         return []
     records = load_records(runs)
     views: list[TaskView] = []
     for task_id in sorted(records):
-        task = load_task(tasks / f"{task_id}.toml")
+        task = find_task(tasks, task_id)
         arms: list[ArmView] = []
         for arm in ARM_ORDER:
             mine = sorted((r for r in records[task_id] if r["arm"] == arm), key=lambda r: str(r["started_utc"]))
@@ -168,5 +163,5 @@ def task_views(tasks: Path, runs: Path, keys: Path | None) -> list[TaskView]:
             )
         key_file = keys / f"{task_id}.json" if keys else None
         key = json.loads(key_file.read_text(encoding="utf-8")) if key_file and key_file.is_file() else None
-        views.append(TaskView(task, tuple(arms), key))
+        views.append(TaskView(task, tuple(arms), key, is_held(task, statement), notice_for_task(task, statement)))
     return views

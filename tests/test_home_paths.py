@@ -149,7 +149,9 @@ def test_a_follow_up_run_s_sandbox_config_is_published_under_the_private_placeho
     inputs = RunInputs(task, "basic", real_book, None, "grader-sha", "key-sha")
     record = run_task(inputs, SharedConfig(timeout_seconds=30, retries=0), private_root())
     assert record["state"] == "failed"
-    public = finish_run(task, TASKS, False, grader(task.grader), None, tmp_path / "keys", record, tmp_path / "runs")
+    public = finish_run(
+        task, TASKS, False, grader(task.grader), None, tmp_path / "keys", record, tmp_path / "runs", None
+    )
     args = public["tools_and_permissions"]["arguments"]
     assert args[args.index("--mcp-config") + 1] == f"<private>/runs/{record['run_id']}/crm-1/mcp.json"
     kept = record["tools_and_permissions"]["arguments"]

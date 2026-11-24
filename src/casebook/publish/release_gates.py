@@ -19,6 +19,7 @@ read a folder read the members too, and a member is named as `packets/HH-4821.zi
 """
 
 import csv
+import dataclasses
 import hashlib
 import io
 import json
@@ -59,15 +60,25 @@ from casebook.publish.gates import (
     synthetic_problems,
     unmapped_record_problems,
 )
+from casebook.publish.packets import TAX_ANSWER_SHEET
 from casebook.publish.private_set import private_set_problems
 from casebook.publish.zips import ZipError, read_zip
 from casebook.published_text import UnscannableFileError, html_visible_text, pdf_pages_text, text_of
+from casebook.review_statement import (
+    REVIEW_STATEMENT,
+    ReviewStatement,
+    household_of,
+    is_held,
+    is_reviewed,
+    return_marks,
+    statement_of,
+)
 from casebook.site import FEATURED, data_root
 from casebook.site.results import private_outcomes_problems
-from casebook.site.tasks import UnnamedResultError, is_held, require_named
+from casebook.site.tasks import UnnamedResultError, require_named
 from casebook.sources.pdf import FOOTER_SIZE, MARGIN
 from casebook.tasks import task as task_files
-from casebook.watermark import stamped_problems
+from casebook.watermark import Marks, stamped_problems
 
 NOTICE_FILE = "NOTICE.txt"
 ZIP_MARK = "!"
@@ -85,7 +96,9 @@ DOCUMENTS = "documents"
 # The book's own JSON: what a build writes under these folders, and its manifest and metadata. It cannot carry the
 # notice without changing book bytes, so the metadata.json or NOTICE.txt of the folder it ships in covers it.
 BOOK_FOLDERS = frozenset({HOUSEHOLDS, "securities", "sealed"})
-BOOK_FILES = frozenset({MANIFEST, METADATA})
+# A book file at its root, covered by its metadata.json like the rest: the review statement too (reviewers A and B,
+# slice 17 round 1, S1).
+BOOK_FILES = frozenset({MANIFEST, METADATA, REVIEW_STATEMENT})
 # The document PDFs' footer as sources/pdf.py wraps it. It is drawn bottom-up, so pypdf reads its lines out of
 # order and the notice is not one run of text: each line must be there.
 FOOTER_LINES = tuple(simpleSplit(NOTICE, "Helvetica", FOOTER_SIZE, LETTER[0] - 2 * MARGIN))
@@ -118,7 +131,7 @@ _SITE_PAGE = re.compile(r"(?:(?:tasks|households)/)?[^/]+\.html")
 _PACKET_ZIP = re.compile(r"(?P<household>HH-\d{4})\.zip")
 # A case packet's members (publish/packets.py): its household's source sets, the shared securities files and metadata,
 # its notice and its answer sheet.
-PACKET_FILES = frozenset({SECURITIES_CSV, PRICES_CSV, METADATA, NOTICE_FILE, "answer-sheet.json"})
+PACKET_FILES = frozenset({SECURITIES_CSV, PRICES_CSV, METADATA, NOTICE_FILE, "answer-sheet.json", TAX_ANSWER_SHEET})
 SOURCE_SETS = ("custodian", "portfolio", "crm", DOCUMENTS)
 # Where a PDF may sit: a household's documents and a sealed return, in the book and in the site's copy of it.
 _BOOK_PDF = re.compile(rf"{HOUSEHOLDS}/HH-\d{{4}}/{DOCUMENTS}/.+\.pdf|sealed/HH-\d{{4}}/{RETURNS}/.+\.pdf")
@@ -130,13 +143,40 @@ class HeldMaterial:
     task's ID and its justified conclusion. `answers`: the sha256 of each held key's and each tax summary's bytes,
     and of its content as canonical JSON less any notice. `real_only`: the sha256 of each file of the real-ticker
     build that the default build does not have. `open_tasks`: the public tasks that are not held, whose keys ship.
-    `images`: the sha256 of each of the README's committed PNG screenshots, by file name."""
+    `images`: the sha256 of each of the README's committed PNG screenshots, by file name. `statement`: the review
+    statement the book was built under, if any; `reviewed`: the tax tasks its scope names, whose keys and pages carry
+    the reviewed notice."""
 
     tasks: dict[str, str]
     answers: frozenset[str]
     real_only: frozenset[str]
     open_tasks: frozenset[str]
     images: dict[str, str]
+    statement: ReviewStatement | None = None
+    reviewed: frozenset[str] = frozenset()
+    # The tax answer sheet of each household the statement covers, as canonical JSON less its notice: the one a case
+    # packet may ship, its own household's and no other (reviewer B, slice 17 round 2, D3).
+    tax_sheets: dict[str, str] = dataclasses.field(default_factory=dict[str, str])
+
+    def notice_of(self, name: str) -> str:
+        """The notice a file must carry: the reviewed notice on a reviewed tax task's key or page, and on the tax
+        answer sheet of a household a review statement covers; else the notice."""
+        if self.statement is None:
+            return NOTICE
+        task = _TASK_FILE.search(name)
+        if task is not None and task.group(1) in self.reviewed:
+            return self.statement.notice
+        if name.endswith(f"{ZIP_MARK}{TAX_ANSWER_SHEET}") and self.statement.covers_return(household_of(name)):
+            return self.statement.notice
+        return NOTICE
+
+    def marks_of(self, name: str) -> Marks:
+        """The watermark and notice on every page of a return: the reviewed ones on a household the statement covers."""
+        return return_marks(household_of(name), self.statement)
+
+
+# A task's own file: its key (`keys/T-TAX-01.json`) or its page (`site/tasks/T-TAX-01.html`).
+_TASK_FILE = re.compile(r"(?:^|/)(?:keys|tasks)/(T-[A-Z]+-\d{2})\.(?:json|html)$")
 
 
 def _digest(data: bytes) -> str:
@@ -180,7 +220,9 @@ def held_material(book: Path, real_book: Path | None, tasks: Path, held_keys: Pa
     Each held task's key is computed here on both builds, as the runner computes it, so a fresh clone with no
     out/keys/ still knows it (reviewers A and B, slice 16 round 1); a key in out/keys/ counts as well."""
     loaded = [task_files.load_task(path) for path in sorted(tasks.glob("T-*.toml"))]
-    held_tasks = [t for t in loaded if is_held(t)]
+    # A tax task a review statement covers is released: its key and verdict ship (docs/PLAN.md, slice 17).
+    statement = statement_of(book)
+    held_tasks = [t for t in loaded if is_held(t, statement)]
     version = read_manifest(book).version
     builds = [book, *([real_book] if real_book is not None else [])]
     answers = [_key_bytes(task, build) for task in held_tasks for build in builds]
@@ -188,15 +230,28 @@ def held_material(book: Path, real_book: Path | None, tasks: Path, held_keys: Pa
     answers += [key.read_bytes() for key in keys if key.is_file()]
     default = _book_files(book)
     real = _book_files(real_book) if real_book is not None else {}
-    answers += [data for files in (default, real) for name, data in files.items() if is_tax_summary(name)]
+    # A tax answer sheet a review statement covers ships in its household's case packet (slice 17, round 1, S2).
+    answers += [
+        data
+        for files in (default, real)
+        for name, data in files.items()
+        if is_tax_summary(name) and not (statement is not None and statement.covers_return(household_of(name)))
+    ]
     digests = {_digest(a) for a in answers} | {_canonical(json.loads(a)) for a in answers}
     real_only = {_digest(d) for d in real.values()} - {_digest(d) for d in default.values()}
     return HeldMaterial(
         tasks={t.task_id: t.justified_conclusion for t in held_tasks},
         answers=frozenset(digests),
         real_only=frozenset(real_only),
-        open_tasks=frozenset(t.task_id for t in loaded if not is_held(t)),
+        open_tasks=frozenset(t.task_id for t in loaded if not is_held(t, statement)),
         images={p.name: _digest(p.read_bytes()) for p in sorted(images.glob("*.png"))},
+        statement=statement,
+        reviewed=frozenset(t.task_id for t in loaded if is_reviewed(t, statement)),
+        tax_sheets={
+            household_of(name): _canonical(json.loads(data))
+            for name, data in default.items()
+            if is_tax_summary(name) and statement is not None and statement.covers_return(household_of(name))
+        },
     )
 
 
@@ -335,16 +390,6 @@ def _scanned_text(name: str, data: bytes) -> str:
         return data.decode("utf-8", errors="ignore")  # real_identifier_problems reports a file no gate can read
 
 
-def _page_text(name: str, data: bytes) -> str | None:
-    """The words a reader sees in a page, an image drawn as SVG, a Markdown file or a text file; None for any other
-    file."""
-    if name.endswith((".html", ".svg")):
-        return html_visible_text(data.decode("utf-8"))
-    if name.endswith((".md", ".txt")):
-        return data.decode("utf-8")
-    return None
-
-
 # A release ships each PDF in the book and again in the site's copy of it: each is read once.
 @lru_cache(maxsize=1024)
 def _is_filled_form(data: bytes) -> bool:
@@ -352,9 +397,9 @@ def _is_filled_form(data: bytes) -> bool:
 
 
 @lru_cache(maxsize=1024)
-def _stamp_problems(data: bytes) -> tuple[str, ...]:
+def _stamp_problems(data: bytes, marks: Marks) -> tuple[str, ...]:
     """stamped_problems of a PDF, each line without the file's name."""
-    return tuple(stamped_problems("", data))
+    return tuple(stamped_problems("", data, marks))
 
 
 def _is_stamped_pdf(name: str, data: bytes) -> bool:
@@ -410,25 +455,41 @@ def _file_problems(name: str, data: bytes, held: HeldMaterial, in_zip: bool) -> 
         problems.append(f"{name}: a tax summary, a tax answer sheet held until the tax review")
     if digest in held.real_only:
         problems.append(f"{name}: a file of the real-ticker build (out/real/)")
+    # The run records this file holds as JSON, which the record checks read, by their whole content: only the very same
+    # record found again in the file's text is left to them (reviewers A and B, slice 17 round 2, S3: by its run ID
+    # alone, a graded copy of a record hid inside the record).
+    structured: set[str] = set()
     if name.endswith((".json", ".jsonl")):
         try:
-            problems += _json_problems(name, _json_documents(name, data), held, in_zip)
+            documents = _json_documents(name, data)
+            problems += _json_problems(name, documents, held, in_zip)
+            structured = {_canonical(o) for d in documents for o in _objects(d) if _is_record(o)}
         except (UnicodeDecodeError, json.JSONDecodeError) as error:
             problems.append(f"{name}: not JSON ({error}), so it cannot be read")
     if name.endswith(".csv"):
         problems += _csv_score_problems(name, data)
-    page = _page_text(name, data)
-    if page is not None and _SCORE_SHOWN.search(" ".join(page.split())):
-        problems.append(f"{name}: shows a combined score")
-    # A key written out in any text the file holds: a page's source as well as what it shows (whole-branch review,
-    # reviewer B), a string inside JSON, base64, a CSV cell, a PDF's text, any case (`correct`: tests/forms.py).
+    # What the release refuses, written out in any text the file holds: a page's source as well as what it shows
+    # (whole-branch review, reviewer B), a string inside JSON, base64, a CSV cell, a PDF's text, any case (`correct`:
+    # tests/forms.py): a held key, a held task's graded run record, a combined score (reviewers A and B, slice 17
+    # round 1, S3 and H1).
     views = _text_views(name, data)
-    if not any("answer key" in p for p in problems) and any(
-        _canonical(o) in held.answers for x in views for v in _embedded_json(x.casefold()) for o in _objects(v)
-    ):
+    embedded = [o for x in views for v in _embedded_json(x.casefold()) for o in _objects(v)]
+    if not any("answer key" in p for p in problems) and any(_canonical(o) in held.answers for o in embedded):
         problems.append(f"{name}: holds a held task's answer key or a tax answer sheet in its text")
+    if any(
+        _is_record(o) and _canonical(o) not in structured and str(o["task_id"]).upper() in held.tasks and _graded(o)
+        for o in embedded
+    ):
+        problems.append(f"{name}: holds a held task's graded run record in its text")
+    # A score is a field named for one in any JSON the text holds, however it is spaced (reviewer B, slice 17 round 2,
+    # D4), or a number written beside the words.
+    scored = any(_SCORE_KEY.fullmatch(k) for o in embedded for k, _ in _walk(o)) or any(
+        _SCORE_SHOWN.search(" ".join(x.split())) for x in views
+    )
+    if scored and not any("combined score" in p for p in problems):
+        problems.append(f"{name}: shows a combined score")
     if _is_stamped_pdf(name, data):
-        problems += [name + p for p in _stamp_problems(data)]
+        problems += [name + p for p in _stamp_problems(data, held.marks_of(name))]
     home = _HOME.search(views[0])
     if home:
         problems.append(f"{name}: a home-folder path ({home.group(0)!r})")
@@ -444,9 +505,12 @@ def _is_book_json(relative: str) -> bool:
     return path.name in BOOK_FILES or bool(BOOK_FOLDERS & set(path.parts[:-1]))
 
 
-def _notice_problem(name: str, relative: str, data: bytes, covered: Callable[[], bool]) -> str | None:
+def _notice_problem(
+    name: str, relative: str, data: bytes, covered: Callable[[], bool], notice: str = NOTICE
+) -> str | None:
     """`relative`: the file's path from the root it ships in (the bundle, or its zip); `covered`: whether a
-    metadata.json or NOTICE.txt carrying the notice sits at the root of the folder it ships in."""
+    metadata.json or NOTICE.txt carrying the notice sits at the root of the folder it ships in; `notice`: the notice
+    this file carries, the reviewed notice on a reviewed tax task's key or page (`HeldMaterial.notice_of`)."""
     if name.endswith(".pdf"):
         if _is_stamped_pdf(name, data):
             return None  # stamped_problems names each page of a return or a form without the notice
@@ -457,7 +521,7 @@ def _notice_problem(name: str, relative: str, data: bytes, covered: Callable[[],
     except UnicodeDecodeError:
         text = ""
     if name.endswith(".html"):
-        shown = contains_notice(html_visible_text(text))
+        shown = contains_notice(html_visible_text(text), notice)
     elif name.endswith((".md", ".txt")):
         shown = contains_notice(text)
     elif name.endswith(".jsonl"):
@@ -467,7 +531,7 @@ def _notice_problem(name: str, relative: str, data: bytes, covered: Callable[[],
             document = json.loads(text)
         except json.JSONDecodeError:
             return None  # named by _file_problems
-        own = isinstance(document, dict) and document.get("notice") == NOTICE  # pyright: ignore[reportUnknownMemberType]
+        own = isinstance(document, dict) and document.get("notice") == notice  # pyright: ignore[reportUnknownMemberType]
         shown = own or (_is_book_json(relative) and covered())
         if not shown and not _is_book_json(relative):
             return f"{name}: no top-level notice"
@@ -480,7 +544,7 @@ def _has_footer(text: str) -> bool:
     return all(line in text for line in FOOTER_LINES)
 
 
-def _notice_problems(tree: Path, names: list[str], roots: list[str]) -> list[str]:
+def _notice_problems(tree: Path, names: list[str], roots: list[str], held: HeldMaterial) -> list[str]:
     @cache
     def has_notice_file(folder: str) -> bool:
         notice = tree / folder / NOTICE_FILE
@@ -516,7 +580,8 @@ def _notice_problems(tree: Path, names: list[str], roots: list[str]) -> list[str
     for name in names:
         root = _root_of(name, roots)
         relative = name[len(root) + 1 :] if root else name
-        found = _notice_problem(_shown(name), relative, (tree / name).read_bytes(), covered(name))
+        shown = _shown(name)
+        found = _notice_problem(shown, relative, (tree / name).read_bytes(), covered(name), held.notice_of(shown))
         problems += [found] if found else []
     return problems
 
@@ -612,9 +677,18 @@ def _packet_problems(layout: _Layout, name: str) -> list[str]:
         sourced = member.startswith(prefix) and len(parts) > 3 and parts[2] in SOURCE_SETS
         if not (sourced or member in PACKET_FILES):
             problems.append(f"{shown}: not a file a case packet holds")
+        elif member == TAX_ANSWER_SHEET:
+            # Only the packet's own household's sheet, as the book has it, once a review statement covers its return.
+            sheet = layout.held.tax_sheets.get(found["household"])
+            try:
+                same = sheet is not None and _canonical(json.loads(members[member])) == sheet
+            except (UnicodeDecodeError, json.JSONDecodeError):
+                same = False
+            if not same:
+                problems.append(f"{shown}: not the tax answer sheet of {found['household']} a review statement covers")
         elif problem := _pdf_problem(shown, member):
             problems.append(problem)
-        elif member not in (NOTICE_FILE, "answer-sheet.json"):
+        elif member not in (NOTICE_FILE, "answer-sheet.json", TAX_ANSWER_SHEET):
             twin = layout.bundle / BOOK / member
             if not (twin.is_file() and twin.read_bytes() == members[member]):
                 problems.append(f"{shown}: not the release's {BOOK}/{member}")
@@ -748,7 +822,7 @@ def release_problems(bundle: Path, held: HeldMaterial) -> list[str]:
         for name in names:
             in_zip = bool(_root_of(name, roots))
             problems += _file_problems(_shown(name), (tree / name).read_bytes(), held, in_zip)
-        problems += _notice_problems(tree, names, roots)
+        problems += _notice_problems(tree, names, roots, held)
         problems += layout_problems(bundle, held)
         problems += _verdict_problems(bundle, held)
         problems += _household_problems(bundle, names)

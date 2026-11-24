@@ -231,7 +231,7 @@ def _regrade(args: argparse.Namespace) -> int:
 
     try:
         run = load_pass(args.pass_id)
-        done = regrade_pass(run, print)
+        done = regrade_pass(run, print, args.book)
     except RunRefusedError as error:
         print(f"regrade refused: {type(error).__name__}: {error}", file=sys.stderr)
         return 2
@@ -484,6 +484,13 @@ def parser() -> argparse.ArgumentParser:
     )
     regrade = commands.add_parser("regrade", help=about, description=about)
     regrade.add_argument("pass_id", metavar="PASS_ID")
+    regrade.add_argument(
+        "--book",
+        type=Path,
+        default=None,
+        help="the real-ticker book to grade the public runs on, in place of the pass's: one rebuilt under a review "
+        "statement (book/review_statement.json), whose version names the keys' folder",
+    )
     regrade.set_defaults(run=_regrade)
     facts = commands.add_parser("facts", help="write each featured household's fact sheet, for its notes")
     facts.add_argument("--book", type=Path, default=DEFAULT_BOOK)

@@ -15,12 +15,13 @@ from casebook.model.ledger import is_private_task_id
 from casebook.notice import NOTICE
 from casebook.publish.mapper import map_to_aliases, path_rewriter, without_home_paths
 from casebook.publish.private_set import private_households
+from casebook.review_statement import ReviewStatement, is_held, statement_of
 from casebook.runner.config import REPO, SharedConfig
 from casebook.runner.freeze import require_freeze
 from casebook.runner.preflight import RunRefusedError, require_book_files, require_household, require_real_tickers
 from casebook.runner.record import REGRADED
 from casebook.runner.run import Grader, GradeRefusedError, RunInputs, grade_record, private_root, run_task
-from casebook.tasks.task import HELD_GRADERS, HELD_WORKFLOWS, Task, find_task
+from casebook.tasks.task import Task, find_task
 
 # Where a held workflow's keys go whatever --keys says: out/keys/, which the release script ignores.
 HELD_KEYS = Path("out/keys")
@@ -56,24 +57,17 @@ def refuse_private_pairs(task: Task, book: Path) -> None:
         )
 
 
-def keys_root_for(task: Task, keys_root: Path) -> Path:
-    """A reconciliation key is published (docs/PLAN.md, Where files go); tax-lot and RMD keys, and a
-    reconciliation key that computes an RMD, are held until the tax review, out of `published/`, and
-    slice 16's release gate refuses them."""
-    return HELD_KEYS if held(task) else keys_root
+def keys_root_for(task: Task, keys_root: Path, statement: ReviewStatement | None) -> Path:
+    """A reconciliation key is published (docs/PLAN.md, Where files go); tax-lot and RMD keys, and any other key
+    that computes a tax figure, are held until the tax review, out of `published/`, and slice 16's release gate
+    refuses them, until a review statement's scope names their task (`casebook.review_statement.is_held`)."""
+    return HELD_KEYS if is_held(task, statement) else keys_root
 
 
-def held(task: Task) -> bool:
-    """Whether the task's key and verdict wait for the tax review: every tax-lot and RMD task, and a
-    reconciliation task whose key computes an RMD (docs/SPEC.md: their pages show "sources and outputs
-    only, with no verdict and no failure marking, until review")."""
-    return task.workflow in HELD_WORKFLOWS or task.grader in HELD_GRADERS
-
-
-def published_record(task: Task, mapped: dict[str, Any]) -> dict[str, Any]:
+def published_record(task: Task, mapped: dict[str, Any], statement: ReviewStatement | None) -> dict[str, Any]:
     """The record as published: a held task's without its grade, or the grade a regrade replaced, which stay in
     the private run folder."""
-    if not held(task) or mapped["state"] == "failed":
+    if not is_held(task, statement) or mapped["state"] == "failed":
         return mapped
     regraded = {REGRADED: {**mapped[REGRADED], "grade_before": None}} if mapped.get(REGRADED) else {}
     return {**mapped, "grade": None, "verdict_held": True, **regraded}
@@ -132,15 +126,18 @@ def run_and_grade(
     spec = grader(task.grader)
     key = spec.key(book, task.household_id, task.grader_params)
     private = private_root()
-    keys, key_sha = write_key(task.task_id, key, _keys_root(task, secret, keys_root), read_manifest(book).version)
+    statement = statement_of(book)
+    keys, key_sha = write_key(
+        task.task_id, key, _keys_root(task, secret, keys_root, statement), read_manifest(book).version
+    )
     inputs = RunInputs(task, arm, book, keys, spec.sha256(), key_sha, tuple(retries), run_id, slot)
     record = run_task(inputs, config, private)
-    return finish_run(task, tasks, secret, spec, key, keys, record, published)
+    return finish_run(task, tasks, secret, spec, key, keys, record, published, statement)
 
 
-def _keys_root(task: Task, secret: bool, keys_root: Path) -> Path:
+def _keys_root(task: Task, secret: bool, keys_root: Path, statement: ReviewStatement | None) -> Path:
     # A private task's key, like its unmapped record, stays in $CASEBOOK_PRIVATE.
-    return private_root() / "keys" if secret else keys_root_for(task, keys_root)
+    return private_root() / "keys" if secret else keys_root_for(task, keys_root, statement)
 
 
 def finish_run(
@@ -152,9 +149,11 @@ def finish_run(
     keys: Path,
     record: dict[str, Any],
     published: Path,
+    statement: ReviewStatement | None,
 ) -> dict[str, Any]:
     """Grade a completed run, then map and publish a public task's: what follows a run once its record is
-    written, whether straight after it or when a pass recovers a run it was interrupted in."""
+    written, whether straight after it or when a pass recovers a run it was interrupted in. `statement`: the review
+    statement of the book it ran on, which decides whether its grade is published."""
     folder = private_root() / "runs" / record["run_id"]
     if record["state"] == "completed":
         # Hashed again now, from the files: a task, key or grader that changed since the run refuses the grade.
@@ -176,7 +175,7 @@ def finish_run(
         mapped["state"] = "mapped"
     out = published / task.task_id
     out.mkdir(parents=True, exist_ok=True)
-    public = published_record(task, mapped)
+    public = published_record(task, mapped, statement)
     (out / f"{record['run_id']}.json").write_text(record_text(public), encoding="utf-8")
     transcript = folder / record["transcript"]["file"]
     if transcript.is_file():
@@ -216,10 +215,11 @@ def recover_run(
     task = find_task(tasks, task_id)
     secret = is_private(task, tasks)
     spec = grader(task.grader)
-    keys = _keys_root(task, secret, keys_root) / read_manifest(book).version
+    statement = statement_of(book)
+    keys = _keys_root(task, secret, keys_root, statement) / read_manifest(book).version
     key: Any = None
     if record["state"] == "completed":
         key = spec.key(book, task.household_id, task.grader_params)
         if hashlib.sha256(json_text(key.to_dict()).encode()).hexdigest() != record["hashes"]["answer"]:
             raise GradeRefusedError(f"run {run_id}: the answer key computed now is not the one it ran with")
-    return finish_run(task, tasks, secret, spec, key, keys, record, published)
+    return finish_run(task, tasks, secret, spec, key, keys, record, published, statement)

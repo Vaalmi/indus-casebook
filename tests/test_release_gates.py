@@ -1,6 +1,7 @@
 """The preview release's gates (docs/PLAN.md, slice 16, criterion 1): each refusal planted into a small real bundle
 built from the book fixture and the committed published files, and the clean bundle passing."""
 
+import base64
 import hashlib
 import io
 import json
@@ -17,10 +18,12 @@ import casebook.tax.forms
 from casebook.graders.registry import grader
 from casebook.model.files import json_text, read_manifest
 from casebook.notice import NOTICE, contains_notice
+from casebook.publish.packets import case_packets
 from casebook.publish.release_gates import HeldMaterial, held_material, release_problems
 from casebook.publish.site_build import build_site
 from casebook.publish.zips import read_zip, write_zip
 from casebook.published_text import pdf_pages_text
+from casebook.review_statement import statement_of
 from casebook.runner.session import write_key
 from casebook.tasks.task import load_task
 
@@ -98,12 +101,13 @@ def held(book: Path, real_book: Path, tmp_path_factory: pytest.TempPathFactory) 
     return held_material(book, real_book, TASKS, tmp_path_factory.mktemp("no-held-keys"), IMAGES)
 
 
-@pytest.fixture(scope="module")
-def clean(book: Path, tmp_path_factory: pytest.TempPathFactory) -> Path:
-    """A release bundle laid out as the contract gives it (review/slice16-contract.md), small: the book fixture's
-    households, and the runs of one open and one held task."""
-    bundle = tmp_path_factory.mktemp("release") / "v0.1.0"
-    bundle.mkdir()
+def _lay_out(
+    bundle: Path, book: Path, keys: Path, key_texts: dict[str, str], records: dict[str, str], packets: dict[str, bytes]
+) -> Path:
+    """A release bundle laid out as the contract gives it (review/slice16-contract.md), from `book`: `keys`, the
+    published keys' folder the site reads; `key_texts`, the release's copies of them by file name; `records`, the
+    published runs by their path under runs/; `packets`, the case packets by file name."""
+    bundle.mkdir(parents=True)
     for name in ("LICENSE", "LICENSE-DATA", "README.md"):
         shutil.copyfile(ROOT / name, bundle / name)
     _write(bundle / "NOTICE.txt", NOTICE_TEXT)
@@ -112,11 +116,10 @@ def clean(book: Path, tmp_path_factory: pytest.TempPathFactory) -> Path:
     manifest = read_manifest(book)
     for name in [*(n for n in manifest.files if not n.endswith("/tax_summary.json")), "manifest.json"]:
         _write(bundle / "book" / name, (book / name).read_bytes())
-    for task in (OPEN_TASK, HELD_TASK):
-        for path in sorted((PUBLISHED / "runs" / task).iterdir()):
-            _write(bundle / "runs" / task / path.name, _plain(path.read_text()))
-    for path in sorted((PUBLISHED / "keys" / VERSION).glob("*.json")):
-        _write(bundle / "keys" / path.name, _noticed(path))
+    for name, text in records.items():
+        _write(bundle / "runs" / name, text)
+    for name, text in key_texts.items():
+        _write(bundle / "keys" / name, text)
     _write(bundle / "results" / "private-outcomes.json", (PUBLISHED / "results" / "private-outcomes.json").read_text())
     _write(bundle / "audit" / "audit-log.csv", (PUBLISHED / "audit" / "audit-log.csv").read_text())
     _write(bundle / "audit" / "AUDIT.md", "> " + NOTICE + "\n\n" + (PUBLISHED / "audit" / "AUDIT.md").read_text())
@@ -129,7 +132,7 @@ def clean(book: Path, tmp_path_factory: pytest.TempPathFactory) -> Path:
         README,
         runs=bundle / "runs",
         tasks=TASKS,
-        keys=PUBLISHED / "keys",
+        keys=keys,
         private_outcomes=PUBLISHED / "results" / "private-outcomes.json",
         errata=PUBLISHED / "errata.json",
     )
@@ -137,10 +140,32 @@ def clean(book: Path, tmp_path_factory: pytest.TempPathFactory) -> Path:
     for path in sorted(IMAGES.iterdir()):
         _write(bundle / "docs" / "images" / path.name, path.read_bytes())
     _write(bundle / "docs" / "images" / "NOTICE.txt", NOTICE_TEXT)
-    packet = _packet(book, PACKET)
-    _write(bundle / "packets" / f"{PACKET}.zip", packet)
-    _write(bundle / "site" / "packets" / f"{PACKET}.zip", packet)
+    for name, data in packets.items():
+        _write(bundle / "packets" / name, data)
+        _write(bundle / "site" / "packets" / name, data)
     return bundle
+
+
+def _published_records(*tasks: str) -> dict[str, str]:
+    return {
+        f"{task}/{path.name}": _plain(path.read_text())
+        for task in tasks
+        for path in sorted((PUBLISHED / "runs" / task).iterdir())
+    }
+
+
+@pytest.fixture(scope="module")
+def clean(book: Path, tmp_path_factory: pytest.TempPathFactory) -> Path:
+    """A small release bundle: the book fixture's households, and the runs of one open and one held task."""
+    keys = {path.name: _noticed(path) for path in sorted((PUBLISHED / "keys" / VERSION).glob("*.json"))}
+    return _lay_out(
+        tmp_path_factory.mktemp("release") / "v0.1.0",
+        book,
+        PUBLISHED / "keys",
+        keys,
+        _published_records(OPEN_TASK, HELD_TASK),
+        {f"{PACKET}.zip": _packet(book, PACKET)},
+    )
 
 
 @pytest.fixture
@@ -587,7 +612,23 @@ def test_the_readme_images_are_read_or_known_by_their_bytes(bundle: Path, held: 
 
 TICKER_TEXT = "The client holds 100 shares of JNJ in the IRA."
 NAME_TEXT = "The client holds Johnson & Johnson in the IRA."
-REFUSED = {"a held key": "answer key", "a real ticker": "real ticker", "a real name": "real name"}
+SCORE_TEXT = "Combined score: 87 of 100 across the 24 tasks."
+REFUSED = {
+    "a held key": "answer key",
+    "a real ticker": "real ticker",
+    "a real name": "real name",
+    # Reviewers A and B, slice 17 round 1 (S3, H1): a held verdict and a combined score, in every form too; reviewer B,
+    # round 2 (D4): a score as a JSON field, spaced.
+    "a held verdict": "graded run record",
+    "a combined score": "combined score",
+    "a combined score field": "combined score",
+}
+
+
+def _graded_held_record() -> str:
+    """A held task's published run, its grade put back."""
+    record = json.loads(sorted((PUBLISHED / "runs" / HELD_TASK).glob("*.json"))[0].read_text())
+    return json.dumps({**record, "grade": {"score": 100, "passed": True}}, indent=1)
 
 
 @pytest.mark.parametrize("form", sorted(FORMS))
@@ -599,9 +640,169 @@ def test_what_the_release_refuses_fails_in_every_form(
         "a held key": (held_keys / VERSION / f"{HELD_TASK}.json").read_text(),
         "a real ticker": TICKER_TEXT,
         "a real name": NAME_TEXT,
+        "a held verdict": _graded_held_record(),
+        "a combined score": SCORE_TEXT,
+        # A row of an export, as a score field would ship; the shared reader decodes base64 of 64 characters or
+        # more (published_text.BLOB_MIN), so a bare `{"combined_score" : 87}` in base64 is too short to be read.
+        "a combined score field": '{"task_id": "T-REC-01", "arm": "skill", "combined_score" : 87, "repeats": 3}',
     }[content]
     planted = FORMS[form](text)
     for name, data in planted.items():
         _write(bundle / name, data)
     caught = [p for p in release_problems(bundle, held) if p.startswith("planted/") and REFUSED[content] in p]
     assert caught, f"{content} in {form} ({', '.join(planted)}) passed the release"
+
+
+# Slice 17, criterion 2: a review statement's scope releases its tax tasks' keys and verdicts; the rest stay held.
+
+REVIEWED_TASK, STILL_HELD = "T-TAX-01", "T-TAX-02"
+
+
+@pytest.fixture(scope="module")
+def reviewed(reviewed_book: Path, tmp_path_factory: pytest.TempPathFactory) -> HeldMaterial:
+    return held_material(reviewed_book, None, TASKS, tmp_path_factory.mktemp("no-held-keys"), IMAGES)
+
+
+IN_SCOPE, OUT_OF_SCOPE = "HH-5271", PACKET
+
+
+def _released(text: str) -> str:
+    """A held run as `casebook regrade` publishes it once a review statement releases its task: with its grade (one
+    in the shape the graders write it, from the open task's run; the tests have no private run folder)."""
+    record = json.loads(text)
+    if record["state"] == "failed":
+        return text
+    grade = json.loads(next((PUBLISHED / "runs" / OPEN_TASK).glob("*.json")).read_text())["grade"]
+    released = {k: v for k, v in record.items() if k != "verdict_held"} | {"grade": grade}
+    if record.get("regraded"):
+        released["regraded"] = {**record["regraded"], "grade_before": None}
+    return json_text(released)
+
+
+@pytest.fixture(scope="module")
+def reviewed_clean(reviewed_book: Path, tmp_path_factory: pytest.TempPathFactory) -> Path:
+    """The release of a book built under the fixture review statement (T-TAX-01 and HH-5271's return), as the
+    owner's steps make it: the reviewed task's runs regraded, its key published with the reviewed notice, and the
+    packet of the household in scope with its tax answer sheet (reviewers A and B, slice 17 round 1, H2)."""
+    statement = statement_of(reviewed_book)
+    assert statement is not None
+    keys = tmp_path_factory.mktemp("reviewed-keys")
+    shutil.copytree(PUBLISHED / "keys", keys, dirs_exist_ok=True)
+    (keys / VERSION / f"{REVIEWED_TASK}.json").write_text(_key(REVIEWED_TASK, reviewed_book))
+    texts = {path.name: _noticed(path) for path in sorted((PUBLISHED / "keys" / VERSION).glob("*.json"))}
+    texts[f"{REVIEWED_TASK}.json"] = json_text(
+        {**json.loads(_key(REVIEWED_TASK, reviewed_book)), "notice": statement.notice}
+    )
+    records = _published_records(OPEN_TASK)
+    records |= {n: _released(t) if n.endswith(".json") else t for n, t in _published_records(REVIEWED_TASK).items()}
+    packets = case_packets(reviewed_book, keys, TASKS)
+    return _lay_out(
+        tmp_path_factory.mktemp("reviewed-release") / "v0.1.0",
+        reviewed_book,
+        keys,
+        texts,
+        records,
+        {name: packets[name] for name in (f"{IN_SCOPE}.zip", f"{OUT_OF_SCOPE}.zip")},
+    )
+
+
+@pytest.fixture
+def reviewed_bundle(reviewed_clean: Path, tmp_path: Path) -> Path:
+    copy = tmp_path / "v0.1.0"
+    shutil.copytree(reviewed_clean, copy, copy_function=os.link)
+    return copy
+
+
+def test_a_reviewed_release_passes_every_gate(reviewed_clean: Path, reviewed: HeldMaterial) -> None:
+    """Its statement in the book and the site's data, the reviewed task's key, page and graded runs, the household in
+    scope's returns under the reviewed watermark and its tax answer sheet in its packet."""
+    assert REVIEWED_TASK not in reviewed.tasks and STILL_HELD in reviewed.tasks
+    assert (reviewed_clean / "book" / "review_statement.json").is_file()
+    members = read_zip((reviewed_clean / "packets" / f"{IN_SCOPE}.zip").read_bytes())
+    assert "tax-answer-sheet.json" in members
+    assert "tax-answer-sheet.json" not in read_zip((reviewed_clean / "packets" / f"{OUT_OF_SCOPE}.zip").read_bytes())
+    assert release_problems(reviewed_clean, reviewed) == []
+
+
+def test_a_reviewed_release_still_refuses_what_the_review_does_not_cover(
+    reviewed_bundle: Path, reviewed: HeldMaterial, reviewed_book: Path
+) -> None:
+    # A held task outside the scope: its key, and a verdict on its run.
+    _write(
+        reviewed_bundle / "keys" / f"{STILL_HELD}.json",
+        json_text({**json.loads(_key(STILL_HELD, reviewed_book)), "notice": NOTICE}),
+    )
+    held_run = sorted((PUBLISHED / "runs" / STILL_HELD).glob("*.json"))[0]
+    graded = {**json.loads(_plain(held_run.read_text())), "grade": {"score": 100, "passed": True}}
+    _write(reviewed_bundle / "runs" / STILL_HELD / held_run.name, json_text(graded))
+    # The tax answer sheet of a household outside the scope, in its packet.
+    sheet = (reviewed_book / "sealed" / OUT_OF_SCOPE / "tax_summary.json").read_bytes()
+    packet = reviewed_bundle / "packets" / f"{OUT_OF_SCOPE}.zip"
+    _write(packet, write_zip(read_zip(packet.read_bytes()) | {"tax-answer-sheet.json": sheet}))
+    problems = release_problems(reviewed_bundle, reviewed)
+    assert only(problems, "answer key", "key of held task", "carries its grade", "verdict") == [
+        f"keys/{STILL_HELD}.json: holds a held task's answer key or a tax answer sheet",
+        f"packets/{OUT_OF_SCOPE}.zip!tax-answer-sheet.json: a held task's answer key or a tax answer sheet",
+        f"packets/{OUT_OF_SCOPE}.zip!tax-answer-sheet.json: holds a held task's answer key or a tax answer sheet",
+        f"keys/{STILL_HELD}.json: the key of held task {STILL_HELD}",
+        f"runs/{STILL_HELD}/{held_run.name}: a held task's run record carries its grade",
+    ]
+
+
+def test_a_reviewed_item_without_the_review_sentence_fails(reviewed_bundle: Path, reviewed: HeldMaterial) -> None:
+    key = reviewed_bundle / "keys" / f"{REVIEWED_TASK}.json"
+    _write(key, json_text({**json.loads(key.read_text()), "notice": NOTICE}))
+    packet = reviewed_bundle / "packets" / f"{IN_SCOPE}.zip"
+    members = read_zip(packet.read_bytes())
+    sheet = json.loads(members["tax-answer-sheet.json"])
+    _write(packet, write_zip(members | {"tax-answer-sheet.json": json_text({**sheet, "notice": NOTICE}).encode()}))
+    assert only(release_problems(reviewed_bundle, reviewed), "notice") == [
+        f"keys/{REVIEWED_TASK}.json: no top-level notice",
+        f"packets/{IN_SCOPE}.zip!tax-answer-sheet.json: no top-level notice",
+    ]
+
+
+def test_the_same_key_is_refused_without_a_review(bundle: Path, held: HeldMaterial, book: Path) -> None:
+    _write(
+        bundle / "keys" / f"{REVIEWED_TASK}.json",
+        json_text({**json.loads(_key(REVIEWED_TASK, book)), "notice": NOTICE}),
+    )
+    assert only(release_problems(bundle, held), "keys/") == [
+        f"keys/{REVIEWED_TASK}.json: holds a held task's answer key or a tax answer sheet",
+        f"keys/{REVIEWED_TASK}.json: the key of held task {REVIEWED_TASK}",
+    ]
+
+
+# Slice 17, round 2: the three blockers left open after round 2, each planted as its reviewer probed it.
+
+
+@pytest.mark.parametrize("encode", ["json", "base64"])
+def test_a_graded_copy_of_a_held_record_inside_the_record_fails(bundle: Path, held: HeldMaterial, encode: str) -> None:
+    """Reviewers A and B, slice 17 round 2, S3: a record left to the record checks by its run ID let a graded copy of
+    itself, serialized inside it, ship."""
+    record = sorted((bundle / "runs" / HELD_TASK).glob("*.json"))[0]
+    data = json.loads(record.read_text())
+    copy = json.dumps({**data, "grade": {"score": 100, "passed": True}})
+    carried = copy if encode == "json" else base64.b64encode(copy.encode()).decode()
+    _write(record, json_text({**data, "diagnostic": carried}))
+    assert only(release_problems(bundle, held), "graded run record") == [
+        f"runs/{HELD_TASK}/{record.name}: holds a held task's graded run record in its text"
+    ]
+
+
+def test_a_tax_answer_sheet_ships_only_in_its_own_covered_household_s_packet(
+    reviewed_bundle: Path, reviewed: HeldMaterial, reviewed_book: Path
+) -> None:
+    """Reviewer B, slice 17 round 2, D3: an uncovered household's summary, an extra field added, passed as a packet's
+    tax answer sheet; so would another household's."""
+    outside = json.loads((reviewed_book / "sealed" / OUT_OF_SCOPE / "tax_summary.json").read_text())
+    exported = json_text({**outside, "export_version": "0.0.1", "notice": NOTICE}).encode()
+    for household, sheet in ((OUT_OF_SCOPE, exported), (IN_SCOPE, exported)):
+        packet = reviewed_bundle / "packets" / f"{household}.zip"
+        _write(packet, write_zip(read_zip(packet.read_bytes()) | {"tax-answer-sheet.json": sheet}))
+    assert only(release_problems(reviewed_bundle, reviewed), "tax answer sheet of") == [
+        f"packets/{OUT_OF_SCOPE}.zip!tax-answer-sheet.json: not the tax answer sheet of {OUT_OF_SCOPE} a review "
+        "statement covers",
+        f"packets/{IN_SCOPE}.zip!tax-answer-sheet.json: not the tax answer sheet of {IN_SCOPE} a review statement "
+        "covers",
+    ]

@@ -63,7 +63,7 @@ def test_tax_lot_and_rmd_keys_are_held_whatever_the_keys_folder() -> None:
     out/keys/: an RMD (T-REC-03, 04); a Form 8606 taxable amount, the NIIT or the tax surprises (T-MTG-01 to
     04, 06); a released lot's basis or a conversion's taxable amount (T-CMP-01 to 04). The rest are published."""
     published = Path("published/keys")
-    held = {load_task(p).task_id for p in task_files() if keys_root_for(load_task(p), published) == HELD_KEYS}
+    held = {load_task(p).task_id for p in task_files() if keys_root_for(load_task(p), published, None) == HELD_KEYS}
     assert Path("out/keys") == HELD_KEYS
     assert held == {
         *("T-REC-03", "T-REC-04"),

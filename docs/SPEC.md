@@ -126,7 +126,7 @@ A check command reports pass or fail for each line, per household.
 - A private set of 8 tasks, two per workflow, runs on background pairs and lives outside the public repo.
 - The results page shows public and private outcomes side by side for each arm. For private tasks it publishes outcome counts only; their prompts, outputs and run records stay private.
 - The featured pairs for archetypes 7 and 8 are absent from the repo and the site until the freeze is recorded.
-- Every page of a filled return carries an "unreviewed" watermark.
+- Every page of a filled return carries a watermark: "unreviewed", or the reviewed watermark once a review statement covers the return.
 - Tax-lot and RMD task pages show sources and outputs only, with no verdict and no failure marking, until review.
 - The repo carries Apache-2.0 for code and CC BY 4.0 for data.
 
@@ -146,7 +146,7 @@ These hold whatever happens. Each is enforced by a check that fails the build, t
 - **No invented disagreement:** a household with an unregistered difference between sources fails the build.
 - **No household with a failed check enters a release.**
 - **Independent keys:** answer-key code that imports generator code fails the build.
-- **Notice everywhere:** the build fails if the README, any site page, the data metadata or any filled form lacks the notice.
+- **Notice everywhere:** the build fails if the README, any site page, the data metadata or any filled form lacks the notice. The one exception: on a tax item a review statement covers, the notice's sentence on unreviewed work is replaced by the review sentence, and the rest of the notice stays.
 - **Held items stay held:** the preview release script fails if the bundle contains a tax or RMD answer key or a combined score. A planted item's justified conclusion on a household page is not an answer key.
 - **Freeze before held-out runs:** the runner refuses held-out fixtures unless the skill and grader hashes match the recorded freeze.
 - **Equal arms:** the three arms share one runner configuration for model, tools, records and limits. Only the instruction differs.
@@ -157,12 +157,18 @@ These hold whatever happens. Each is enforced by a check that fails the build, t
 
 * **Aliases in public:** the site build and the release script fail if a published page or file contains a real ticker or a real security name.
 * **Private set stays private:** the release script and the public repo's checks fail if a private task, its fixtures or its answer key is present.
-* **Watermarked returns:** the build fails if any page of a filled form lacks the "unreviewed" watermark.
+* **Watermarked returns:** the build fails if any page of a filled form lacks its watermark: the reviewed watermark on a return a review statement covers, and "unreviewed" on every other.
 * **Licence hygiene:** a dependency check fails the build if the code imports an AGPL or GPL package. Such tools run only as separate programs.
 
 The notice, verbatim:
 
 > **UNVALIDATED SYNTHETIC RESEARCH PREVIEW.** Household data, prices, transactions and document contents are invented. Securities appear under invented names by default; an optional mode uses real ticker identifiers with invented prices. Tax calculations, answer keys and workflow judgments have not been independently reviewed by qualified practitioners. This is not tax, investment or compliance advice and is unsuitable for filing, trading or client decisions. No performance claims are established.
+
+On a tax item a review statement covers, the sentence "Tax calculations, answer keys and workflow judgments have not been independently reviewed by qualified practitioners." is replaced, verbatim, with the statement's date, reviewer and scope filled in:
+
+> **Tax reviewed on <date> by <reviewer>, for <scope>.** Answer keys and workflow judgments outside that scope have not been independently reviewed by qualified practitioners.
+
+The reviewed watermark, verbatim, with the statement's date: TAX REVIEWED <date> · SYNTHETIC · NOT FOR FILING
 
 ## Threat model
 
@@ -198,10 +204,10 @@ Out of scope:
 - **A builder in the repo:** the notice at the top of the README; one command each to build the book, check it, and run a task; versioned release bundles.
 - **A builder using case packets:** one zip per featured household with its source files and a separate answer sheet. Tax answer sheets are absent until review.
 - **A reviewer (CPA or EA):** a packet with ten featured returns, every tax and RMD boundary case, the mapping from inputs to form lines, and five further household files.
-- **After review:** a dated "tax reviewed" statement naming the scope replaces the notice on tax items, with a public errata log.
+- **After review:** a review statement names its date, the reviewer and the scope. On tax items in scope, the review sentence replaces the notice's sentence on unreviewed work and the rest of the notice stays; filled returns in scope carry the reviewed watermark. A public errata log lists each correction.
 
 * **Securities:** invented names everywhere on the site and in the plugin.
-* **Filled returns:** shown for the featured households with an "unreviewed" watermark on every page.
+* **Filled returns:** shown for the featured households with a watermark on every page: "unreviewed", or the reviewed watermark once a review statement covers the return.
 * **Tax-lot and RMD task pages:** sources and each arm's output only, with no verdict and no failure marking, until review.
 
 ## Running it
@@ -283,6 +289,7 @@ One name per concept. "Site" means the web pages, because "casebook" would other
 - **Case packet:** a zip of one featured household's source sets.
 - **Notice:** the unvalidated statement shown on every surface. Avoid: disclaimer.
 - **Review:** the CPA or EA check of the tax work. Avoid: audit (reserved for the hand audit).
+- **Review statement:** the reviewer's dated record of a review: its date, the reviewer and the scope. The **review sentence** and the **reviewed watermark** are what it puts on the items and returns in scope.
 - **Hand audit:** the owner's line-by-line check of 15 households.
 - **Preview:** release v0.1, unvalidated. **Release:** any tagged version.
 - **Errata log:** the public list of corrections.

@@ -38,6 +38,7 @@ from casebook.model.files import (
 from casebook.model.money import parse_decimal, usd
 from casebook.model.registry import RegistryEntry, parse_entry
 from casebook.notice import NOTICE, NOTICE_HEADLINE
+from casebook.review_statement import statement_of
 from casebook.site.errata import load_errata
 from casebook.site.results import (
     OUTCOME_NAMES,
@@ -329,9 +330,10 @@ def render_site(
         "data": data_root(manifest.version),
         "scenario_date": SCENARIO_DATE.isoformat(),
     }
-    views = task_views(tasks, runs, keys) if runs and tasks else []
+    statement = statement_of(book)
+    views = task_views(tasks, runs, keys, statement) if runs and tasks else []
     private: list[PrivateRunSet] = load_private_outcomes(private_outcomes) if private_outcomes else []
-    sections = results(load_records(runs) if runs and runs.is_dir() else {}, tasks, private) if tasks else []
+    sections = results(load_records(runs) if runs and runs.is_dir() else {}, tasks, private, statement) if tasks else []
     pages = {
         "index.html": env.get_template("index.html").render(
             households=households,
@@ -357,14 +359,19 @@ def render_site(
             **common,
         )
     for view in views:
+        # A tax task a review statement covers carries the reviewed notice; every other page, the notice.
+        page_notice = {"notice_body": view.notice.removeprefix(NOTICE_HEADLINE).strip()}
         pages[f"tasks/{view.task.task_id}.html"] = env.get_template("task.html").render(
-            view=view, root="..", workflow_names=WORKFLOW_NAMES, book_id=BOOK, **common
+            view=view, root="..", workflow_names=WORKFLOW_NAMES, book_id=BOOK, **(common | page_notice)
         )
     for household in households:
         page = env.get_template("household.html").render(
             household=household,
             root="..",
             household_data=f"../{common['data']}/{household_dir(household.household_id)}",
+            reviewed_watermark=(
+                statement.watermark if statement is not None and statement.covers_return(household.household_id) else ""
+            ),
             **common,
         )
         pages[f"households/{household.household_id}.html"] = page

@@ -30,13 +30,14 @@ from casebook.graders.registry import GraderSpec, grader
 from casebook.model.crm import parse_crm_diff
 from casebook.model.files import json_text, read_manifest
 from casebook.model.ledger import is_private_task_id
+from casebook.review_statement import statement_of
 from casebook.runner.config import INSTRUCTIONS, SharedConfig, tree_sha256
 from casebook.runner.freeze import drift, freeze_identity
 from casebook.runner.full_pass import Pass
 from casebook.runner.preflight import RunRefusedError
 from casebook.runner.record import REGRADED, check_record
 from casebook.runner.run import private_root
-from casebook.runner.session import finish_run, keys_root_for
+from casebook.runner.session import finish_run, keys_root_for, write_key
 from casebook.tasks.task import Task, find_task
 
 DECISION = "docs/decisions/2026-11-19-billing-group-totals.md"
@@ -152,8 +153,12 @@ def regrade_run(
     }
     check_record(record)
     (folder / "record.json").write_text(json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    keys = (private_root() / "keys" if secret else keys_root_for(task, keys_root)) / read_manifest(book).version
-    finish_run(task, tasks, secret, spec, key, keys, record, published)
+    statement = statement_of(book)
+    root = private_root() / "keys" if secret else keys_root_for(task, keys_root, statement)
+    # Written again where the key now belongs: a tax task a review statement released moves its key from out/keys/ to
+    # the published keys, where the release takes it (slice 17).
+    keys, _ = write_key(task.task_id, key, root, read_manifest(book).version)
+    finish_run(task, tasks, secret, spec, key, keys, record, published, statement)
     if before is None or grade is None:
         return Regraded(f"{task.task_id} {record['arm']}", run_id, None, None)
     score = (int(before["score"]), before["critical_fail"]), (int(grade["score"]), grade["critical_fail"])
@@ -165,10 +170,15 @@ def is_private_pass(run: Pass) -> bool:
     return bool(run.slots) and all(is_private_task_id(s.slot.task_id) for s in run.slots)
 
 
-def regrade_pass(run: Pass, progress: Callable[[str], object] = lambda _: None) -> list[Regraded]:
+def regrade_pass(
+    run: Pass, progress: Callable[[str], object] = lambda _: None, book: Path | None = None
+) -> list[Regraded]:
     """Every public slot's standing run graded again, in the pass's order, or, for a private-only pass, every
     private slot's; refused before any is unless the freeze matches today's hashes. A full pass's private slots
-    are not: a private-only pass ran them again (option 1a)."""
+    are not: a private-only pass ran them again (option 1a). `book`: the public runs' book in place of the one the
+    pass ran on: a book rebuilt under a review statement, under its new version, whose statement decides what is
+    published and whose version names the keys' folder (reviewers A and B, slice 17 round 1, D1). Each run is still
+    graded only against the very key it ran with."""
     problems = drift()
     if problems:
         shown = "\n".join(p.removeprefix(": ").strip() for p in problems)
@@ -180,9 +190,10 @@ def regrade_pass(run: Pass, progress: Callable[[str], object] = lambda _: None) 
         last = slot_state.runs[-1] if slot_state.runs else None
         if is_private_task_id(task_id) != secret or last is None or last.state not in (*GRADED, FAILED):
             continue
-        tasks, book = run.folders.for_task(task_id)
+        tasks, ran_on = run.folders.for_task(task_id)
         task = find_task(tasks, task_id)
-        result = regrade_run(task, tasks, book, run.folders.keys, run.folders.runs, last.run_id, secret)
+        on = book if book is not None and not is_private_task_id(task_id) else ran_on
+        result = regrade_run(task, tasks, on, run.folders.keys, run.folders.runs, last.run_id, secret)
         done.append(result)
         progress(str(result))
     return done

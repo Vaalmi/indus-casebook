@@ -9,7 +9,7 @@ from pypdf import PdfReader, PdfWriter
 from pypdf.generic import DictionaryObject
 
 from casebook.tax.forms.maps import FormsError, field_map, official_pdf
-from casebook.watermark import stamp_pages
+from casebook.watermark import UNREVIEWED, Marks, stamp_pages
 
 OFF = "/Off"
 
@@ -62,8 +62,8 @@ def _official(form: str) -> PdfReader:
     return PdfReader(io.BytesIO(official_pdf(form)))
 
 
-def fill(form: str, values: Mapping[str, str | bool], title: str) -> bytes:
-    """The official form with each value in the field its key names, the XFA layer removed, stamped.
+def fill(form: str, values: Mapping[str, str | bool], title: str, marks: Marks = UNREVIEWED) -> bytes:
+    """The official form with each value in the field its key names, the XFA layer removed, stamped with `marks`.
 
     Text arrives formatted as it should print; a bool checks or clears a box. The same inputs give the
     same bytes: the fields are set in map order, and the file keeps the official PDF's own /ID.
@@ -99,7 +99,7 @@ def fill(form: str, values: Mapping[str, str | bool], title: str) -> bytes:
                 raise FormsError(f"{form} line {key!r} holds at most {limit} characters; {value!r} has {len(value)}")
             fields[name] = value
     writer.update_page_form_field_values(None, fields, auto_regenerate=False)
-    stamp_pages(writer)
+    stamp_pages(writer, marks)
     out = io.BytesIO()
     writer.write(out)
     return out.getvalue()

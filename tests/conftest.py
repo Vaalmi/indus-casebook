@@ -84,6 +84,19 @@ def real_book(tmp_path_factory: pytest.TempPathFactory) -> Path:
     return out
 
 
+# A review statement standing for the reviewer's (docs/PLAN.md, slice 17: "built and tested with a fixture
+# statement"): one tax task, T-TAX-01, and one household's return, HH-5271's.
+REVIEW_STATEMENT = ROOT / "tests" / "fixtures" / "review" / "review_statement.json"
+
+
+@pytest.fixture(scope="session")
+def reviewed_book(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    """The featured book built under the fixture review statement."""
+    out = tmp_path_factory.mktemp("reviewed") / "0.0.1"
+    build_book(SEED, out, SCRIPTS, review_statement=REVIEW_STATEMENT)
+    return out
+
+
 @pytest.fixture(scope="session")
 def site(book: Path, tmp_path_factory: pytest.TempPathFactory) -> Path:
     out = tmp_path_factory.mktemp("site") / "site"
