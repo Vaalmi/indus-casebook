@@ -631,10 +631,28 @@ def _graded_held_record() -> str:
     return json.dumps({**record, "grade": {"score": 100, "passed": True}}, indent=1)
 
 
+@pytest.fixture
+def form_bundle(clean: Path, tmp_path: Path) -> Path:
+    """The clean bundle without its book, site and packets, to plant one form into. A planted file's lines come from
+    the checks that read that file and the held material, so the rest changes none of them: all 96 forms and contents
+    caught the same lines in both bundles (24 November 2026). The full bundle took each test 12 seconds here and about
+    44 on a GitHub runner, which pushed the Check job past its limit. The runs, keys and top-level files stay, so a
+    check that compares a planted file with what the release publishes still sees it."""
+    copy = tmp_path / "v0.1.0"
+    left_out = {"book", "site", "packets"}
+    shutil.copytree(
+        clean,
+        copy,
+        copy_function=os.link,
+        ignore=lambda folder, names: [n for n in names if Path(folder) == clean and n in left_out],
+    )
+    return copy
+
+
 @pytest.mark.parametrize("form", sorted(FORMS))
 @pytest.mark.parametrize("content", sorted(REFUSED))
 def test_what_the_release_refuses_fails_in_every_form(
-    bundle: Path, held: HeldMaterial, held_keys: Path, content: str, form: str
+    form_bundle: Path, held: HeldMaterial, held_keys: Path, content: str, form: str
 ) -> None:
     text = {
         "a held key": (held_keys / VERSION / f"{HELD_TASK}.json").read_text(),
@@ -648,8 +666,8 @@ def test_what_the_release_refuses_fails_in_every_form(
     }[content]
     planted = FORMS[form](text)
     for name, data in planted.items():
-        _write(bundle / name, data)
-    caught = [p for p in release_problems(bundle, held) if p.startswith("planted/") and REFUSED[content] in p]
+        _write(form_bundle / name, data)
+    caught = [p for p in release_problems(form_bundle, held) if p.startswith("planted/") and REFUSED[content] in p]
     assert caught, f"{content} in {form} ({', '.join(planted)}) passed the release"
 
 
