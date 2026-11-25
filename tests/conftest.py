@@ -148,14 +148,16 @@ def standin(standin_cli: StandIn) -> Path:
     return standin_cli.log
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def playwright() -> Iterator[Playwright]:
-    """One Playwright for the whole run: its sync API allows only one at a time."""
+    """One Playwright for each test file that needs one: its sync API allows only one at a time, and it runs an
+    asyncio loop in this thread while open, so a later file's `anyio.run` fails if it outlives its file
+    (tests/test_playwright_fixture.py)."""
     with sync_playwright() as running:
         yield running
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def browser(playwright: Playwright) -> Iterator[Browser]:
     chromium = playwright.chromium.launch()
     yield chromium
